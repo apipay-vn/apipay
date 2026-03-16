@@ -14,8 +14,8 @@ ApiPay là giải pháp thanh toán API giúp doanh nghiệp dễ dàng nhận t
 
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│  1. Tạo Link   │ -> │  2. Khách TT   │ -> │ 3. Xác nhận    │
-│  thanh toán     │    │  qua QR/Chuyển  │    │ tự động        │
+│  1. Tạo Link    │ -> │  2. Khách TT    │ -> │ 3. Xác nhận     │
+│  thanh toán     │    │  qua QR/Chuyển  │    │ tự động         │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
         │                                              │
         v                                              v
@@ -23,7 +23,7 @@ ApiPay là giải pháp thanh toán API giúp doanh nghiệp dễ dàng nhận t
 │   API Request   │                           │  Webhook gửi    │
 │   (POST /pay)   │                           │  về server của  │
 └─────────────────┘                           │  bạn            │
-                                               └─────────────────┘
+                                              └─────────────────┘
 ```
 
 1. **Tạo payment link** — Gọi API để sinh liên kết thanh toán với số tiền và nội dung chuyển khoản
@@ -57,17 +57,17 @@ apipay pay create \
 
 ```javascript
 // Tạo payment request
-const response = await fetch('https://app.apipay.vn/v1/pay', {
-  method: 'POST',
-  headers: {
-    'Authorization': 'Bearer YOUR_API_KEY',
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    amount: 100000,
-    description: 'Thanh toán đơn hàng #12345',
-    callback_url: 'https://your-site.com/webhook'
-  })
+const response = await fetch("https://app.apipay.vn/v1/pay", {
+	method: "POST",
+	headers: {
+		Authorization: "Bearer YOUR_API_KEY",
+		"Content-Type": "application/json",
+	},
+	body: JSON.stringify({
+		amount: 100000,
+		description: "Thanh toán đơn hàng #12345",
+		callback_url: "https://your-site.com/webhook",
+	}),
 });
 
 const data = await response.json();
@@ -103,13 +103,13 @@ apipay-transfer/
 
 ## Tài liệu chi tiết
 
-| Chủ đề | Mô tả |
-|--------|-------|
-| [Hướng dẫn bắt đầu](docs/src/content/vi/onboarding.mdx) | Thiết lập tài khoản merchant |
-| [Quick Start](docs/src/content/vi/quickstart.mdx) | Tích hợp API trong 5 phút |
-| [Quản lý ngân hàng](docs/src/content/vi/banking.mdx) | Kết nối tài khoản ngân hàng |
-| [API Reference](docs/src/content/vi/api/payment-requests.mdx) | Tạo và quản lý thanh toán |
-| [Webhooks](docs/src/content/vi/api/webhooks.mdx) | Nhận thông báo giao dịch |
+| Chủ đề                                                        | Mô tả                        |
+| ------------------------------------------------------------- | ---------------------------- |
+| [Hướng dẫn bắt đầu](docs/src/content/vi/onboarding.mdx)       | Thiết lập tài khoản merchant |
+| [Quick Start](docs/src/content/vi/quickstart.mdx)             | Tích hợp API trong 5 phút    |
+| [Quản lý ngân hàng](docs/src/content/vi/banking.mdx)          | Kết nối tài khoản ngân hàng  |
+| [API Reference](docs/src/content/vi/api/payment-requests.mdx) | Tạo và quản lý thanh toán    |
+| [Webhooks](docs/src/content/vi/api/webhooks.mdx)              | Nhận thông báo giao dịch     |
 
 ## Liên kết hữu ích
 
