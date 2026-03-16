@@ -48,46 +48,49 @@ apipay login
 ### Tạo payment link
 
 ```bash
-apipay pay create \
-  --amount 100000 \
-  --description "DON HANG 12345"
+apipay pay:create
 ```
 
 ### API Example
 
-```javascript
+```curl
 // Tạo payment request
-const response = await fetch("https://app.apipay.vn/v1/pay", {
-	method: "POST",
-	headers: {
-		Authorization: "Bearer YOUR_API_KEY",
-		"Content-Type": "application/json",
-	},
-	body: JSON.stringify({
-		amount: 100000,
-		description: "DON HANG 12345",
-		callback_url: "https://your-site.com/webhook",
-	}),
-});
+curl -X POST https://app.apipay.vn/v1/client/payment-requests \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <Auth>" \
+  -d '{
+    "bankPublicId": "bank_abc123",
+    "amount": "500000",
+    "content": "THANHTOAN-001",
+    "title": "DON HANG 12345",
+    "redirectUrl": "https://yoursite.com/payment/result"
+  }'
+```
 
-const data = await response.json();
-// {
-//   "id": "pay_xxx",
-//   "amount": 100000,
-//   "qr_code": "...",
-//   "bank_account": {
-//     "bank": "BIDV",
-//     "account_number": "1234567890",
-//     "account_name": "CONG TY ABC"
-//   },
-//   "status": "pending"
-// }
+### Response
+
+```json
+{
+	"data": {
+		"publicId": "ckabcdef1234567890",
+		"payUrl": "https://pay.apipay.vn/ckabcdef1234567890",
+		"qrUrl": "https://api.qrserver.com/v1/create-qr-code?...",
+		"bankCode": "MB",
+		"accountNumber": "0123456789",
+		"accountName": "NGUYEN VAN A",
+		"amount": "100000",
+		"content": "ORDER-12345",
+		"expiresAt": "2026-12-31T23:59:59Z",
+		"createdAt": "2026-03-06T10:00:00Z",
+		"redirectSecret": "a1b2c3d4e5f6..."
+	}
+}
 ```
 
 ## Cấu trúc dự án
 
 ```
-apipay-transfer/
+apipay/
 ├── cli/                    # ApiPay CLI - Command-line tool
 │   ├── src/
 │   │   ├── commands/       # Các lệnh CLI (pay, banks, webhooks, keys...)
