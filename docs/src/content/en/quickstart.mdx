@@ -1,0 +1,143 @@
+---
+title: Quick Start
+description: Get started with ApiPay in 5 minutes
+---
+
+# Quick Start
+
+Quick guide to integrate ApiPay into your system.
+
+## Step 1: Get API Key
+
+Log in to [dashboard](https://my.apipay.vn) and create an API Key at **Settings → API Keys**.
+
+You'll receive:
+
+- `accessKey` - Public key to identify your account
+- `secretKey` - Private key to sign requests
+
+## Step 2: Create Payment Link
+
+Call the API to create a payment link:
+
+```bash
+curl -X POST https://app.apipay.vn/v1/client/payment-requests \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <Auth>" \
+  -d '{
+    "bankPublicId": "your-bank-public-id",
+    "amount": "100000",
+    "content": "ORDER-12345"
+  }'
+```
+
+Response:
+
+```json
+{
+	"data": {
+		"publicId": "ckabcdef1234567890",
+		"payUrl": "https://pay.apipay.vn/ckabcdef1234567890",
+		"qrUrl": "https://api.qrserver.com/...",
+		"bankCode": "MB",
+		"accountNumber": "0123456789",
+		"amount": "100000",
+		"content": "ORDER-12345"
+	}
+}
+```
+
+## Step 3: Send to Customer
+
+Send `payUrl` to your customer via:
+
+- Email/SMS
+- Chat (Zalo, Facebook, Telegram)
+- Your website
+
+The customer will see a payment page with a QR Code to scan with their bank app.
+
+## Step 4: Receive Notifications
+
+Configure a webhook URL in the dashboard to receive notifications when payments occur:
+
+```json
+{
+	"event": "payment.completed",
+	"data": {
+		"publicId": "ckabcdef1234567890",
+		"amount": "100000",
+		"transactionId": "TXN-12345",
+		"completedAt": "2026-03-06T10:30:00Z"
+	}
+}
+```
+
+## Code Examples
+
+### Node.js
+
+```javascript
+const axios = require("axios");
+
+const API_BASE = "https://app.apipay.vn";
+const ACCESS_KEY = "your_access_key";
+const SECRET_KEY = "your_secret_key";
+
+async function createPaymentLink(bankPublicId, amount, content) {
+	const response = await axios.post(
+		`${API_BASE}/v1/client/payment-requests`,
+		{
+			bankPublicId,
+			amount,
+			content,
+		},
+		{
+			headers: {
+				Authorization: `${ACCESS_KEY}:${SECRET_KEY}`,
+				"Content-Type": "application/json",
+			},
+		},
+	);
+	return response.data.data;
+}
+
+// Usage
+const payment = await createPaymentLink("bank-123", "100000", "ORDER-001");
+console.log("Payment URL:", payment.payUrl);
+```
+
+### Python
+
+```python
+import requests
+
+API_BASE = 'https://app.apipay.vn'
+ACCESS_KEY = 'your_access_key'
+SECRET_KEY = 'your_secret_key'
+
+def create_payment_link(bank_public_id: str, amount: str, content: str):
+    response = requests.post(
+        f'{API_BASE}/v1/client/payment-requests',
+        json={
+            'bankPublicId': bank_public_id,
+            'amount': amount,
+            'content': content
+        },
+        headers={
+            'Authorization': f'{ACCESS_KEY}:{SECRET_KEY}',
+            'Content-Type': 'application/json'
+        }
+    )
+    return response.json()['data']
+
+# Usage
+payment = create_payment_link('bank-123', '100000', 'ORDER-001')
+print(f"Payment URL: {payment['payUrl']}")
+```
+
+## Next Steps
+
+- [API Reference](/en/api/payment-requests) - Full API endpoint details
+- [Webhooks](/en/api/webhooks) - Configure notifications
+- [Bank List](/en/api/banks) - Supported banks

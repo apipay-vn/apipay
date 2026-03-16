@@ -1,0 +1,235 @@
+---
+title: Bank Account Management
+description: Connect and manage your bank accounts for receiving payments
+---
+
+# Bank Account Management
+
+Learn how to connect, manage, and optimize your Vietnamese bank accounts in ApiPay.
+
+---
+
+## Why Bank Accounts Matter
+
+Bank accounts are the foundation of receiving payments. Each connected bank account creates a payment channel that customers can use to transfer money to you.
+
+### Key Benefits
+
+- **Multiple payment options** - Different banks for different customer preferences
+- **Load distribution** - Spread transactions across accounts to avoid congestion
+- **Redundancy** - Backup accounts ensure continuous service
+
+---
+
+## Supported Banks
+
+ApiPay supports all major Vietnamese banks:
+
+| Bank        | Code | Status       |
+| ----------- | ---- | ------------ |
+| MB Bank     | MB   | ✅ Supported |
+| ACB         | ACB  | ✅ Supported |
+| BIDV        | BIDV | ✅ Supported |
+| TPBank      | TPB  | ✅ Supported |
+| Vietcombank | VCB  | ✅ Supported |
+| Sacombank   | SACB | ✅ Supported |
+| VietinBank  | CTG  | ✅ Supported |
+| Agribank    | AGR  | ✅ Supported |
+| SHB         | SHB  | ✅ Supported |
+| Eximbank    | EIB  | ✅ Supported |
+
+> **Note:** More banks are being added regularly. Contact support if your bank is not listed.
+
+---
+
+## Connecting a Bank Account
+
+### Step-by-Step Process
+
+1. **Navigate to Bank Accounts**
+   - Go to **Settings → Bank Accounts** in your dashboard
+
+2. **Click "Add Bank Account"**
+   - You'll see a list of supported banks
+
+3. **Select Your Bank**
+   - Choose from the dropdown list
+   - Each bank shows its logo and name
+
+4. **Enter Account Information**
+   - Enter your account number
+   - Enter the account name (as registered with the bank)
+
+5. **OTP Verification**
+   - An OTP will be sent to your registered phone number with the bank
+   - Enter the 6-digit code to verify ownership
+
+6. **Confirmation**
+   - Account status will be "PENDING" initially
+   - After successful verification, it becomes "ACTIVE"
+
+### What You'll Need
+
+- A valid Vietnamese bank account
+- Phone number registered with the bank (for OTP)
+- Account must be in your business name or authorized representative name
+
+---
+
+## Managing Bank Accounts
+
+### View All Accounts
+
+1. Go to **Settings → Bank Accounts**
+2. You'll see a table with:
+   - Bank name and logo
+   - Account number (masked)
+   - Account name
+   - Status (ACTIVE/PENDING/INACTIVE)
+   - Actions
+
+### Toggle Account Status
+
+You can temporarily disable a bank account:
+
+1. Click the toggle next to the account
+2. Disabled accounts won't appear in new payment requests
+3. Existing payment requests still work
+4. Toggle back on anytime
+
+### Delete a Bank Account
+
+To remove a bank account:
+
+1. Click **Delete** on the account row
+2. Confirm your decision
+3. An OTP will be sent for verification
+4. Enter OTP to confirm deletion
+5. Account is removed
+
+> **Warning:** Deleting an account is permanent. Make sure you don't have any pending payments using that account.
+
+---
+
+## Best Practices
+
+### Optimal Bank Setup
+
+1. **Start with 1-2 banks** - Begin with your primary bank
+2. **Add backup accounts** - Connect a second bank for redundancy
+3. **Consider customer preferences** - MB and ACB are popular with Vietnamese consumers
+
+### Managing Multiple Accounts
+
+| Scenario      | Recommendation          |
+| ------------- | ----------------------- |
+| Low volume    | 1-2 accounts            |
+| Medium volume | 3-5 accounts            |
+| High volume   | Use all available slots |
+
+### Account Health
+
+1. **Monitor status** - Check dashboard regularly for any issues
+2. **Keep accounts active** - Inactive accounts may be flagged
+3. **Update promptly** - If bank details change, update immediately
+
+---
+
+## Troubleshooting
+
+### OTP Not Received
+
+- **Check phone number** - Ensure it's the number registered with the bank
+- **Wait a moment** - SMS may be delayed
+- **Check spam** - Some banks send from short codes
+- **Try again** - Request a new OTP
+
+### Account Stuck on Pending
+
+- **Verify OTP** - Make sure you entered the correct code
+- **Contact support** - If the issue persists, reach out for help
+
+### Verification Failed
+
+- **Check account details** - Ensure name matches exactly what's registered
+- **Bank restrictions** - Some accounts may have transfer limits
+- **Try another account** - Use a different account if issues persist
+
+---
+
+## Bank-Specific Notes
+
+### MB Bank
+
+- Popular for instant transfers
+- Good daily limits
+- Widely used by Vietnamese consumers
+
+### ACB
+
+- Reliable service
+- Good customer support
+
+### BIDV
+
+- Largest state-owned bank
+- Excellent for corporate accounts
+
+### TPBank
+
+- Modern digital bank
+- Quick verification process
+
+---
+
+## Security Considerations
+
+### Account Security
+
+- **Keep accounts in business name** - Never use third-party accounts
+- **Limit access** - Only authorized personnel should manage bank accounts
+- **Enable 2FA** - Add an extra layer of security to your dashboard
+
+### Monitoring
+
+1. **Review transactions** - Check dashboard for any suspicious activity
+2. **Set up alerts** - Configure webhook notifications for all events
+3. **Audit regularly** - Periodically review connected accounts
+
+---
+
+## API Integration
+
+You can manage bank accounts programmatically:
+
+```javascript
+// List connected bank accounts
+const banks = await fetch("https://app.apipay.vn/v1/client/banks", {
+	headers: {
+		Authorization: "Bearer <Auth>",
+	},
+});
+
+// Get bank summary
+const summary = await fetch("https://app.apipay.vn/v1/client/banks/summary", {
+	headers: {
+		Authorization: "Bearer <Auth>",
+	},
+});
+```
+
+---
+
+## Need Help?
+
+- 📧 Email: support@apipay.vn
+- 💬 In-app chat (dashboard)
+- 📖 [API Reference](/en/api/banks)
+
+---
+
+## Next Steps
+
+- [Onboarding Guide](/en/onboarding) - Complete setup process
+- [Subscription Guide](/en/subscription) - Manage your plan
+- [Dashboard Overview](/en/dashboard) - Navigate your dashboard

@@ -1,0 +1,235 @@
+---
+title: Quản Lý Tài Khoản Ngân Hàng
+description: Kết nối và quản lý tài khoản ngân hàng để nhận thanh toán
+---
+
+# Quản Lý Tài Khoản Ngân Hàng
+
+Tìm hiểu cách kết nối, quản lý và tối ưu hóa tài khoản ngân hàng Việt Nam trong ApiPay.
+
+---
+
+## Tại Sao Tài Khoản Ngân Hàng Quan Trọng
+
+Tài khoản ngân hàng là nền tảng để nhận thanh toán. Mỗi tài khoản ngân hàng được kết nối tạo ra một kênh thanh toán mà khách hàng có thể sử dụng để chuyển tiền cho bạn.
+
+### Lợi Ích Chính
+
+- **Nhiều tùy chọn thanh toán** - Ngân hàng khác nhau cho sở thích khách hàng khác nhau
+- **Phân bổ tải** - Trải rộng giao dịch qua các tài khoản để tránh tắc nghẽn
+- **Dự phòng** - Tài khoản backup đảm bảo dịch vụ liên tục
+
+---
+
+## Ngân Hàng Được Hỗ Trợ
+
+ApiPay hỗ trợ tất cả các ngân hàng lớn tại Việt Nam:
+
+| Ngân Hàng   | Mã   | Trạng Thái     |
+| ----------- | ---- | -------------- |
+| MB Bank     | MB   | ✅ Được hỗ trợ |
+| ACB         | ACB  | ✅ Được hỗ trợ |
+| BIDV        | BIDV | ✅ Được hỗ trợ |
+| TPBank      | TPB  | ✅ Được hỗ trợ |
+| Vietcombank | VCB  | ✅ Được hỗ trợ |
+| Sacombank   | SACB | ✅ Được hỗ trợ |
+| VietinBank  | CTG  | ✅ Được hỗ trợ |
+| Agribank    | AGR  | ✅ Được hỗ trợ |
+| SHB         | SHB  | ✅ Được hỗ trợ |
+| Eximbank    | EIB  | ✅ Được hỗ trợ |
+
+> **Lưu ý:** Nhiều ngân hàng hơn đang được thêm thường xuyên. Liên hệ hỗ trợ nếu ngân hàng của bạn chưa được liệt kê.
+
+---
+
+## Kết Nối Tài Khoản Ngân Hàng
+
+### Quy Trình Từng Bước
+
+1. **Điều hướng đến Tài khoản ngân hàng**
+   - Vào **Cài đặt → Tài khoản ngân hàng** trong dashboard
+
+2. **Nhấn "Thêm tài khoản ngân hàng"**
+   - Bạn sẽ thấy danh sách các ngân hàng được hỗ trợ
+
+3. **Chọn Ngân Hàng**
+   - Chọn từ danh sách dropdown
+   - Mỗi ngân hàng hiển thị logo và tên
+
+4. **Nhập Thông Tin Tài Khoản**
+   - Nhập số tài khoản
+   - Nhập tên tài khoản (như đã đăng ký với ngân hàng)
+
+5. **Xác Minh OTP**
+   - OTP sẽ được gửi đến số điện thoại đã đăng ký với ngân hàng
+   - Nhập mã 6 chữ số để xác minh quyền sở hữu
+
+6. **Xác Nhận**
+   - Trạng thái tài khoản sẽ là "CHỜ" ban đầu
+   - Sau khi xác minh thành công, nó trở thành "HOẠT ĐỘNG"
+
+### Những Gì Bạn Cần
+
+- Tài khoản ngân hàng Việt Nam hợp lệ
+- Số điện thoại đã đăng ký với ngân hàng (để nhận OTP)
+- Tài khoản phải mang tên doanh nghiệp của bạn hoặc tên đại diện được ủy quyền
+
+---
+
+## Quản Lý Tài Khoản Ngân Hàng
+
+### Xem Tất Cả Tài Khoản
+
+1. Vào **Cài đặt → Tài khoản ngân hàng**
+2. Bạn sẽ thấy bảng với:
+   - Tên và logo ngân hàng
+   - Số tài khoản (đã ẩn)
+   - Tên tài khoản
+   - Trạng thái (HOẠT ĐỘNG/CHỜ/KHÔNG HOẠT ĐỘNG)
+   - Thao tác
+
+### Bật/Tắt Trạng Thái Tài Khoản
+
+Bạn có thể tạm thời vô hiệu hóa tài khoản ngân hàng:
+
+1. Nhấn nút chuyển đổi bên cạnh tài khoản
+2. Tài khoản bị vô hiệu hóa sẽ không xuất hiện trong yêu cầu thanh toán mới
+3. Yêu cầu thanh toán hiện tại vẫn hoạt động
+4. Bật lại bất kỳ lúc nào
+
+### Xóa Tài Khoản Ngân Hàng
+
+Để xóa tài khoản ngân hàng:
+
+1. Nhấn **Xóa** trên hàng tài khoản
+2. Xác nhận quyết định
+3. OTP sẽ được gửi để xác minh
+4. Nhập OTP để xác nhận xóa
+5. Tài khoản được xóa
+
+> **Cảnh báo:** Xóa tài khoản là vĩnh viễn. Đảm bảo bạn không có yêu cầu thanh toán nào đang chờ sử dụng tài khoản đó.
+
+---
+
+## Best Practices
+
+### Thiết Lập Ngân Hàng Tối Ưu
+
+1. **Bắt đầu với 1-2 ngân hàng** - Bắt đầu với ngân hàng chính của bạn
+2. **Thêm tài khoản dự phòng** - Kết nối ngân hàng thứ hai để dự phòng
+3. **Cân nhắc sở thích khách hàng** - MB và ACB phổ biến với người tiêu dùng Việt Nam
+
+### Quản Lý Nhiều Tài Khoản
+
+| Kịch Bản   | Khuyến Nghị                    |
+| ---------- | ------------------------------ |
+| Lượng thấp | 1-2 tài khoản                  |
+| Lượng vừa  | 3-5 tài khoản                  |
+| Lượng cao  | Sử dụng tất cả các slot có sẵn |
+
+### Sức Khỏe Tài Khoản
+
+1. **Theo dõi trạng thái** - Kiểm tra dashboard thường xuyên để phát hiện vấn đề
+2. **Giữ tài khoản hoạt động** - Tài khoản không hoạt động có thể bị đánh dấu
+3. **Cập nhật kịp thời** - Nếu thông tin ngân hàng thay đổi, cập nhật ngay
+
+---
+
+## Khắc Phục Sự Cố
+
+### OTP Không Nhận Được
+
+- **Kiểm tra số điện thoại** - Đảm bảo là số đã đăng ký với ngân hàng
+- **Chờ một chút** - SMS có thể bị chậm
+- **Kiểm tra spam** - Một số ngân hàng gửi từ short code
+- **Thử lại** - Yêu cầu OTP mới
+
+### Tài Khoản Bị Kẹt Ở Trạng Thái Chờ
+
+- **Xác minh OTP** - Đảm bảo bạn đã nhập đúng mã
+- **Liên hệ hỗ trợ** - Nếu vấn đề tiếp tục, hãy liên hệ để được hỗ trợ
+
+### Xác Minh Thất Bại
+
+- **Kiểm tra chi tiết tài khoản** - Đảm bảo tên khớp chính xác với đăng ký
+- **Hạn chế ngân hàng** - Một số tài khoản có thể có giới hạn chuyển tiền
+- **Thử tài khoản khác** - Sử dụng tài khoản khác nếu vấn đề tiếp tục
+
+---
+
+## Lưu Ý Theo Ngân Hàng
+
+### MB Bank
+
+- Phổ biến cho chuyển tiền tức thì
+- Hạn mức hàng ngày tốt
+- Được sử dụng rộng rãi bởi người tiêu dùng Việt Nam
+
+### ACB
+
+- Dịch vụ đáng tin cậy
+- Hỗ trợ khách hàng tốt
+
+### BIDV
+
+- Ngân hàng nhà nước lớn nhất
+- Phù hợp cho tài khoản doanh nghiệp
+
+### TPBank
+
+- Ngân hàng số hiện đại
+- Quá trình xác minh nhanh
+
+---
+
+## Cân Nhắc Bảo Mật
+
+### Bảo Mật Tài Khoản
+
+- **Giữ tài khoản mang tên doanh nghiệp** - Không bao giờ sử dụng tài khoản của bên thứ ba
+- **Hạn chế quyền truy cập** - Chỉ nhân viên được ủy quyền mới quản lý tài khoản ngân hàng
+- **Bật 2FA** - Thêm lớp bảo mật bổ sung cho dashboard của bạn
+
+### Giám Sát
+
+1. **Xem lại giao dịch** - Kiểm tra dashboard để phát hiện hoạt động đáng ngờ
+2. **Thiết lập cảnh báo** - Cấu hình webhook để nhận thông báo cho tất cả sự kiện
+3. **Kiểm tra định kỳ** - Thường xuyên xem lại các tài khoản được kết nối
+
+---
+
+## Tích Hợp API
+
+Bạn có thể quản lý tài khoản ngân hàng theo chương trình:
+
+```javascript
+// Liệt kê các tài khoản ngân hàng đã kết nối
+const banks = await fetch("https://app.apipay.vn/v1/client/banks", {
+	headers: {
+		Authorization: "Bearer <Auth>",
+	},
+});
+
+// Lấy tóm tắt ngân hàng
+const summary = await fetch("https://app.apipay.vn/v1/client/banks/summary", {
+	headers: {
+		Authorization: "Bearer <Auth>",
+	},
+});
+```
+
+---
+
+## Cần Hỗ Trợ?
+
+- 📧 Email: support@apipay.vn
+- 💬 Chat trong app (dashboard)
+- 📖 [API Reference](/vi/api/banks)
+
+---
+
+## Bước Tiếp Theo
+
+- [Hướng Dẫn Bắt Đầu](/vi/onboarding) - Quy trình thiết lập hoàn chỉnh
+- [Hướng Dẫn Đăng Ký](/vi/subscription) - Quản lý gói của bạn
+- [Tổng Quan Dashboard](/vi/dashboard) - Điều hướng dashboard của bạn

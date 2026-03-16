@@ -1,0 +1,186 @@
+---
+title: Onboarding Guide
+description: Complete guide to getting started with ApiPay
+---
+
+# Onboarding Guide
+
+Welcome to ApiPay! This guide will walk you through the complete process of setting up your account and start accepting payments.
+
+## Why ApiPay?
+
+ApiPay is a payment gateway that enables Vietnamese businesses to accept bank transfers through a simple API integration. No complex contracts, no hidden fees - just straightforward bank payment processing.
+
+## The Merchant Journey
+
+Here's what you'll accomplish:
+
+1. **Sign Up** - Create your merchant account
+2. **Choose a Plan** - Select the right plan for your business
+3. **Connect Banks** - Link your Vietnamese bank accounts
+4. **Configure Settings** - Set up webhooks and API keys
+5. **Start Accepting Payments** - Create your first payment request
+
+---
+
+## Step 1: Sign Up
+
+Visit [my.apipay.vn](https://my.apipay.vn) and click **Sign Up**.
+
+You can register using:
+
+- **Email & Password** - Traditional registration
+- **Magic Link** - Passwordless login via email
+
+### Best Practices for Registration
+
+- Use a **business email** - This establishes trust with your customers
+- Choose a **strong password** or enable 2FA after signup
+- Fill in your **business information** early - This appears on the payment page your customers see
+
+---
+
+## Step 2: Choose Your Plan
+
+ApiPay offers flexible plans based on the number of bank accounts you need:
+
+| Plan      | Price               | Bank Accounts |
+| --------- | ------------------- | ------------- |
+| BASIC     | 150,000 VND/month   | 1 account     |
+| STARTER   | 250,000 VND/month   | 3 accounts    |
+| PRO       | 450,000 VND/month   | 5 accounts    |
+| TEAM      | 750,000 VND/month   | 10 accounts   |
+| COMPANY   | 1,750,000 VND/month | 25 accounts   |
+| CORPORATE | 3,250,000 VND/month | 50 accounts   |
+
+### How to Choose
+
+**Start small and scale up:**
+
+- New businesses: Start with BASIC or STARTER
+- Growing businesses: PRO offers the best value
+- High-volume businesses: TEAM or above
+
+You can upgrade anytime. Downgrading takes effect at the next billing cycle.
+
+> **Pro Tip:** Having multiple bank accounts helps distribute payment volume and reduces wait times during peak hours.
+
+---
+
+## Step 3: Connect Your Bank Accounts
+
+After subscribing, you'll connect your Vietnamese bank account(s). This is essential for receiving payments.
+
+### Supported Banks
+
+ApiPay supports all major Vietnamese banks:
+
+- MB Bank
+- ACB
+- BIDV
+- TPBank
+- Vietcombank
+- Sacombank
+- And many more...
+
+### Connection Process
+
+1. Go to **Settings → Bank Accounts**
+2. Click **Add Bank Account**
+3. Select your bank from the list
+4. Enter your account number
+5. Verify with OTP sent to your registered phone
+6. Account becomes active after verification
+
+> **Important:** The bank account must be in your business name (or a legitimate representative name).
+
+---
+
+## Step 4: Configure Your Integration
+
+### Get API Keys
+
+1. Navigate to **Settings → API Keys**
+2. Click **Create New Key**
+3. Name your key (e.g., "Production", "Development")
+4. Copy and store your keys securely
+
+You'll receive:
+
+- `accessKey` - Public identifier
+- `secretKey` - Keep this private!
+
+### Set Up Webhooks (Optional but Recommended)
+
+Webhooks notify your system when payments occur:
+
+1. Go to **Settings → Webhooks**
+2. Click **Add Webhook**
+3. Enter your endpoint URL
+4. Select event types (payment completed, etc.)
+5. Save and test with the test button
+
+---
+
+## Step 5: Create Your First Payment
+
+### Via Dashboard
+
+1. Go to **Payment Requests**
+2. Click **Create Payment Request**
+3. Select a connected bank account
+4. Enter the amount
+5. Add payment content/reference
+6. Click **Create**
+
+You'll receive a payment link to share with your customer.
+
+### Via API
+
+```javascript
+const response = await fetch(
+	"https://app.apipay.vn/v1/client/payment-requests",
+	{
+		method: "POST",
+		headers: {
+			Authorization: "Bearer <Auth>",
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({
+			bankPublicId: "your-bank-id",
+			amount: "100000",
+			content: "ORDER-12345",
+		}),
+	},
+);
+
+const {payUrl, qrUrl} = await response.json();
+// Share payUrl or qrUrl with your customer
+```
+
+---
+
+## Best Practices
+
+### For a Smooth Start
+
+1. **Test with small amounts** - Create a few test payments of 1,000 VND to verify your setup works
+2. **Configure webhook first** - This ensures you never miss a payment notification
+3. **Set up redirect URL** - Automatically redirect customers back to your site after payment
+4. **Customize payment page** - Add your business name and logo for a professional experience
+
+### For Long-Term Success
+
+1. **Use multiple bank accounts** - Distribute volume across banks reduces congestion
+2. **Monitor transaction analytics** - Use the dashboard to track payment patterns
+3. **Enable 2FA** - Protect your account with two-factor authentication
+4. **Keep API keys secure** - Rotate keys periodically and never expose them in client-side code
+
+---
+
+## Next Steps
+
+- [Subscription Guide](/en/subscription) - Manage your plan and billing
+- [Bank Account Management](/en/banking) - Advanced banking features
+- [Dashboard Overview](/en/dashboard) - Explore your dashboard features
+- [API Reference](/en/api/payment-requests) - Technical integration details

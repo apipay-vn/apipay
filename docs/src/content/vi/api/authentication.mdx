@@ -1,0 +1,91 @@
+---
+title: Xác thực API
+description: Hướng dẫn xác thực API
+---
+
+# Xác thực API
+
+ApiPay sử dụng API keys để xác thực. Tất cả các endpoint cần xác thực đều yêu cầu header `Authorization`.
+
+## Header Authorization
+
+Định dạng: `Authorization: Bearer <Auth>`
+
+Trong đó `<Auth>` là thông tin đăng nhập được mã hóa base64:
+
+```
+base64(accessKey:secretKey)
+```
+
+## Lấy API Keys
+
+1. Đăng nhập vào [dashboard](https://my.apipay.vn)
+2. Vào mục **Cài đặt → API Keys**
+3. Sao chép `accessKey` và `secretKey` của bạn
+
+## Ví dụ
+
+### JavaScript/Node.js
+
+```javascript
+const axios = require("axios");
+
+const ACCESS_KEY = "your_access_key";
+const SECRET_KEY = "your_secret_key";
+
+// Tạo chuỗi auth base64
+const auth = Buffer.from(`${ACCESS_KEY}:${SECRET_KEY}`).toString("base64");
+
+const response = await axios.post(
+	"https://app.apipay.vn/v1/client/payment-requests",
+	{
+		bankPublicId: "bank_abc123",
+		amount: "100000",
+		content: "ORDER-001",
+	},
+	{
+		headers: {
+			Authorization: `Bearer ${auth}`,
+			"Content-Type": "application/json",
+		},
+	},
+);
+```
+
+### Python
+
+```python
+import requests
+import base64
+
+ACCESS_KEY = 'your_access_key'
+SECRET_KEY = 'your_secret_key'
+
+# Tạo chuỗi auth base64
+auth = base64.b64encode(f'{ACCESS_KEY}:{SECRET_KEY}'.encode()).decode()
+
+response = requests.post(
+    'https://app.apipay.vn/v1/client/payment-requests',
+    json={
+        'bankPublicId': 'bank_abc123',
+        'amount': '100000',
+        'content': 'ORDER-001'
+    },
+    headers={
+        'Authorization': f'Bearer {auth}',
+        'Content-Type': 'application/json'
+    }
+)
+```
+
+### cURL
+
+```bash
+# Mã hóa credentials: echo -n "accessKey:secretKey" | base64
+AUTH=$(echo -n "your_access_key:your_secret_key" | base64)
+
+curl -X POST https://app.apipay.vn/v1/client/payment-requests \
+  -H "Authorization: Bearer $AUTH" \
+  -H "Content-Type: application/json" \
+  -d '{"bankPublicId": "bank_abc123", "amount": "100000", "content": "ORDER-001"}'
+```

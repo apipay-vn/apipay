@@ -1,0 +1,186 @@
+---
+title: Hướng Dẫn Bắt Đầu
+description: Hướng dẫn toàn diện để bắt đầu với ApiPay
+---
+
+# Hướng Dẫn Bắt Đầu
+
+Chào mừng đến với ApiPay! Hướng dẫn này sẽ giúp bạn hoàn thành quá trình thiết lập tài khoản và bắt đầu nhận thanh toán.
+
+## Tại Sao Chọn ApiPay?
+
+ApiPay là cổng thanh toán giúp doanh nghiệp Việt Nam dễ dàng chấp nhận thanh toán chuyển khoản qua API đơn giản. Không hợp đồng phức tạp, không phí ẩn - chỉ cần xử lý thanh toán ngân hàng đơn giản.
+
+## Hành Trình Của Merchant
+
+Dưới đây là những gì bạn sẽ hoàn thành:
+
+1. **Đăng ký** - Tạo tài khoản merchant
+2. **Chọn gói dịch vụ** - Chọn gói phù hợp với doanh nghiệp
+3. **Kết nối ngân hàng** - Liên kết tài khoản ngân hàng Việt Nam
+4. **Cấu hình cài đặt** - Thiết lập webhook và API keys
+5. **Bắt đầu nhận thanh toán** - Tạo yêu cầu thanh toán đầu tiên
+
+---
+
+## Bước 1: Đăng Ký
+
+Truy cập [my.apipay.vn](https://my.apipay.vn) và nhấn **Đăng ký**.
+
+Bạn có thể đăng ký bằng:
+
+- **Email & Mật khẩu** - Đăng ký truyền thống
+- **Magic Link** - Đăng nhập không cần mật khẩu qua email
+
+### Best Practices Cho Đăng Ký
+
+- Sử dụng **email doanh nghiệp** - Điều này tạo niềm tin với khách hàng
+- Chọn **mật khẩu mạnh** hoặc bật 2FA sau khi đăng ký
+- Điền thông tin **doanh nghiệp** sớm - Thông tin này hiển thị trên trang thanh toán mà khách hàng nhìn thấy
+
+---
+
+## Bước 2: Chọn Gói Dịch Vụ
+
+ApiPay cung cấp các gói linh hoạt dựa trên số lượng tài khoản ngân hàng bạn cần:
+
+| Gói        | Giá                 | Tài Khoản Ngân Hàng |
+| ---------- | ------------------- | ------------------- |
+| BASIC      | 100.000 VND/tháng   | 1 tài khoản         |
+| STARTER    | 200.000 VND/tháng   | 3 tài khoản         |
+| PRO        | 400.000 VND/tháng   | 5 tài khoản         |
+| TEAM       | 700.000 VND/tháng   | 10 tài khoản        |
+| BUSINESS   | 1.700.000 VND/tháng | 25 tài khoản        |
+| ENTERPRISE | 3.200.000 VND/tháng | 50 tài khoản        |
+
+### Cách Chọn
+
+**Bắt đầu nhỏ và mở rộng:**
+
+- Doanh nghiệp mới: Bắt đầu với BASIC hoặc STARTER
+- Doanh nghiệp đang phát triển: PRO mang lại giá trị tốt nhất
+- Doanh nghiệp lớn: TEAM trở lên
+
+Bạn có thể nâng cấp bất kỳ lúc nào. Hạ cấp có hiệu lực vào chu kỳ thanh toán tiếp theo.
+
+> **Mẹo:** Có nhiều tài khoản ngân hàng giúp phân bổ khối lượng thanh toán và giảm thời gian chờ trong giờ cao điểm.
+
+---
+
+## Bước 3: Kết Nối Tài Khoản Ngân Hàng
+
+Sau khi đăng ký, bạn sẽ kết nối tài khoản ngân hàng Việt Nam. Điều này là cần thiết để nhận thanh toán.
+
+### Ngân Hàng Được Hỗ Trợ
+
+ApiPay hỗ trợ tất cả các ngân hàng lớn tại Việt Nam:
+
+- MB Bank
+- ACB
+- BIDV
+- TPBank
+- Vietcombank
+- Sacombank
+- Và nhiều ngân hàng khác...
+
+### Quá Trình Kết Nối
+
+1. Vào **Cài đặt → Tài khoản ngân hàng**
+2. Nhấn **Thêm tài khoản ngân hàng**
+3. Chọn ngân hàng từ danh sách
+4. Nhập số tài khoản
+5. Xác minh bằng OTP gửi đến điện thoại đã đăng ký
+6. Tài khoản hoạt động sau khi xác minh
+
+> **Quan trọng:** Tài khoản ngân hàng phải mang tên doanh nghiệp của bạn (hoặc tên đại diện hợp lệ).
+
+---
+
+## Bước 4: Cấu Hình Tích Hợp
+
+### Lấy API Keys
+
+1. Vào **Cài đặt → API Keys**
+2. Nhấn **Tạo API Key mới**
+3. Đặt tên cho key (ví dụ: "Production", "Development")
+4. Sao chép và lưu trữ keys một cách an toàn
+
+Bạn sẽ nhận được:
+
+- `accessKey` - Định danh công khai
+- `secretKey` - Giữ bí mật!
+
+### Thiết Lập Webhook (Khuyến nghị)
+
+Webhook thông báo cho hệ thống của bạn khi có thanh toán:
+
+1. Vào **Cài đặt → Webhooks**
+2. Nhấn **Thêm Webhook**
+3. Nhập URL endpoint của bạn
+4. Chọn loại sự kiện (thanh toán hoàn thành, v.v.)
+5. Lưu và kiểm tra
+
+---
+
+## Bước 5: Tạo Yêu Cầu Thanh Toán Đầu Tiên
+
+### Qua Dashboard
+
+1. Vào **Yêu cầu thanh toán**
+2. Nhấn **Tạo yêu cầu thanh toán**
+3. Chọn tài khoản ngân hàng đã kết nối
+4. Nhập số tiền
+5. Thêm nội dung/tham chiếu thanh toán
+6. Nhấn **Tạo**
+
+Bạn sẽ nhận được link thanh toán để chia sẻ với khách hàng.
+
+### Qua API
+
+```javascript
+const response = await fetch(
+	"https://app.apipay.vn/v1/client/payment-requests",
+	{
+		method: "POST",
+		headers: {
+			Authorization: "Bearer <Auth>",
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({
+			bankPublicId: "your-bank-id",
+			amount: "100000",
+			content: "ORDER-12345",
+		}),
+	},
+);
+
+const {payUrl, qrUrl} = await response.json();
+// Chia sẻ payUrl hoặc qrUrl với khách hàng
+```
+
+---
+
+## Best Practices
+
+### Để Bắt Đầu Suôn Sẻ
+
+1. **Kiểm tra với số tiền nhỏ** - Tạo vài thanh toán test 1.000 VND để xác minh setup hoạt động
+2. **Cấu hình webhook trước** - Điều này đảm bảo bạn không bỏ lỡ thông báo thanh toán nào
+3. **Thiết lập redirect URL** - Tự động chuyển hướng khách hàng quay lại site của bạn sau thanh toán
+4. **Tùy chỉnh trang thanh toán** - Thêm tên và logo doanh nghiệp để tạo trải nghiệm chuyên nghiệp
+
+### Để Thành Công Lâu Dài
+
+1. **Sử dụng nhiều tài khoản ngân hàng** - Phân bổ khối lượng qua các ngân hàng giúp giảm tắc nghẽn
+2. **Theo dõi analytics giao dịch** - Sử dụng dashboard để theo dõi mẫu thanh toán
+3. **Bật 2FA** - Bảo vệ tài khoản với xác thực hai yếu tố
+4. **Giữ API keys an toàn** - Luân phiên keys định kỳ và không bao giờ để lộ trong code phía client
+
+---
+
+## Bước Tiếp Theo
+
+- [Hướng Dẫn Đăng Ký](/vi/subscription) - Quản lý gói và thanh toán
+- [Quản Lý Ngân Hàng](/vi/banking) - Tính năng ngân hàng nâng cao
+- [Tổng Quan Dashboard](/vi/dashboard) - Khám phá các tính năng dashboard
+- [API Reference](/vi/api/payment-requests) - Chi tiết tích hợp kỹ thuật

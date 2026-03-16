@@ -1,0 +1,95 @@
+{
+	"name": "apipay",
+	"version": "0.7.0",
+	"description": "ApiPay CLI — Set up and manage your payment gateway from the terminal",
+	"author": "ApiPay",
+	"license": "MIT",
+	"type": "module",
+	"bin": {
+		"apipay": "bin/run.js"
+	},
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"files": [
+		"bin/",
+		"dist/",
+		"oclif.manifest.json"
+	],
+	"scripts": {
+		"build": "tsc -b && node --loader ts-node/esm ./scripts/generate-manifest.ts 2>/dev/null || true",
+		"dev": "node --loader ts-node/esm bin/dev.js",
+		"watch": "tsc -b --watch",
+		"lint": "eslint src/",
+		"clean": "rimraf dist oclif.manifest.json",
+		"prepublishOnly": "npm run clean && npm run build",
+		"tsc": "tsc --noEmit"
+	},
+	"dependencies": {
+		"@inquirer/prompts": "^7.5.0",
+		"@oclif/core": "^4.2.10",
+		"@oclif/plugin-autocomplete": "^3.2.20",
+		"@oclif/plugin-help": "^6.2.25",
+		"@oclif/plugin-not-found": "^3.2.35",
+		"@oclif/plugin-warn-if-update-available": "^3.1.30",
+		"chalk": "^5.4.1",
+		"cli-table3": "^0.6.5",
+		"conf": "^13.1.0",
+		"open": "^10.1.2",
+		"ora": "^8.2.0"
+	},
+	"devDependencies": {
+		"@types/node": "^22.13.5",
+		"rimraf": "^6.0.1",
+		"ts-node": "^10.9.2",
+		"typescript": "^5.7.3"
+	},
+	"engines": {
+		"node": ">=18.0.0"
+	},
+	"oclif": {
+		"bin": "apipay",
+		"dirname": "apipay",
+		"commands": {
+			"strategy": "pattern",
+			"target": "./dist/commands"
+		},
+		"topicSeparator": ":",
+		"topics": {
+			"keys": {
+				"description": "Manage API keys"
+			},
+			"banks": {
+				"description": "Manage bank accounts"
+			},
+			"webhooks": {
+				"description": "Manage webhooks"
+			},
+			"metrics": {
+				"description": "View transaction metrics"
+			},
+			"config": {
+				"description": "Manage CLI configuration"
+			}
+		},
+		"plugins": [
+			"@oclif/plugin-help",
+			"@oclif/plugin-autocomplete",
+			"@oclif/plugin-not-found",
+			"@oclif/plugin-warn-if-update-available"
+		],
+		"warn-if-update-available": {
+			"timeoutInDays": 7
+		}
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"keywords": [
+		"apipay",
+		"payment",
+		"gateway",
+		"cli",
+		"banking",
+		"webhooks"
+	]
+}

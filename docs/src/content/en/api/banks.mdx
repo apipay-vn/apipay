@@ -1,0 +1,88 @@
+---
+title: Supported Banks
+description: List of supported banks
+---
+
+# Supported Banks
+
+ApiPay supports most major banks in Vietnam.
+
+## Bank List
+
+| Code | Bank Name | Type | QR Code |
+|-----|-----------|------|---------|
+| VCB | Vietcombank | Bank | ✓ |
+| BIDV | BIDV | Bank | ✓ |
+| TB | Techcombank | Bank | ✓ |
+| ACB | ACB | Bank | ✓ |
+| MB | MB Bank | Bank | ✓ |
+| TPB | TPBank | Bank | ✓ |
+| STB | Sacombank | Bank | ✓ |
+| SHB | SHB | Bank | ✓ |
+| HDB | HDBank | Bank | ✓ |
+| MSB | MSB | Bank | ✓ |
+| OCB | OCB | Bank | ✓ |
+| BVB | Bao Viet Bank | Bank | ✓ |
+| SHINHAN | Shinhan Bank | Bank | ✓ |
+| UOB | UOB | Bank | ✓ |
+| PVC | PVC Bank | Bank | ✓ |
+| ABB | ABBank | Bank | ✓ |
+| EIB | Eximbank | Bank | ✓ |
+| LPB | LienVietPostBank | Bank | ✓ |
+| VAB | VietABank | Bank | ✓ |
+| NCB | NCB | Bank | ✓ |
+| KLB | Kienlongbank | Bank | ✓ |
+| PG | PG Bank | Bank | ✓ |
+| VIETBANK | VietBank | Bank | ✓ |
+| MBG | MB Shinsei | Bank | ✓ |
+
+## Bank Codes
+
+When creating anonymous payment links, use bank codes:
+
+```json
+{
+  "bankCode": "MB",
+  "accountNumber": "0123456789"
+}
+```
+
+## Get Bank List
+
+```bash
+GET /v1/banks
+```
+
+### Response
+
+```json
+{
+  "data": [
+    {
+      "code": "VCB",
+      "name": "Vietcombank",
+      "shortName": "Vietcombank",
+      "bin": "970436",
+      "logoUrl": "https://api.vietqr.io/img/VCB.png"
+    },
+    {
+      "code": "MB",
+      "name": "MB Bank",
+      "shortName": "MB",
+      "bin": "970426",
+      "logoUrl": "https://api.vietqr.io/img/MB.png"
+    }
+  ]
+}
+```
+
+## Supported QR Formats
+
+ApiPay generates QR codes in VietQR standard, compatible with all banks:
+
+- **VietQR** - QR standard from VietQR API
+- **Bank Transfer** - Traditional transfer information
+
+Users can scan using:
+- Bank apps (Vietcombank Mobile, MB Bank, ACB, etc.)
+- Payment apps (VietQR, MoMo, ZaloPay, etc.)

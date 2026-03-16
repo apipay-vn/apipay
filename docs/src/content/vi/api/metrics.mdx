@@ -1,0 +1,200 @@
+---
+title: Metrics API
+description: API lấy số liệu thống kê và phân tích giao dịch
+---
+
+# Metrics API
+
+API lấy số liệu thống kê và phân tích dữ liệu giao dịch.
+
+## Tổng quan
+
+Lấy tổng quan các số liệu thống kê giao dịch bao gồm tổng số tiền, số lượng và trung bình.
+
+```bash
+GET /v1/client/metrics/overview
+```
+
+### Headers
+
+| Header | Mô tả |
+|--------|--------|
+| `Authorization` | `Bearer <Auth>` |
+
+### Query Parameters
+
+| Tham số | Kiểu | Bắt buộc | Mô tả |
+|---------|------|----------|--------|
+| `period` | string | — | Khoảng thời gian: `today`, `this_week`, `last_week`, `this_month`, `last_month`, `last_3_months`, `last_6_months`, `this_year`, `custom` |
+| `dateFrom` | string | — | Ngày bắt đầu (ISO 8601) |
+| `dateTo` | string | — | Ngày kết thúc (ISO 8601) |
+| `search` | string | — | Tìm kiếm theo publicId hoặc content |
+
+### Response
+
+```json
+{
+  "data": {
+    "totalAmount": "5000000",
+    "totalTransactions": 50,
+    "completedTransactions": 45,
+    "pendingTransactions": 3,
+    "failedTransactions": 2,
+    "averageAmount": "100000",
+    "successRate": 90
+  }
+}
+```
+
+---
+
+## Time Series
+
+Lấy dữ liệu chuỗi thời gian cho biểu đồ.
+
+```bash
+GET /v1/client/metrics/time-series
+```
+
+### Query Parameters
+
+| Tham số | Kiểu | Bắt buộc | Mô tả |
+|---------|------|----------|--------|
+| `period` | string | — | Khoảng thời gian |
+| `dateFrom` | string | — | Ngày bắt đầu (ISO 8601) |
+| `dateTo` | string | — | Ngày kết thúc (ISO 8601) |
+| `granularity` | string | — | Độ chi tiết: `daily`, `weekly`, `monthly` |
+
+### Response
+
+```json
+{
+  "data": [
+    {
+      "date": "2026-03-01",
+      "amount": "1000000",
+      "count": 10
+    },
+    {
+      "date": "2026-03-02",
+      "amount": "1500000",
+      "count": 15
+    }
+  ]
+}
+```
+
+---
+
+## Phân bố theo trạng thái
+
+Lấy phân bố giao dịch theo trạng thái.
+
+```bash
+GET /v1/client/metrics/status-distribution
+```
+
+### Response
+
+```json
+{
+  "data": [
+    { "status": "COMPLETED", "count": 45, "amount": "4500000" },
+    { "status": "ACTIVE", "count": 3, "amount": "300000" },
+    { "status": "EXPIRED", "count": 2, "amount": "200000" }
+  ]
+}
+```
+
+---
+
+## Phân bố theo ngân hàng
+
+Lấy phân bố giao dịch theo ngân hàng.
+
+```bash
+GET /v1/client/metrics/bank-distribution
+```
+
+### Response
+
+```json
+{
+  "data": [
+    { "bankCode": "MB", "count": 20, "amount": "2000000" },
+    { "bankCode": "ACB", "count": 15, "amount": "1500000" },
+    { "bankCode": "VCB", "count": 10, "amount": "1000000" }
+  ]
+}
+```
+
+---
+
+## Biểu đồ phân bố số tiền
+
+Lấy biểu đồ phân bố số tiền giao dịch.
+
+```bash
+GET /v1/client/metrics/amount-histogram
+```
+
+### Response
+
+```json
+{
+  "data": [
+    { "range": "0-100000", "count": 10 },
+    { "range": "100001-500000", "count": 25 },
+    { "range": "500001-1000000", "count": 10 },
+    { "range": "1000000+", "count": 5 }
+  ]
+}
+```
+
+---
+
+## Danh sách giao dịch
+
+Lấy danh sách giao dịch có phân trang.
+
+```bash
+GET /v1/client/metrics/transactions
+```
+
+### Query Parameters
+
+| Tham số | Kiểu | Bắt buộc | Mô tả |
+|---------|------|----------|--------|
+| `period` | string | — | Khoảng thời gian |
+| `dateFrom` | string | — | Ngày bắt đầu (ISO 8601) |
+| `dateTo` | string | — | Ngày kết thúc (ISO 8601) |
+| `search` | string | — | Tìm kiếm theo publicId hoặc content |
+| `page` | number | — | Số trang (mặc định: 1) |
+| `limit` | number | — | Số item trên trang (mặc định: 20, tối đa: 100) |
+| `sortBy` | string | — | Sắp xếp theo: `transactionDate`, `amount`, `createdAt` |
+| `sortOrder` | string | — | Thứ tự sắp xếp: `asc`, `desc` |
+
+### Response
+
+```json
+{
+  "data": [
+    {
+      "publicId": "ckabcdef1234567890",
+      "bankCode": "MB",
+      "accountNumber": "0123456789",
+      "amount": "100000",
+      "content": "ORDER-001",
+      "status": "COMPLETED",
+      "createdAt": "2026-03-06T10:00:00Z",
+      "completedAt": "2026-03-06T10:05:00Z"
+    }
+  ],
+  "meta": {
+    "total": 50,
+    "page": 1,
+    "limit": 20,
+    "totalPages": 3
+  }
+}
+```

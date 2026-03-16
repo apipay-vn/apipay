@@ -1,0 +1,91 @@
+---
+title: Authentication
+description: API authentication guide
+---
+
+# Authentication
+
+ApiPay uses API keys for authentication. All authenticated endpoints require an `Authorization` header.
+
+## Authorization Header
+
+Format: `Authorization: Bearer <Auth>`
+
+Where `<Auth>` is your credentials encoded in base64:
+
+```
+base64(accessKey:secretKey)
+```
+
+## Getting Your API Keys
+
+1. Log in to [dashboard](https://my.apipay.vn)
+2. Go to **Settings → API Keys**
+3. Copy your `accessKey` and `secretKey`
+
+## Examples
+
+### JavaScript/Node.js
+
+```javascript
+const axios = require("axios");
+
+const ACCESS_KEY = "your_access_key";
+const SECRET_KEY = "your_secret_key";
+
+// Create base64 auth string
+const auth = Buffer.from(`${ACCESS_KEY}:${SECRET_KEY}`).toString("base64");
+
+const response = await axios.post(
+	"https://app.apipay.vn/v1/client/payment-requests",
+	{
+		bankPublicId: "bank_abc123",
+		amount: "100000",
+		content: "ORDER-001",
+	},
+	{
+		headers: {
+			Authorization: `Bearer ${auth}`,
+			"Content-Type": "application/json",
+		},
+	},
+);
+```
+
+### Python
+
+```python
+import requests
+import base64
+
+ACCESS_KEY = 'your_access_key'
+SECRET_KEY = 'your_secret_key'
+
+# Create base64 auth string
+auth = base64.b64encode(f'{ACCESS_KEY}:{SECRET_KEY}'.encode()).decode()
+
+response = requests.post(
+    'https://app.apipay.vn/v1/client/payment-requests',
+    json={
+        'bankPublicId': 'bank_abc123',
+        'amount': '100000',
+        'content': 'ORDER-001'
+    },
+    headers={
+        'Authorization': f'Bearer {auth}',
+        'Content-Type': 'application/json'
+    }
+)
+```
+
+### cURL
+
+```bash
+# Encode credentials: echo -n "accessKey:secretKey" | base64
+AUTH=$(echo -n "your_access_key:your_secret_key" | base64)
+
+curl -X POST https://app.apipay.vn/v1/client/payment-requests \
+  -H "Authorization: Bearer $AUTH" \
+  -H "Content-Type: application/json" \
+  -d '{"bankPublicId": "bank_abc123", "amount": "100000", "content": "ORDER-001"}'
+```

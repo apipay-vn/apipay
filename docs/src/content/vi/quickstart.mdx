@@ -1,0 +1,146 @@
+---
+title: Quick Start
+description: Bắt đầu nhanh với ApiPay trong 5 phút
+---
+
+# Quick Start
+
+Hướng dẫn nhanh để tích hợp ApiPay vào hệ thống của bạn.
+
+## Bước 1: Lấy API Key
+
+Đăng nhập vào [dashboard](https://my.apipay.vn) và tạo API Key tại mục **Cài đặt → API Keys**.
+
+Bạn sẽ nhận được:
+
+- `accessKey` - Public key để xác định tài khoản
+- `secretKey` - Private key để ký request
+
+## Bước 2: Tạo Payment Link
+
+Gọi API để tạo liên kết thanh toán:
+
+```bash
+curl -X POST https://app.apipay.vn/v1/client/payment-requests \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <Auth>" \
+  -d '{
+    "bankPublicId": "your-bank-public-id",
+    "amount": "100000",
+    "content": "ORDER-12345"
+  }'
+```
+
+Response:
+
+```json
+{
+	"data": {
+		"publicId": "ckabcdef1234567890",
+		"payUrl": "https://pay.apipay.vn/ckabcdef1234567890",
+		"qrUrl": "https://api.qrserver.com/...",
+		"bankCode": "MB",
+		"accountNumber": "0123456789",
+		"amount": "100000",
+		"content": "ORDER-12345"
+	}
+}
+```
+
+## Bước 3: Gửi cho khách hàng
+
+Gửi `payUrl` cho khách hàng qua:
+
+- Email/SMS
+- Chat (Zalo, Facebook, Telegram)
+- Website của bạn
+
+Khách hàng sẽ thấy trang thanh toán với QR Code để quét bằng app ngân hàng.
+
+## Bước 4: Nhận thông báo
+
+Cấu hình webhook URL trong dashboard để nhận thông báo khi có thanh toán:
+
+```json
+{
+	"event": "payment.completed",
+	"data": {
+		"publicId": "ckabcdef1234567890",
+		"amount": "100000",
+		"transactionId": "TXN-12345",
+		"completedAt": "2026-03-06T10:30:00Z"
+	}
+}
+```
+
+## Ví dụ Code
+
+### Node.js
+
+```javascript
+const axios = require("axios");
+
+const API_BASE = "https://app.apipay.vn";
+const ACCESS_KEY = "your_access_key";
+const SECRET_KEY = "your_secret_key";
+
+async function createPaymentLink(bankPublicId, amount, content) {
+	const response = await axios.post(
+		`${API_BASE}/v1/client/payment-requests`,
+		{
+			bankPublicId,
+			amount,
+			content,
+		},
+		{
+			headers: {
+				Authorization: `${ACCESS_KEY}:${SECRET_KEY}`,
+				"Content-Type": "application/json",
+			},
+		},
+	);
+	return response.data.data;
+}
+
+// Sử dụng
+const payment = await createPaymentLink("bank-123", "100000", "ORDER-001");
+console.log("Payment URL:", payment.payUrl);
+```
+
+### Python
+
+```python
+import requests
+import base64
+import hmac
+import hashlib
+
+API_BASE = 'https://app.apipay.vn'
+ACCESS_KEY = 'your_access_key'
+SECRET_KEY = 'your_secret_key'
+
+def create_payment_link(bank_public_id: str, amount: str, content: str):
+    response = requests.post(
+        f'{API_BASE}/v1/client/payment-requests',
+        json={
+            'bankPublicId': bank_public_id,
+            'amount': amount,
+            'content': content
+        },
+        headers={
+            'Authorization': f'{ACCESS_KEY}:{SECRET_KEY}',
+            'Content-Type': 'application/json'
+        }
+    )
+    return response.json()['data']
+
+# Sử dụng
+payment = create_payment_link('bank-123', '100000', 'ORDER-001')
+print(f"Payment URL: {payment['payUrl']}")
+```
+
+## Tiếp theo
+
+- [API Reference](/vi/api/payment-requests) - Chi tiết tất cả API endpoints
+- [Webhook](/vi/api/webhooks) - Cấu hình nhận thông báo
+- [Danh sách ngân hàng](/vi/api/banks) - Các ngân hàng được hỗ trợ

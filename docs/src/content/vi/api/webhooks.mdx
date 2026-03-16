@@ -1,0 +1,169 @@
+---
+title: Webhooks
+description: Nhận thông báo thanh toán theo thời gian thực
+---
+
+# Webhooks
+
+Webhook cho phép bạn nhận thông báo theo thời gian thực khi có sự kiện thanh toán.
+
+## Cấu hình Webhook
+
+Cấu hình webhook URL trong dashboard tại **Cài đặt → Webhooks**.
+
+## Sự kiện (Events)
+
+### payment.completed
+
+Khi thanh toán được xác nhận thành công.
+
+```json
+{
+  "event": "payment.completed",
+  "timestamp": "2026-03-06T10:30:00Z",
+  "data": {
+    "publicId": "ckabcdef1234567890",
+    "amount": "100000",
+    "content": "ORDER-12345",
+    "transactionId": "TXN-123456789",
+    "completedAt": "2026-03-06T10:30:00Z",
+    "bankCode": "MB",
+    "accountNumber": "0123456789"
+  }
+}
+```
+
+### payment.expired
+
+Khi payment link hết hạn mà chưa được thanh toán.
+
+```json
+{
+  "event": "payment.expired",
+  "timestamp": "2026-03-06T23:59:59Z",
+  "data": {
+    "publicId": "ckabcdef1234567890",
+    "amount": "100000",
+    "content": "ORDER-12345",
+    "expiredAt": "2026-03-06T23:59:59Z"
+  }
+}
+```
+
+### payment.cancelled
+
+Khi payment link bị huỷ.
+
+```json
+{
+  "event": "payment.cancelled",
+  "timestamp": "2026-03-06T15:00:00Z",
+  "data": {
+    "publicId": "ckabcdef1234567890",
+    "cancelledAt": "2026-03-06T15:00:00Z"
+  }
+}
+```
+
+## Xác thực Webhook
+
+Tất cả webhook requests đều có header `ApiPay-Signature` để xác thực.
+
+### Node.js
+
+```javascript
+const crypto = require('crypto');
+
+function verifyWebhookSignature(payload, signature, secretKey) {
+  const expectedSignature = crypto
+    .createHmac('sha256', secretKey)
+    .update(payload)
+    .digest('hex');
+
+  return crypto.timingSafeEqual(
+    Buffer.from(signature),
+    Buffer.from(expectedSignature)
+  );
+}
+
+// Sử dụng trong Express
+app.post('/webhook', (req, res) => {
+  const signature = req.headers['x-apipay-signature'];
+  const payload = JSON.stringify(req.body);
+
+  if (!verifyWebhookSignature(payload, signature, process.env.WEBHOOK_SECRET)) {
+    return res.status(401).json({ error: 'Invalid signature' });
+  }
+
+  // Xử lý webhook
+  const { event, data } = req.body;
+
+  if (event === 'payment.completed') {
+    console.log('Payment completed:', data.publicId);
+    // Cập nhật đơn hàng trong database của bạn
+  }
+
+  res.status(200).json({ received: true });
+});
+```
+
+### Python
+
+```python
+import hmac
+import hashlib
+
+def verify_webhook_signature(payload: str, signature: str, secret_key: str) -> bool:
+    expected_signature = hmac.new(
+        secret_key.encode(),
+        payload.encode(),
+        hashlib.sha256
+    ).hexdigest()
+
+    return hmac.compare_digest(signature, expected_signature)
+
+# Sử dụng trong Flask
+@app.route('/webhook', methods=['POST'])
+def handle_webhook():
+    signature = request.headers.get('ApiPay-Signature')
+    payload = request.get_data(as_text=True)
+
+    if not verify_webhook_signature(payload, signature, WEBHOOK_SECRET):
+        return {'error': 'Invalid signature'}, 401
+
+    data = request.get_json()
+    event = data.get('event')
+
+    if event == 'payment.completed':
+        print(f"Payment completed: {data['data']['publicId']}")
+        # Cập nhật đơn hàng
+
+    return {'received': True}, 200
+```
+
+## Retry Policy
+
+Nếu webhook delivery thất bại, hệ thống sẽ retry:
+
+- Lần 1: Ngay lập tức
+- Lần 2: Sau 5 giây
+- Lần 3: Sau 20 giây
+- Lần 4: Sau 1 phút
+
+Sau 3 lần retry thất bại, webhook sẽ bị vô hiệu hoá.
+
+## Testing Webhooks
+
+Sử dụng [Webhook.site](https://webhook.site) để test webhook trong quá trình development:
+
+1. Tạo URL test tại webhook.site
+2. Cấu hình webhook URL trong dashboard
+3. Tạo payment và hoàn thành thanh toán
+4. Xem request trên webhook.site
+
+## Best Practices
+
+1. **Luôn verify signature** trước khi xử lý webhook
+2. **Response nhanh** - Trả 200 ngay lập tức, xử lý async
+3. **Idempotent** - Xử lý duplicate events không gây lỗi
+4. **Log events** - Ghi log để debug nếu cần

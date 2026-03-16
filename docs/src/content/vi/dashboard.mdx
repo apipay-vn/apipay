@@ -1,0 +1,265 @@
+---
+title: Hướng Dẫn Dashboard
+description: Điều hướng và sử dụng dashboard ApiPay một cách hiệu quả
+---
+
+# Hướng Dẫn Dashboard
+
+Dashboard ApiPay là trung tâm điều khiển để quản lý thanh toán, tài khoản ngân hàng và tích hợp. Hướng dẫn này cover tất cả các tính năng chính.
+
+---
+
+## Tổng Quan Dashboard
+
+Khi đăng nhập, bạn sẽ thấy dashboard chính với:
+
+- **Thanh bên** - Truy cập tất cả tính năng
+- **Header** - Thông tin tài khoản, thông báo, cài đặt
+- **Khu vực nội dung chính** - Nội dung theo ngữ cảnh
+
+### Các Phần Chính
+
+| Phần | Mô Tả |
+|--------|-------------|
+| Tổng quan | Thống kê nhanh và hoạt động gần đây |
+| Yêu cầu thanh toán | Tạo và quản lý link thanh toán |
+| Giao dịch | Xem các khoản thanh toán đến |
+| Cài đặt | Tài khoản, ngân hàng, webhook, API keys |
+
+---
+
+## Hướng Dẫn Điều Hướng
+
+### Menu Thanh Bên
+
+```
+📊 Tổng quan
+   └─ Trang chủ dashboard với các chỉ số chính
+
+💳 Yêu cầu thanh toán
+   └─ Tạo và quản lý link thanh toán
+
+📈 Giao dịch
+   └─ Xem lịch sử và chi tiết thanh toán
+
+⚙️ Cài đặt
+   ├─ Hồ sơ tài khoản
+   ├─ Tài khoản ngân hàng
+   ├─ Cài đặt thanh toán
+   ├─ API Keys
+   ├─ Webhooks
+   ├─ Đăng ký
+   └─ Giao diện
+```
+
+---
+
+## Trang Tổng Quan
+
+Trang tổng quan cho bạn cái nhìn nhanh về doanh nghiệp:
+
+### Các Chỉ Số Chính
+
+1. **Tổng doanh thu** - Tổng tất cả thanh toán thành công
+2. **Số giao dịch** - Số giao dịch thành công
+3. **Tháng này** - Doanh thu và số lượng tháng hiện tại
+4. **Giao dịch trung bình** - Số tiền thanh toán trung bình
+
+### Biểu Đồ
+
+- **Timeline giao dịch** - Biểu diễn trực quan các giao dịch theo thời gian
+- **Phân bổ ngân hàng** - Ngân hàng nào khách hàng sử dụng nhiều nhất
+
+### Hoạt Động Gần Đây
+
+- Giao dịch mới nhất với trạng thái
+- Thao tác nhanh cho các tác vụ phổ biến
+
+---
+
+## Yêu Cầu Thanh Toán
+
+Tạo và quản lý link thanh toán cho khách hàng.
+
+### Tạo Yêu Cầu Thanh Toán
+
+1. Nhấn **Tạo yêu cầu thanh toán**
+2. Điền vào form:
+   - **Ngân hàng** - Chọn tài khoản ngân hàng đã kết nối
+   - **Số tiền** - Số tiền thanh toán bằng VND
+   - **Nội dung** - Text tham chiếu (ví dụ: số đơn hàng)
+   - **Tiêu đề** - (Tùy chọn) Mô tả thanh toán
+   - **Redirect URL** - Nơi chuyển hướng khách hàng sau thanh toán
+3. Nhấn **Tạo**
+
+### Tính Năng Yêu Cầu Thanh Toán
+
+- **Mã QR** - Tự động tạo để quét bằng app ngân hàng
+- **Link thanh toán** - URL có thể chia sẻ cho khách hàng
+- **Sao chép** - Chức năng sao chép nhanh
+- **Chia sẻ** - Chia sẻ qua email, chat, v.v.
+
+### Quản Lý Yêu Cầu Thanh Toán
+
+- **Xem chi tiết** - Nhấn để xem đầy đủ
+- **Hủy** - Hủy yêu cầu thanh toán không sử dụng
+- **Trạng thái** - ĐANG CHỜ, HOÀN THÀNH, HẾT HẠN, ĐÃ HỦY
+
+---
+
+## Giao Dịch
+
+Xem tất cả các khoản thanh toán đến và chi tiết.
+
+### Danh Sách Giao Dịch
+
+| Cột | Mô Tả |
+|--------|-------------|
+| Ngày | Khi thanh toán được nhận |
+| Tham chiếu | Nội dung/tham chiếu thanh toán |
+| Số tiền | Số tiền thanh toán |
+| Ngân hàng | Ngân hàng nào được sử dụng |
+| Trạng thái | Trạng thái giao dịch |
+
+### Lọc & Tìm Kiếm
+
+- Lọc theo khoảng ngày
+- Lọm theo trạng thái
+- Tìm kiếm theo tham chiếu hoặc số tiền
+
+### Chi Tiết Giao Dịch
+
+Nhấn bất kỳ giao dịch nào để xem:
+- ID giao dịch đầy đủ
+- Tài khoản ngân hàng được sử dụng
+- Thời gian thanh toán
+- Yêu cầu thanh toán liên quan
+
+---
+
+## Cài Đặt
+
+### Hồ Sơ Tài Khoản
+
+Quản lý thông tin cá nhân và doanh nghiệp:
+
+- **Email** - Email đăng nhập
+- **Tên** - Tên hiển thị
+- **Tên doanh nghiệp** - Hiển thị trên trang thanh toán
+- **Mã số thuế** - Để xuất hóa đơn
+- **Địa chỉ doanh nghiệp** - Địa chỉ đăng ký
+
+### Tài Khoản Ngân Hàng
+
+- Xem các ngân hàng đã kết nối
+- Thêm/xóa tài khoản ngân hàng
+- Bật/tắt trạng thái tài khoản
+
+Xem [Quản Lý Tài Khoản Ngân Hàng](/vi/banking) để biết chi tiết.
+
+### Cài Đặt Thanh Toán
+
+- **Redirect URL mặc định** - Nơi khách hàng đến sau thanh tiền
+- **Tiêu đề mặc định** - Mô tả mặc định cho thanh toán
+
+### API Keys
+
+Tạo và quản lý API keys để tích hợp:
+
+1. Nhấn **Tạo Key mới**
+2. Đặt tên cho key
+3. Sao chép và lưu trữ an toàn
+4. Sử dụng trong API requests
+
+> **Quan trọng:** Lưu trữ secret key của bạn an toàn. Nó không thể được truy xuất sau khi tạo.
+
+### Webhooks
+
+Cấu hình webhook endpoints để nhận thông báo thời gian thực:
+
+1. Thêm webhook URL
+2. Chọn loại sự kiện
+3. Test endpoint
+4. Theo dõi lịch sử giao hàng
+
+Xem [Tài liệu Webhook](/vi/api/webhooks) để biết chi tiết kỹ thuật.
+
+### Đăng Ký
+
+Xem và quản lý gói của bạn:
+
+- Chi tiết gói hiện tại
+- Tùy chọn nâng cấp/hạ cấp
+- Lịch sử thanh toán
+- Ngày gia hạn
+
+Xem [Hướng Dẫn Đăng Ký](/vi/subscription) để biết chi tiết.
+
+### Giao Diện
+
+Tùy chỉnh trang thanh toán mà khách hàng nhìn thấy:
+
+- **Tên merchant** - Tên doanh nghiệp của bạn
+- **Logo merchant** - Tải lên logo của bạn
+- **Theme** - Chế độ sáng/tối
+
+### Bảo Mật
+
+Bảo vệ tài khoản của bạn:
+
+- **Xác thực hai yếu tố (2FA)** - Bật 2FA dựa trên TOTP
+- **Đổi mật khẩu** - Cập nhật mật khẩu của bạn
+- **Lịch sử đăng nhập** - Xem các đăng nhập gần đây
+
+---
+
+## Thao Tác Nhanh
+
+### Các Tác Vụ Phổ Biến
+
+| Tác Vụ | Nơi Tìm |
+|------|------------|
+| Tạo thanh toán | Yêu cầu thanh toán → Tạo |
+| Kiểm tra doanh thu | Tổng quan |
+| Thêm ngân hàng | Cài đặt → Tài khoản ngân hàng |
+| Lấy API key | Cài đặt → API Keys |
+| Cấu hình webhook | Cài đặt → Webhooks |
+
+---
+
+## Phím Tắt
+
+- `Ctrl/Cmd + K` - Tìm kiếm nhanh
+- `Ctrl/Cmd + N` - Yêu cầu thanh toán mới
+
+---
+
+## Mẹo & Thủ Thuật
+
+### Quy Trình Làm Việc Hiệu Quả
+
+1. **Sử dụng tìm kiếm nhanh** - Tìm bất cứ điều gì với Ctrl+K
+2. **Đánh dấu trang thường xuyên** - Truy cập nhanh
+3. **Thiết lập mặc định thanh toán** - Tiết kiệm thời gian cho mỗi yêu cầu
+
+### Cập Nhật Thông Tin
+
+1. **Bật thông báo** - Nhận cảnh báo cho các sự kiện quan trọng
+2. **Kiểm tra dashboard thường xuyên** - Theo dõi mẫu giao dịch
+3. **Xem lại webhooks** - Đảm bảo giao hàng đang hoạt động
+
+---
+
+## Cần Hỗ Trợ?
+
+- 📧 Email: support@apipay.vn
+- 💬 Chat trong app
+- 📖 [Tài liệu API](/vi/api/payment-requests)
+
+---
+
+## Bước Tiếp Theo
+
+- [Hướng Dẫn Bắt Đầu](/vi/onboarding) - Quy trình thiết lập hoàn chỉnh
+- [Hướng Dẫn Đăng Ký](/vi/subscription) - Quản lý gói của bạn
+- [Quản Lý Ngân Hàng](/vi/banking) - Kết nối và quản lý ngân hàng

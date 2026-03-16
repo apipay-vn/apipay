@@ -1,0 +1,265 @@
+---
+title: Dashboard Guide
+description: Navigate and use your ApiPay dashboard effectively
+---
+
+# Dashboard Guide
+
+Your ApiPay dashboard is your command center for managing payments, bank accounts, and integrations. This guide covers all key features.
+
+---
+
+## Dashboard Overview
+
+When you log in, you'll see the main dashboard with:
+
+- **Sidebar Navigation** - Access all features
+- **Header** - Account info, notifications, settings
+- **Main Content Area** - Context-specific content
+
+### Key Sections
+
+| Section | Description |
+|---------|-------------|
+| Overview | Quick stats and recent activity |
+| Payment Requests | Create and manage payment links |
+| Transactions | View incoming payments |
+| Settings | Account, banks, webhooks, API keys |
+
+---
+
+## Navigation Guide
+
+### Sidebar Menu
+
+```
+📊 Overview
+   └─ Dashboard home with key metrics
+
+💳 Payment Requests
+   └─ Create and manage payment links
+
+📈 Transactions
+   └─ View payment history and details
+
+⚙️ Settings
+   ├─ Account Profile
+   ├─ Bank Accounts
+   ├─ Payment Settings
+   ├─ API Keys
+   ├─ Webhooks
+   ├─ Subscription
+   └─ Appearance
+```
+
+---
+
+## Overview Page
+
+The overview page gives you a quick snapshot of your business:
+
+### Key Metrics
+
+1. **Total Revenue** - Sum of all successful payments
+2. **Transaction Count** - Number of successful transactions
+3. **This Month** - Revenue and count for current month
+4. **Average Transaction** - Average payment amount
+
+### Charts
+
+- **Transaction Timeline** - Visual representation of transactions over time
+- **Bank Distribution** - Which banks customers use most
+
+### Recent Activity
+
+- Latest transactions with status
+- Quick actions for common tasks
+
+---
+
+## Payment Requests
+
+Create and manage payment links for your customers.
+
+### Creating a Payment Request
+
+1. Click **Create Payment Request**
+2. Fill in the form:
+   - **Bank** - Select a connected bank account
+   - **Amount** - Payment amount in VND
+   - **Content** - Reference text (e.g., order number)
+   - **Title** - (Optional) Payment description
+   - **Redirect URL** - Where to send customer after payment
+3. Click **Create**
+
+### Payment Request Features
+
+- **QR Code** - Automatically generated for scanning
+- **Payment Link** - Shareable URL for customers
+- **Copy to Clipboard** - Quick copy functionality
+- **Share Options** - Share via email, chat, etc.
+
+### Managing Payment Requests
+
+- **View Details** - Click to see full details
+- **Cancel** - Cancel unused payment requests
+- **Status** - PENDING, COMPLETED, EXPIRED, CANCELLED
+
+---
+
+## Transactions
+
+View all incoming payments and their details.
+
+### Transaction List
+
+| Column | Description |
+|--------|-------------|
+| Date | When payment was received |
+| Reference | Payment content/reference |
+| Amount | Payment amount |
+| Bank | Which bank was used |
+| Status | Transaction status |
+
+### Filtering & Search
+
+- Filter by date range
+- Filter by status
+- Search by reference or amount
+
+### Transaction Details
+
+Click any transaction to see:
+- Full transaction ID
+- Bank account used
+- Payment timestamp
+- Associated payment request
+
+---
+
+## Settings
+
+### Account Profile
+
+Manage your personal and business information:
+
+- **Email** - Your login email
+- **Name** - Display name
+- **Business Name** - Appears on payment page
+- **Tax Code** - For invoicing
+- **Business Address** - Registered address
+
+### Bank Accounts
+
+- View connected banks
+- Add/remove bank accounts
+- Toggle account status
+
+See [Bank Account Management](/en/banking) for details.
+
+### Payment Settings
+
+- **Default Redirect URL** - Where customers go after payment
+- **Default Title** - Default description for payments
+
+### API Keys
+
+Create and manage API keys for integration:
+
+1. Click **Create New Key**
+2. Name your key
+3. Copy and store securely
+4. Use in API requests
+
+> **Important:** Store your secret key securely. It cannot be retrieved after creation.
+
+### Webhooks
+
+Configure webhook endpoints for real-time notifications:
+
+1. Add webhook URL
+2. Select event types
+3. Test the endpoint
+4. Monitor delivery history
+
+See [Webhook Documentation](/en/api/webhooks) for technical details.
+
+### Subscription
+
+View and manage your plan:
+
+- Current plan details
+- Upgrade/downgrade options
+- Billing history
+- Renewal date
+
+See [Subscription Guide](/en/subscription) for details.
+
+### Appearance
+
+Customize the payment page your customers see:
+
+- **Merchant Name** - Your business name
+- **Merchant Logo** - Upload your logo
+- **Theme** - Light/dark mode
+
+### Security
+
+Protect your account:
+
+- **Two-Factor Authentication (2FA)** - Enable TOTP-based 2FA
+- **Change Password** - Update your password
+- **Login History** - View recent logins
+
+---
+
+## Quick Actions
+
+### Common Tasks
+
+| Task | Where to Find |
+|------|---------------|
+| Create payment | Payment Requests → Create |
+| Check revenue | Overview |
+| Add bank | Settings → Bank Accounts |
+| Get API key | Settings → API Keys |
+| Configure webhook | Settings → Webhooks |
+
+---
+
+## Keyboard Shortcuts
+
+- `Ctrl/Cmd + K` - Quick search
+- `Ctrl/Cmd + N` - New payment request
+
+---
+
+## Tips & Tricks
+
+### Efficient Workflow
+
+1. **Use quick search** - Find anything with Ctrl+K
+2. **Bookmark frequently used pages** - For quick access
+3. **Set up default payment settings** - Saves time on each request
+
+### Staying Informed
+
+1. **Enable notifications** - Get alerts for important events
+2. **Check dashboard regularly** - Monitor transaction patterns
+3. **Review webhooks** - Ensure delivery is working
+
+---
+
+## Need Help?
+
+- 📧 Email: support@apipay.vn
+- 💬 In-app chat
+- 📖 [API Documentation](/en/api/payment-requests)
+
+---
+
+## Next Steps
+
+- [Onboarding Guide](/en/onboarding) - Complete setup process
+- [Subscription Guide](/en/subscription) - Manage your plan
+- [Bank Account Management](/en/banking) - Connect and manage banks

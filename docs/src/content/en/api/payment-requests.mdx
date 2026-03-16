@@ -1,0 +1,291 @@
+---
+title: Payment Requests API
+description: API for creating and managing payment links
+---
+
+# Payment Requests API
+
+API for creating and managing payment links.
+
+## Create Payment Link
+
+Create a payment link using your connected bank account.
+
+```bash
+POST /v1/client/payment-requests
+```
+
+### Headers
+
+| Header          | Description        |
+| --------------- | ------------------ |
+| `Authorization` | `Bearer <Auth>`    |
+| `Content-Type`  | `application/json` |
+
+### Request Body
+
+| Parameter      | Type   | Required       | Description                                                                                                                                                                                                                           |
+| -------------- | ------ | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `bankPublicId` | string | **✓ Yes** | Public ID of your connected bank                                                                                                                                                                                                      |
+| `amount`       | string | —              | Amount (VND). Leave empty to allow customer input                                                                                                                                                                                     |
+| `content`      | string | —              | Transfer content (max 140 characters)                                                                                                                                                                                                 |
+| `title`        | string | —              | Title displayed on payment page                                                                                                                                                                                                       |
+| `expiresAt`    | string | —              | Expiration time (ISO 8601). Leave empty for no limit                                                                                                                                                                                  |
+| `redirectUrl`  | string | —              | URL to redirect after payment completion. When payment completes, the system will redirect to this URL with a signed payload (`?data=<base64>&signature=<hmac>`) for verification. Leave empty to use merchant's default redirect URL |
+
+### Response
+
+```json
+{
+	"data": {
+		"publicId": "ckabcdef1234567890",
+		"payUrl": "https://pay.apipay.vn/ckabcdef1234567890",
+		"qrUrl": "https://api.qrserver.com/v1/create-qr-code?...",
+		"bankCode": "MB",
+		"accountNumber": "0123456789",
+		"accountName": "NGUYEN VAN A",
+		"amount": "100000",
+		"content": "ORDER-12345",
+		"expiresAt": "2026-12-31T23:59:59Z",
+		"createdAt": "2026-03-06T10:00:00Z",
+		"redirectSecret": "a1b2c3d4e5f6..."
+	}
+}
+```
+
+### Example
+
+```bash
+curl -X POST https://app.apipay.vn/v1/client/payment-requests \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <Auth>" \
+  -d '{
+    "bankPublicId": "bank_abc123",
+    "amount": "500000",
+    "content": "ORDER-001",
+    "title": "Payment for Order #001",
+    "redirectUrl": "https://yoursite.com/payment/result"
+  }'
+```
+
+---
+
+## Get Payment Link Info
+
+Get details of a payment request (including QR code).
+
+```bash
+GET /v1/payment-requests/:cuid
+```
+
+### Response
+
+```json
+{
+	"data": {
+		"publicId": "ckabcdef1234567890",
+		"bankCode": "MB",
+		"accountNumber": "0123456789",
+		"accountName": "NGUYEN VAN A",
+		"amount": "100000",
+		"content": "ORDER-12345",
+		"title": "Payment for Order #123",
+		"status": "ACTIVE",
+		"qrUrl": "https://api.qrserver.com/...",
+		"expiresAt": "2026-12-31T23:59:59Z",
+		"viewCount": 42,
+		"createdAt": "2026-03-06T10:00:00Z",
+		"redirectUrl": "https://yoursite.com/payment/result",
+		"redirectSecret": "a1b2c3d4e5f6...",
+		"completedRedirectUrl": "https://yoursite.com/payment/result?data=eyJ...&signature=abc...",
+		"merchant": {
+			"name": "Store Name",
+			"logoUrl": "https://yoursite.com/logo.png",
+			"companyName": "Company ABC",
+			"companyTaxId": "0123456789",
+			"companyAddress": "123 Main St, Ho Chi Minh City"
+		}
+	}
+}
+```
+
+### Status
+
+| Status      | Description         |
+| ----------- | ------------------- |
+| `ACTIVE`    | Waiting for payment |
+| `COMPLETED` | Payment received    |
+| `EXPIRED`   | Expired             |
+| `CANCELLED` | Cancelled           |
+
+---
+
+## List Payment Links
+
+Get list of payment requests you've created.
+
+```bash
+GET /v1/client/payment-requests
+```
+
+### Headers
+
+| Header          | Description     |
+| --------------- | --------------- |
+| `Authorization` | `Bearer <Auth>` |
+
+### Response
+
+```json
+{
+	"data": [
+		{
+			"publicId": "ckabcdef1234567890",
+			"bankCode": "MB",
+			"accountNumber": "0123456789",
+			"amount": "100000",
+			"content": "ORDER-001",
+			"status": "COMPLETED",
+			"createdAt": "2026-03-06T10:00:00Z"
+		},
+		{
+			"publicId": "xyz789-uvw456-rst123",
+			"bankCode": "ACB",
+			"accountNumber": "9876543210",
+			"amount": "500000",
+			"content": "ORDER-002",
+			"status": "ACTIVE",
+			"createdAt": "2026-03-05T09:00:00Z"
+		}
+	],
+	"meta": {
+		"total": 2,
+		"page": 1,
+		"limit": 20
+	}
+}
+```
+
+---
+
+## Cancel Payment Link
+
+Cancel an active payment request.
+
+```bash
+DELETE /v1/client/payment-requests/:cuid
+```
+
+### Response
+
+```json
+{
+	"data": {
+		"status": true,
+		"message": "Payment request cancelled"
+	}
+}
+```
+
+### Note
+
+- Only payment requests with `ACTIVE` status can be cancelled
+- After cancellation, status will change to `CANCELLED`
+
+---
+
+## Signed Redirect URL Verification
+
+When you provide a `redirectUrl` when creating a payment request, after payment completion, customers will be redirected to your URL with a signed payload.
+
+### Redirect Format
+
+After payment completes, customers are redirected to:
+
+```
+https://yoursite.com/payment/result?data=<base64>&signature=<hmac>
+```
+
+### Payload Structure
+
+The `data` parameter contains a base64-encoded JSON object:
+
+```json
+{
+	"status": "success",
+	"transactionId": "txn_abc123",
+	"amount": "100000",
+	"content": "ORDER-12345",
+	"timestamp": 1700000000
+}
+```
+
+Possible `status` values: `success`, `cancel`, `expired`
+
+### Verification Example
+
+```javascript
+// Node.js example
+const crypto = require("crypto");
+
+function verifyRedirectPayload(query, redirectSecret) {
+	// Decode the payload
+	const payloadJson = Buffer.from(query.data, "base64url").toString("utf-8");
+	const payload = JSON.parse(payloadJson);
+
+	// Calculate expected signature
+	const expectedSignature = crypto
+		.createHmac("sha256", redirectSecret)
+		.update(payloadJson)
+		.digest("hex");
+
+	// Use timing-safe comparison to prevent timing attacks
+	const isValid = crypto.timingSafeEqual(
+		Buffer.from(query.signature),
+		Buffer.from(expectedSignature),
+	);
+
+	if (!isValid) {
+		throw new Error("Invalid signature");
+	}
+
+	return payload;
+}
+
+// Express route handler
+app.get("/payment/result", (req, res) => {
+	const {data, signature} = req.query;
+	const redirectSecret = "a1b2c3d4e5f6..."; // From payment request response
+
+	try {
+		const payload = verifyRedirectPayload({data, signature}, redirectSecret);
+		console.log("Payment status:", payload.status);
+		console.log("Transaction ID:", payload.transactionId);
+		console.log("Amount:", payload.amount);
+
+		if (payload.status === "success") {
+			// Process the payment
+			res.send("Payment successful!");
+		}
+	} catch (error) {
+		res.status(400).send("Invalid redirect");
+	}
+});
+```
+
+### Response Fields
+
+When creating a payment request, you receive:
+
+| Field                  | Description                                                                         |
+| ---------------------- | ----------------------------------------------------------------------------------- |
+| `redirectSecret`       | Secret key (32 hex chars) to verify signed redirect payloads. **Keep this secret!** |
+| `completedRedirectUrl` | Full signed URL (available after payment completion) - for reference only           |
+
+### Security Notes
+
+- **Always verify the signature** before processing the payment
+- Use `timingSafeEqual` to prevent timing attacks
+- The `redirectSecret` is unique per payment request
+- Never expose `redirectSecret` in client-side code
+- Validate `status === 'success'` before fulfilling orders

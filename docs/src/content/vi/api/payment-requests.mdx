@@ -1,0 +1,291 @@
+---
+title: Payment Requests API
+description: API tạo và quản lý liên kết thanh toán
+---
+
+# Payment Requests API
+
+API để tạo và quản lý liên kết thanh toán.
+
+## Tạo Payment Link
+
+Tạo liên kết thanh toán sử dụng ngân hàng đã kết nối.
+
+```bash
+POST /v1/client/payment-requests
+```
+
+### Headers
+
+| Header          | Mô tả              |
+| --------------- | ------------------ |
+| `Authorization` | `Bearer <Auth>`    |
+| `Content-Type`  | `application/json` |
+
+### Request Body
+
+| Tham số        | Kiểu   | Bắt buộc | Mô tả                                                                                                                                                                                                                        |
+| -------------- | ------ | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `bankPublicId` | string | **✓ Có** | Public ID của ngân hàng đã kết nối                                                                                                                                                                                           |
+| `amount`       | string | —        | Số tiền (VND). Để trống nếu cho phép người tự nhập                                                                                                                                                                           |
+| `content`      | string | —        | Nội dung chuyển khoản (tối đa 140 ký tự)                                                                                                                                                                                     |
+| `title`        | string | —        | Tiêu đề hiển thị trên trang thanh toán                                                                                                                                                                                       |
+| `expiresAt`    | string | —        | Thời hạn (ISO 8601). Để trống nếu không giới hạn                                                                                                                                                                             |
+| `redirectUrl`  | string | —        | URL chuyển hướng sau khi thanh toán hoàn tất. Khi thanh toán hoàn tất, hệ thống sẽ chuyển hướng đến URL này với payload đã ký (`?data=<base64>&signature=<hmac>`) để xác minh. Để trống để sử dụng URL mặc định của merchant |
+
+### Response
+
+```json
+{
+	"data": {
+		"publicId": "ckabcdef1234567890",
+		"payUrl": "https://pay.apipay.vn/ckabcdef1234567890",
+		"qrUrl": "https://api.qrserver.com/v1/create-qr-code?...",
+		"bankCode": "MB",
+		"accountNumber": "0123456789",
+		"accountName": "NGUYEN VAN A",
+		"amount": "100000",
+		"content": "ORDER-12345",
+		"expiresAt": "2026-12-31T23:59:59Z",
+		"createdAt": "2026-03-06T10:00:00Z",
+		"redirectSecret": "a1b2c3d4e5f6..."
+	}
+}
+```
+
+### Ví dụ
+
+```bash
+curl -X POST https://app.apipay.vn/v1/client/payment-requests \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <Auth>" \
+  -d '{
+    "bankPublicId": "bank_abc123",
+    "amount": "500000",
+    "content": "THANHTOAN-001",
+    "title": "Thanh toán đơn hàng #001",
+    "redirectUrl": "https://yoursite.com/payment/result"
+  }'
+```
+
+---
+
+## Lấy thông tin Payment Link
+
+Lấy chi tiết một payment request (bao gồm QR code).
+
+```bash
+GET /v1/payment-requests/:cuid
+```
+
+### Response
+
+```json
+{
+	"data": {
+		"publicId": "ckabcdef1234567890",
+		"bankCode": "MB",
+		"accountNumber": "0123456789",
+		"accountName": "NGUYEN VAN A",
+		"amount": "100000",
+		"content": "ORDER-12345",
+		"title": "Thanh toán đơn hàng #123",
+		"status": "ACTIVE",
+		"qrUrl": "https://api.qrserver.com/...",
+		"expiresAt": "2026-12-31T23:59:59Z",
+		"viewCount": 42,
+		"createdAt": "2026-03-06T10:00:00Z",
+		"redirectUrl": "https://yoursite.com/payment/result",
+		"redirectSecret": "a1b2c3d4e5f6...",
+		"completedRedirectUrl": "https://yoursite.com/payment/result?data=eyJ...&signature=abc...",
+		"merchant": {
+			"name": "Tên cửa hàng",
+			"logoUrl": "https://yoursite.com/logo.png",
+			"companyName": "Công ty ABC",
+			"companyTaxId": "0123456789",
+			"companyAddress": "123 Đường ABC, TP.HCM"
+		}
+	}
+}
+```
+
+### Status
+
+| Status      | Mô tả               |
+| ----------- | ------------------- |
+| `ACTIVE`    | Đang chờ thanh toán |
+| `COMPLETED` | Đã thanh toán       |
+| `EXPIRED`   | Đã hết hạn          |
+| `CANCELLED` | Đã huỷ              |
+
+---
+
+## Danh sách Payment Links
+
+Lấy danh sách payment requests đã tạo.
+
+```bash
+GET /v1/client/payment-requests
+```
+
+### Headers
+
+| Header          | Mô tả           |
+| --------------- | --------------- |
+| `Authorization` | `Bearer <Auth>` |
+
+### Response
+
+```json
+{
+	"data": [
+		{
+			"publicId": "ckabcdef1234567890",
+			"bankCode": "MB",
+			"accountNumber": "0123456789",
+			"amount": "100000",
+			"content": "ORDER-001",
+			"status": "COMPLETED",
+			"createdAt": "2026-03-06T10:00:00Z"
+		},
+		{
+			"publicId": "xyz789-uvw456-rst123",
+			"bankCode": "ACB",
+			"accountNumber": "9876543210",
+			"amount": "500000",
+			"content": "ORDER-002",
+			"status": "ACTIVE",
+			"createdAt": "2026-03-05T09:00:00Z"
+		}
+	],
+	"meta": {
+		"total": 2,
+		"page": 1,
+		"limit": 20
+	}
+}
+```
+
+---
+
+## Huỷ Payment Link
+
+Huỷ một payment request đang hoạt động.
+
+```bash
+DELETE /v1/client/payment-requests/:cuid
+```
+
+### Response
+
+```json
+{
+	"data": {
+		"status": true,
+		"message": "Payment request cancelled"
+	}
+}
+```
+
+### Lưu ý
+
+- Chỉ có thể huỷ payment request có status là `ACTIVE`
+- Sau khi huỷ, status sẽ chuyển thành `CANCELLED`
+
+---
+
+## Xác minh Signed Redirect URL
+
+Khi bạn cung cấp `redirectUrl` khi tạo payment request, sau khi thanh toán hoàn tất, khách hàng sẽ được chuyển hướng đến URL của bạn với payload đã được ký.
+
+### Định dạng Redirect
+
+Sau khi thanh toán hoàn tất, khách hàng được chuyển hướng đến:
+
+```
+https://yoursite.com/payment/result?data=<base64>&signature=<hmac>
+```
+
+### Cấu trúc Payload
+
+Tham số `data` chứa JSON được mã hoá base64:
+
+```json
+{
+	"status": "success",
+	"transactionId": "txn_abc123",
+	"amount": "100000",
+	"content": "ORDER-12345",
+	"timestamp": 1700000000
+}
+```
+
+Các giá trị `status` có thể: `success`, `cancel`, `expired`
+
+### Ví dụ xác minh
+
+```javascript
+// Node.js example
+const crypto = require("crypto");
+
+function verifyRedirectPayload(query, redirectSecret) {
+	// Giải mã payload
+	const payloadJson = Buffer.from(query.data, "base64url").toString("utf-8");
+	const payload = JSON.parse(payloadJson);
+
+	// Tính signature mong đợi
+	const expectedSignature = crypto
+		.createHmac("sha256", redirectSecret)
+		.update(payloadJson)
+		.digest("hex");
+
+	// Sử dụng timing-safe comparison để chống timing attacks
+	const isValid = crypto.timingSafeEqual(
+		Buffer.from(query.signature),
+		Buffer.from(expectedSignature),
+	);
+
+	if (!isValid) {
+		throw new Error("Invalid signature");
+	}
+
+	return payload;
+}
+
+// Express route handler
+app.get("/payment/result", (req, res) => {
+	const {data, signature} = req.query;
+	const redirectSecret = "a1b2c3d4e5f6..."; // Từ payment request response
+
+	try {
+		const payload = verifyRedirectPayload({data, signature}, redirectSecret);
+		console.log("Payment status:", payload.status);
+		console.log("Transaction ID:", payload.transactionId);
+		console.log("Amount:", payload.amount);
+
+		if (payload.status === "success") {
+			// Xử lý thanh toán
+			res.send("Thanh toán thành công!");
+		}
+	} catch (error) {
+		res.status(400).send("Invalid redirect");
+	}
+});
+```
+
+### Trường Response
+
+Khi tạo payment request, bạn nhận được:
+
+| Trường                 | Mô tả                                                                           |
+| ---------------------- | ------------------------------------------------------------------------------- |
+| `redirectSecret`       | Khoá bí mật (32 ký tự hex) để xác minh signed redirect payload. **Giữ bí mật!** |
+| `completedRedirectUrl` | Full signed URL (có sau khi thanh toán hoàn tất) - chỉ để tham khảo             |
+
+### Lưu ý bảo mật
+
+- **Luôn xác minh signature** trước khi xử lý thanh toán
+- Sử dụng `timingSafeEqual` để chống timing attacks
+- `redirectSecret` là duy nhất cho mỗi payment request
+- Không để lộ `redirectSecret` trong client-side code
+- Validate `status === 'success'` trước khi xử lý đơn hàng
