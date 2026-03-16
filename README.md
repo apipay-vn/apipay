@@ -50,7 +50,7 @@ apipay login
 ```bash
 apipay pay create \
   --amount 100000 \
-  --description "Thanh toán đơn hàng #12345"
+  --description "DON HANG 12345"
 ```
 
 ### API Example
@@ -65,7 +65,7 @@ const response = await fetch("https://app.apipay.vn/v1/pay", {
 	},
 	body: JSON.stringify({
 		amount: 100000,
-		description: "Thanh toán đơn hàng #12345",
+		description: "DON HANG 12345",
 		callback_url: "https://your-site.com/webhook",
 	}),
 });
