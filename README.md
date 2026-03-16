@@ -116,10 +116,10 @@ apipay/
 
 ## Liên kết hữu ích
 
+- **Homepage**: https://apipay.vn
 - **Dashboard**: https://my.apipay.vn
-- **API Base**: https://app.apipay.vn/v1
-- **Tài liệu**: Xem thêm trong thư mục `docs/`
+- **Docs**: https://docs.apipay.vn
 
 ## Giấy phép
 
-MIT License — © 2024 ApiPay
+© 2026 ApiPay
