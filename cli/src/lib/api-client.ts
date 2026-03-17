@@ -212,7 +212,7 @@ export function formatApiError(error: unknown): string {
 	if (error instanceof ApiError) {
 		switch (error.statusCode) {
 			case 401:
-				return `${chalk.red("Authentication failed.")} Run ${chalk.cyan("apipay login")} to sign in.`;
+				return `${chalk.red("Authentication failed.")} Make sure you have configured API key correctly.`;
 			case 403:
 				return `${chalk.red("Permission denied.")} You don't have access to this resource.`;
 			case 404:

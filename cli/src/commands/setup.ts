@@ -107,8 +107,13 @@ export default class Setup extends BaseCommand {
 				: (data?.message ?? data?.data ?? data ?? []);
 			if (!Array.isArray(existingBanks)) existingBanks = [];
 			this.spinner.stop();
-		} catch {
+		} catch (error: any) {
 			this.spinner.stop();
+			if (error?.statusCode === 401) {
+				this.error("Authentication failed. Make sure you have entered your API key correctly.", {
+					exit: 1,
+				});
+			}
 			// Non-fatal: proceed to add flow if fetch fails
 		}
 
@@ -161,8 +166,13 @@ export default class Setup extends BaseCommand {
 				: (data?.data ?? data ?? []);
 			if (!Array.isArray(existingWebhooks)) existingWebhooks = [];
 			this.spinner.stop();
-		} catch {
+		} catch (error: any) {
 			this.spinner.stop();
+			if (error?.statusCode === 401) {
+				this.error("Authentication failed. Make sure you have entered your API key correctly.", {
+					exit: 1,
+				});
+			}
 			// Non-fatal: proceed to add flow if fetch fails
 		}
 
