@@ -9,12 +9,14 @@ Hướng dẫn nhanh để tích hợp ApiPay vào hệ thống của bạn.
 
 ## Bước 1: Lấy API Key
 
-Đăng nhập vào [dashboard](https://my.apipay.vn) và tạo API Key tại mục **Cài đặt → API Keys**.
+Đăng nhập vào [dashboard](https://my.apipay.vn) và tạo API Key tại mục **Tích hợp → API Keys**.
 
 Bạn sẽ nhận được:
 
 - `accessKey` - Public key để xác định tài khoản
 - `secretKey` - Private key để ký request
+
+> **Lưu ý:** `Authorization: Bearer <Auth>` với `<Auth>` là thông tin đăng nhập được mã hóa `base64(accessKey:secretKey)`. Xem [Xác thực API](/vi/api/authentication) để biết chi tiết.
 
 ## Bước 2: Tạo Payment Link
 
@@ -85,6 +87,9 @@ const ACCESS_KEY = "your_access_key";
 const SECRET_KEY = "your_secret_key";
 
 async function createPaymentLink(bankPublicId, amount, content) {
+	// Tạo chuỗi auth base64
+	const auth = Buffer.from(`${ACCESS_KEY}:${SECRET_KEY}`).toString("base64");
+
 	const response = await axios.post(
 		`${API_BASE}/v1/client/payment-requests`,
 		{
@@ -94,7 +99,7 @@ async function createPaymentLink(bankPublicId, amount, content) {
 		},
 		{
 			headers: {
-				Authorization: `${ACCESS_KEY}:${SECRET_KEY}`,
+				Authorization: `Bearer ${auth}`,
 				"Content-Type": "application/json",
 			},
 		},
@@ -112,14 +117,15 @@ console.log("Payment URL:", payment.payUrl);
 ```python
 import requests
 import base64
-import hmac
-import hashlib
 
 API_BASE = 'https://app.apipay.vn'
 ACCESS_KEY = 'your_access_key'
 SECRET_KEY = 'your_secret_key'
 
 def create_payment_link(bank_public_id: str, amount: str, content: str):
+    # Tạo chuỗi auth base64
+    auth = base64.b64encode(f'{ACCESS_KEY}:{SECRET_KEY}'.encode()).decode()
+
     response = requests.post(
         f'{API_BASE}/v1/client/payment-requests',
         json={
@@ -128,7 +134,7 @@ def create_payment_link(bank_public_id: str, amount: str, content: str):
             'content': content
         },
         headers={
-            'Authorization': f'{ACCESS_KEY}:{SECRET_KEY}',
+            'Authorization': f'Bearer {auth}',
             'Content-Type': 'application/json'
         }
     )

@@ -1,7 +1,7 @@
 import type {ReactNode} from "react";
-import {useCallback, useState, useEffect} from "react";
-import {useLocale} from "../lib/i18n";
+import {useCallback, useEffect, useState} from "react";
 import {codeToHtml} from "shiki";
+import {useLocale} from "../lib/i18n";
 
 interface CodeBlockProps {
 	children: ReactNode;
@@ -16,9 +16,8 @@ export function CodeBlock({children, className}: CodeBlockProps) {
 	const language = className?.replace("language-", "") || "";
 
 	// Get code text from children
-	const codeText = typeof children === "string"
-		? children
-		: String(children || "");
+	const codeText =
+		typeof children === "string" ? children : String(children || "");
 
 	const copyText = locale === "vi" ? "Sao chép" : "Copy";
 	const copiedText = locale === "vi" ? "Đã sao chép" : "Copied";
@@ -88,7 +87,7 @@ export function HighlightedCode({code, language}: HighlightedCodeProps) {
 					lang: mappedLang || "text",
 					themes: {
 						light: "github-light",
-						dark: "github-dark",
+						dark: "dracula",
 					},
 				});
 				setHighlightedHtml(html);

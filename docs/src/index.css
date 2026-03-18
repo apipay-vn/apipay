@@ -53,7 +53,7 @@
 	--color-bg: #000000;
 	--color-bg-secondary: #0a0a0a;
 	--color-bg-tertiary: #141414;
-	--color-bg-code: #0c0c0c;
+	--color-bg-code: #282a36;
 	--color-bg-hover: #121212;
 	--color-bg-sidebar: #050505;
 	--color-bg-overlay: rgba(0, 0, 0, 0.6);
@@ -69,9 +69,9 @@
 	--color-accent: #ffffff;
 	--color-accent-light: #0d0d0d;
 
-	/* Shiki GitHub Dark theme colors */
-	--shiki-dark: #c9d1d9;
-	--shiki-dark-bg: #0d1117;
+	/* Shiki Dracula theme colors - brighter for better contrast */
+	--shiki-dark: #f8f8f2;
+	--shiki-dark-bg: #282a36;
 }
 
 /* ===== Base ===== */
@@ -301,8 +301,8 @@ body {
 }
 
 .dark .code-block-header {
-	background: #0c0c0c;
-	border-bottom-color: #1a1a1a;
+	background: #282a36;
+	border-bottom-color: #44475a;
 }
 
 .code-block-dots {
@@ -370,7 +370,7 @@ body {
 	padding: 1.25rem 1.5rem;
 	font-size: 0.875rem;
 	line-height: 1.7;
-	background: transparent !important;
+	background: var(--color-bg-code) !important;
 	overflow-x: auto;
 }
 
@@ -378,11 +378,15 @@ body {
 	background: none !important;
 	padding: 0 !important;
 	border: none !important;
+	user-select: text;
+	-webkit-user-select: text;
 }
 
 /* Shiki Dual Theme Switch */
 .shiki span {
 	color: var(--shiki-light);
+	user-select: text;
+	-webkit-user-select: text;
 }
 
 .dark .shiki span {
@@ -599,6 +603,26 @@ body {
 
 /* ===== Selection ===== */
 ::selection {
-	background: var(--color-accent-light);
-	color: var(--color-text);
+	background: #bfdbfe;
+	color: #1e293b;
+}
+
+.dark ::selection {
+	background: #3b82f6;
+	color: #ffffff;
+}
+
+/* Shiki code blocks selection */
+.shiki ::selection,
+.shiki span::selection,
+.shiki code::selection {
+	background: #bfdbfe !important;
+	color: #1e293b !important;
+}
+
+.dark .shiki ::selection,
+.dark .shiki span::selection,
+.dark .shiki code::selection {
+	background: #3b82f6 !important;
+	color: #ffffff !important;
 }

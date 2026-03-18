@@ -13,57 +13,68 @@ Configure webhook URL in the dashboard at **Settings → Webhooks**.
 
 ## Events
 
-### payment.completed
+### transaction.in
 
-When payment is successfully confirmed.
-
-```json
-{
-  "event": "payment.completed",
-  "timestamp": "2026-03-06T10:30:00Z",
-  "data": {
-    "publicId": "ckabcdef1234567890",
-    "amount": "100000",
-    "content": "ORDER-12345",
-    "transactionId": "TXN-123456789",
-    "completedAt": "2026-03-06T10:30:00Z",
-    "bankCode": "MB",
-    "accountNumber": "0123456789"
-  }
-}
-```
-
-### payment.expired
-
-When a payment link expires without payment.
+When money is received into your bank account.
 
 ```json
 {
-  "event": "payment.expired",
-  "timestamp": "2026-03-06T23:59:59Z",
-  "data": {
-    "publicId": "ckabcdef1234567890",
-    "amount": "100000",
-    "content": "ORDER-12345",
-    "expiredAt": "2026-03-06T23:59:59Z"
-  }
+	"event": "transaction.in",
+	"data": {
+		"transactionId": "550e8400-e29b-41d4-a716-446655440000",
+		"referenceCode": "TX123456789",
+		"amount": 100000,
+		"type": "IN",
+		"content": "ORDER-12345",
+		"transactionDate": "2024-03-20T10:30:00.000Z",
+		"bankAccountPublicId": "bk_abcdef1234567890",
+		"gateway": "VCB",
+		"rawTransactionDate": "2024-03-20 10:30:00",
+		"vaNumber": "999988887777",
+		"accountNumber": "0123456789"
+	}
 }
 ```
 
-### payment.cancelled
+### transaction.out
 
-When a payment link is cancelled.
+When money is transferred out from your bank account.
 
 ```json
 {
-  "event": "payment.cancelled",
-  "timestamp": "2026-03-06T15:00:00Z",
-  "data": {
-    "publicId": "ckabcdef1234567890",
-    "cancelledAt": "2026-03-06T15:00:00Z"
-  }
+	"event": "transaction.out",
+	"data": {
+		"transactionId": "550e8400-e29b-41d4-a716-446655440000",
+		"referenceCode": "TX123456789",
+		"amount": 50000,
+		"type": "OUT",
+		"content": "Chuyen khoan tieu dung",
+		"transactionDate": "2024-03-20T10:30:00.000Z",
+		"bankAccountPublicId": "bk_abcdef1234567890",
+		"gateway": "VCB",
+		"rawTransactionDate": "2024-03-20 10:30:00",
+		"vaNumber": "999988887777",
+		"accountNumber": "0987654321"
+	}
 }
 ```
+
+### Data Fields
+
+| Field                      | Type   | Description                                       |
+| -------------------------- | ------ | ------------------------------------------------- |
+| `event`                    | string | Event type: `transaction.in` or `transaction.out` |
+| `data.transactionId`       | string | Internal transaction ID (UUID)                    |
+| `data.referenceCode`       | string | Bank transaction reference code                   |
+| `data.amount`              | number | Transaction amount in VND                         |
+| `data.type`                | string | Transaction type: `IN` or `OUT`                   |
+| `data.content`             | string | Transaction content/memo                          |
+| `data.transactionDate`     | string | Transaction timestamp (ISO 8601)                  |
+| `data.bankAccountPublicId` | string | Public ID of the bank account                     |
+| `data.gateway`             | string | Bank code (e.g., VCB, MB, TCB)                    |
+| `data.rawTransactionDate`  | string | Original transaction date from bank               |
+| `data.vaNumber`            | string | Virtual account number (optional)                 |
+| `data.accountNumber`       | string | Sender/receiver account number                    |
 
 ## Webhook Authentication
 
@@ -72,38 +83,43 @@ All webhook requests include an `ApiPay-Signature` header for verification.
 ### Node.js
 
 ```javascript
-const crypto = require('crypto');
+const crypto = require("crypto");
 
 function verifyWebhookSignature(payload, signature, secretKey) {
-  const expectedSignature = crypto
-    .createHmac('sha256', secretKey)
-    .update(payload)
-    .digest('hex');
+	const expectedSignature = crypto
+		.createHmac("sha256", secretKey)
+		.update(payload)
+		.digest("hex");
 
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
-  );
+	return crypto.timingSafeEqual(
+		Buffer.from(signature),
+		Buffer.from(expectedSignature),
+	);
 }
 
 // Usage in Express
-app.post('/webhook', (req, res) => {
-  const signature = req.headers['x-apipay-signature'];
-  const payload = JSON.stringify(req.body);
+app.post("/webhook", (req, res) => {
+	const signature = req.headers["apipay-signature"];
+	const payload = JSON.stringify(req.body);
 
-  if (!verifyWebhookSignature(payload, signature, process.env.WEBHOOK_SECRET)) {
-    return res.status(401).json({ error: 'Invalid signature' });
-  }
+	if (!verifyWebhookSignature(payload, signature, process.env.WEBHOOK_SECRET)) {
+		return res.status(401).json({error: "Invalid signature"});
+	}
 
-  // Process webhook
-  const { event, data } = req.body;
+	// Process webhook
+	const {event, data} = req.body;
 
-  if (event === 'payment.completed') {
-    console.log('Payment completed:', data.publicId);
-    // Update order in your database
-  }
+	if (event === "transaction.in") {
+		console.log("Money received:", data.amount);
+		console.log("Reference:", data.referenceCode);
+		console.log("Content:", data.content);
+		// Update order in your database
+	} else if (event === "transaction.out") {
+		console.log("Money sent:", data.amount);
+		console.log("Reference:", data.referenceCode);
+	}
 
-  res.status(200).json({ received: true });
+	res.status(200).json({received: true});
 });
 ```
 
@@ -134,21 +150,27 @@ def handle_webhook():
     data = request.get_json()
     event = data.get('event')
 
-    if event == 'payment.completed':
-        print(f"Payment completed: {data['data']['publicId']}")
+    if event == 'transaction.in':
+        print(f"Money received: {data['data']['amount']}")
+        print(f"Reference: {data['data']['referenceCode']}")
+        print(f"Content: {data['data']['content']}")
         # Update order
+    elif event == 'transaction.out':
+        print(f"Money sent: {data['data']['amount']}")
+        # Handle outgoing transaction
 
     return {'received': True}, 200
 ```
 
 ## Retry Policy
 
+- Attempt 0: Immediately
+
 If webhook delivery fails, the system will retry:
 
-- Attempt 1: Immediately
-- Attempt 2: After 5 seconds
-- Attempt 3: After 20 seconds
-- Attempt 4: After 1 minute
+- Attempt 1: After 5 seconds
+- Attempt 2: After 20 seconds
+- Attempt 3: After 1 minute
 
 After 3 failed retry attempts, the webhook will be disabled.
 

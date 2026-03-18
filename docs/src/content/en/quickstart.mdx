@@ -9,12 +9,14 @@ Quick guide to integrate ApiPay into your system.
 
 ## Step 1: Get API Key
 
-Log in to [dashboard](https://my.apipay.vn) and create an API Key at **Settings → API Keys**.
+Log in to [dashboard](https://my.apipay.vn) and create an API Key at **Integrations → API Keys**.
 
 You'll receive:
 
 - `accessKey` - Public key to identify your account
 - `secretKey` - Private key to sign requests
+
+> **Note:** `Authorization: Bearer <Auth>` with `<Auth>` is your credentials encoded in `base64(accessKey:secretKey)`. See [Authentication](/en/api/authentication) for details.
 
 ## Step 2: Create Payment Link
 
@@ -85,6 +87,9 @@ const ACCESS_KEY = "your_access_key";
 const SECRET_KEY = "your_secret_key";
 
 async function createPaymentLink(bankPublicId, amount, content) {
+	// Create base64 auth string
+	const auth = Buffer.from(`${ACCESS_KEY}:${SECRET_KEY}`).toString("base64");
+
 	const response = await axios.post(
 		`${API_BASE}/v1/client/payment-requests`,
 		{
@@ -94,7 +99,7 @@ async function createPaymentLink(bankPublicId, amount, content) {
 		},
 		{
 			headers: {
-				Authorization: `${ACCESS_KEY}:${SECRET_KEY}`,
+				Authorization: `Bearer ${auth}`,
 				"Content-Type": "application/json",
 			},
 		},
@@ -111,12 +116,16 @@ console.log("Payment URL:", payment.payUrl);
 
 ```python
 import requests
+import base64
 
 API_BASE = 'https://app.apipay.vn'
 ACCESS_KEY = 'your_access_key'
 SECRET_KEY = 'your_secret_key'
 
 def create_payment_link(bank_public_id: str, amount: str, content: str):
+    # Create base64 auth string
+    auth = base64.b64encode(f'{ACCESS_KEY}:{SECRET_KEY}'.encode()).decode()
+
     response = requests.post(
         f'{API_BASE}/v1/client/payment-requests',
         json={
@@ -125,7 +134,7 @@ def create_payment_link(bank_public_id: str, amount: str, content: str):
             'content': content
         },
         headers={
-            'Authorization': f'{ACCESS_KEY}:{SECRET_KEY}',
+            'Authorization': f'Bearer {auth}',
             'Content-Type': 'application/json'
         }
     )

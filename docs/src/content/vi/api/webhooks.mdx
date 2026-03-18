@@ -13,57 +13,68 @@ Cấu hình webhook URL trong dashboard tại **Cài đặt → Webhooks**.
 
 ## Sự kiện (Events)
 
-### payment.completed
+### transaction.in
 
-Khi thanh toán được xác nhận thành công.
-
-```json
-{
-  "event": "payment.completed",
-  "timestamp": "2026-03-06T10:30:00Z",
-  "data": {
-    "publicId": "ckabcdef1234567890",
-    "amount": "100000",
-    "content": "ORDER-12345",
-    "transactionId": "TXN-123456789",
-    "completedAt": "2026-03-06T10:30:00Z",
-    "bankCode": "MB",
-    "accountNumber": "0123456789"
-  }
-}
-```
-
-### payment.expired
-
-Khi payment link hết hạn mà chưa được thanh toán.
+Khi có tiền vào tài khoản ngân hàng của bạn.
 
 ```json
 {
-  "event": "payment.expired",
-  "timestamp": "2026-03-06T23:59:59Z",
-  "data": {
-    "publicId": "ckabcdef1234567890",
-    "amount": "100000",
-    "content": "ORDER-12345",
-    "expiredAt": "2026-03-06T23:59:59Z"
-  }
+	"event": "transaction.in",
+	"data": {
+		"transactionId": "550e8400-e29b-41d4-a716-446655440000",
+		"referenceCode": "TX123456789",
+		"amount": 100000,
+		"type": "IN",
+		"content": "ORDER-12345",
+		"transactionDate": "2024-03-20T10:30:00.000Z",
+		"bankAccountPublicId": "bk_abcdef1234567890",
+		"gateway": "VCB",
+		"rawTransactionDate": "2024-03-20 10:30:00",
+		"vaNumber": "999988887777",
+		"accountNumber": "0123456789"
+	}
 }
 ```
 
-### payment.cancelled
+### transaction.out
 
-Khi payment link bị huỷ.
+Khi có tiền chuyển ra khỏi tài khoản ngân hàng của bạn.
 
 ```json
 {
-  "event": "payment.cancelled",
-  "timestamp": "2026-03-06T15:00:00Z",
-  "data": {
-    "publicId": "ckabcdef1234567890",
-    "cancelledAt": "2026-03-06T15:00:00Z"
-  }
+	"event": "transaction.out",
+	"data": {
+		"transactionId": "550e8400-e29b-41d4-a716-446655440000",
+		"referenceCode": "TX123456789",
+		"amount": 50000,
+		"type": "OUT",
+		"content": "Chuyen khoan tieu dung",
+		"transactionDate": "2024-03-20T10:30:00.000Z",
+		"bankAccountPublicId": "bk_abcdef1234567890",
+		"gateway": "VCB",
+		"rawTransactionDate": "2024-03-20 10:30:00",
+		"vaNumber": "999988887777",
+		"accountNumber": "0987654321"
+	}
 }
 ```
+
+### Các trường dữ liệu
+
+| Trường                     | Kiểu   | Mô tả                                                 |
+| -------------------------- | ------ | ----------------------------------------------------- |
+| `event`                    | string | Loại sự kiện: `transaction.in` hoặc `transaction.out` |
+| `data.transactionId`       | string | ID giao dịch nội bộ (UUID)                            |
+| `data.referenceCode`       | string | Mã tham chiếu giao dịch ngân hàng                     |
+| `data.amount`              | number | Số tiền giao dịch (VND)                               |
+| `data.type`                | string | Loại giao dịch: `IN` hoặc `OUT`                       |
+| `data.content`             | string | Nội dung giao dịch                                    |
+| `data.transactionDate`     | string | Thời gian giao dịch (ISO 8601)                        |
+| `data.bankAccountPublicId` | string | Public ID của tài khoản ngân hàng                     |
+| `data.gateway`             | string | Mã ngân hàng (VD: VCB, MB, TCB)                       |
+| `data.rawTransactionDate`  | string | Ngày giao dịch gốc từ ngân hàng                       |
+| `data.vaNumber`            | string | Số tài khoản ảo (tuỳ chọn)                            |
+| `data.accountNumber`       | string | Số tài khoản người gửi/nhận                           |
 
 ## Xác thực Webhook
 
@@ -72,38 +83,43 @@ Tất cả webhook requests đều có header `ApiPay-Signature` để xác th�
 ### Node.js
 
 ```javascript
-const crypto = require('crypto');
+const crypto = require("crypto");
 
 function verifyWebhookSignature(payload, signature, secretKey) {
-  const expectedSignature = crypto
-    .createHmac('sha256', secretKey)
-    .update(payload)
-    .digest('hex');
+	const expectedSignature = crypto
+		.createHmac("sha256", secretKey)
+		.update(payload)
+		.digest("hex");
 
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
-  );
+	return crypto.timingSafeEqual(
+		Buffer.from(signature),
+		Buffer.from(expectedSignature),
+	);
 }
 
 // Sử dụng trong Express
-app.post('/webhook', (req, res) => {
-  const signature = req.headers['x-apipay-signature'];
-  const payload = JSON.stringify(req.body);
+app.post("/webhook", (req, res) => {
+	const signature = req.headers["apipay-signature"];
+	const payload = JSON.stringify(req.body);
 
-  if (!verifyWebhookSignature(payload, signature, process.env.WEBHOOK_SECRET)) {
-    return res.status(401).json({ error: 'Invalid signature' });
-  }
+	if (!verifyWebhookSignature(payload, signature, process.env.WEBHOOK_SECRET)) {
+		return res.status(401).json({error: "Invalid signature"});
+	}
 
-  // Xử lý webhook
-  const { event, data } = req.body;
+	// Xử lý webhook
+	const {event, data} = req.body;
 
-  if (event === 'payment.completed') {
-    console.log('Payment completed:', data.publicId);
-    // Cập nhật đơn hàng trong database của bạn
-  }
+	if (event === "transaction.in") {
+		console.log("Tiền vào:", data.amount);
+		console.log("Mã tham chiếu:", data.referenceCode);
+		console.log("Nội dung:", data.content);
+		// Cập nhật đơn hàng trong database của bạn
+	} else if (event === "transaction.out") {
+		console.log("Tiền ra:", data.amount);
+		console.log("Mã tham chiếu:", data.referenceCode);
+	}
 
-  res.status(200).json({ received: true });
+	res.status(200).json({received: true});
 });
 ```
 
@@ -134,21 +150,27 @@ def handle_webhook():
     data = request.get_json()
     event = data.get('event')
 
-    if event == 'payment.completed':
-        print(f"Payment completed: {data['data']['publicId']}")
+    if event == 'transaction.in':
+        print(f"Tiền vào: {data['data']['amount']}")
+        print(f"Mã tham chiếu: {data['data']['referenceCode']}")
+        print(f"Nội dung: {data['data']['content']}")
         # Cập nhật đơn hàng
+    elif event == 'transaction.out':
+        print(f"Tiền ra: {data['data']['amount']}")
+        # Xử lý giao dịch ra
 
     return {'received': True}, 200
 ```
 
 ## Retry Policy
 
+- Lần 0: Ngay lập tức
+
 Nếu webhook delivery thất bại, hệ thống sẽ retry:
 
-- Lần 1: Ngay lập tức
-- Lần 2: Sau 5 giây
-- Lần 3: Sau 20 giây
-- Lần 4: Sau 1 phút
+- Lần 1: Sau 5 giây
+- Lần 2: Sau 20 giây
+- Lần 3: Sau 1 phút
 
 Sau 3 lần retry thất bại, webhook sẽ bị vô hiệu hoá.
 
