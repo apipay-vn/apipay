@@ -3,7 +3,19 @@ import {mdxComponents} from "@/components/MDXComponents";
 import {PageNavigation} from "@/components/PageNavigation";
 import {MDXProvider} from "@mdx-js/react";
 import {getLocaleFromCookie} from "@/lib/i18n";
-import {BrowserRouter, Route, Routes, Navigate} from "react-router-dom";
+import {BrowserRouter, Route, Routes, Navigate, useLocation} from "react-router-dom";
+import {useEffect} from "react";
+
+// Scroll to top on route change
+function ScrollToTop() {
+	const {pathname} = useLocation();
+
+	useEffect(() => {
+		window.scrollTo(0, 0);
+	}, [pathname]);
+
+	return null;
+}
 
 // Auto-discover all MDX files for both locales
 const viModules = import.meta.glob("./content/vi/**/*.mdx", {
@@ -121,6 +133,7 @@ export default function App() {
 
 	return (
 		<BrowserRouter>
+			<ScrollToTop />
 			<MDXProvider components={mdxComponents}>
 				<Routes>
 					<Route path="/" element={<RootRedirect />} />
