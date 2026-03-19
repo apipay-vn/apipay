@@ -46,12 +46,12 @@ ApiPay offers flexible plans based on the number of bank accounts you need:
 
 | Plan      | Price               | Bank Accounts |
 | --------- | ------------------- | ------------- |
-| BASIC     | 150,000 VND/month   | 1 account     |
-| STARTER   | 250,000 VND/month   | 3 accounts    |
-| PRO       | 450,000 VND/month   | 5 accounts    |
-| TEAM      | 750,000 VND/month   | 10 accounts   |
-| COMPANY   | 1,750,000 VND/month | 25 accounts   |
-| CORPORATE | 3,250,000 VND/month | 50 accounts   |
+| BASIC     | 100,000 VND/month   | 1 account     |
+| STARTER   | 200,000 VND/month   | 3 accounts    |
+| PRO       | 400,000 VND/month   | 5 accounts    |
+| TEAM      | 700,000 VND/month   | 10 accounts   |
+| COMPANY   | 1,700,000 VND/month | 25 accounts   |
+| CORPORATE | 3,200,000 VND/month | 50 accounts   |
 
 ### How to Choose
 
@@ -136,21 +136,18 @@ You'll receive a payment link to share with your customer.
 ### Via API
 
 ```javascript
-const response = await fetch(
-	"https://app.apipay.vn/v1/client/payment-requests",
-	{
-		method: "POST",
-		headers: {
-			Authorization: "Bearer <Auth>",
-			"Content-Type": "application/json",
-		},
-		body: JSON.stringify({
-			bankPublicId: "your-bank-id",
-			amount: "100000",
-			content: "ORDER-12345",
-		}),
-	},
-);
+const response = await fetch('https://app.apipay.vn/v1/client/payment-requests', {
+  method: 'POST',
+  headers: {
+    Authorization: 'Bearer <Auth>',
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    bankPublicId: 'your-bank-id',
+    amount: '100000',
+    content: 'ORDER-12345',
+  }),
+});
 
 const {payUrl, qrUrl} = await response.json();
 // Share payUrl or qrUrl with your customer
