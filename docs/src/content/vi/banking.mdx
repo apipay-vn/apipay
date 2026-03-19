@@ -30,8 +30,8 @@ ApiPay hỗ trợ các ngân hàng lớn tại Việt Nam:
 | ACB         | ACB  | ✅ Được hỗ trợ |
 | MB Bank     | MB   | ✅ Được hỗ trợ |
 | BIDV        | BIDV | ✅ Được hỗ trợ |
-| Vietcombank | VCB  | ✅ Được hỗ trợ |
-| VietinBank  | ICB  | ✅ Được hỗ trợ |
+| Vietcombank | VCB  | Sắp Ra Mắt     |
+| VietinBank  | ICB  | Sắp Ra Mắt     |
 
 > **Lưu ý:** Nhiều ngân hàng hơn đang được thêm thường xuyên. Liên hệ hỗ trợ nếu ngân hàng của bạn chưa được liệt kê.
 
@@ -199,17 +199,17 @@ Bạn có thể quản lý tài khoản ngân hàng theo chương trình:
 
 ```javascript
 // Liệt kê các tài khoản ngân hàng đã kết nối
-const banks = await fetch("https://app.apipay.vn/v1/client/banks", {
-	headers: {
-		Authorization: "Bearer <Auth>",
-	},
+const banks = await fetch('https://app.apipay.vn/v1/client/banks', {
+  headers: {
+    Authorization: 'Bearer <Auth>',
+  },
 });
 
 // Lấy tóm tắt ngân hàng
-const summary = await fetch("https://app.apipay.vn/v1/client/banks/summary", {
-	headers: {
-		Authorization: "Bearer <Auth>",
-	},
+const summary = await fetch('https://app.apipay.vn/v1/client/banks/summary', {
+  headers: {
+    Authorization: 'Bearer <Auth>',
+  },
 });
 ```
 

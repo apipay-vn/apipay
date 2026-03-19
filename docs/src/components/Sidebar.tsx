@@ -8,7 +8,7 @@ interface SidebarProps {
 	onClose: () => void;
 }
 
-function SidebarLink({item, depth = 0}: {item: SidebarItem; depth?: number}) {
+function SidebarLink({item, depth = 0, onClick}: {item: SidebarItem; depth?: number; onClick?: () => void}) {
 	const location = useLocation();
 	const isActive = location.pathname === item.href;
 
@@ -18,6 +18,7 @@ function SidebarLink({item, depth = 0}: {item: SidebarItem; depth?: number}) {
 				to={item.href}
 				className={`sidebar-link ${isActive ? "active" : ""}`}
 				style={{paddingLeft: `${1 + depth * 0.75}rem`}}
+				onClick={onClick}
 			>
 				{item.label}
 			</Link>
@@ -27,7 +28,7 @@ function SidebarLink({item, depth = 0}: {item: SidebarItem; depth?: number}) {
 	return null;
 }
 
-function SidebarGroup({item}: {item: SidebarItem}) {
+function SidebarGroup({item, onLinkClick}: {item: SidebarItem; onLinkClick?: () => void}) {
 	const location = useLocation();
 	const isChildActive =
 		item.children?.some((child) => child.href === location.pathname) ?? false;
@@ -63,7 +64,7 @@ function SidebarGroup({item}: {item: SidebarItem}) {
 			{isOpen && (
 				<div className="sidebar-group-children">
 					{item.children?.map((child) => (
-						<SidebarLink key={child.href} item={child} depth={1} />
+						<SidebarLink key={child.href} item={child} depth={1} onClick={onLinkClick} />
 					))}
 				</div>
 			)}
@@ -86,9 +87,9 @@ export function Sidebar({isOpen, onClose}: SidebarProps) {
 				<nav className="sidebar-nav" aria-label="Main navigation">
 					{sidebarConfig.map((item) =>
 						item.children ? (
-							<SidebarGroup key={item.label} item={item} />
+							<SidebarGroup key={item.label} item={item} onLinkClick={onClose} />
 						) : (
-							<SidebarLink key={item.href} item={item} />
+							<SidebarLink key={item.href} item={item} onClick={onClose} />
 						),
 					)}
 				</nav>

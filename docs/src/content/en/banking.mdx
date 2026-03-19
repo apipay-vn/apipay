@@ -30,8 +30,8 @@ ApiPay supports the following major Vietnamese banks:
 | ACB         | ACB  | ✅ Supported |
 | MB Bank     | MB   | ✅ Supported |
 | BIDV        | BIDV | ✅ Supported |
-| Vietcombank | VCB  | ✅ Supported |
-| VietinBank  | ICB  | ✅ Supported |
+| Vietcombank | VCB  | Incoming     |
+| VietinBank  | ICB  | Incoming     |
 
 > **Note:** More banks are being added regularly. Contact support if your bank is not listed.
 
@@ -199,17 +199,17 @@ You can manage bank accounts programmatically:
 
 ```javascript
 // List connected bank accounts
-const banks = await fetch("https://app.apipay.vn/v1/client/banks", {
-	headers: {
-		Authorization: "Bearer <Auth>",
-	},
+const banks = await fetch('https://app.apipay.vn/v1/client/banks', {
+  headers: {
+    Authorization: 'Bearer <Auth>',
+  },
 });
 
 // Get bank summary
-const summary = await fetch("https://app.apipay.vn/v1/client/banks/summary", {
-	headers: {
-		Authorization: "Bearer <Auth>",
-	},
+const summary = await fetch('https://app.apipay.vn/v1/client/banks/summary', {
+  headers: {
+    Authorization: 'Bearer <Auth>',
+  },
 });
 ```
 
