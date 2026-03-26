@@ -45,6 +45,12 @@ export const searchItems: SearchItem[] = [
 		section: "Hướng dẫn",
 	},
 	{
+		title: "Tên miền riêng",
+		description: "Sử dụng tên miền riêng của bạn cho trang thanh toán ApiPay",
+		href: "/vi/custom-domains",
+		section: "Hướng dẫn",
+	},
+	{
 		title: "Payment Requests API",
 		description: "API tạo và quản lý liên kết thanh toán",
 		href: "/vi/api/payment-requests",
@@ -98,6 +104,12 @@ export const searchItems: SearchItem[] = [
 		title: "Dashboard Guide",
 		description: "Navigate and use your ApiPay dashboard effectively",
 		href: "/en/dashboard",
+		section: "Guides",
+	},
+	{
+		title: "Custom Domains",
+		description: "Use your own domain for the ApiPay payment page",
+		href: "/en/custom-domains",
 		section: "Guides",
 	},
 	{
