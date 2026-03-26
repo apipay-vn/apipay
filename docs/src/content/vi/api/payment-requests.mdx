@@ -77,7 +77,7 @@ curl -X POST https://app.apipay.vn/v1/client/payment-requests \
 Lấy chi tiết một payment request (bao gồm QR code).
 
 ```bash
-GET /v1/payment-requests/:cuid
+GET /v1/payment-requests/:publicId
 ```
 
 ### Response
@@ -175,7 +175,7 @@ GET /v1/client/payment-requests
 Huỷ một payment request đang hoạt động.
 
 ```bash
-DELETE /v1/client/payment-requests/:cuid
+DELETE /v1/client/payment-requests/:publicId
 ```
 
 ### Response

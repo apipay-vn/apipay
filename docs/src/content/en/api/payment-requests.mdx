@@ -40,8 +40,8 @@ POST /v1/client/payment-requests
 ```json
 {
 	"data": {
-		"publicId": "ckabcdef1234567890",
-		"payUrl": "https://pay.apipay.vn/ckabcdef1234567890",
+		"publicId": "APIPAYJSC69C3F00A3212",
+		"payUrl": "https://pay.apipay.vn/APIPAYJSC69C3F00A3212",
 		"qrUrl": "https://api.qrserver.com/v1/create-qr-code?...",
 		"bankCode": "MB",
 		"accountNumber": "0123456789",
@@ -77,7 +77,7 @@ curl -X POST https://app.apipay.vn/v1/client/payment-requests \
 Get details of a payment request (including QR code).
 
 ```bash
-GET /v1/payment-requests/:cuid
+GET /v1/payment-requests/:publicId
 ```
 
 ### Response
@@ -85,7 +85,7 @@ GET /v1/payment-requests/:cuid
 ```json
 {
 	"data": {
-		"publicId": "ckabcdef1234567890",
+		"publicId": "APIPAYJSC69C3F00A3212",
 		"bankCode": "MB",
 		"accountNumber": "0123456789",
 		"accountName": "NGUYEN VAN A",
@@ -142,7 +142,7 @@ GET /v1/client/payment-requests
 {
 	"data": [
 		{
-			"publicId": "ckabcdef1234567890",
+			"publicId": "APIPAYJSC69C3F00A3212",
 			"bankCode": "MB",
 			"accountNumber": "0123456789",
 			"amount": "100000",
@@ -151,7 +151,7 @@ GET /v1/client/payment-requests
 			"createdAt": "2026-03-06T10:00:00Z"
 		},
 		{
-			"publicId": "xyz789-uvw456-rst123",
+			"publicId": "APIPAYJSCEF12AB34XYZ9",
 			"bankCode": "ACB",
 			"accountNumber": "9876543210",
 			"amount": "500000",
@@ -175,7 +175,7 @@ GET /v1/client/payment-requests
 Cancel an active payment request.
 
 ```bash
-DELETE /v1/client/payment-requests/:cuid
+DELETE /v1/client/payment-requests/:publicId
 ```
 
 ### Response

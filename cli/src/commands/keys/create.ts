@@ -86,9 +86,7 @@ export default class KeysCreate extends AuthenticatedCommand {
 				name: key.name ?? name,
 			});
 
-			success(
-				"API key saved to CLI config. Save the secret key in a secure location. It will not be shown again.",
-			);
+			success("API key saved to CLI config.");
 
 			if (this.jsonOutput) {
 				this.outputJson(key);
