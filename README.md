@@ -72,8 +72,8 @@ curl -X POST https://app.apipay.vn/v1/client/payment-requests \
 ```json
 {
 	"data": {
-		"publicId": "ckabcdef1234567890",
-		"payUrl": "https://pay.apipay.vn/ckabcdef1234567890",
+		"publicId": "APIPAYJSCAF9H23M74K",
+		"payUrl": "https://pay.apipay.vn/APIPAYJSCAF9H23M74K",
 		"qrUrl": "https://api.qrserver.com/v1/create-qr-code?...",
 		"bankCode": "MB",
 		"accountNumber": "0123456789",

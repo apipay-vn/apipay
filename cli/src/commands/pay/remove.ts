@@ -9,7 +9,7 @@ export default class PayRemove extends ApiKeyCommand {
 
 	static override examples = [
 		"<%= config.bin %> pay:remove",
-		"<%= config.bin %> pay:remove ckabcdef1234567890",
+		"<%= config.bin %> pay:remove APIPAYJSCAF9H23M74K",
 	];
 
 	static override args = {
