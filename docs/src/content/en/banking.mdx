@@ -1,230 +1,103 @@
 ---
 title: Bank Account Management
-description: Connect and manage your bank accounts for receiving payments
+description: Connect and manage your Vietnamese bank accounts to receive payments via ApiPay
 ---
 
 # Bank Account Management
 
-Learn how to connect, manage, and optimize your Vietnamese bank accounts in ApiPay.
+Bank accounts are the foundation of receiving payments on ApiPay. Each connected bank account creates a payment channel that your customers can use to transfer money to you in real time.
 
 ---
 
-## Why Bank Accounts Matter
+## How It Works
 
-Bank accounts are the foundation of receiving payments. Each connected bank account creates a payment channel that customers can use to transfer money to you.
+When a customer makes a payment to your linked bank account, ApiPay:
 
-### Key Benefits
+1. **Detects** the incoming transfer via Pay2S OpenBanking
+2. **Matches** the transfer to the corresponding payment request
+3. **Notifies** you instantly via webhook
 
-- **Multiple payment options** - Different banks for different customer preferences
-- **Load distribution** - Spread transactions across accounts to avoid congestion
-- **Redundancy** - Backup accounts ensure continuous service
+This means you don't need to manually reconcile payments — everything is automatic.
 
 ---
 
 ## Supported Banks
 
-ApiPay supports the following major Vietnamese banks:
+| Bank | Code | Personal | Business | Key Features |
+|------|------|:--------:|:--------:|--------------|
+| **ACB** | ACB | Yes | Yes | OpenBanking, Sync inward/outward |
+| **MB Bank** | MBB | Yes | Yes | OpenBanking, Sync inward/outward |
+| **BIDV** | BIDV | Yes | No | OpenBanking, Virtual Account |
 
-| Bank        | Code | Status       |
-| ----------- | ---- | ------------ |
-| ACB         | ACB  | ✅ Supported |
-| MB Bank     | MB   | ✅ Supported |
-| BIDV        | BIDV | ✅ Supported |
-| Vietcombank | VCB  | Incoming     |
-| VietinBank  | ICB  | Incoming     |
-
-> **Note:** More banks are being added regularly. Contact support if your bank is not listed.
+Other banks (VietinBank, VietcomBank) are coming soon.
 
 ---
 
-## Connecting a Bank Account
+## Key Concepts
 
-### Step-by-Step Process
+### Account Types
 
-1. **Navigate to Bank Accounts**
-   - Go to **Settings → Bank Accounts** in your dashboard
+When connecting a bank, you'll choose between:
 
-2. **Click "Add Bank Account"**
-   - You'll see a list of supported banks
+- **Personal** — for individual bank accounts
+- **Business** — for company accounts (ACB and MB Bank only; BIDV is personal only)
 
-3. **Select Your Bank**
-   - Choose from the dropdown list
-   - Each bank shows its logo and name
+### Statuses
 
-4. **Enter Account Information**
-   - Enter your account number
-   - Enter the account name (as registered with the bank)
+After connecting, a bank account has one of these statuses:
 
-5. **OTP Verification**
-   - An OTP will be sent to your registered phone number with the bank
-   - Enter the 6-digit code to verify ownership
+- **Active** — fully operational, receiving payments
+- **Pending** — OTP verified but final confirmation in progress
+- **Inactive** — temporarily disabled; payments won't be routed here
 
-6. **Confirmation**
-   - Account status will be "PENDING" initially
-   - After successful verification, it becomes "ACTIVE"
+### Virtual Accounts (BIDV)
 
-### What You'll Need
-
-- A valid Vietnamese bank account
-- Phone number registered with the bank (for OTP)
-- Account must be in your business name or authorized representative name
+BIDV supports **Virtual Account (VA)** numbers. These are virtual sub-account numbers generated for each payment request, making it easy to match incoming transfers to specific orders without requiring the customer to enter reference information.
 
 ---
 
-## Managing Bank Accounts
+## Managing Multiple Banks
 
-### View All Accounts
+### Why Connect More Than One?
 
-1. Go to **Settings → Bank Accounts**
-2. You'll see a table with:
-   - Bank name and logo
-   - Account number (masked)
-   - Account name
-   - Status (ACTIVE/PENDING/INACTIVE)
-   - Actions
+- **Multiple payment options** — Different banks suit different customer preferences
+- **Load distribution** — Spread transactions across accounts to avoid congestion
+- **Redundancy** — Backup accounts ensure continuous service if one bank has issues
+- **Transaction limits** — Some banks have daily transfer limits; additional accounts give you more capacity
 
-### Toggle Account Status
+### Recommended Setup
 
-You can temporarily disable a bank account:
-
-1. Click the toggle next to the account
-2. Disabled accounts won't appear in new payment requests
-3. Existing payment requests still work
-4. Toggle back on anytime
-
-### Delete a Bank Account
-
-To remove a bank account:
-
-1. Click **Delete** on the account row
-2. Confirm your decision
-3. An OTP will be sent for verification
-4. Enter OTP to confirm deletion
-5. Account is removed
-
-> **Warning:** Deleting an account is permanent. Make sure you don't have any pending payments using that account.
+| Volume | Recommended |
+|--------|-------------|
+| Low | 1-2 banks |
+| Medium | 3-5 banks |
+| High | Use all available slots |
 
 ---
 
-## Best Practices
+## Dashboard Navigation
 
-### Optimal Bank Setup
+In the ApiPay Dashboard, the **Banks** section is accessible from the sidebar:
 
-1. **Start with 1-2 banks** - Begin with your primary bank
-2. **Add backup accounts** - Connect a second bank for redundancy
-3. **Consider customer preferences** - MB and ACB are popular with Vietnamese consumers
+- **Banks** (`/banks`) — View all connected accounts, add new ones, view transactions per bank
+- Each bank row shows status, account type, and actions
 
-### Managing Multiple Accounts
-
-| Scenario      | Recommendation          |
-| ------------- | ----------------------- |
-| Low volume    | 1-2 accounts            |
-| Medium volume | 3-5 accounts            |
-| High volume   | Use all available slots |
-
-### Account Health
-
-1. **Monitor status** - Check dashboard regularly for any issues
-2. **Keep accounts active** - Inactive accounts may be flagged
-3. **Update promptly** - If bank details change, update immediately
+> For step-by-step instructions on connecting a bank, see the [Connect Banks guide](/en/connect-banks).
 
 ---
 
-## Troubleshooting
+## Security Best Practices
 
-### OTP Not Received
-
-- **Check phone number** - Ensure it's the number registered with the bank
-- **Wait a moment** - SMS may be delayed
-- **Check spam** - Some banks send from short codes
-- **Try again** - Request a new OTP
-
-### Account Stuck on Pending
-
-- **Verify OTP** - Make sure you entered the correct code
-- **Contact support** - If the issue persists, reach out for help
-
-### Verification Failed
-
-- **Check account details** - Ensure name matches exactly what's registered
-- **Bank restrictions** - Some accounts may have transfer limits
-- **Try another account** - Use a different account if issues persist
+- **Use business accounts** — Keep payment accounts in your business name
+- **Limit access** — Only authorized team members should manage connected banks
+- **Monitor transactions** — Regularly review your transaction history for suspicious activity
+- **Enable 2FA** — Add an extra layer of security to your dashboard account
 
 ---
 
-## Bank-Specific Notes
+## Related Resources
 
-### MB Bank
-
-- Popular for instant transfers
-- Good daily limits
-- Widely used by Vietnamese consumers
-
-### ACB
-
-- Reliable service
-- Good customer support
-
-### BIDV
-
-- Largest state-owned bank
-- Excellent for corporate accounts
-
-### TPBank
-
-- Modern digital bank
-- Quick verification process
-
----
-
-## Security Considerations
-
-### Account Security
-
-- **Keep accounts in business name** - Never use third-party accounts
-- **Limit access** - Only authorized personnel should manage bank accounts
-- **Enable 2FA** - Add an extra layer of security to your dashboard
-
-### Monitoring
-
-1. **Review transactions** - Check dashboard for any suspicious activity
-2. **Set up alerts** - Configure webhook notifications for all events
-3. **Audit regularly** - Periodically review connected accounts
-
----
-
-## API Integration
-
-You can manage bank accounts programmatically:
-
-```javascript
-// List connected bank accounts
-const banks = await fetch('https://app.apipay.vn/v1/client/banks', {
-  headers: {
-    Authorization: 'Bearer <Auth>',
-  },
-});
-
-// Get bank summary
-const summary = await fetch('https://app.apipay.vn/v1/client/banks/summary', {
-  headers: {
-    Authorization: 'Bearer <Auth>',
-  },
-});
-```
-
----
-
-## Need Help?
-
-- 📧 Email: support@apipay.vn
-- 💬 In-app chat (dashboard)
-- 📖 [API Reference](/en/api/banks)
-
----
-
-## Next Steps
-
-- [Onboarding Guide](/en/onboarding) - Complete setup process
-- [Subscription Guide](/en/subscription) - Manage your plan
-- [Dashboard Overview](/en/dashboard) - Navigate your dashboard
+- [Connect Banks Guide](/en/connect-banks) — Step-by-step instructions for linking a bank account
+- [API Reference: Banks](/en/api/banks) — Manage banks programmatically via API
+- [Webhook Setup](/en/api/webhooks) — Receive real-time payment notifications
+- [Dashboard Overview](/en/dashboard) — Navigate the full dashboard

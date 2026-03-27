@@ -1,0 +1,205 @@
+---
+title: Cách Kết Nối Ngân Hàng
+description: Liên kết tài khoản ngân hàng Việt Nam để bắt đầu nhận thanh toán qua ApiPay
+---
+
+# Cách Kết Nối Ngân Hàng
+
+Liên kết tài khoản ngân hàng Việt Nam với dashboard của ApiPay để bắt đầu nhận thanh toán chuyển khoản theo thời gian thực. Sau khi liên kết, ApiPay sẽ tự động đồng bộ các giao dịch nhận được và gửi thông báo thanh toán qua webhook.
+
+<iframe width="100%" height="315" src="https://www.youtube.com/embed/hstBeBMvwUM?si=LhJBZAJZheZORspg" title="Hướng dẫn kết nối ngân hàng trên ApiPay" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+---
+
+## Tổng Quan
+
+Việc liên kết tài khoản ngân hàng trên ApiPay gồm 2 bước:
+
+1. **Chọn ngân hàng** và loại tài khoản (Cá nhân hoặc Doanh nghiệp)
+2. **Nhập thông tin tài khoản** và xác minh quyền sở hữu qua OTP
+
+Sau khi liên kết thành công, tài khoản ngân hàng của bạn sẽ xuất hiện trong phần **Ngân hàng** trên dashboard với trạng thái **Hoạt động**. Bạn có thể tạo yêu cầu thanh toán và nhận chuyển khoản trong vòng 1-3 giây.
+
+**Danh sách ngân hàng được hỗ trợ:**
+
+| Ngân hàng | Cá nhân | Doanh nghiệp | Tính năng |
+|-----------|:-------:|:------------:|------------|
+| **ACB** | Có | Có | OpenBanking, Đồng bộ tiền vào/ra |
+| **MB Bank** | Có | Có | OpenBanking, Đồng bộ tiền vào/ra |
+| **BIDV** | Có | Không | OpenBanking, Tài khoản Ảo |
+
+> **Khuyến nghị:** ACB, MB Bank và BIDV được hỗ trợ đầy đủ. VietinBank và VietcomBank sắp ra mắt.
+
+---
+
+## Điều Kiện Trước Khi Bắt Đầu
+
+Trước khi liên kết tài khoản ngân hàng, hãy đảm bảo bạn có:
+
+- Tài khoản ApiPay
+- Tài khoản ngân hàng Việt Nam đang hoạt động (ACB, MB Bank hoặc BIDV)
+- Số điện thoại đã đăng ký với ngân hàng (để xác minh OTP)
+- Đối với **BIDV**: Mã Merchant ID để thiết lập tài khoản ảo
+- Đối với **MB Bank**: Số CCCD/CMND (12 chữ số)
+- Đối với **ACB Doanh nghiệp**: Tên đăng nhập ACB OneBiz
+
+---
+
+## Hướng Dẫn Từng Bước
+
+### Bước 1: Chọn Ngân Hàng
+
+1. Đăng nhập vào [ApiPay Dashboard](https://dashboard.apipay.vn)
+2. Chọn **Ngân hàng** trên thanh sidebar
+3. Nhấn nút **Thêm ngân hàng** ở góc trên bên phải
+4. Trên trang **Liên kết tài khoản ngân hàng**, bạn sẽ thấy danh sách các ngân hàng được hỗ trợ
+5. Tìm ngân hàng của bạn trong bảng:
+   - Kiểm tra nhãn **Khuyến nghị** — ACB, MB Bank và BIDV được khuyến nghị
+   - Xem **Loại tài khoản** — một số ngân hàng hỗ trợ Cá nhân, Doanh nghiệp hoặc cả hai
+   - Xem **Tính năng** — mỗi ngân hàng hỗ trợ các tính năng khác nhau
+6. Nhấn **Kết nối** trên ngân hàng bạn chọn
+
+### Bước 2: Chọn Loại Tài Khoản (Chỉ ACB & MB Bank)
+
+Nếu bạn chọn **ACB** hoặc **MB Bank**, bạn cần chọn giữa:
+
+- **Cá nhân** — dành cho tài khoản ngân hàng cá nhân
+- **Doanh nghiệp** — dành cho tài khoản ngân hàng công ty/doanh nghiệp
+
+Nhấn vào thẻ phù hợp với loại tài khoản của bạn để tiếp tục.
+
+### Bước 3: Nhập Thông Tin Tài Khoản
+
+Điền vào các trường bắt buộc. Các trường hiển thị phụ thuộc vào ngân hàng bạn đã chọn.
+
+#### Các Trường Chung Cho Tất Cả Ngân Hàng
+
+| Trường | Mô tả |
+|--------|-------|
+| **Chủ tài khoản** | Tên chủ tài khoản, viết IN HOA không dấu |
+| **Số tài khoản** | Số tài khoản ngân hàng của bạn |
+| **Số điện thoại** | Số điện thoại đã đăng ký với ngân hàng |
+
+#### ACB — Tài Khoản Cá Nhân
+
+Không cần thêm trường nào ngoài các trường chung bên trên.
+
+#### ACB — Tài Khoản Doanh Nghiệp
+
+| Trường Bổ Sung | Mô tả |
+|---------------|-------|
+| **Tên đăng nhập ACB OneBiz** | Tên đăng nhập ACB OneBiz của bạn |
+
+#### MB Bank — Tài Khoản Cá Nhân
+
+| Trường Bổ Sung | Mô tả |
+|---------------|-------|
+| **CCCD / CMND** | Số CCCD 12 chữ số của bạn (Căn cước công dân) |
+
+#### MB Bank — Tài Khoản Doanh Nghiệp
+
+| Trường Bổ Sung | Mô tả |
+|---------------|-------|
+| **Mã số thuế (MST)** | Mã số thuế của công ty bạn |
+
+#### BIDV — Tài Khoản Cá Nhân
+
+| Trường Bổ Sung | Mô tả |
+|---------------|-------|
+| **Mã Merchant ID** | Mã Merchant ID của bạn trên BIDV (dùng để tạo số tài khoản ảo, ví dụ: `DANHOO1`) |
+| **CCCD / CMND** | Số CCCD 12 chữ số |
+| **Email tài khoản** | Địa chỉ email đã đăng ký với BIDV |
+
+> **Lưu ý cho BIDV:** BIDV yêu cầu thông tin bổ sung để thiết lập tài khoản ảo. Hãy chắc chắn bạn đã có Mã Merchant ID. Bạn có thể lấy mã này từ chi nhánh BIDV hoặc quản lý tài khoản doanh nghiệp của bạn.
+
+Sau khi điền đầy đủ các trường:
+
+1. Đọc nội dung đồng ý về chính sách bảo mật và điều khoản sử dụng
+2. Tích chọn **Tôi đồng ý**
+3. Nhấn **Xác nhận** để tiếp tục
+
+Một cửa sổ xác nhận sẽ xuất hiện — kiểm tra lại thông tin và nhấn **Xác nhận** lần nữa.
+
+### Bước 4: Xác Minh qua OTP
+
+Sau khi gửi thông tin tài khoản, một **OTP (Mật khẩu dùng một lần)** sẽ được gửi tự động đến số điện thoại đã đăng ký với ngân hàng của bạn.
+
+1. Nhập mã OTP 6 chữ số vào ô nhập
+2. Nhấn **Xác nhận**
+3. Sau khi xác minh thành công, tài khoản ngân hàng của bạn đã được liên kết
+
+Nếu mã OTP không đúng, bạn sẽ thấy thông báo lỗi. Hãy nhập lại mã đúng và thử lại.
+
+---
+
+## Sau Khi Liên Kết
+
+Sau khi liên kết ngân hàng thành công:
+
+- Tài khoản ngân hàng xuất hiện trong danh sách **Ngân hàng** với trạng thái **Hoạt động**
+- Bạn có thể xem lịch sử giao dịch được lọc theo ngân hàng đó
+- Bạn có thể bật/tắt ngân hàng bằng công tắc trạng thái
+- ApiPay tự động đăng ký webhook để nhận thông báo giao dịch theo thời gian thực
+
+---
+
+## Quản Lý Ngân Hàng Đã Kết Nối
+
+### Xem Chi Tiết Ngân Hàng
+
+1. Vào mục **Ngân hàng** trên thanh sidebar
+2. Nhấn vào bất kỳ dòng ngân hàng nào để xem đầy đủ chi tiết:
+   - Tên chủ tài khoản
+   - Số tài khoản (một phần bị ẩn)
+   - Tên và logo ngân hàng
+   - Số tài khoản ảo (nếu có, ví dụ BIDV)
+   - Trạng thái (Hoạt động / Không hoạt động)
+   - Lịch sử giao dịch
+
+### Bật/Tắt Trạng Thái Ngân Hàng
+
+Nếu bạn muốn tạm thời ngừng nhận thanh toán trên một ngân hàng cụ thể:
+
+1. Vào mục **Ngân hàng**
+2. Tìm ngân hàng bạn muốn thay đổi
+3. Nhấn **công tắc** trong cột Thao tác
+4. Trạng thái thay đổi giữa **Hoạt động** và **Không hoạt động**
+
+### Xóa Ngân Hàng Đã Kết Nối
+
+1. Vào mục **Ngân hàng**
+2. Nhấn vào menu **...** (thêm) ở phía bên phải của dòng ngân hàng
+3. Chọn **Xóa ngân hàng**
+4. Xác nhận bằng OTP (gửi đến số điện thoại đã đăng ký)
+5. Ngân hàng được xóa khỏi tài khoản của bạn
+
+---
+
+## Xử Lý Sự Cố
+
+| Sự cố | Giải pháp |
+|-------|-----------|
+| Không nhận được OTP | Đảm bảo số điện thoại bạn nhập khớp với số đã đăng ký với ngân hàng. Chờ một chút và thử lại. |
+| Mã OTP không đúng | Kiểm tra kỹ mã bạn nhập, gồm 6 chữ số. |
+| Không tìm thấy Mã Merchant ID của BIDV | Liên hệ chi nhánh BIDV hoặc quản lý tài khoản để lấy Merchant ID. |
+| CCCD bị từ chối | Hãy nhập đúng 12 chữ số, không có khoảng trắng hay ký tự đặc biệt. |
+| Ngân hàng hiển thị trạng thái "Đang chờ" | Sau khi liên kết, ngân hàng sẽ chuyển sang Hoạt động trong vài giây. Nếu vẫn Đang chờ, hãy tải lại trang. |
+| Số tài khoản đã được liên kết | Mỗi tài khoản ngân hàng chỉ có thể liên kết một lần. Nếu thấy lỗi này, tài khoản có thể đã được liên kết với tài khoản ApiPay khác. |
+| Loại tài khoản không khả dụng | BIDV chỉ hỗ trợ tài khoản Cá nhân. Đối với tài khoản doanh nghiệp, hãy sử dụng ACB hoặc MB Bank. |
+
+---
+
+## Video Hướng Dẫn
+
+Xem hướng dẫn đầy đủ từng bước:
+
+<iframe width="100%" height="315" src="https://www.youtube.com/embed/hstBeBMvwUM?si=LhJBZAJZheZORspg" title="Hướng dẫn kết nối ngân hàng trên ApiPay" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+---
+
+## Bước Tiếp Theo
+
+- [Tạo Yêu Cầu Thanh Toán Đầu Tiên](/vi/onboarding) — Bắt đầu nhận thanh toán với ngân hàng đã kết nối
+- [Thiết Lập Webhook](/vi/api/webhooks) — Nhận thông báo thời gian thực khi có thanh toán
+- [Hướng Dẫn Dashboard](/vi/dashboard) — Khám phá toàn bộ dashboard của ApiPay
+- [Tên Miền Riêng](/vi/custom-domains) — Sử dụng tên miền của bạn cho trang thanh toán

@@ -1,0 +1,205 @@
+---
+title: How to Connect Banks
+description: Link your Vietnamese bank account to start receiving payments via ApiPay
+---
+
+# How to Connect Banks
+
+Connect a Vietnamese bank account to your ApiPay dashboard to start receiving real-time bank transfer payments. Once linked, ApiPay automatically syncs incoming transactions and delivers payment notifications via webhook.
+
+<iframe width="100%" height="315" src="https://www.youtube.com/embed/hstBeBMvwUM?si=LhJBZAJZheZORspg" title="How to Connect Banks on ApiPay" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+---
+
+## Overview
+
+Linking a bank account on ApiPay is a 2-step process:
+
+1. **Select your bank** and account type (Personal or Business)
+2. **Enter your account details** and verify ownership via OTP
+
+Once linked, your bank account appears in the **Banks** section of the dashboard with a status of **Active**. You can then create payment requests and receive transfers within 1-3 seconds.
+
+**Supported banks:**
+
+| Bank | Personal | Business | Features |
+|------|:--------:|:--------:|----------|
+| **ACB** | Yes | Yes | OpenBanking, Sync inward/outward |
+| **MB Bank** | Yes | Yes | OpenBanking, Sync inward/outward |
+| **BIDV** | Yes | No | OpenBanking, Virtual Account |
+
+> **Recommended:** ACB, MB Bank, and BIDV are fully supported. VietinBank and VietcomBank are coming soon.
+
+---
+
+## Prerequisites
+
+Before linking a bank account, make sure you have:
+
+- An ApiPay account
+- An active Vietnamese bank account (ACB, MB Bank, or BIDV)
+- The phone number registered with your bank (for OTP verification)
+- For **BIDV**: a Merchant ID for virtual account setup
+- For **MB Bank**: your CCCD/ID card number (12 digits)
+- For **ACB Business**: an ACB OneBiz username
+
+---
+
+## Step-by-Step Guide
+
+### Step 1: Select Your Bank
+
+1. Log in to the [ApiPay Dashboard](https://dashboard.apipay.vn)
+2. Navigate to **Banks** in the sidebar
+3. Click the **Add Bank** button in the top-right corner
+4. On the **Link Bank Account** page, you'll see a list of supported banks
+5. Find your bank in the table:
+   - Check the **Recommended** badge — ACB, MB Bank, and BIDV are recommended
+   - Look at **Account Types** — some banks support Personal, Business, or both
+   - Note the **Features** — each bank supports different capabilities
+6. Click **Connect** on your chosen bank
+
+### Step 2: Choose Account Type (ACB & MB Bank only)
+
+If you selected **ACB** or **MB Bank**, you'll need to choose between:
+
+- **Personal** — for individual bank accounts
+- **Business** — for company/business bank accounts
+
+Click the card that matches your account type to continue.
+
+### Step 3: Enter Account Information
+
+Fill in the required fields. The fields shown depend on which bank you selected.
+
+#### Fields for All Banks
+
+| Field | Description |
+|-------|-------------|
+| **Account Name** | Your account holder name, written in CAPITAL LETTERS without accents |
+| **Account Number** | Your bank account number |
+| **Phone Number** | The phone number registered with your bank |
+
+#### ACB — Personal Account
+
+No additional fields required beyond the base fields above.
+
+#### ACB — Business Account
+
+| Additional Field | Description |
+|-----------------|-------------|
+| **ACB OneBiz Username** | Your ACB OneBiz login username |
+
+#### MB Bank — Personal Account
+
+| Additional Field | Description |
+|-----------------|-------------|
+| **CCCD / ID Card Number** | Your 12-digit CCCD number (Citizen Identification Card) |
+
+#### MB Bank — Business Account
+
+| Additional Field | Description |
+|-----------------|-------------|
+| **Tax Code (MST)** | Your company's Tax Identification Number |
+
+#### BIDV — Personal Account
+
+| Additional Field | Description |
+|-----------------|-------------|
+| **Merchant ID** | Your BIDV Merchant ID (used for virtual account number generation, e.g., `DANHOO1`) |
+| **CCCD / ID Card Number** | Your 12-digit CCCD number |
+| **Account Email** | Your email address registered with BIDV |
+
+> **Note for BIDV:** BIDV requires additional information to set up virtual accounts. Make sure you have your Merchant ID ready. You can obtain this from your BIDV branch or business account manager.
+
+After filling in all fields:
+
+1. Read the consent text about privacy policy and terms of use
+2. Check the **I agree** checkbox
+3. Click **Confirm** to proceed
+
+A confirmation modal will appear — review the details and click **Confirm** again.
+
+### Step 4: Verify with OTP
+
+After submitting your account details, an **OTP (One-Time Password)** is sent automatically to the phone number registered with your bank.
+
+1. Enter the 6-digit OTP code in the input field
+2. Click **Confirm**
+3. Once verified, your bank account is successfully linked
+
+If the OTP code is incorrect, you'll see an error message. Re-enter the correct code and try again.
+
+---
+
+## After Linking
+
+Once your bank is linked successfully:
+
+- The bank account appears in your **Banks** list with an **Active** status
+- You can view transaction history filtered by that bank
+- You can toggle the bank on/off using the status toggle
+- ApiPay automatically registers a webhook to receive real-time transaction notifications
+
+---
+
+## Managing Your Connected Banks
+
+### View Bank Details
+
+1. Go to **Banks** in the sidebar
+2. Click on any bank row to see full details:
+   - Account holder name
+   - Account number (partially masked)
+   - Bank name and logo
+   - Virtual Account number (if applicable, e.g., BIDV)
+   - Status (Active / Inactive)
+   - Transaction history
+
+### Toggle Bank Status
+
+If you want to temporarily stop receiving payments on a specific bank:
+
+1. Go to **Banks**
+2. Find the bank you want to toggle
+3. Click the **toggle switch** in the Actions column
+4. The status changes between **Active** and **Inactive**
+
+### Delete a Connected Bank
+
+1. Go to **Banks**
+2. Click the **...** (more) menu on the right side of the bank row
+3. Select **Delete Bank**
+4. Confirm with OTP (sent to your registered phone)
+5. The bank is removed from your account
+
+---
+
+## Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| OTP not received | Make sure the phone number you entered matches the number registered with your bank. Wait a moment and try again. |
+| OTP code incorrect | Double-check that you're entering the code sent to your phone. Codes are 6 digits. |
+| BIDV Merchant ID not found | Contact your BIDV branch or account manager to get your Merchant ID. |
+| CCCD rejected | Make sure you enter exactly 12 digits without spaces or special characters. |
+| Bank shows "Pending" status | After linking, the bank should become Active within seconds. If it stays Pending, try refreshing the page. |
+| Account number already linked | Each bank account can only be linked once. If you see this error, the account may already be connected to another ApiPay account. |
+| Account type not available | BIDV only supports Personal accounts. For business accounts, use ACB or MB Bank. |
+
+---
+
+## Video Tutorial
+
+Watch the complete step-by-step guide:
+
+<iframe width="100%" height="315" src="https://www.youtube.com/embed/hstBeBMvwUM?si=LhJBZAJZheZORspg" title="How to Connect Banks on ApiPay" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+---
+
+## Next Steps
+
+- [Create Your First Payment Request](/en/onboarding) — Start accepting payments with your connected bank
+- [Webhook Setup](/en/api/webhooks) — Get real-time notifications when you receive payments
+- [Dashboard Guide](/en/dashboard) — Navigate the full ApiPay dashboard
+- [Custom Domains](/en/custom-domains) — Use your own domain for payment pages
