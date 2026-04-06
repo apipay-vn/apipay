@@ -39,7 +39,7 @@ Before linking a bank account, make sure you have:
 - An ApiPay account
 - An active Vietnamese bank account (ACB, MB Bank, or BIDV)
 - The phone number registered with your bank (for OTP verification)
-- For **BIDV**: a Merchant ID for virtual account setup
+- For **BIDV**: a custom Merchant ID for virtual account setup
 - For **MB Bank**: your CCCD/ID card number (12 digits)
 - For **ACB Business**: an ACB OneBiz username
 
@@ -106,11 +106,11 @@ No additional fields required beyond the base fields above.
 
 | Additional Field | Description |
 |-----------------|-------------|
-| **Merchant ID** | Your BIDV Merchant ID (used for virtual account number generation, e.g., `DANHOO1`) |
+| **Merchant ID** | A custom code you enter to generate your virtual account (e.g., `SHOP01`) |
 | **CCCD / ID Card Number** | Your 12-digit CCCD number |
 | **Account Email** | Your email address registered with BIDV |
 
-> **Note for BIDV:** BIDV requires additional information to set up virtual accounts. Make sure you have your Merchant ID ready. You can obtain this from your BIDV branch or business account manager.
+> **Note for BIDV:** The Merchant ID is a value you enter to create a Virtual Account (VA) based on your Merchant ID. **Important:** You must transfer money directly to this Virtual Account to receive payment notifications.
 
 After filling in all fields:
 
@@ -181,7 +181,7 @@ If you want to temporarily stop receiving payments on a specific bank:
 |-------|----------|
 | OTP not received | Make sure the phone number you entered matches the number registered with your bank. Wait a moment and try again. |
 | OTP code incorrect | Double-check that you're entering the code sent to your phone. Codes are 6 digits. |
-| BIDV Merchant ID not found | Contact your BIDV branch or account manager to get your Merchant ID. |
+| Not sure what to enter for Merchant ID | This is a custom identifier you choose to create your virtual account (e.g., your shop name). |
 | CCCD rejected | Make sure you enter exactly 12 digits without spaces or special characters. |
 | Bank shows "Pending" status | After linking, the bank should become Active within seconds. If it stays Pending, try refreshing the page. |
 | Account number already linked | Each bank account can only be linked once. If you see this error, the account may already be connected to another ApiPay account. |
@@ -201,5 +201,4 @@ Watch the complete step-by-step guide:
 
 - [Create Your First Payment Request](/en/onboarding) — Start accepting payments with your connected bank
 - [Webhook Setup](/en/api/webhooks) — Get real-time notifications when you receive payments
-- [Dashboard Guide](/en/dashboard) — Navigate the full ApiPay dashboard
 - [Custom Domains](/en/custom-domains) — Use your own domain for payment pages

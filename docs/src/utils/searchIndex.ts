@@ -39,12 +39,6 @@ export const searchItems: SearchItem[] = [
 		section: "Hướng dẫn",
 	},
 	{
-		title: "Hướng dẫn Dashboard",
-		description: "Điều hướng và sử dụng dashboard ApiPay",
-		href: "/vi/dashboard",
-		section: "Hướng dẫn",
-	},
-	{
 		title: "Tên miền riêng",
 		description: "Sử dụng tên miền riêng của bạn cho trang thanh toán ApiPay",
 		href: "/vi/custom-domains",
@@ -98,12 +92,6 @@ export const searchItems: SearchItem[] = [
 		title: "Bank Accounts",
 		description: "Connect and manage your bank accounts",
 		href: "/en/banking",
-		section: "Guides",
-	},
-	{
-		title: "Dashboard Guide",
-		description: "Navigate and use your ApiPay dashboard effectively",
-		href: "/en/dashboard",
 		section: "Guides",
 	},
 	{

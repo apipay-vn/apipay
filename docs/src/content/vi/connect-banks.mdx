@@ -39,7 +39,7 @@ Trước khi liên kết tài khoản ngân hàng, hãy đảm bảo bạn có:
 - Tài khoản ApiPay
 - Tài khoản ngân hàng Việt Nam đang hoạt động (ACB, MB Bank hoặc BIDV)
 - Số điện thoại đã đăng ký với ngân hàng (để xác minh OTP)
-- Đối với **BIDV**: Mã Merchant ID để thiết lập tài khoản ảo
+- Đối với **BIDV**: Mã Merchant ID để thiết lập tài khoản ảo (bạn tự nhập)
 - Đối với **MB Bank**: Số CCCD/CMND (12 chữ số)
 - Đối với **ACB Doanh nghiệp**: Tên đăng nhập ACB OneBiz
 
@@ -106,11 +106,11 @@ Không cần thêm trường nào ngoài các trường chung bên trên.
 
 | Trường Bổ Sung | Mô tả |
 |---------------|-------|
-| **Mã Merchant ID** | Mã Merchant ID của bạn trên BIDV (dùng để tạo số tài khoản ảo, ví dụ: `DANHOO1`) |
+| **Mã Merchant ID** | Mã Merchant ID bạn tự nhập để tạo tài khoản ảo (ví dụ: `SHOP01`) |
 | **CCCD / CMND** | Số CCCD 12 chữ số |
 | **Email tài khoản** | Địa chỉ email đã đăng ký với BIDV |
 
-> **Lưu ý cho BIDV:** BIDV yêu cầu thông tin bổ sung để thiết lập tài khoản ảo. Hãy chắc chắn bạn đã có Mã Merchant ID. Bạn có thể lấy mã này từ chi nhánh BIDV hoặc quản lý tài khoản doanh nghiệp của bạn.
+> **Lưu ý cho BIDV:** Merchant ID là mã do bạn tự nhập để hệ thống tạo Tài khoản ảo (VA) dựa trên Merchant ID của bạn. **Lưu ý quan trọng:** Bạn bắt buộc phải chuyển tiền vào đúng Tài khoản ảo này thì hệ thống mới có thể nhận được thông báo giao dịch.
 
 Sau khi điền đầy đủ các trường:
 
@@ -181,7 +181,7 @@ Nếu bạn muốn tạm thời ngừng nhận thanh toán trên một ngân hà
 |-------|-----------|
 | Không nhận được OTP | Đảm bảo số điện thoại bạn nhập khớp với số đã đăng ký với ngân hàng. Chờ một chút và thử lại. |
 | Mã OTP không đúng | Kiểm tra kỹ mã bạn nhập, gồm 6 chữ số. |
-| Không tìm thấy Mã Merchant ID của BIDV | Liên hệ chi nhánh BIDV hoặc quản lý tài khoản để lấy Merchant ID. |
+| Không biết nhập gì vào Merchant ID | Đây là mã định danh bạn tự chọn để tạo tài khoản ảo (ví dụ: tên shop hoặc mã khách hàng của bạn). |
 | CCCD bị từ chối | Hãy nhập đúng 12 chữ số, không có khoảng trắng hay ký tự đặc biệt. |
 | Ngân hàng hiển thị trạng thái "Đang chờ" | Sau khi liên kết, ngân hàng sẽ chuyển sang Hoạt động trong vài giây. Nếu vẫn Đang chờ, hãy tải lại trang. |
 | Số tài khoản đã được liên kết | Mỗi tài khoản ngân hàng chỉ có thể liên kết một lần. Nếu thấy lỗi này, tài khoản có thể đã được liên kết với tài khoản ApiPay khác. |
@@ -201,5 +201,4 @@ Xem hướng dẫn đầy đủ từng bước:
 
 - [Tạo Yêu Cầu Thanh Toán Đầu Tiên](/vi/onboarding) — Bắt đầu nhận thanh toán với ngân hàng đã kết nối
 - [Thiết Lập Webhook](/vi/api/webhooks) — Nhận thông báo thời gian thực khi có thanh toán
-- [Hướng Dẫn Dashboard](/vi/dashboard) — Khám phá toàn bộ dashboard của ApiPay
 - [Tên Miền Riêng](/vi/custom-domains) — Sử dụng tên miền của bạn cho trang thanh toán

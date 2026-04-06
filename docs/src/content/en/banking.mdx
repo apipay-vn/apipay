@@ -52,7 +52,7 @@ After connecting, a bank account has one of these statuses:
 
 ### Virtual Accounts (BIDV)
 
-BIDV supports **Virtual Account (VA)** numbers. These are virtual sub-account numbers generated for each payment request, making it easy to match incoming transfers to specific orders without requiring the customer to enter reference information.
+BIDV supports **Virtual Account (VA)**. The system generates VAs based on a **Merchant ID** that you define. **Important:** Real-time notifications are only triggered when money is transferred directly to this Virtual Account.
 
 ---
 
@@ -100,4 +100,3 @@ In the ApiPay Dashboard, the **Banks** section is accessible from the sidebar:
 - [Connect Banks Guide](/en/connect-banks) — Step-by-step instructions for linking a bank account
 - [API Reference: Banks](/en/api/banks) — Manage banks programmatically via API
 - [Webhook Setup](/en/api/webhooks) — Receive real-time payment notifications
-- [Dashboard Overview](/en/dashboard) — Navigate the full dashboard
