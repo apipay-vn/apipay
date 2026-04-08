@@ -35,7 +35,6 @@ export function Navbar({onMenuToggle, onSearchOpen}: NavbarProps) {
 						</span>
 						<span className="navbar-logo-text">ApiPay</span>
 						<span className="navbar-logo-badge">docs</span>
-						<span className="navbar-logo-beta">Beta</span>
 					</a>
 				</div>
 
@@ -180,17 +179,6 @@ export function Navbar({onMenuToggle, onSearchOpen}: NavbarProps) {
 					padding: 0.1rem 0.45rem;
 					border-radius: 99px;
 					text-transform: uppercase;
-					letter-spacing: 0.05em;
-				}
-
-				.navbar-logo-beta {
-					font-size: 0.65rem;
-					font-weight: 600;
-					color: var(--color-text-tertiary);
-					background: transparent;
-					border: 1px solid var(--color-border);
-					padding: 0.1rem 0.45rem;
-					border-radius: 99px;
 					letter-spacing: 0.05em;
 				}
 
