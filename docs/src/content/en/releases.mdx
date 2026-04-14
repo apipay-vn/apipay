@@ -1,0 +1,23 @@
+---
+title: Release Notes
+description: Latest updates and improvements to ApiPay
+---
+
+# Release Notes
+
+<p style={{color: "var(--color-text-secondary)", fontSize: "0.95rem", marginBottom: "0", marginTop: "0.5rem"}}>
+  Latest updates and improvements
+</p>
+
+import {ReleasesAccordion} from "@/components/ReleasesAccordion";
+import {enReleases} from "@/data/releases";
+
+<ReleasesAccordion
+  releases={enReleases}
+  labels={{
+    features: "New Features",
+    fixes: "Bug Fixes",
+    improvements: "Improvements",
+    empty: "No release notes available.",
+  }}
+/>

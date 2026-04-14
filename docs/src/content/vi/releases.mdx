@@ -1,0 +1,23 @@
+---
+title: Lịch phát hành
+description: Cập nhật và cải tiến mới nhất của ApiPay
+---
+
+# Lịch phát hành
+
+<p style={{color: "var(--color-text-secondary)", fontSize: "0.95rem", marginBottom: "0", marginTop: "0.5rem"}}>
+  Cập nhật và cải tiến mới nhất
+</p>
+
+import {ReleasesAccordion} from "@/components/ReleasesAccordion";
+import {viReleases} from "@/data/releases";
+
+<ReleasesAccordion
+  releases={viReleases}
+  labels={{
+    features: "Tính năng mới",
+    fixes: "Sửa lỗi",
+    improvements: "Cải tiến",
+    empty: "Không có ghi chú phát hành.",
+  }}
+/>

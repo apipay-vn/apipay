@@ -62,6 +62,12 @@ export const searchItems: SearchItem[] = [
 		href: "/vi/api/banks",
 		section: "API Reference",
 	},
+	{
+		title: "Lịch phát hành",
+		description: "Cập nhật và cải tiến mới nhất của ApiPay",
+		href: "/vi/releases",
+		section: "Hướng dẫn",
+	},
 
 	// English
 	{
@@ -117,5 +123,11 @@ export const searchItems: SearchItem[] = [
 		description: "List of supported banks",
 		href: "/en/api/banks",
 		section: "API Reference",
+	},
+	{
+		title: "Release Notes",
+		description: "Latest updates and improvements to ApiPay",
+		href: "/en/releases",
+		section: "Guides",
 	},
 ];

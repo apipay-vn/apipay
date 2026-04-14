@@ -44,3 +44,7 @@ export const enSidebarConfig: SidebarItem[] = [
 
 // Legacy export for backward compatibility
 export const sidebarConfig = viSidebarConfig;
+
+// Release Notes - appended at bottom
+viSidebarConfig.push({label: "Lịch phát hành", href: "/vi/releases"});
+enSidebarConfig.push({label: "Release Notes", href: "/en/releases"});
