@@ -125,6 +125,12 @@ function getRouteTitle(frontmatter?: Record<string, unknown>) {
 
 export default function App() {
   const locale = getLocaleFromCookie();
+  const routeTitles = Object.fromEntries(
+    allRoutes.flatMap(({path, frontmatter}) => {
+      const title = getRouteTitle(frontmatter);
+      return title ? [[path, title]] : [];
+    })
+  );
 
   return (
     <BrowserRouter>
@@ -132,7 +138,7 @@ export default function App() {
       <MDXProvider components={mdxComponents}>
         <Routes>
           <Route path="/" element={<RootRedirect />} />
-          <Route element={<Layout />}>
+          <Route element={<Layout routeTitles={routeTitles} />}>
             {allRoutes.map(({path, Component, frontmatter}) => (
               <Route
                 key={path}

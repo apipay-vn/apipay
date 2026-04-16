@@ -1,15 +1,27 @@
 import {searchItems} from '@/utils/searchIndex';
 import {useCallback, useEffect, useState} from 'react';
-import {Outlet, useMatches} from 'react-router-dom';
+import {Outlet, useLocation} from 'react-router-dom';
 import {Navbar} from './Navbar';
 import {SearchDialog} from './SearchDialog';
 import {Sidebar} from './Sidebar';
 import {TableOfContents} from './TableOfContents';
 
-export function Layout() {
+interface LayoutProps {
+  routeTitles: Record<string, string>;
+}
+
+function normalizePathname(pathname: string) {
+  if (pathname !== '/' && pathname.endsWith('/')) {
+    return pathname.slice(0, -1);
+  }
+
+  return pathname;
+}
+
+export function Layout({routeTitles}: LayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const matches = useMatches();
+  const {pathname} = useLocation();
 
   const toggleSidebar = useCallback(() => setSidebarOpen(s => !s), []);
   const closeSidebar = useCallback(() => setSidebarOpen(false), []);
@@ -27,13 +39,9 @@ export function Layout() {
   }, []);
 
   useEffect(() => {
-    const matchedRoute = [...matches].reverse().find(match => {
-      const handle = match.handle as {title?: string} | undefined;
-      return Boolean(handle?.title);
-    });
-    const pageTitle = (matchedRoute?.handle as {title?: string} | undefined)?.title;
+    const pageTitle = routeTitles[normalizePathname(pathname)];
     document.title = pageTitle ? `${pageTitle} | ApiPay Docs` : 'ApiPay Docs';
-  }, [matches]);
+  }, [pathname, routeTitles]);
 
   return (
     <div className="layout">
