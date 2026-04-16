@@ -118,6 +118,11 @@ function RootRedirect() {
   return <Navigate to={`/${locale}`} replace />;
 }
 
+function getRouteTitle(frontmatter?: Record<string, unknown>) {
+  const title = frontmatter?.title;
+  return typeof title === 'string' && title.trim() ? title.trim() : undefined;
+}
+
 export default function App() {
   const locale = getLocaleFromCookie();
 
@@ -128,10 +133,15 @@ export default function App() {
         <Routes>
           <Route path="/" element={<RootRedirect />} />
           <Route element={<Layout />}>
-            {allRoutes.map(({path, Component}) => (
-              <Route key={path} path={path} element={<DocPage Component={Component} />} />
+            {allRoutes.map(({path, Component, frontmatter}) => (
+              <Route
+                key={path}
+                path={path}
+                element={<DocPage Component={Component} />}
+                handle={{title: getRouteTitle(frontmatter)}}
+              />
             ))}
-            <Route path="*" element={<NotFound locale={locale} />} />
+            <Route path="*" element={<NotFound locale={locale} />} handle={{title: '404'}} />
           </Route>
         </Routes>
       </MDXProvider>

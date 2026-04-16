@@ -1,53 +1,56 @@
-import {searchItems} from "@/utils/searchIndex";
-import {useCallback, useEffect, useState} from "react";
-import {Outlet} from "react-router-dom";
-import {Navbar} from "./Navbar";
-import {SearchDialog} from "./SearchDialog";
-import {Sidebar} from "./Sidebar";
-import {TableOfContents} from "./TableOfContents";
+import {searchItems} from '@/utils/searchIndex';
+import {useCallback, useEffect, useState} from 'react';
+import {Outlet, useMatches} from 'react-router-dom';
+import {Navbar} from './Navbar';
+import {SearchDialog} from './SearchDialog';
+import {Sidebar} from './Sidebar';
+import {TableOfContents} from './TableOfContents';
 
 export function Layout() {
-	const [sidebarOpen, setSidebarOpen] = useState(false);
-	const [searchOpen, setSearchOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const matches = useMatches();
 
-	const toggleSidebar = useCallback(() => setSidebarOpen((s) => !s), []);
-	const closeSidebar = useCallback(() => setSidebarOpen(false), []);
+  const toggleSidebar = useCallback(() => setSidebarOpen(s => !s), []);
+  const closeSidebar = useCallback(() => setSidebarOpen(false), []);
 
-	// Global ⌘K shortcut
-	useEffect(() => {
-		const handleKeyDown = (e: KeyboardEvent) => {
-			if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-				e.preventDefault();
-				setSearchOpen(true);
-			}
-		};
-		document.addEventListener("keydown", handleKeyDown);
-		return () => document.removeEventListener("keydown", handleKeyDown);
-	}, []);
+  // Global ⌘K shortcut
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setSearchOpen(true);
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
-	return (
-		<div className="layout">
-			<Navbar
-				onMenuToggle={toggleSidebar}
-				onSearchOpen={() => setSearchOpen(true)}
-			/>
-			<Sidebar isOpen={sidebarOpen} onClose={closeSidebar} />
+  useEffect(() => {
+    const matchedRoute = [...matches].reverse().find(match => {
+      const handle = match.handle as {title?: string} | undefined;
+      return Boolean(handle?.title);
+    });
+    const pageTitle = (matchedRoute?.handle as {title?: string} | undefined)?.title;
+    document.title = pageTitle ? `${pageTitle} | ApiPay Docs` : 'ApiPay Docs';
+  }, [matches]);
 
-			<main className="main-content">
-				<article className="mdx-content animate-fade-in">
-					<Outlet />
-				</article>
-			</main>
+  return (
+    <div className="layout">
+      <Navbar onMenuToggle={toggleSidebar} onSearchOpen={() => setSearchOpen(true)} />
+      <Sidebar isOpen={sidebarOpen} onClose={closeSidebar} />
 
-			<TableOfContents />
+      <main className="main-content">
+        <article className="mdx-content animate-fade-in">
+          <Outlet />
+        </article>
+      </main>
 
-			<SearchDialog
-				isOpen={searchOpen}
-				onClose={() => setSearchOpen(false)}
-				items={searchItems}
-			/>
+      <TableOfContents />
 
-			<style>{`
+      <SearchDialog isOpen={searchOpen} onClose={() => setSearchOpen(false)} items={searchItems} />
+
+      <style>{`
 				.layout {
 					min-height: 100vh;
 				}
@@ -78,6 +81,6 @@ export function Layout() {
 					}
 				}
 			`}</style>
-		</div>
-	);
+    </div>
+  );
 }
