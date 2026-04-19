@@ -13,7 +13,7 @@ Bank accounts are the foundation of receiving payments on ApiPay. Each connected
 
 When a customer makes a payment to your linked bank account, ApiPay:
 
-1. **Detects** the incoming transfer via Pay2S OpenBanking
+1. **Detects** the incoming transfer via OpenBanking
 2. **Matches** the transfer to the corresponding payment request
 3. **Notifies** you instantly via webhook
 
@@ -23,11 +23,11 @@ This means you don't need to manually reconcile payments — everything is autom
 
 ## Supported Banks
 
-| Bank | Code | Personal | Business | Key Features |
-|------|------|:--------:|:--------:|--------------|
-| **ACB** | ACB | Yes | Yes | OpenBanking, Sync inward/outward |
-| **MB Bank** | MBB | Yes | Yes | OpenBanking, Sync inward/outward |
-| **BIDV** | BIDV | Yes | No | OpenBanking, Virtual Account |
+| Bank        | Code | Personal | Business | Key Features                     |
+| ----------- | ---- | :------: | :------: | -------------------------------- |
+| **ACB**     | ACB  |   Yes    |   Yes    | OpenBanking, Sync inward/outward |
+| **MB Bank** | MBB  |   Yes    |   Yes    | OpenBanking, Sync inward/outward |
+| **BIDV**    | BIDV |   Yes    |    No    | OpenBanking, Virtual Account     |
 
 Other banks (VietinBank, VietcomBank) are coming soon.
 
@@ -67,11 +67,11 @@ BIDV supports **Virtual Account (VA)**. The system generates VAs based on a **Me
 
 ### Recommended Setup
 
-| Volume | Recommended |
-|--------|-------------|
-| Low | 1-2 banks |
-| Medium | 3-5 banks |
-| High | Use all available slots |
+| Volume | Recommended             |
+| ------ | ----------------------- |
+| Low    | 1-2 banks               |
+| Medium | 3-5 banks               |
+| High   | Use all available slots |
 
 ---
 

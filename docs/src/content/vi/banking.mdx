@@ -13,7 +13,7 @@ Tài khoản ngân hàng là nền tảng để nhận thanh toán trên ApiPay.
 
 Khi khách hàng chuyển tiền vào tài khoản ngân hàng đã liên kết, ApiPay sẽ:
 
-1. **Phát hiện** khoản chuyển vào qua Pay2S OpenBanking
+1. **Phát hiện** khoản chuyển vào qua OpenBanking
 2. **Đối chiếu** khoản chuyển với yêu cầu thanh toán tương ứng
 3. **Thông báo** cho bạn ngay lập tức qua webhook
 
@@ -23,11 +23,11 @@ Khi khách hàng chuyển tiền vào tài khoản ngân hàng đã liên kết,
 
 ## Ngân Hàng Được Hỗ Trợ
 
-| Ngân hàng | Mã | Cá nhân | Doanh nghiệp | Tính năng chính |
-|-----------|----|:--------:|:------------:|-----------------|
-| **ACB** | ACB | Có | Có | OpenBanking, Đồng bộ tiền vào/ra |
-| **MB Bank** | MBB | Có | Có | OpenBanking, Đồng bộ tiền vào/ra |
-| **BIDV** | BIDV | Có | Không | OpenBanking, Tài khoản Ảo |
+| Ngân hàng   | Mã   | Cá nhân | Doanh nghiệp | Tính năng chính                  |
+| ----------- | ---- | :-----: | :----------: | -------------------------------- |
+| **ACB**     | ACB  |   Có    |      Có      | OpenBanking, Đồng bộ tiền vào/ra |
+| **MB Bank** | MBB  |   Có    |      Có      | OpenBanking, Đồng bộ tiền vào/ra |
+| **BIDV**    | BIDV |   Có    |    Không     | OpenBanking, Tài khoản Ảo        |
 
 Các ngân hàng khác (VietinBank, VietcomBank) sắp ra mắt.
 
@@ -65,11 +65,11 @@ BIDV hỗ trợ **Số Tài Khoản Ảo (VA)**. Hệ thống sẽ tạo VA dự
 
 ### Cấu Hình Khuyến Nghị
 
-| Quy mô | Khuyến nghị |
-|--------|------------|
-| Thấp | 1-2 ngân hàng |
-| Trung bình | 3-5 ngân hàng |
-| Cao | Sử dụng tất cả các slot có sẵn |
+| Quy mô     | Khuyến nghị                    |
+| ---------- | ------------------------------ |
+| Thấp       | 1-2 ngân hàng                  |
+| Trung bình | 3-5 ngân hàng                  |
+| Cao        | Sử dụng tất cả các slot có sẵn |
 
 ---
 
