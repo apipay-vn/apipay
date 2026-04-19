@@ -1,3 +1,9 @@
+import {
+	getReleaseSidebarChildren,
+	enReleases,
+	viReleases,
+} from "@/data/releases";
+
 export interface SidebarItem {
 	label: string;
 	href?: string;
@@ -46,5 +52,11 @@ export const enSidebarConfig: SidebarItem[] = [
 export const sidebarConfig = viSidebarConfig;
 
 // Release Notes - appended at bottom
-viSidebarConfig.push({label: "Lịch phát hành", href: "/vi/releases"});
-enSidebarConfig.push({label: "Release Notes", href: "/en/releases"});
+viSidebarConfig.push({
+	label: "Lịch phát hành",
+	children: getReleaseSidebarChildren(viReleases, "vi"),
+});
+enSidebarConfig.push({
+	label: "Release Notes",
+	children: getReleaseSidebarChildren(enReleases, "en"),
+});

@@ -1,8 +1,16 @@
-import {useState} from "react";
-import type {ReleaseNote} from "@/data/releases";
+import {useEffect, useState} from "react";
+import {useLocation} from "react-router-dom";
+import {
+	formatReleaseMonthLabel,
+	getReleaseMonthGroups,
+	type ReleaseLocale,
+	type ReleaseMonthGroup,
+	type ReleaseNote,
+} from "@/data/releases";
 
 interface ReleasesAccordionProps {
 	releases: ReleaseNote[];
+	locale: ReleaseLocale;
 	labels: {
 		features: string;
 		fixes: string;
@@ -29,6 +37,7 @@ function ReleaseItem({
 			}}
 		>
 			<button
+				id={`${release.anchor}-v${release.version}`}
 				onClick={() => setOpen(!open)}
 				style={{
 					display: "flex",
@@ -106,9 +115,9 @@ function ReleaseItem({
 								{labels.features}
 							</h4>
 							<ul style={{listStyle: "none", padding: 0, margin: 0}}>
-								{release.features.map((f, i) => (
+								{release.features.map((feature, index) => (
 									<li
-										key={i}
+										key={`${release.version}-feature-${index}`}
 										style={{
 											display: "flex",
 											fontSize: "0.875rem",
@@ -130,7 +139,7 @@ function ReleaseItem({
 												opacity: 0.5,
 											}}
 										/>
-										{f}
+										{feature}
 									</li>
 								))}
 							</ul>
@@ -150,9 +159,9 @@ function ReleaseItem({
 								{labels.improvements}
 							</h4>
 							<ul style={{listStyle: "none", padding: 0, margin: 0}}>
-								{release.improvements.map((f, i) => (
+								{release.improvements.map((improvement, index) => (
 									<li
-										key={i}
+										key={`${release.version}-improvement-${index}`}
 										style={{
 											display: "flex",
 											fontSize: "0.875rem",
@@ -174,7 +183,7 @@ function ReleaseItem({
 												opacity: 0.5,
 											}}
 										/>
-										{f}
+										{improvement}
 									</li>
 								))}
 							</ul>
@@ -194,9 +203,9 @@ function ReleaseItem({
 								{labels.fixes}
 							</h4>
 							<ul style={{listStyle: "none", padding: 0, margin: 0}}>
-								{release.fixes.map((f, i) => (
+								{release.fixes.map((fix, index) => (
 									<li
-										key={i}
+										key={`${release.version}-fix-${index}`}
 										style={{
 											display: "flex",
 											fontSize: "0.875rem",
@@ -218,7 +227,7 @@ function ReleaseItem({
 												opacity: 0.5,
 											}}
 										/>
-										{f}
+										{fix}
 									</li>
 								))}
 							</ul>
@@ -230,8 +239,111 @@ function ReleaseItem({
 	);
 }
 
-export function ReleasesAccordion({releases, labels}: ReleasesAccordionProps) {
-	if (releases.length === 0) {
+function MonthSection({
+	group,
+	locale,
+	labels,
+	open,
+	onToggle,
+}: {
+	group: ReleaseMonthGroup;
+	locale: ReleaseLocale;
+	labels: ReleasesAccordionProps["labels"];
+	open: boolean;
+	onToggle: () => void;
+}) {
+	return (
+		<section
+			id={group.anchor}
+			style={{
+				border: "1px solid var(--color-border)",
+				borderRadius: "14px",
+				overflow: "hidden",
+				background: "var(--color-bg)",
+				scrollMarginTop: "5rem",
+			}}
+		>
+			<button
+				onClick={onToggle}
+				style={{
+					display: "flex",
+					alignItems: "center",
+					justifyContent: "space-between",
+					width: "100%",
+					padding: "1rem 1.25rem",
+					background: "var(--color-bg-secondary)",
+					border: "none",
+					cursor: "pointer",
+					textAlign: "left",
+					gap: "1rem",
+				}}
+			>
+				<span
+					style={{
+						fontWeight: 650,
+						fontSize: "1rem",
+						color: "var(--color-text)",
+					}}
+				>
+					{formatReleaseMonthLabel(group.anchor, locale)}
+				</span>
+				<svg
+					width="18"
+					height="18"
+					viewBox="0 0 16 16"
+					fill="none"
+					style={{
+						flexShrink: 0,
+						transform: open ? "rotate(180deg)" : "rotate(0deg)",
+						transition: "transform 0.2s ease",
+						color: "var(--color-text-tertiary)",
+					}}
+				>
+					<path
+						d="M4 6L8 10L12 6"
+						stroke="currentColor"
+						strokeWidth="1.5"
+						strokeLinecap="round"
+						strokeLinejoin="round"
+					/>
+				</svg>
+			</button>
+
+			{open && (
+				<div
+					style={{
+						display: "flex",
+						flexDirection: "column",
+						gap: "0.75rem",
+						padding: "1rem",
+						borderTop: "1px solid var(--color-border-light)",
+					}}
+				>
+					{group.releases.map((release) => (
+						<ReleaseItem
+							key={`${release.anchor}-${release.version}`}
+							release={release}
+							labels={labels}
+						/>
+					))}
+				</div>
+			)}
+		</section>
+	);
+}
+
+export function ReleasesAccordion({releases, locale, labels}: ReleasesAccordionProps) {
+	const location = useLocation();
+	const groups = getReleaseMonthGroups(releases);
+	const [openAnchor, setOpenAnchor] = useState<string | null>(() =>
+		location.hash ? location.hash.slice(1) : null,
+	);
+
+	useEffect(() => {
+		setOpenAnchor(location.hash ? location.hash.slice(1) : null);
+	}, [location.hash]);
+
+	if (groups.length === 0) {
 		return (
 			<p
 				style={{
@@ -247,9 +359,20 @@ export function ReleasesAccordion({releases, labels}: ReleasesAccordionProps) {
 	}
 
 	return (
-		<div style={{display: "flex", flexDirection: "column", gap: "0.5rem"}}>
-			{releases.map((release, i) => (
-				<ReleaseItem key={i} release={release} labels={labels} />
+		<div style={{display: "flex", flexDirection: "column", gap: "1rem"}}>
+			{groups.map((group) => (
+				<MonthSection
+					key={group.anchor}
+					group={group}
+					locale={locale}
+					labels={labels}
+					open={openAnchor === group.anchor}
+					onToggle={() =>
+						setOpenAnchor((currentAnchor) =>
+							currentAnchor === group.anchor ? null : group.anchor,
+						)
+					}
+				/>
 			))}
 		</div>
 	);

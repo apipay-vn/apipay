@@ -8,9 +8,29 @@ interface SidebarProps {
 	onClose: () => void;
 }
 
+function isLinkActive(href: string | undefined, pathname: string, hash: string) {
+	if (!href) {
+		return false;
+	}
+
+	if (href.includes("#")) {
+		return `${pathname}${hash}` === href;
+	}
+
+	return pathname === href;
+}
+
+function isLinkOnCurrentPage(href: string | undefined, pathname: string) {
+	if (!href || !href.includes("#")) {
+		return false;
+	}
+
+	return href.split("#")[0] === pathname;
+}
+
 function SidebarLink({item, depth = 0, onClick}: {item: SidebarItem; depth?: number; onClick?: () => void}) {
 	const location = useLocation();
-	const isActive = location.pathname === item.href;
+	const isActive = isLinkActive(item.href, location.pathname, location.hash);
 
 	if (item.href) {
 		return (
@@ -31,7 +51,10 @@ function SidebarLink({item, depth = 0, onClick}: {item: SidebarItem; depth?: num
 function SidebarGroup({item, onLinkClick}: {item: SidebarItem; onLinkClick?: () => void}) {
 	const location = useLocation();
 	const isChildActive =
-		item.children?.some((child) => child.href === location.pathname) ?? false;
+		item.children?.some((child) =>
+			isLinkActive(child.href, location.pathname, location.hash) ||
+			isLinkOnCurrentPage(child.href, location.pathname),
+		) ?? false;
 	const [isOpen, setIsOpen] = useState(isChildActive);
 
 	useEffect(() => {
