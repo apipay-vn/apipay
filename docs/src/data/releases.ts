@@ -79,6 +79,19 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.3',
+    date: '2026-04-23',
+    features: [
+      'Multi-bank support — manage and use multiple bank accounts for receiving payments',
+      'Updated payment page settings — improved bank account management in dashboard',
+    ],
+    fixes: [],
+    improvements: [
+      'Enhanced webhook secret signing for improved security and reliability',
+      'Optimized plan renewal process and email notifications for expiring plans',
+    ],
+  },
+  {
     version: '1.2',
     date: '2026-04-19',
     features: [
@@ -136,6 +149,19 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.3',
+    date: '2026-04-23',
+    features: [
+      'Hỗ trợ nhiều ngân hàng — quản lý và sử dụng nhiều tài khoản ngân hàng để nhận thanh toán',
+      'Cập nhật cài đặt trang thanh toán — cải thiện quản lý tài khoản ngân hàng trên bảng điều khiển',
+    ],
+    fixes: [],
+    improvements: [
+      'Nâng cao bảo mật và độ tin cậy của chữ ký webhook',
+      'Tối ưu quy trình gia hạn gói và thông báo email cho các gói sắp hết hạn',
+    ],
+  },
   {
     version: '1.2',
     date: '2026-04-19',
