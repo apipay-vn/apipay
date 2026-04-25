@@ -1,70 +1,222 @@
 ---
-title: Ngân hàng hỗ trợ
-description: Danh sách các ngân hàng được hỗ trợ
+title: Quản lý ngân hàng
+description: API kết nối và quản lý tài khoản ngân hàng của client
 ---
 
-# Ngân hàng hỗ trợ
+# Quản lý ngân hàng
 
-ApiPay hỗ trợ hầu hết các ngân hàng lớn tại Việt Nam.
+Trang này mô tả API thực tế dùng để client kết nối, xác thực và quản lý tài khoản ngân hàng trên ApiPay.
 
-## Danh sách ngân hàng
+Base route:
 
-| Mã   | Tên ngân hàng | Loại | Hỗ trợ     |
-| ---- | ------------- | ---- | ---------- |
-| ACB  | ACB           | Bank | ✓          |
-| MB   | MB Bank       | Bank | ✓          |
-| BIDV | BIDV          | Bank | ✓          |
-| VCB  | Vietcombank   | Bank | Sắp Ra Mắt |
-| ICB  | VietinBank    | Bank | Sắp Ra Mắt |
+```bash
+/v1/client/banks
+```
 
-## Mã ngân hàng (Bank Codes)
+## Mã ngân hàng hợp lệ
 
-Khi tạo payment link anonymous, sử dụng mã ngân hàng:
+Sử dụng các mã `bankShortName` đúng với logic backend:
+
+| Mã    | Ngân hàng   | Trạng thái |
+| ----- | ----------- | ---------- |
+| `ACB` | ACB         | Hỗ trợ     |
+| `BIDV` | BIDV       | Hỗ trợ     |
+| `MBB` | MB Bank     | Hỗ trợ     |
+| `ICB` | VietinBank  | Theo logic client hiện tại |
+| `VCB` | Vietcombank | Theo logic client hiện tại |
+
+## 1. Kết nối tài khoản ngân hàng
+
+```bash
+POST /v1/client/banks
+```
+
+### Request body
 
 ```json
 {
-  "bankCode": "MB",
-  "accountNumber": "0123456789"
+  "type": "openapi",
+  "bankShortName": "MBB",
+  "accountNumber": "24550721",
+  "accName": "PHAM THANH DANH",
+  "accMobile": "0858838502",
+  "cccd": "012345678901"
 }
 ```
 
-## Lấy danh sách ngân hàng
+### Các field quan trọng
+
+- `type`: `openapi`
+- `bankShortName`: một trong `BIDV`, `ACB`, `MBB`, `ICB`, `VCB`
+- `accountNumber`: số tài khoản ngân hàng
+- `accName`: tên chủ tài khoản
+- `accMobile`: số điện thoại dùng để xác thực
+- `cccd`: bắt buộc với `BIDV` và `MBB`
+- `merchantId`: bắt buộc với `BIDV`
+- `accEmail`: bắt buộc với `BIDV`
+- `username`: bắt buộc với `ICB`, `VCB`, hoặc `ACB` khi `accountType` là `BUSINESS`
+- `password`: bắt buộc với `ICB` và `VCB`
+
+### Response
+
+ApiPay trả về trực tiếp kết quả từ luồng kết nối ngân hàng. Một số ngân hàng sẽ yêu cầu OTP, khi đó response thường báo cần xác thực thêm và hệ thống tạo bank record ở trạng thái `PENDING`.
+
+## 2. Xác thực OTP khi kết nối
 
 ```bash
-GET /v1/banks
+POST /v1/client/banks/confirm-otp
+```
+
+### Request body
+
+```json
+{
+  "bankShortName": "MBB",
+  "accountNumber": "24550721",
+  "accountName": "PHAM THANH DANH",
+  "otp": "123456",
+  "type": "SMS"
+}
+```
+
+### Ghi chú
+
+- Dùng endpoint này khi bước kết nối trả về yêu cầu OTP
+- `merchantId` có thể cần cho một số trường hợp như `BIDV`
+- Khi xác thực thành công, bank record sẽ được chuyển từ `PENDING` sang `ACTIVE`
+
+## 3. Lấy danh sách tài khoản ngân hàng đã liên kết
+
+```bash
+GET /v1/client/banks
 ```
 
 ### Response
 
 ```json
 {
-  "data": [
+  "status": true,
+  "message": [
     {
-      "code": "VCB",
-      "name": "Vietcombank",
-      "shortName": "Vietcombank",
-      "bin": "970436",
-      "logoUrl": "https://api.vietqr.io/img/VCB.png"
-    },
-    {
-      "code": "MB",
-      "name": "MB Bank",
-      "shortName": "MB",
-      "bin": "970426",
-      "logoUrl": "https://api.vietqr.io/img/MB.png"
+      "id": 12,
+      "publicId": "bnk_abc123",
+      "bankName": "MB Bank",
+      "bankShortName": "MBB",
+      "accountNumber": "24550721",
+      "accountName": "PHAM THANH DANH",
+      "vaNumber": "DANH001",
+      "status": "ACTIVE",
+      "createdAt": "2026-04-25T10:00:00.000Z"
     }
   ]
 }
 ```
 
-## Supported QR Formats
+### Trạng thái tài khoản
 
-ApiPay tạo QR code theo chuẩn VietQR, tương thích với tất cả các ngân hàng:
+- `ACTIVE`: đang hoạt động
+- `INACTIVE`: đã tắt
+- `PENDING`: đang chờ xác thực OTP hoặc hoàn tất liên kết
 
-- **VietQR** - Chuẩn QR của VietQR API
-- **Bank Transfer** - Thông tin chuyển khoản truyền thống
+## 4. Lấy chi tiết một tài khoản ngân hàng
 
-Người dùng có thể quét bằng:
+```bash
+GET /v1/client/banks/:publicId
+```
 
-- App ngân hàng (Vietcombank Mobile, MB Bank, ACB, etc.)
-- App thanh toán (VietQR, MoMo, ZaloPay, etc.)
+### Response thành công
+
+```json
+{
+  "status": true,
+  "message": {
+    "publicId": "bnk_abc123",
+    "bankShortName": "MBB",
+    "accountNumber": "24550721",
+    "accountName": "PHAM THANH DANH"
+  }
+}
+```
+
+### Nếu không tìm thấy
+
+```json
+{
+  "status": false,
+  "message": null
+}
+```
+
+## 5. Lấy thống kê ngân hàng
+
+```bash
+GET /v1/client/banks/summary
+```
+
+### Response
+
+```json
+{
+  "total": 3,
+  "active": 2,
+  "inactive": 1,
+  "pending": 0
+}
+```
+
+## 6. Bật hoặc tắt trạng thái ngân hàng
+
+```bash
+PATCH /v1/client/banks/:id/status
+```
+
+Trong route này, `:id` là `publicId` của bank account.
+
+### Ghi chú
+
+- Chỉ dùng được với tài khoản đã liên kết đầy đủ
+- Nếu tài khoản chưa hoàn tất kích hoạt, API sẽ trả lỗi
+
+## 7. Ngắt kết nối tài khoản ngân hàng
+
+```bash
+DELETE /v1/client/banks/:id
+```
+
+Trong route này, `:id` là `publicId` của bank account.
+
+### Ghi chú
+
+- Một số ngân hàng có thể yêu cầu OTP khi xóa
+- Nếu cần OTP, API sẽ trả về kết quả yêu cầu xác thực thay vì xóa ngay
+
+## 8. Xác thực OTP khi ngắt kết nối
+
+```bash
+POST /v1/client/banks/:id/confirm-delete
+```
+
+### Request body
+
+```json
+{
+  "otp": "123456"
+}
+```
+
+## 9. Xóa một ngân hàng chưa xác thực
+
+```bash
+POST /v1/client/banks/remove-unconfirmed
+```
+
+### Request body
+
+```json
+{
+  "bankShortName": "MBB",
+  "accountNumber": "24550721"
+}
+```
+
+Endpoint này dùng để dọn record `PENDING` hoặc record chưa hoàn tất xác thực.

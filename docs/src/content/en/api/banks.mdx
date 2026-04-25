@@ -1,70 +1,222 @@
 ---
-title: Supported Banks
-description: List of supported banks
+title: Bank Management
+description: API for connecting and managing client bank accounts
 ---
 
-# Supported Banks
+# Bank Management
 
-ApiPay supports most major banks in Vietnam.
+This page documents the actual client bank management API used to connect, verify, and manage bank accounts in ApiPay.
 
-## Bank List
+Base route:
 
-| Code | Bank Name   | Type | Supported |
-| ---- | ----------- | ---- | --------- |
-| ACB  | ACB         | Bank | ✓         |
-| MB   | MB Bank     | Bank | ✓         |
-| BIDV | BIDV        | Bank | ✓         |
-| VCB  | Vietcombank | Bank | Incoming  |
-| ICB  | VietinBank  | Bank | Incoming  |
+```bash
+/v1/client/banks
+```
 
-## Bank Codes
+## Valid bank codes
 
-When creating anonymous payment links, use bank codes:
+Use these `bankShortName` values to match the current backend logic:
+
+| Code | Bank | Status |
+| ---- | ---- | ------ |
+| `ACB` | ACB | Supported |
+| `BIDV` | BIDV | Supported |
+| `MBB` | MB Bank | Supported |
+| `ICB` | VietinBank | Present in current client logic |
+| `VCB` | Vietcombank | Present in current client logic |
+
+## 1. Connect a bank account
+
+```bash
+POST /v1/client/banks
+```
+
+### Request body
 
 ```json
 {
-  "bankCode": "MB",
-  "accountNumber": "0123456789"
+  "type": "openapi",
+  "bankShortName": "MBB",
+  "accountNumber": "24550721",
+  "accName": "PHAM THANH DANH",
+  "accMobile": "0858838502",
+  "cccd": "012345678901"
 }
 ```
 
-## Get Bank List
+### Important fields
+
+- `type`: `openapi`
+- `bankShortName`: one of `BIDV`, `ACB`, `MBB`, `ICB`, `VCB`
+- `accountNumber`: bank account number
+- `accName`: account holder name
+- `accMobile`: phone number used for verification
+- `cccd`: required for `BIDV` and `MBB`
+- `merchantId`: required for `BIDV`
+- `accEmail`: required for `BIDV`
+- `username`: required for `ICB`, `VCB`, or `ACB` when `accountType` is `BUSINESS`
+- `password`: required for `ICB` and `VCB`
+
+### Response
+
+ApiPay returns the connection result directly. Some banks require OTP verification, and in that case the system creates a local bank record with `PENDING` status first.
+
+## 2. Confirm OTP for bank connection
 
 ```bash
-GET /v1/banks
+POST /v1/client/banks/confirm-otp
+```
+
+### Request body
+
+```json
+{
+  "bankShortName": "MBB",
+  "accountNumber": "24550721",
+  "accountName": "PHAM THANH DANH",
+  "otp": "123456",
+  "type": "SMS"
+}
+```
+
+### Notes
+
+- Use this endpoint when the connect step asks for OTP
+- `merchantId` may still be required in some cases such as `BIDV`
+- On success, matching local records move from `PENDING` to `ACTIVE`
+
+## 3. List linked bank accounts
+
+```bash
+GET /v1/client/banks
 ```
 
 ### Response
 
 ```json
 {
-  "data": [
+  "status": true,
+  "message": [
     {
-      "code": "VCB",
-      "name": "Vietcombank",
-      "shortName": "Vietcombank",
-      "bin": "970436",
-      "logoUrl": "https://api.vietqr.io/img/VCB.png"
-    },
-    {
-      "code": "MB",
-      "name": "MB Bank",
-      "shortName": "MB",
-      "bin": "970426",
-      "logoUrl": "https://api.vietqr.io/img/MB.png"
+      "id": 12,
+      "publicId": "bnk_abc123",
+      "bankName": "MB Bank",
+      "bankShortName": "MBB",
+      "accountNumber": "24550721",
+      "accountName": "PHAM THANH DANH",
+      "vaNumber": "DANH001",
+      "status": "ACTIVE",
+      "createdAt": "2026-04-25T10:00:00.000Z"
     }
   ]
 }
 ```
 
-## Supported QR Formats
+### Account statuses
 
-ApiPay generates QR codes in VietQR standard, compatible with all banks:
+- `ACTIVE`: enabled and usable
+- `INACTIVE`: disabled
+- `PENDING`: waiting for OTP or connection completion
 
-- **VietQR** - QR standard from VietQR API
-- **Bank Transfer** - Traditional transfer information
+## 4. Get a single bank account
 
-Users can scan using:
+```bash
+GET /v1/client/banks/:publicId
+```
 
-- Bank apps (Vietcombank Mobile, MB Bank, ACB, etc.)
-- Payment apps (VietQR, MoMo, ZaloPay, etc.)
+### Success response
+
+```json
+{
+  "status": true,
+  "message": {
+    "publicId": "bnk_abc123",
+    "bankShortName": "MBB",
+    "accountNumber": "24550721",
+    "accountName": "PHAM THANH DANH"
+  }
+}
+```
+
+### Not found response
+
+```json
+{
+  "status": false,
+  "message": null
+}
+```
+
+## 5. Get bank summary
+
+```bash
+GET /v1/client/banks/summary
+```
+
+### Response
+
+```json
+{
+  "total": 3,
+  "active": 2,
+  "inactive": 1,
+  "pending": 0
+}
+```
+
+## 6. Toggle bank status
+
+```bash
+PATCH /v1/client/banks/:id/status
+```
+
+For this route, `:id` is the bank account `publicId`.
+
+### Notes
+
+- This only works for fully linked accounts
+- If activation is not complete yet, the API returns an error
+
+## 7. Disconnect a bank account
+
+```bash
+DELETE /v1/client/banks/:id
+```
+
+For this route, `:id` is the bank account `publicId`.
+
+### Notes
+
+- Some banks may require OTP confirmation before deletion
+- If OTP is required, the API returns that verification step instead of deleting immediately
+
+## 8. Confirm OTP for bank disconnection
+
+```bash
+POST /v1/client/banks/:id/confirm-delete
+```
+
+### Request body
+
+```json
+{
+  "otp": "123456"
+}
+```
+
+## 9. Remove an unconfirmed bank account
+
+```bash
+POST /v1/client/banks/remove-unconfirmed
+```
+
+### Request body
+
+```json
+{
+  "bankShortName": "MBB",
+  "accountNumber": "24550721"
+}
+```
+
+Use this endpoint to clean up `PENDING` or otherwise unconfirmed bank records.
