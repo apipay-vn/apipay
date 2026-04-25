@@ -61,19 +61,26 @@ The customer will see a payment page with a QR Code to scan with their bank app.
 
 ## Step 4: Receive Notifications
 
-Configure a webhook URL in the dashboard to receive notifications when payments occur:
+Configure a webhook URL in the dashboard to receive notifications when bank transactions are detected:
 
 ```json
 {
-	"event": "payment.completed",
+	"event": "transaction.in",
 	"data": {
-		"publicId": "APIPAYJSCAF9H23M74K",
+		"transactionId": "550e8400-e29b-41d4-a716-446655440000",
+		"referenceCode": "TX123456789",
 		"amount": "100000",
-		"transactionId": "TXN-12345",
-		"completedAt": "2026-03-06T10:30:00Z"
+		"type": "IN",
+		"content": "ORDER-12345",
+		"transactionDate": "2026-03-06T10:30:00Z",
+		"bankAccountPublicId": "bk_abcdef1234567890",
+		"gateway": "VCB",
+		"accountNumber": "0123456789"
 	}
 }
 ```
+
+ApiPay sends `transaction.in` for incoming money and `transaction.out` for outgoing transfers. See [Webhooks](/en/api/webhooks) for the full payload and signature verification.
 
 ## Code Examples
 
