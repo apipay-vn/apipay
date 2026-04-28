@@ -79,6 +79,22 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.4',
+    date: '2026-04-28',
+    features: [
+      'Customizable notification templates — configure message templates for each notification channel (Telegram, Slack, Discord, Lark, Email)',
+      'Enhanced notification key labels — clearer, more descriptive labels for additional notification event types',
+    ],
+    fixes: [
+      'Improved notification delivery reliability across all channels',
+      'Fixed notification rendering for special characters in transaction data',
+    ],
+    improvements: [
+      'Optimized notification queue processing for higher throughput',
+      'Improved template rendering performance and memory usage',
+    ],
+  },
+  {
     version: '1.3',
     date: '2026-04-23',
     features: [
@@ -149,6 +165,22 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.4',
+    date: '2026-04-28',
+    features: [
+      'Mẫu thông báo tùy chỉnh — cấu hình mẫu tin nhắn cho từng kênh thông báo (Telegram, Slack, Discord, Lark, Email)',
+      'Nhãn thông báo nâng cao — nhãn rõ ràng hơn, mô tả chi tiết hơn cho các loại sự kiện thông báo bổ sung',
+    ],
+    fixes: [
+      'Cải thiện độ tin cậy gửi thông báo trên tất cả các kênh',
+      'Sửa lỗi hiển thị ký tự đặc biệt trong dữ liệu giao dịch',
+    ],
+    improvements: [
+      'Tối ưu hàng đợi thông báo giúp xử lý nhanh hơn',
+      'Cải thiện hiệu năng render mẫu và sử dụng bộ nhớ',
+    ],
+  },
   {
     version: '1.3',
     date: '2026-04-23',
