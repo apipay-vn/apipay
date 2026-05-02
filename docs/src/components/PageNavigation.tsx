@@ -5,7 +5,7 @@ import {Link, useLocation} from "react-router-dom";
 function flattenSidebar(items: SidebarItem[]): {label: string; href: string}[] {
 	const result: {label: string; href: string}[] = [];
 	for (const item of items) {
-		if (item.href) result.push({label: item.label, href: item.href});
+		if (item.href && !item.external) result.push({label: item.label, href: item.href});
 		if (item.children) result.push(...flattenSidebar(item.children));
 	}
 	return result;

@@ -7,6 +7,7 @@ import {
 export interface SidebarItem {
 	label: string;
 	href?: string;
+	external?: boolean;
 	children?: SidebarItem[];
 }
 
@@ -27,6 +28,16 @@ export const viSidebarConfig: SidebarItem[] = [
 			{label: "Metrics", href: "/vi/api/metrics"},
 		],
 	},
+	{
+		label: "Hỗ trợ",
+		children: [
+			{
+				label: "Cộng đồng Zalo",
+				href: "https://zalo.me/g/qlubbbpczn7dfd1punuw",
+				external: true,
+			},
+		],
+	},
 ];
 
 export const enSidebarConfig: SidebarItem[] = [
@@ -44,6 +55,16 @@ export const enSidebarConfig: SidebarItem[] = [
 			{label: "Webhooks", href: "/en/api/webhooks"},
 			{label: "Banks", href: "/en/api/banks"},
 			{label: "Metrics", href: "/en/api/metrics"},
+		],
+	},
+	{
+		label: "Support",
+		children: [
+			{
+				label: "Zalo Community",
+				href: "https://zalo.me/g/qlubbbpczn7dfd1punuw",
+				external: true,
+			},
 		],
 	},
 ];

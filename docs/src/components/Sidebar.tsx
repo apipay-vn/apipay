@@ -33,6 +33,21 @@ function SidebarLink({item, depth = 0, onClick}: {item: SidebarItem; depth?: num
 	const isActive = isLinkActive(item.href, location.pathname, location.hash);
 
 	if (item.href) {
+		if (item.external) {
+			return (
+				<a
+					href={item.href}
+					target="_blank"
+					rel="noopener noreferrer"
+					className="sidebar-link"
+					style={{paddingLeft: `${1 + depth * 0.75}rem`}}
+					onClick={onClick}
+				>
+					{item.label}
+				</a>
+			);
+		}
+
 		return (
 			<Link
 				to={item.href}
