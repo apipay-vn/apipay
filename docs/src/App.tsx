@@ -123,13 +123,21 @@ function getRouteTitle(frontmatter?: Record<string, unknown>) {
   return typeof title === 'string' && title.trim() ? title.trim() : undefined;
 }
 
+function getRouteDescription(frontmatter?: Record<string, unknown>) {
+  const description = frontmatter?.description;
+  return typeof description === 'string' && description.trim() ? description.trim() : undefined;
+}
+
 export default function App() {
   const locale = getLocaleFromCookie();
-  const routeTitles = Object.fromEntries(
-    allRoutes.flatMap(({path, frontmatter}) => {
-      const title = getRouteTitle(frontmatter);
-      return title ? [[path, title]] : [];
-    })
+  const routeMetadata = Object.fromEntries(
+    allRoutes.map(({path, frontmatter}) => [
+      path,
+      {
+        title: getRouteTitle(frontmatter),
+        description: getRouteDescription(frontmatter),
+      },
+    ])
   );
 
   return (
@@ -138,7 +146,7 @@ export default function App() {
       <MDXProvider components={mdxComponents}>
         <Routes>
           <Route path="/" element={<RootRedirect />} />
-          <Route element={<Layout routeTitles={routeTitles} />}>
+          <Route element={<Layout routeMetadata={routeMetadata} />}>
             {allRoutes.map(({path, Component, frontmatter}) => (
               <Route
                 key={path}

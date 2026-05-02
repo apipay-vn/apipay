@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://docs.apipay.vn/en</loc></url>
+  <url><loc>https://docs.apipay.vn/en/api/authentication</loc></url>
+  <url><loc>https://docs.apipay.vn/en/api/banks</loc></url>
+  <url><loc>https://docs.apipay.vn/en/api/metrics</loc></url>
+  <url><loc>https://docs.apipay.vn/en/api/payment-requests</loc></url>
+  <url><loc>https://docs.apipay.vn/en/api/webhooks</loc></url>
+  <url><loc>https://docs.apipay.vn/en/banking</loc></url>
+  <url><loc>https://docs.apipay.vn/en/connect-banks</loc></url>
+  <url><loc>https://docs.apipay.vn/en/custom-domains</loc></url>
+  <url><loc>https://docs.apipay.vn/en/dashboard</loc></url>
+  <url><loc>https://docs.apipay.vn/en/onboarding</loc></url>
+  <url><loc>https://docs.apipay.vn/en/quickstart</loc></url>
+  <url><loc>https://docs.apipay.vn/en/releases</loc></url>
+  <url><loc>https://docs.apipay.vn/en/subscription</loc></url>
+  <url><loc>https://docs.apipay.vn/vi</loc></url>
+  <url><loc>https://docs.apipay.vn/vi/api/authentication</loc></url>
+  <url><loc>https://docs.apipay.vn/vi/api/banks</loc></url>
+  <url><loc>https://docs.apipay.vn/vi/api/metrics</loc></url>
+  <url><loc>https://docs.apipay.vn/vi/api/payment-requests</loc></url>
+  <url><loc>https://docs.apipay.vn/vi/api/webhooks</loc></url>
+  <url><loc>https://docs.apipay.vn/vi/banking</loc></url>
+  <url><loc>https://docs.apipay.vn/vi/connect-banks</loc></url>
+  <url><loc>https://docs.apipay.vn/vi/custom-domains</loc></url>
+  <url><loc>https://docs.apipay.vn/vi/dashboard</loc></url>
+  <url><loc>https://docs.apipay.vn/vi/onboarding</loc></url>
+  <url><loc>https://docs.apipay.vn/vi/quickstart</loc></url>
+  <url><loc>https://docs.apipay.vn/vi/releases</loc></url>
+  <url><loc>https://docs.apipay.vn/vi/subscription</loc></url>
+</urlset>
