@@ -79,6 +79,22 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.5',
+    date: '2026-05-04',
+    features: [
+      'Delivery tracking — track notification delivery status (sent/failed) across all channels: Email, Telegram, Slack, Lark, Discord',
+      'Webhook metrics — monitor webhook delivery performance with success and error counts per period',
+      'Notification metrics — view total notifications sent per period',
+      'Hourly transaction chart — bar chart showing transaction volume and amount by hour for any selected date in Vietnam time',
+    ],
+    fixes: [],
+    improvements: [
+      'Replaced status pie chart with hourly transaction bar chart on overview pages for clearer daily breakdown',
+      'Improved query performance for webhook delivery data',
+      'Better end-to-end tracking of notification delivery from queue to final status',
+    ],
+  },
+  {
     version: '1.4',
     date: '2026-04-28',
     features: [
@@ -165,6 +181,22 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.5',
+    date: '2026-05-04',
+    features: [
+      'Theo dõi gửi thông báo — theo dõi trạng thái gửi (thành công/thất bại) trên tất cả kênh: Email, Telegram, Slack, Lark, Discord',
+      'Chỉ số webhook — theo dõi hiệu suất gửi webhook với số lần thành công và lỗi theo kỳ',
+      'Chỉ số thông báo — xem tổng số thông báo đã gửi theo kỳ',
+      'Biểu đồ giao dịch theo giờ — biểu đồ cột thể hiện khối lượng và số tiền giao dịch theo giờ trong ngày theo giờ Việt Nam',
+    ],
+    fixes: [],
+    improvements: [
+      'Thay biểu đồ tròn phân bổ trạng thái bằng biểu đồ cột giao dịch theo giờ trên trang tổng quan để xem rõ hơn',
+      'Cải thiện hiệu suất truy vấn dữ liệu gửi webhook',
+      'Theo dõi gửi thông báo đầu cuối tốt hơn từ hàng đợi đến trạng thái cuối cùng',
+    ],
+  },
   {
     version: '1.4',
     date: '2026-04-28',
