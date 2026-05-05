@@ -79,6 +79,18 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.6',
+    date: '2026-05-05',
+    features: [
+      'Transaction data export — download transaction records in CSV format with flexible date range and filters',
+    ],
+    fixes: [],
+    improvements: [
+      'Hourly transaction chart with improved mobile responsiveness and tooltips',
+      'Refined date filtering interface across transaction and metrics views',
+    ],
+  },
+  {
     version: '1.5',
     date: '2026-05-04',
     features: [
@@ -181,6 +193,16 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.6',
+    date: '2026-05-05',
+    features: ['Xuất dữ liệu giao dịch — tải bản ghi giao dịch dưới dạng CSV với khoảng thời gian và bộ lọc linh hoạt'],
+    fixes: [],
+    improvements: [
+      'Biểu đồ giao dịch theo giờ với cải thiện hiển thị trên di động và công cụ hiển thị thông tin',
+      'Giao diện lọc theo ngày được tinh chỉnh cho các trang xem giao dịch và chỉ số',
+    ],
+  },
   {
     version: '1.5',
     date: '2026-05-04',
