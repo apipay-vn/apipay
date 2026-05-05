@@ -86,22 +86,51 @@ GET /v1/client/metrics/time-series
 
 ---
 
-## Status Distribution
+## Daily Transactions
 
-Get transaction distribution by status.
+Get hourly transaction activity for a specific Vietnam date.
 
 ```bash
-GET /v1/client/metrics/status-distribution
+GET /v1/client/metrics/hourly-transactions
 ```
+
+### Query Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `date` | string | — | Date in `YYYY-MM-DD` format, interpreted in the `Asia/Ho_Chi_Minh` timezone. Defaults to today in Vietnam. |
+| `status` | string[] | — | Filter by transaction status: `SUCCESS`, `FAILED`, `PENDING` |
+| `bankAccountId` | number[] | — | Filter by one or more bank account IDs |
 
 ### Response
 
 ```json
 {
   "data": [
-    { "status": "COMPLETED", "count": 45, "amount": "4500000" },
-    { "status": "ACTIVE", "count": 3, "amount": "300000" },
-    { "status": "EXPIRED", "count": 2, "amount": "200000" }
+    {
+      "hour": 0,
+      "label": "00:00",
+      "SUCCESS_amount": 2500000,
+      "SUCCESS_count": 5,
+      "FAILED_amount": 0,
+      "FAILED_count": 0,
+      "PENDING_amount": 100000,
+      "PENDING_count": 1,
+      "total_amount": 2600000,
+      "total_count": 6
+    },
+    {
+      "hour": 1,
+      "label": "01:00",
+      "SUCCESS_amount": 0,
+      "SUCCESS_count": 0,
+      "FAILED_amount": 0,
+      "FAILED_count": 0,
+      "PENDING_amount": 0,
+      "PENDING_count": 0,
+      "total_amount": 0,
+      "total_count": 0
+    }
   ]
 }
 ```
