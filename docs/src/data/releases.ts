@@ -79,6 +79,16 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.6.1',
+    date: '2026-05-06',
+    features: ['Notification setup wizard — step-by-step guided setup for Telegram, Discord, Lark, and Slack channels'],
+    fixes: [],
+    improvements: [
+      'Updated Telegram integration documentation with streamlined Chat ID setup using @apipay_vn_bot',
+      'Improved template format display from Markdown to HTML for Telegram notification templates',
+    ],
+  },
+  {
     version: '1.6',
     date: '2026-05-05',
     features: [
@@ -193,6 +203,16 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.6.1',
+    date: '2026-05-06',
+    features: ['Trình hướng dẫn thiết lập thông báo — hướng dẫn từng bước cho Telegram, Discord, Lark và Slack'],
+    fixes: [],
+    improvements: [
+      'Cập nhật tài liệu tích hợp Telegram với hướng dẫn Chat ID đơn giản qua @apipay_vn_bot',
+      'Cải thiện hiển thị định dạng mẫu từ Markdown sang HTML cho mẫu thông báo Telegram',
+    ],
+  },
   {
     version: '1.6',
     date: '2026-05-05',
