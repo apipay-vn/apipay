@@ -22,6 +22,7 @@ Use these `bankShortName` values to match the current backend logic:
 | `ACB` | ACB | Supported |
 | `BIDV` | BIDV | Supported |
 | `MBB` | MB Bank | Supported |
+| `OCB` | OCB | Supported |
 | `ICB` | VietinBank | Coming soon |
 | `VCB` | Vietcombank | Coming soon |
 
@@ -47,7 +48,7 @@ POST /v1/client/banks
 ### Important fields
 
 - `type`: `openapi`
-- `bankShortName`: one of `BIDV`, `ACB`, `MBB`, `ICB`, `VCB`
+- `bankShortName`: one of `BIDV`, `ACB`, `MBB`, `OCB`, `ICB`, `VCB`
 - `accountNumber`: bank account number
 - `accName`: account holder name
 - `accMobile`: phone number used for verification
@@ -56,6 +57,8 @@ POST /v1/client/banks
 - `accEmail`: required for `BIDV`
 - `username`: required for `ICB`, `VCB`, or `ACB` when `accountType` is `BUSINESS`
 - `password`: required for `ICB` and `VCB`
+
+For `OCB`, only the base fields are required: `type`, `bankShortName`, `accountNumber`, `accName`, `accMobile`, and `accountType`.
 
 ### Response
 

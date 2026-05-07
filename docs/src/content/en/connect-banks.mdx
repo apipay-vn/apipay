@@ -27,8 +27,9 @@ Once linked, your bank account appears in the **Banks** section of the dashboard
 | **ACB** | Yes | Yes | OpenBanking, Sync inward/outward |
 | **MB Bank** | Yes | Yes | OpenBanking, Sync inward/outward |
 | **BIDV** | Yes | No | OpenBanking, Virtual Account |
+| **OCB** | Yes | No | OpenBanking, Sync inward/outward |
 
-> **Recommended:** ACB, MB Bank, and BIDV are fully supported. VietinBank and VietcomBank are coming soon.
+> **Recommended:** ACB, MB Bank, BIDV, and OCB are fully supported. VietinBank and VietcomBank are coming soon.
 
 ---
 
@@ -37,7 +38,7 @@ Once linked, your bank account appears in the **Banks** section of the dashboard
 Before linking a bank account, make sure you have:
 
 - An ApiPay account
-- An active Vietnamese bank account (ACB, MB Bank, or BIDV)
+- An active Vietnamese bank account (ACB, MB Bank, BIDV, or OCB)
 - The phone number registered with your bank (for OTP verification)
 - For **BIDV**: a custom Merchant ID for virtual account setup
 - For **MB Bank**: your CCCD/ID card number (12 digits)
@@ -54,7 +55,7 @@ Before linking a bank account, make sure you have:
 3. Click the **Add Bank** button in the top-right corner
 4. On the **Link Bank Account** page, you'll see a list of supported banks
 5. Find your bank in the table:
-   - Check the **Recommended** badge — ACB, MB Bank, and BIDV are recommended
+   - Check the **Recommended** badge — ACB, MB Bank, BIDV, and OCB are recommended
    - Look at **Account Types** — some banks support Personal, Business, or both
    - Note the **Features** — each bank supports different capabilities
 6. Click **Connect** on your chosen bank
@@ -111,6 +112,10 @@ No additional fields required beyond the base fields above.
 | **Account Email** | Your email address registered with BIDV |
 
 > **Note for BIDV:** The Merchant ID is a value you enter to create a Virtual Account (VA) based on your Merchant ID. **Important:** You must transfer money directly to this Virtual Account to receive payment notifications.
+
+#### OCB — Personal Account
+
+No additional fields required beyond the base fields above.
 
 After filling in all fields:
 
@@ -185,7 +190,7 @@ If you want to temporarily stop receiving payments on a specific bank:
 | CCCD rejected | Make sure you enter exactly 12 digits without spaces or special characters. |
 | Bank shows "Pending" status | After linking, the bank should become Active within seconds. If it stays Pending, try refreshing the page. |
 | Account number already linked | Each bank account can only be linked once. If you see this error, the account may already be connected to another ApiPay account. |
-| Account type not available | BIDV only supports Personal accounts. For business accounts, use ACB or MB Bank. |
+| Account type not available | BIDV and OCB currently support Personal accounts. For business accounts, use ACB or MB Bank. |
 
 ---
 

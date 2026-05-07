@@ -7,7 +7,7 @@ ApiPay là giải pháp thanh toán API giúp doanh nghiệp dễ dàng nhận t
 - **Tạo liên kết thanh toán nhanh chóng** — Sinh QR Code hoặc thông tin chuyển khoản chỉ với một API call
 - **Xác nhận thanh toán tự động** — Hệ thống tự nhận biết khi khách hàng chuyển khoản thành công
 - **Webhook thời gian thực** — Nhận thông báo ngay lập tức khi có giao dịch mới
-- **Đa ngân hàng** — Hỗ trợ BIDV, ACB, MBBank và nhiều ngân hàng khác
+- **Đa ngân hàng** — Hỗ trợ BIDV, ACB, MBBank, OCB và nhiều ngân hàng khác
 - **Miễn phí giao dịch** — Không phí transaction, chỉ trả phí dịch vụ theo gói đăng ký
 
 ## Cách hoạt động

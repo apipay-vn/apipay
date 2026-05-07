@@ -27,8 +27,9 @@ Sau khi liên kết thành công, tài khoản ngân hàng của bạn sẽ xu�
 | **ACB** | Có | Có | OpenBanking, Đồng bộ tiền vào/ra |
 | **MB Bank** | Có | Có | OpenBanking, Đồng bộ tiền vào/ra |
 | **BIDV** | Có | Không | OpenBanking, Tài khoản Ảo |
+| **OCB** | Có | Không | OpenBanking, Đồng bộ tiền vào/ra |
 
-> **Khuyến nghị:** ACB, MB Bank và BIDV được hỗ trợ đầy đủ. VietinBank và VietcomBank sắp ra mắt.
+> **Khuyến nghị:** ACB, MB Bank, BIDV và OCB được hỗ trợ đầy đủ. VietinBank và VietcomBank sắp ra mắt.
 
 ---
 
@@ -37,7 +38,7 @@ Sau khi liên kết thành công, tài khoản ngân hàng của bạn sẽ xu�
 Trước khi liên kết tài khoản ngân hàng, hãy đảm bảo bạn có:
 
 - Tài khoản ApiPay
-- Tài khoản ngân hàng Việt Nam đang hoạt động (ACB, MB Bank hoặc BIDV)
+- Tài khoản ngân hàng Việt Nam đang hoạt động (ACB, MB Bank, BIDV hoặc OCB)
 - Số điện thoại đã đăng ký với ngân hàng (để xác minh OTP)
 - Đối với **BIDV**: Mã Merchant ID để thiết lập tài khoản ảo (bạn tự nhập)
 - Đối với **MB Bank**: Số CCCD/CMND (12 chữ số)
@@ -54,7 +55,7 @@ Trước khi liên kết tài khoản ngân hàng, hãy đảm bảo bạn có:
 3. Nhấn nút **Thêm ngân hàng** ở góc trên bên phải
 4. Trên trang **Liên kết tài khoản ngân hàng**, bạn sẽ thấy danh sách các ngân hàng được hỗ trợ
 5. Tìm ngân hàng của bạn trong bảng:
-   - Kiểm tra nhãn **Khuyến nghị** — ACB, MB Bank và BIDV được khuyến nghị
+   - Kiểm tra nhãn **Khuyến nghị** — ACB, MB Bank, BIDV và OCB được khuyến nghị
    - Xem **Loại tài khoản** — một số ngân hàng hỗ trợ Cá nhân, Doanh nghiệp hoặc cả hai
    - Xem **Tính năng** — mỗi ngân hàng hỗ trợ các tính năng khác nhau
 6. Nhấn **Kết nối** trên ngân hàng bạn chọn
@@ -111,6 +112,10 @@ Không cần thêm trường nào ngoài các trường chung bên trên.
 | **Email tài khoản** | Địa chỉ email đã đăng ký với BIDV |
 
 > **Lưu ý cho BIDV:** Merchant ID là mã do bạn tự nhập để hệ thống tạo Tài khoản ảo (VA) dựa trên Merchant ID của bạn. **Lưu ý quan trọng:** Bạn bắt buộc phải chuyển tiền vào đúng Tài khoản ảo này thì hệ thống mới có thể nhận được thông báo giao dịch.
+
+#### OCB — Tài Khoản Cá Nhân
+
+Không cần thêm trường nào ngoài các trường chung bên trên.
 
 Sau khi điền đầy đủ các trường:
 
@@ -185,7 +190,7 @@ Nếu bạn muốn tạm thời ngừng nhận thanh toán trên một ngân hà
 | CCCD bị từ chối | Hãy nhập đúng 12 chữ số, không có khoảng trắng hay ký tự đặc biệt. |
 | Ngân hàng hiển thị trạng thái "Đang chờ" | Sau khi liên kết, ngân hàng sẽ chuyển sang Hoạt động trong vài giây. Nếu vẫn Đang chờ, hãy tải lại trang. |
 | Số tài khoản đã được liên kết | Mỗi tài khoản ngân hàng chỉ có thể liên kết một lần. Nếu thấy lỗi này, tài khoản có thể đã được liên kết với tài khoản ApiPay khác. |
-| Loại tài khoản không khả dụng | BIDV chỉ hỗ trợ tài khoản Cá nhân. Đối với tài khoản doanh nghiệp, hãy sử dụng ACB hoặc MB Bank. |
+| Loại tài khoản không khả dụng | BIDV và OCB hiện chỉ hỗ trợ tài khoản Cá nhân. Đối với tài khoản doanh nghiệp, hãy sử dụng ACB hoặc MB Bank. |
 
 ---
 

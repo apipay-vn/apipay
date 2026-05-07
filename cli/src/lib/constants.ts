@@ -13,6 +13,7 @@ export const SUPPORTED_BANKS = [
 	{value: "BIDV", name: "BIDV — Ngân hàng TMCP Đầu tư và Phát triển Việt Nam"},
 	{value: "ACB", name: "ACB — Ngân hàng TMCP Á Châu"},
 	{value: "MBB", name: "MB Bank — Ngân hàng TMCP Quân đội"},
+	{value: "OCB", name: "OCB — Ngân hàng TMCP Phương Đông"},
 ] as const;
 
 export const WEBHOOK_TYPES = [

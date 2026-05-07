@@ -73,6 +73,7 @@ export default class BanksAdd extends ApiKeyCommand {
 							type: "openapi",
 							bankShortName,
 							accountNumber,
+							accountName: accName,
 							otp,
 						},
 						"apikey",

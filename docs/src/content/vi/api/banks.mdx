@@ -22,6 +22,7 @@ Sử dụng các mã `bankShortName` đúng với logic backend:
 | `ACB` | ACB         | Hỗ trợ     |
 | `BIDV` | BIDV       | Hỗ trợ     |
 | `MBB` | MB Bank     | Hỗ trợ     |
+| `OCB` | OCB         | Hỗ trợ     |
 | `ICB` | VietinBank  | Sắp ra mắt |
 | `VCB` | Vietcombank | Sắp ra mắt |
 
@@ -47,7 +48,7 @@ POST /v1/client/banks
 ### Các field quan trọng
 
 - `type`: `openapi`
-- `bankShortName`: một trong `BIDV`, `ACB`, `MBB`, `ICB`, `VCB`
+- `bankShortName`: một trong `BIDV`, `ACB`, `MBB`, `OCB`, `ICB`, `VCB`
 - `accountNumber`: số tài khoản ngân hàng
 - `accName`: tên chủ tài khoản
 - `accMobile`: số điện thoại dùng để xác thực
@@ -56,6 +57,8 @@ POST /v1/client/banks
 - `accEmail`: bắt buộc với `BIDV`
 - `username`: bắt buộc với `ICB`, `VCB`, hoặc `ACB` khi `accountType` là `BUSINESS`
 - `password`: bắt buộc với `ICB` và `VCB`
+
+Với `OCB`, chỉ cần các field cơ bản: `type`, `bankShortName`, `accountNumber`, `accName`, `accMobile`, và `accountType`.
 
 ### Response
 
