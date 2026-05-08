@@ -79,6 +79,19 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.7',
+    date: '2026-05-08',
+    features: [
+      'Google Sheets integration — automatically send transaction data to Google Sheets in real time, keeping your spreadsheets up to date without manual entry',
+    ],
+    fixes: [],
+    improvements: [
+      'Redesigned payment page bank settings — turn customer bank selection on or off with a single toggle; when off, each payment uses the bank assigned when created',
+      'Clearer bank selection rules — customer bank selection now requires at least 2 active bank accounts, preventing confusion when only one bank is available',
+      'Improved warning messages on WHMCS and HostBill integration pages — clearer guidance when no active bank is connected, with a direct link to the Banks page',
+    ],
+  },
+  {
     version: '1.6.1',
     date: '2026-05-06',
     features: ['Notification setup wizard — step-by-step guided setup for Telegram, Discord, Lark, and Slack channels'],
@@ -203,6 +216,19 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.7',
+    date: '2026-05-08',
+    features: [
+      'Tích hợp Google Sheets — tự động gửi dữ liệu giao dịch vào Google Sheets theo thời gian thực, giữ cho bảng tính của bạn luôn cập nhật mà không cần nhập liệu thủ công',
+    ],
+    fixes: [],
+    improvements: [
+      'Thiết kế lại cài đặt ngân hàng trên trang thanh toán — bật/tắt việc khách chọn ngân hàng; khi tắt, mỗi yêu cầu thanh toán dùng ngân hàng đã gán lúc tạo',
+      'Quy tắc chọn ngân hàng rõ ràng hơn — yêu cầu ít nhất 2 tài khoản ngân hàng hoạt động mới cho phép khách chọn ngân hàng, tránh nhầm lẫn khi chỉ có một ngân hàng',
+      'Cải thiện cảnh báo trên trang tích hợp WHMCS và HostBill — hướng dẫn rõ hơn khi chưa kết nối ngân hàng, kèm liên kết trực tiếp đến trang Ngân hàng',
+    ],
+  },
   {
     version: '1.6.1',
     date: '2026-05-06',
