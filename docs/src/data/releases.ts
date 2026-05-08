@@ -82,7 +82,7 @@ export const enReleases: ReleaseNote[] = withAnchors([
     version: '1.7',
     date: '2026-05-08',
     features: [
-      'Google Sheets integration — automatically send transaction data to Google Sheets in real time, keeping your spreadsheets up to date without manual entry',
+      'Google Sheets integration — connect Google Sheets to create a spreadsheet and sync new bank transactions automatically',
     ],
     fixes: [],
     improvements: [
@@ -219,9 +219,7 @@ export const viReleases: ReleaseNote[] = withAnchors([
   {
     version: '1.7',
     date: '2026-05-08',
-    features: [
-      'Tích hợp Google Sheets — tự động gửi dữ liệu giao dịch vào Google Sheets theo thời gian thực, giữ cho bảng tính của bạn luôn cập nhật mà không cần nhập liệu thủ công',
-    ],
+    features: ['Tích hợp Google Sheets — kết nối Google Sheets để tạo bảng và tự động đồng bộ giao dịch ngân hàng mới'],
     fixes: [],
     improvements: [
       'Thiết kế lại cài đặt ngân hàng trên trang thanh toán — bật/tắt việc khách chọn ngân hàng; khi tắt, mỗi yêu cầu thanh toán dùng ngân hàng đã gán lúc tạo',
