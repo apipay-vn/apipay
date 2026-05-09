@@ -79,6 +79,18 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.7.1',
+    date: '2026-05-09',
+    features: [
+      'Per-channel custom templates — configure custom message templates for each notification type (e.g., payment received, refund) independently per channel (Slack, Discord, Lark, Telegram)',
+    ],
+    fixes: [],
+    improvements: [
+      'Template editor now toggles between edit and preview mode in one view, replacing the split-panel layout',
+      'Discord channel added to the notification type preferences table',
+    ],
+  },
+  {
     version: '1.7',
     date: '2026-05-08',
     features: [
@@ -216,6 +228,18 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.7.1',
+    date: '2026-05-09',
+    features: [
+      'Mẫu tùy chỉnh riêng cho từng kênh — cấu hình mẫu tin nhắn riêng cho từng loại thông báo (ví dụ: đã nhận thanh toán, hoàn tiền) cho từng kênh riêng biệt (Slack, Discord, Lark, Telegram)',
+    ],
+    fixes: [],
+    improvements: [
+      'Trình chỉnh sửa mẫu giờ chuyển đổi giữa chế độ chỉnh sửa và xem trước trong một giao diện duy nhất, thay thế layout chia đôi',
+      'Kênh Discord được thêm vào bảng tùy chọn thông báo theo loại',
+    ],
+  },
   {
     version: '1.7',
     date: '2026-05-08',
