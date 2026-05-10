@@ -79,6 +79,19 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.7.2',
+    date: '2026-05-10',
+    features: [
+      'Realtime dashboard notifications — receive live bank transaction alerts in the dashboard as soon as new money-in or money-out events are processed',
+    ],
+    fixes: [],
+    improvements: [
+      'Optional browser notifications can now be enabled from Account Settings for transaction alerts even when the dashboard tab is in the background',
+      'Realtime subscriptions now follow each active bank account automatically, improving coverage for multi-bank merchants',
+      'Notification center popup now shows up to 10 recent items instead of 5',
+    ],
+  },
+  {
     version: '1.7.1',
     date: '2026-05-09',
     features: [
@@ -228,6 +241,19 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.7.2',
+    date: '2026-05-10',
+    features: [
+      'Thông báo realtime trên dashboard — nhận cảnh báo giao dịch ngân hàng trực tiếp trên bảng điều khiển ngay khi có giao dịch tiền vào hoặc tiền ra mới được xử lý',
+    ],
+    fixes: [],
+    improvements: [
+      'Có thể bật thông báo trình duyệt trong phần Cài đặt tài khoản để nhận cảnh báo giao dịch ngay cả khi tab dashboard đang ở nền',
+      'Realtime subscription giờ tự động theo dõi từng tài khoản ngân hàng đang hoạt động, cải thiện khả năng bao phủ cho merchant dùng nhiều ngân hàng',
+      'Popup trung tâm thông báo giờ hiển thị tối đa 10 mục gần nhất thay vì 5',
+    ],
+  },
   {
     version: '1.7.1',
     date: '2026-05-09',
