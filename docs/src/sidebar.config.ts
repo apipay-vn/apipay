@@ -18,6 +18,7 @@ export const viSidebarConfig: SidebarItem[] = [
 	{label: "Đăng ký & Thanh toán", href: "/vi/subscription"},
 	{label: "Quản lý Ngân hàng", href: "/vi/banking"},
 	{label: "Hướng dẫn Dashboard", href: "/vi/dashboard", children: [{label: "Kết nối Ngân hàng", href: "/vi/connect-banks"}, {label: "Tên miền riêng", href: "/vi/custom-domains"}]},
+	{label: "Tích hợp", children: [{label: "WooCommerce", href: "/vi/integrations/woocommerce"}]},
 	{
 		label: "API Reference",
 		children: [
@@ -47,6 +48,7 @@ export const enSidebarConfig: SidebarItem[] = [
 	{label: "Subscription & Billing", href: "/en/subscription"},
 	{label: "Bank Accounts", href: "/en/banking"},
 	{label: "Dashboard Guide", href: "/en/dashboard", children: [{label: "Connect Banks", href: "/en/connect-banks"}, {label: "Custom Domains", href: "/en/custom-domains"}]},
+	{label: "Integrations", children: [{label: "WooCommerce", href: "/en/integrations/woocommerce"}]},
 	{
 		label: "API Reference",
 		children: [

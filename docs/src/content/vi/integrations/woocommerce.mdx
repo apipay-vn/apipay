@@ -1,0 +1,68 @@
+---
+title: WooCommerce
+description: Cài đặt và cấu hình plugin thanh toán ApiPay WooCommerce bản beta riêng tư.
+---
+
+# WooCommerce
+
+Plugin ApiPay WooCommerce tạo yêu cầu thanh toán ApiPay khi khách checkout, chuyển khách sang trang thanh toán ApiPay, sau đó nhận callback đã ký khi ApiPay khớp giao dịch ngân hàng.
+
+Bản beta chỉ hỗ trợ đơn hàng VND. Thanh toán thành công sẽ chuyển đơn WooCommerce sang trạng thái `processing`.
+
+Plugin hỗ trợ cả hai trải nghiệm checkout của WooCommerce:
+
+- Checkout shortcode cổ điển: `[woocommerce_checkout]`
+- WooCommerce Checkout Block
+
+File ZIP tải về có kèm logo ApiPay để hiển thị trong cài đặt thanh toán WooCommerce và ở trang checkout.
+
+## Cài đặt ZIP
+
+1. Trong dashboard ApiPay, mở **Tích hợp > Web App > WooCommerce**.
+2. Chọn một tài khoản ngân hàng đang hoạt động.
+3. Có thể chọn thêm tên miền riêng đã xác minh.
+4. Tải `apipay-woocommerce.zip`.
+5. Trong WordPress, mở **Plugins > Add New > Upload Plugin** và upload ZIP.
+6. Kích hoạt **ApiPay for WooCommerce**.
+
+## Cấu hình phương thức thanh toán
+
+Mở **WooCommerce > Settings > Payments > ApiPay**.
+
+File ZIP tải từ ApiPay đã điền sẵn:
+
+- API URL
+- Partner Code
+- Access Key
+- Secret Key
+- Bank Account ID
+- Tên miền riêng nếu có
+
+Kiểm tra lại thông tin, bật gateway, rồi lưu cấu hình.
+
+ApiPay chỉ hiển thị ở checkout khi tiền tệ cửa hàng là `VND` và phương thức thanh toán đã được bật.
+
+## Test thanh toán
+
+1. Tạo đơn WooCommerce bằng VND.
+2. Chọn **Bank transfer via ApiPay** khi checkout.
+3. Kiểm tra checkout chuyển sang trang thanh toán ApiPay.
+4. Chuyển khoản đúng số tiền và đúng nội dung hiển thị.
+5. Sau khi ApiPay nhận webhook ngân hàng, callback WordPress sẽ cập nhật đơn sang `processing`.
+
+## Xử lý lỗi callback
+
+ApiPay gửi callback đến:
+
+```text
+https://your-wordpress-site.com/?wc-api=apipay_woocommerce
+```
+
+Nếu đơn chưa cập nhật, hãy kiểm tra:
+
+- Website WordPress truy cập công khai được qua HTTPS.
+- Access key và secret key trong WordPress khớp với API key đang hoạt động trên dashboard.
+- Đơn hàng dùng tiền tệ VND.
+- ApiPay đã được bật trong **WooCommerce > Settings > Payments**.
+- Plugin bảo mật hoặc firewall không chặn endpoint `wc-api=apipay_woocommerce`.
+- Tài khoản ngân hàng đã chọn trong ApiPay đang hoạt động.

@@ -1,0 +1,68 @@
+---
+title: WooCommerce
+description: Install and configure the private beta ApiPay WooCommerce payment gateway.
+---
+
+# WooCommerce
+
+The ApiPay WooCommerce plugin creates an ApiPay hosted payment request during checkout, redirects the customer to the payment page, then receives a signed callback after ApiPay matches the bank transfer.
+
+This beta supports VND orders only. Successful payments mark WooCommerce orders as `processing`.
+
+The plugin supports both WooCommerce checkout experiences:
+
+- Classic shortcode checkout: `[woocommerce_checkout]`
+- WooCommerce Checkout Block
+
+The downloaded ZIP includes the ApiPay logo used in WooCommerce payment settings and checkout.
+
+## Install the ZIP
+
+1. In the ApiPay dashboard, open **Integrations > Web App > WooCommerce**.
+2. Select an active bank account.
+3. Optionally select a verified custom domain.
+4. Download `apipay-woocommerce.zip`.
+5. In WordPress, open **Plugins > Add New > Upload Plugin** and upload the ZIP.
+6. Activate **ApiPay for WooCommerce**.
+
+## Configure the Payment Method
+
+Open **WooCommerce > Settings > Payments > ApiPay**.
+
+The ZIP downloaded from ApiPay is prefilled with:
+
+- API URL
+- Partner Code
+- Access Key
+- Secret Key
+- Bank Account ID
+- Optional custom domain
+
+Review the values, enable the gateway, then save changes.
+
+ApiPay only appears at checkout when the store currency is `VND` and the payment method is enabled.
+
+## Test a Payment
+
+1. Create a WooCommerce order in VND.
+2. Choose **Bank transfer via ApiPay** at checkout.
+3. Confirm that checkout redirects to the ApiPay hosted payment page.
+4. Transfer the exact amount with the displayed content.
+5. After ApiPay receives the bank webhook, the WordPress callback marks the order as `processing`.
+
+## Callback Troubleshooting
+
+ApiPay sends callbacks to:
+
+```text
+https://your-wordpress-site.com/?wc-api=apipay_woocommerce
+```
+
+If an order does not update, check:
+
+- The WordPress site is publicly reachable over HTTPS.
+- The ApiPay access key and secret key match the active dashboard API key.
+- The order currency is VND.
+- ApiPay is enabled under **WooCommerce > Settings > Payments**.
+- Security plugins or firewalls are not blocking the `wc-api=apipay_woocommerce` endpoint.
+- The bank account selected in ApiPay is active.

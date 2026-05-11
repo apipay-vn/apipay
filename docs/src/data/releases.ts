@@ -79,6 +79,19 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.8',
+    date: '2026-05-11',
+    features: [
+      'WooCommerce payment gateway — accept VND bank transfers on WordPress/WooCommerce stores with a downloadable plugin ZIP containing pre-configured API credentials. Supports both classic shortcode checkout and the WooCommerce Checkout Block. Includes secured IPN callback handling with HMAC-SHA256 signature verification.',
+    ],
+    fixes: [],
+    improvements: [
+      'Improved browser notification permission handling and extended notification display duration for better visibility',
+      'Simplified realtime connection management with automatic subscription handling per active bank account',
+      'Clearer error messaging on the QR payment page when display issues occur',
+    ],
+  },
+  {
     version: '1.7.2',
     date: '2026-05-10',
     features: [
@@ -241,6 +254,19 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.8',
+    date: '2026-05-11',
+    features: [
+      'Cổng thanh toán WooCommerce — chấp nhận chuyển khoản ngân hàng VND trên cửa hàng WordPress/WooCommerce với file ZIP plugin tải về có sẵn thông tin API đã được cấu hình. Hỗ trợ cả classic shortcode checkout và WooCommerce Checkout Block. Bao gồm xử lý callback IPN bảo mật với xác minh chữ ký HMAC-SHA256.',
+    ],
+    fixes: [],
+    improvements: [
+      'Cải thiện xử lý cấp quyền thông báo trình duyệt và kéo dài thời gian hiển thị thông báo',
+      'Đơn giản hóa quản lý kết nối realtime với tự động xử lý subscription cho từng tài khoản ngân hàng đang hoạt động',
+      'Thông báo lỗi rõ ràng hơn trên trang thanh toán QR khi có vấn đề hiển thị',
+    ],
+  },
   {
     version: '1.7.2',
     date: '2026-05-10',
