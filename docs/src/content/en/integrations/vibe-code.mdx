@@ -1,0 +1,51 @@
+---
+title: Vibe Code
+description: Generate an ApiPay integration prompt for AI coding assistants.
+---
+
+# Vibe Code
+
+Vibe Code generates a ready-to-copy system prompt for AI coding assistants such as Claude Code, Cursor, and Antigravity. The prompt tells the assistant how to integrate ApiPay payment requests, redirects, and webhooks into your own codebase.
+
+## Before You Start
+
+- Create an API key in **Integrations > API Keys**.
+- Connect at least one active bank account in **Bank Accounts**.
+- Know where your app handles checkout, payment result pages, and webhook routes.
+
+## Generate the Prompt
+
+1. In the ApiPay dashboard, open **Integrations > Vibe Code**.
+2. Select the active bank account to use as the default for payment requests.
+3. Review the generated system prompt.
+4. Copy the prompt and paste it into your coding assistant.
+5. Provide your ApiPay `accessKey` and `secretKey` to your assistant as environment variables or local secrets.
+
+## What the Prompt Covers
+
+The generated prompt asks the assistant to:
+
+- Inspect your project structure and existing API patterns.
+- Add ApiPay authentication with base64 `accessKey:secretKey` credentials.
+- Create payment requests through the ApiPay client API.
+- Redirect customers to the returned `payUrl`.
+- Add webhook handling for payment notifications.
+- Keep credentials in environment variables instead of source code.
+
+## Implementation Checklist
+
+After your assistant makes changes, verify:
+
+- The checkout flow creates a payment request with the selected `bankPublicId`.
+- Customers are redirected to the ApiPay hosted payment page.
+- Your success or result page can handle the redirect from ApiPay.
+- Your webhook endpoint returns HTTP 200 quickly.
+- API credentials are stored in your deployment secrets.
+
+## Troubleshooting
+
+If the generated prompt is not available, check:
+
+- You have at least one active bank account.
+- You have created an API key.
+- The selected bank account still exists and is active.

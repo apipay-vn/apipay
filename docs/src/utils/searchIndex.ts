@@ -45,6 +45,36 @@ export const searchItems: SearchItem[] = [
 		section: "Hướng dẫn",
 	},
 	{
+		title: "WooCommerce",
+		description: "Cài đặt plugin thanh toán ApiPay cho WooCommerce",
+		href: "/vi/integrations/woocommerce",
+		section: "Tích hợp",
+	},
+	{
+		title: "WHMCS",
+		description: "Cài đặt module thanh toán ApiPay cho WHMCS",
+		href: "/vi/integrations/whmcs",
+		section: "Tích hợp",
+	},
+	{
+		title: "HostBill",
+		description: "Cài đặt module thanh toán ApiPay cho HostBill",
+		href: "/vi/integrations/hostbill",
+		section: "Tích hợp",
+	},
+	{
+		title: "Vibe Code",
+		description: "Tạo prompt tích hợp ApiPay cho AI coding assistant",
+		href: "/vi/integrations/vibe-code",
+		section: "Tích hợp",
+	},
+	{
+		title: "Web App",
+		description: "Tích hợp ApiPay vào web app với helper JavaScript và Python",
+		href: "/vi/integrations/webapp",
+		section: "Tích hợp",
+	},
+	{
 		title: "Payment Requests API",
 		description: "API tạo và quản lý liên kết thanh toán",
 		href: "/vi/api/payment-requests",
@@ -105,6 +135,36 @@ export const searchItems: SearchItem[] = [
 		description: "Use your own domain for the ApiPay payment page",
 		href: "/en/custom-domains",
 		section: "Guides",
+	},
+	{
+		title: "WooCommerce",
+		description: "Install the ApiPay WooCommerce payment gateway plugin",
+		href: "/en/integrations/woocommerce",
+		section: "Integrations",
+	},
+	{
+		title: "WHMCS",
+		description: "Install the ApiPay WHMCS payment gateway module",
+		href: "/en/integrations/whmcs",
+		section: "Integrations",
+	},
+	{
+		title: "HostBill",
+		description: "Install the ApiPay HostBill payment gateway module",
+		href: "/en/integrations/hostbill",
+		section: "Integrations",
+	},
+	{
+		title: "Vibe Code",
+		description: "Generate an ApiPay integration prompt for AI coding assistants",
+		href: "/en/integrations/vibe-code",
+		section: "Integrations",
+	},
+	{
+		title: "Web App",
+		description: "Integrate ApiPay into a web app with JavaScript and Python helpers",
+		href: "/en/integrations/webapp",
+		section: "Integrations",
 	},
 	{
 		title: "Payment Requests API",

@@ -1,0 +1,51 @@
+---
+title: Vibe Code
+description: Tạo prompt tích hợp ApiPay cho AI coding assistant.
+---
+
+# Vibe Code
+
+Vibe Code tạo system prompt để dùng với AI coding assistant như Claude Code, Cursor và Antigravity. Prompt hướng dẫn assistant tích hợp payment requests, chuyển hướng thanh toán và webhooks ApiPay vào codebase của bạn.
+
+## Trước khi bắt đầu
+
+- Tạo API key trong **Tích hợp > API Keys**.
+- Kết nối ít nhất một tài khoản ngân hàng đang hoạt động trong **Tài khoản ngân hàng**.
+- Xác định nơi app của bạn xử lý checkout, trang kết quả thanh toán và webhook routes.
+
+## Tạo prompt
+
+1. Trong dashboard ApiPay, mở **Tích hợp > Vibe Code**.
+2. Chọn tài khoản ngân hàng đang hoạt động để dùng mặc định cho payment requests.
+3. Kiểm tra system prompt được tạo.
+4. Sao chép prompt và dán vào coding assistant của bạn.
+5. Cung cấp ApiPay `accessKey` và `secretKey` cho assistant qua environment variables hoặc local secrets.
+
+## Prompt bao gồm gì
+
+Prompt được tạo sẽ yêu cầu assistant:
+
+- Phân tích cấu trúc dự án và pattern API hiện có.
+- Thêm xác thực ApiPay bằng credentials base64 `accessKey:secretKey`.
+- Tạo payment request qua ApiPay client API.
+- Chuyển khách đến `payUrl` được trả về.
+- Thêm webhook handler để nhận thông báo thanh toán.
+- Giữ credentials trong environment variables thay vì source code.
+
+## Checklist triển khai
+
+Sau khi assistant chỉnh code, hãy kiểm tra:
+
+- Checkout flow tạo payment request với `bankPublicId` đã chọn.
+- Khách được chuyển sang trang thanh toán hosted của ApiPay.
+- Trang success hoặc result xử lý được redirect từ ApiPay.
+- Webhook endpoint trả HTTP 200 nhanh.
+- API credentials được lưu trong deployment secrets.
+
+## Xử lý lỗi
+
+Nếu không thấy prompt được tạo, hãy kiểm tra:
+
+- Bạn có ít nhất một tài khoản ngân hàng đang hoạt động.
+- Bạn đã tạo API key.
+- Tài khoản ngân hàng đã chọn vẫn tồn tại và đang hoạt động.

@@ -1,0 +1,147 @@
+---
+title: Web App
+description: Integrate ApiPay into a custom web app with SDK-style JavaScript and Python helpers.
+---
+
+# Web App
+
+Use the ApiPay client API from your own web app to create hosted payment requests, redirect customers to `payUrl`, and receive payment updates through redirects or webhooks.
+
+The examples below are SDK-style helpers you can copy into your server-side code. They do not require an installable ApiPay SDK package.
+
+## Before You Start
+
+- Create an API key in **Integrations > API Keys**.
+- Connect at least one active bank account in **Bank Accounts**.
+- Store your `accessKey`, `secretKey`, and default `bankPublicId` in environment variables.
+- Never call ApiPay with secret credentials from browser-only code.
+
+## JavaScript Helper
+
+```javascript
+const API_BASE = "https://app.apipay.vn";
+
+function apipayAuth(accessKey, secretKey) {
+	const token = Buffer.from(`${accessKey}:${secretKey}`).toString("base64");
+	return `Bearer ${token}`;
+}
+
+async function createApiPayPayment({
+	accessKey,
+	secretKey,
+	bankPublicId,
+	amount,
+	content,
+	title,
+	redirectUrl,
+}) {
+	const response = await fetch(`${API_BASE}/v1/client/payment-requests`, {
+		method: "POST",
+		headers: {
+			Authorization: apipayAuth(accessKey, secretKey),
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({
+			bankPublicId,
+			amount,
+			content,
+			title,
+			redirectUrl,
+		}),
+	});
+
+	if (!response.ok) {
+		throw new Error(`ApiPay request failed: ${response.status}`);
+	}
+
+	const result = await response.json();
+	return result.data;
+}
+
+const payment = await createApiPayPayment({
+	accessKey: process.env.APIPAY_ACCESS_KEY,
+	secretKey: process.env.APIPAY_SECRET_KEY,
+	bankPublicId: process.env.APIPAY_BANK_PUBLIC_ID,
+	amount: 100000,
+	content: "ORDER-001",
+	title: "Payment for Order #001",
+	redirectUrl: "https://your-site.com/payment/result",
+});
+
+console.log(payment.payUrl);
+```
+
+Redirect the customer to `payment.payUrl` after your order is created.
+
+## Python Helper
+
+```python
+import base64
+import os
+import requests
+
+API_BASE = "https://app.apipay.vn"
+
+
+def apipay_auth(access_key: str, secret_key: str) -> str:
+    token = base64.b64encode(f"{access_key}:{secret_key}".encode()).decode()
+    return f"Bearer {token}"
+
+
+def create_apipay_payment(
+    *,
+    access_key: str,
+    secret_key: str,
+    bank_public_id: str,
+    amount: int,
+    content: str,
+    title: str,
+    redirect_url: str,
+) -> dict:
+    response = requests.post(
+        f"{API_BASE}/v1/client/payment-requests",
+        json={
+            "bankPublicId": bank_public_id,
+            "amount": amount,
+            "content": content,
+            "title": title,
+            "redirectUrl": redirect_url,
+        },
+        headers={
+            "Authorization": apipay_auth(access_key, secret_key),
+            "Content-Type": "application/json",
+        },
+        timeout=15,
+    )
+    response.raise_for_status()
+    return response.json()["data"]
+
+
+payment = create_apipay_payment(
+    access_key=os.environ["APIPAY_ACCESS_KEY"],
+    secret_key=os.environ["APIPAY_SECRET_KEY"],
+    bank_public_id=os.environ["APIPAY_BANK_PUBLIC_ID"],
+    amount=100000,
+    content="ORDER-001",
+    title="Payment for Order #001",
+    redirect_url="https://your-site.com/payment/result",
+)
+
+print(payment["payUrl"])
+```
+
+Redirect the customer to `payment["payUrl"]` after your order is created.
+
+## Handle Payment Result
+
+When you send `redirectUrl`, ApiPay redirects the customer back to your site after payment with signed query parameters. Store the `redirectSecret` from the payment request response with your order so your result page can verify the return payload.
+
+For server-to-server updates, register a webhook in **Integrations > Webhooks** and update your order status when your endpoint receives a matching payment event.
+
+## Production Checklist
+
+- Generate unique `content` values for each order.
+- Store the ApiPay payment request ID and `redirectSecret` with your order.
+- Verify signed redirect payloads before showing a paid state.
+- Process webhooks idempotently so duplicate deliveries do not double-update an order.
+- Return HTTP 200 from webhook routes quickly, then process heavier work asynchronously.

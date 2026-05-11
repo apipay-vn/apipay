@@ -1,0 +1,51 @@
+---
+title: HostBill
+description: Install and configure the ApiPay HostBill payment gateway module.
+---
+
+# HostBill
+
+The ApiPay HostBill module lets customers pay HostBill invoices by VND bank transfer through an ApiPay hosted payment page. The ZIP downloaded from the dashboard is prefilled with your ApiPay API credentials, selected bank account, and optional custom domain.
+
+## Before You Start
+
+- Create an API key in **Integrations > API Keys**.
+- Connect at least one active bank account in **Bank Accounts**.
+- Optional: verify a custom payment domain in **Dashboard Guide > Custom Domains**.
+- Make sure your HostBill site can receive public HTTPS callbacks.
+
+## Download the Module
+
+1. In the ApiPay dashboard, open **Integrations > HostBill**.
+2. Select the active bank account you want to use for invoice payments.
+3. Optionally select a verified custom domain for the hosted payment page.
+4. Download `apipay-hostbill.zip`.
+
+## Install in HostBill
+
+1. Extract the ZIP into your HostBill root folder.
+2. Confirm `apipay.php` is available to HostBill as a payment gateway module.
+3. Open **HostBill Admin > Payment Gateways**.
+4. Activate **Apipay Gateway**.
+5. Review the prefilled API URL, Partner Code, Access Key, Secret Key, Bank Account ID, and optional custom domain.
+6. Save the gateway configuration.
+
+## Test a Payment
+
+1. Create a test invoice in VND.
+2. Choose **ApiPay** as the payment method.
+3. Confirm that HostBill redirects the customer to the ApiPay hosted payment page.
+4. Transfer the exact amount with the displayed content.
+5. After ApiPay confirms the transfer, the invoice is marked paid in HostBill.
+
+## Troubleshooting
+
+If the invoice does not update, check:
+
+- The HostBill site is reachable over public HTTPS.
+- The ApiPay gateway is active in HostBill.
+- The API key in HostBill matches an active dashboard API key.
+- The selected bank account is active in ApiPay.
+- The invoice amount is in VND.
+- Firewall or security rules are not blocking HostBill callback endpoints.
+- If you selected a custom domain, it is verified and active in ApiPay.

@@ -1,0 +1,147 @@
+---
+title: Web App
+description: Tích hợp ApiPay vào web app tuỳ chỉnh với helper JavaScript và Python kiểu SDK.
+---
+
+# Web App
+
+Sử dụng ApiPay client API từ web app của bạn để tạo hosted payment request, chuyển khách đến `payUrl`, và nhận cập nhật thanh toán qua redirect hoặc webhook.
+
+Các ví dụ bên dưới là helper kiểu SDK để copy vào server-side code. Bạn không cần cài đặt package SDK ApiPay riêng.
+
+## Trước khi bắt đầu
+
+- Tạo API key trong **Tích hợp > API Keys**.
+- Kết nối ít nhất một tài khoản ngân hàng đang hoạt động trong **Tài khoản ngân hàng**.
+- Lưu `accessKey`, `secretKey` và `bankPublicId` mặc định trong environment variables.
+- Không gọi ApiPay bằng secret credentials từ code chỉ chạy trên browser.
+
+## JavaScript helper
+
+```javascript
+const API_BASE = "https://app.apipay.vn";
+
+function apipayAuth(accessKey, secretKey) {
+	const token = Buffer.from(`${accessKey}:${secretKey}`).toString("base64");
+	return `Bearer ${token}`;
+}
+
+async function createApiPayPayment({
+	accessKey,
+	secretKey,
+	bankPublicId,
+	amount,
+	content,
+	title,
+	redirectUrl,
+}) {
+	const response = await fetch(`${API_BASE}/v1/client/payment-requests`, {
+		method: "POST",
+		headers: {
+			Authorization: apipayAuth(accessKey, secretKey),
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({
+			bankPublicId,
+			amount,
+			content,
+			title,
+			redirectUrl,
+		}),
+	});
+
+	if (!response.ok) {
+		throw new Error(`ApiPay request failed: ${response.status}`);
+	}
+
+	const result = await response.json();
+	return result.data;
+}
+
+const payment = await createApiPayPayment({
+	accessKey: process.env.APIPAY_ACCESS_KEY,
+	secretKey: process.env.APIPAY_SECRET_KEY,
+	bankPublicId: process.env.APIPAY_BANK_PUBLIC_ID,
+	amount: 100000,
+	content: "ORDER-001",
+	title: "Payment for Order #001",
+	redirectUrl: "https://your-site.com/payment/result",
+});
+
+console.log(payment.payUrl);
+```
+
+Chuyển khách đến `payment.payUrl` sau khi đơn hàng được tạo.
+
+## Python helper
+
+```python
+import base64
+import os
+import requests
+
+API_BASE = "https://app.apipay.vn"
+
+
+def apipay_auth(access_key: str, secret_key: str) -> str:
+    token = base64.b64encode(f"{access_key}:{secret_key}".encode()).decode()
+    return f"Bearer {token}"
+
+
+def create_apipay_payment(
+    *,
+    access_key: str,
+    secret_key: str,
+    bank_public_id: str,
+    amount: int,
+    content: str,
+    title: str,
+    redirect_url: str,
+) -> dict:
+    response = requests.post(
+        f"{API_BASE}/v1/client/payment-requests",
+        json={
+            "bankPublicId": bank_public_id,
+            "amount": amount,
+            "content": content,
+            "title": title,
+            "redirectUrl": redirect_url,
+        },
+        headers={
+            "Authorization": apipay_auth(access_key, secret_key),
+            "Content-Type": "application/json",
+        },
+        timeout=15,
+    )
+    response.raise_for_status()
+    return response.json()["data"]
+
+
+payment = create_apipay_payment(
+    access_key=os.environ["APIPAY_ACCESS_KEY"],
+    secret_key=os.environ["APIPAY_SECRET_KEY"],
+    bank_public_id=os.environ["APIPAY_BANK_PUBLIC_ID"],
+    amount=100000,
+    content="ORDER-001",
+    title="Payment for Order #001",
+    redirect_url="https://your-site.com/payment/result",
+)
+
+print(payment["payUrl"])
+```
+
+Chuyển khách đến `payment["payUrl"]` sau khi đơn hàng được tạo.
+
+## Xử lý kết quả thanh toán
+
+Khi bạn gửi `redirectUrl`, ApiPay chuyển khách về website của bạn sau thanh toán với query parameters đã ký. Hãy lưu `redirectSecret` từ response tạo payment request cùng với đơn hàng để trang kết quả có thể xác minh payload trả về.
+
+Để nhận cập nhật server-to-server, đăng ký webhook trong **Tích hợp > Webhooks** và cập nhật trạng thái đơn hàng khi endpoint của bạn nhận được payment event tương ứng.
+
+## Checklist production
+
+- Tạo `content` duy nhất cho từng đơn hàng.
+- Lưu ApiPay payment request ID và `redirectSecret` cùng đơn hàng.
+- Xác minh signed redirect payload trước khi hiển thị trạng thái đã thanh toán.
+- Xử lý webhook theo kiểu idempotent để delivery trùng lặp không cập nhật đơn hàng hai lần.
+- Trả HTTP 200 từ webhook route thật nhanh, rồi xử lý tác vụ nặng bất đồng bộ.

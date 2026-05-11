@@ -1,0 +1,51 @@
+---
+title: WHMCS
+description: Install and configure the ApiPay WHMCS payment gateway module.
+---
+
+# WHMCS
+
+The ApiPay WHMCS module lets customers pay WHMCS invoices by VND bank transfer through an ApiPay hosted payment page. The ZIP downloaded from the dashboard is prefilled with your ApiPay API credentials, selected bank account, and optional custom domain.
+
+## Before You Start
+
+- Create an API key in **Integrations > API Keys**.
+- Connect at least one active bank account in **Bank Accounts**.
+- Optional: verify a custom payment domain in **Dashboard Guide > Custom Domains**.
+- Make sure your WHMCS site can receive public HTTPS callbacks.
+
+## Download the Module
+
+1. In the ApiPay dashboard, open **Integrations > WHMCS**.
+2. Select the active bank account you want to use for invoice payments.
+3. Optionally select a verified custom domain for the hosted payment page.
+4. Download `apipay-whmcs.zip`.
+
+## Install in WHMCS
+
+1. Extract the ZIP into your WHMCS root folder.
+2. Confirm the files land under `modules/gateways/` and `modules/gateways/callback/`.
+3. Open **WHMCS Admin > System Settings > Payment Gateways**.
+4. Activate **Apipay Gateway**.
+5. Review the prefilled API URL, Partner Code, Access Key, Secret Key, Bank Account ID, and optional custom domain.
+6. Save the gateway configuration.
+
+## Test a Payment
+
+1. Create a test invoice in VND.
+2. Choose **ApiPay** as the payment method.
+3. Confirm that WHMCS redirects the customer to the ApiPay hosted payment page.
+4. Transfer the exact amount with the displayed content.
+5. After ApiPay confirms the transfer, the invoice is marked paid in WHMCS.
+
+## Troubleshooting
+
+If the invoice does not update, check:
+
+- The WHMCS site is reachable over public HTTPS.
+- The ApiPay gateway is active in WHMCS.
+- The API key in WHMCS matches an active dashboard API key.
+- The selected bank account is active in ApiPay.
+- The invoice amount is in VND.
+- Firewall or security rules are not blocking WHMCS callback endpoints.
+- If you selected a custom domain, it is verified and active in ApiPay.
