@@ -179,66 +179,6 @@ GET /v1/client/payment-requests
 
 ---
 
-## Change Payment Bank
-
-Switch an active payment request to another configured bank account.
-
-```bash
-POST /v1/payment-requests/change-bank
-```
-
-### Request Body
-
-| Parameter      | Type   | Required  | Description                            |
-| -------------- | ------ | --------- | -------------------------------------- |
-| `publicId`     | string | **✓ Yes** | Payment request public ID              |
-| `bankPublicId` | string | **✓ Yes** | Public ID of the selected bank account |
-
-### Response
-
-```json
-{
-  "data": {
-    "bankCode": "ACB",
-    "accountNumber": "9876543210",
-    "accountName": "NGUYEN VAN A",
-    "qrUrl": "https://app.apipay.vn/v1/payment-requests/APIPAYJSC69C3F00A3212/qr-image"
-  }
-}
-```
-
----
-
-## Get Available Banks
-
-Get selectable banks for an active payment request.
-
-```bash
-GET /v1/payment-requests/:publicId/banks
-```
-
-### Response
-
-```json
-{
-  "data": {
-    "banks": [
-      {
-        "publicId": "bnk_abc123",
-        "bankName": "ACB",
-        "bankShortName": "ACB",
-        "accountNumber": "9876543210",
-        "accountName": "NGUYEN VAN A",
-        "status": "ACTIVE"
-      }
-    ],
-    "currentBankPublicId": "bnk_abc123"
-  }
-}
-```
-
----
-
 ## Get QR Image
 
 Stream the ApiPay-branded QR PNG for a payment request.
@@ -248,23 +188,6 @@ GET /v1/payment-requests/:publicId/qr-image
 ```
 
 Optional query parameter: `merchantId` when rendering from a custom domain.
-
----
-
-## Legacy Pagination Shape
-
-Older examples used `meta`. The current API returns `pagination` inside the wrapped `data` object:
-
-```json
-{
-  "pagination": {
-    "total": 2,
-    "page": 1,
-    "limit": 20,
-    "totalPages": 1
-  }
-}
-```
 
 ---
 
