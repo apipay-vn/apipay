@@ -17,14 +17,14 @@ Base route:
 
 Use these `bankShortName` values to match the current backend logic:
 
-| Code | Bank | Status |
-| ---- | ---- | ------ |
-| `ACB` | ACB | Supported |
-| `BIDV` | BIDV | Supported |
-| `MBB` | MB Bank | Supported |
-| `OCB` | OCB | Supported |
-| `ICB` | VietinBank | Coming soon |
-| `VCB` | Vietcombank | Coming soon |
+| Code   | Bank        | Status      |
+| ------ | ----------- | ----------- |
+| `ACB`  | ACB         | Supported   |
+| `BIDV` | BIDV        | Supported   |
+| `MBB`  | MB Bank     | Supported   |
+| `OCB`  | OCB         | Supported   |
+| `ICB`  | VietinBank  | Coming soon |
+| `VCB`  | Vietcombank | Coming soon |
 
 ## 1. Connect a bank account
 
@@ -57,8 +57,6 @@ POST /v1/client/banks
 - `accEmail`: required for `BIDV`
 - `username`: required for `ICB`, `VCB`, or `ACB` when `accountType` is `BUSINESS`
 - `password`: required for `ICB` and `VCB`
-
-For `OCB`, only the base fields are required: `type`, `bankShortName`, `accountNumber`, `accName`, `accMobile`, and `accountType`.
 
 ### Response
 

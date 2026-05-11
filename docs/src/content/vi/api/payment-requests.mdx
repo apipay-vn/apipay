@@ -29,7 +29,7 @@ POST /v1/client/payment-requests
 | Tham số        | Kiểu   | Bắt buộc | Mô tả                                                                                                                                                                                                                        |
 | -------------- | ------ | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `bankPublicId` | string | **✓ Có** | Public ID của ngân hàng đã kết nối                                                                                                                                                                                           |
-| `amount`       | string | —        | Số tiền (VND). Để trống nếu cho phép người tự nhập                                                                                                                                                                           |
+| `amount`       | number | —        | Số tiền (VND, số nguyên, tối đa `300000000`). Để trống nếu cho phép người tự nhập                                                                                                                                             |
 | `content`      | string | —        | Nội dung chuyển khoản (tối đa 140 ký tự)                                                                                                                                                                                     |
 | `title`        | string | —        | Tiêu đề hiển thị trên trang thanh toán                                                                                                                                                                                       |
 | `expiresAt`    | string | —        | Thời hạn (ISO 8601). Để trống nếu không giới hạn                                                                                                                                                                             |
@@ -46,7 +46,7 @@ POST /v1/client/payment-requests
 		"bankCode": "MB",
 		"accountNumber": "0123456789",
 		"accountName": "NGUYEN VAN A",
-		"amount": "100000",
+		"amount": 100000,
 		"content": "ORDER-12345",
 		"expiresAt": "2026-12-31T23:59:59Z",
 		"createdAt": "2026-03-06T10:00:00Z",
@@ -63,7 +63,7 @@ curl -X POST https://app.apipay.vn/v1/client/payment-requests \
   -H "Authorization: Bearer <Auth>" \
   -d '{
     "bankPublicId": "bank_abc123",
-    "amount": "500000",
+    "amount": 500000,
     "content": "THANHTOAN-001",
     "title": "DON HANG 12345",
     "redirectUrl": "https://yoursite.com/payment/result"
@@ -95,17 +95,16 @@ GET /v1/payment-requests/:publicId
 		"status": "ACTIVE",
 		"qrUrl": "https://api.qrserver.com/...",
 		"expiresAt": "2026-12-31T23:59:59Z",
-		"viewCount": 42,
 		"createdAt": "2026-03-06T10:00:00Z",
+		"pbRecordId": "pb_abc123",
+		"canChangeBank": true,
+		"bankChangedByCustomer": false,
 		"redirectUrl": "https://yoursite.com/payment/result",
-		"redirectSecret": "a1b2c3d4e5f6...",
 		"completedRedirectUrl": "https://yoursite.com/payment/result?data=eyJ...&signature=abc...",
 		"merchant": {
 			"name": "Tên cửa hàng",
 			"logoUrl": "https://yoursite.com/logo.png",
-			"companyName": "Công ty ABC",
-			"companyTaxId": "0123456789",
-			"companyAddress": "123 Đường ABC, TP.HCM"
+			"companyName": "Công ty ABC"
 		}
 	}
 }
@@ -140,33 +139,116 @@ GET /v1/client/payment-requests
 
 ```json
 {
-	"data": [
-		{
-			"publicId": "APIPAYJSCAF9H23M74K",
-			"bankCode": "MB",
-			"accountNumber": "0123456789",
-			"amount": "100000",
-			"content": "ORDER-001",
-			"status": "COMPLETED",
-			"createdAt": "2026-03-06T10:00:00Z"
-		},
-		{
-			"publicId": "xyz789-uvw456-rst123",
-			"bankCode": "ACB",
-			"accountNumber": "9876543210",
-			"amount": "500000",
-			"content": "ORDER-002",
-			"status": "ACTIVE",
-			"createdAt": "2026-03-05T09:00:00Z"
+	"data": {
+		"status": true,
+		"data": [
+			{
+				"publicId": "APIPAYJSCAF9H23M74K",
+				"bankCode": "MB",
+				"accountNumber": "0123456789",
+				"accountName": "NGUYEN VAN A",
+				"amount": "100000",
+				"content": "ORDER-001",
+				"title": "DON HANG 12345",
+				"status": "COMPLETED",
+				"expiresAt": "2026-12-31T23:59:59Z",
+				"redirectUrl": "https://yoursite.com/payment/result",
+				"createdAt": "2026-03-06T10:00:00Z"
+			}
+		],
+		"pagination": {
+			"page": 1,
+			"limit": 20,
+			"total": 1,
+			"totalPages": 1
 		}
-	],
-	"meta": {
-		"total": 2,
-		"page": 1,
-		"limit": 20
 	}
 }
 ```
+
+### Query Parameters
+
+| Tham số         | Kiểu     | Bắt buộc | Mô tả                                                           |
+| --------------- | -------- | -------- | --------------------------------------------------------------- |
+| `page`          | number   | —        | Số trang (mặc định: `1`)                                        |
+| `limit`         | number   | —        | Số item mỗi trang (mặc định: `20`, tối đa: `100`)               |
+| `search`        | string   | —        | Tìm theo public ID, nội dung, tiêu đề hoặc số tài khoản         |
+| `status`        | string[] | —        | Lọc theo trạng thái. Có thể truyền nhiều lần                    |
+| `bankAccountId` | number   | —        | Lọc theo ID tài khoản ngân hàng                                 |
+| `dateFrom`      | string   | —        | Lọc theo ngày tạo từ ngày ISO này                               |
+| `dateTo`        | string   | —        | Lọc theo ngày tạo đến ngày ISO này                              |
+
+---
+
+## Đổi ngân hàng thanh toán
+
+Đổi một payment request đang hoạt động sang tài khoản ngân hàng khác đã được cấu hình.
+
+```bash
+POST /v1/payment-requests/change-bank
+```
+
+### Request Body
+
+| Tham số        | Kiểu   | Bắt buộc | Mô tả                                      |
+| -------------- | ------ | -------- | ------------------------------------------ |
+| `publicId`     | string | **✓ Có** | Public ID của payment request              |
+| `bankPublicId` | string | **✓ Có** | Public ID của tài khoản ngân hàng được chọn |
+
+### Response
+
+```json
+{
+	"data": {
+		"bankCode": "ACB",
+		"accountNumber": "9876543210",
+		"accountName": "NGUYEN VAN A",
+		"qrUrl": "https://app.apipay.vn/v1/payment-requests/APIPAYJSCAF9H23M74K/qr-image"
+	}
+}
+```
+
+---
+
+## Lấy danh sách ngân hàng có thể chọn
+
+Lấy danh sách ngân hàng có thể chọn cho một payment request đang hoạt động.
+
+```bash
+GET /v1/payment-requests/:publicId/banks
+```
+
+### Response
+
+```json
+{
+	"data": {
+		"banks": [
+			{
+				"publicId": "bnk_abc123",
+				"bankName": "ACB",
+				"bankShortName": "ACB",
+				"accountNumber": "9876543210",
+				"accountName": "NGUYEN VAN A",
+				"status": "ACTIVE"
+			}
+		],
+		"currentBankPublicId": "bnk_abc123"
+	}
+}
+```
+
+---
+
+## Lấy ảnh QR
+
+Stream ảnh QR PNG có branding ApiPay cho payment request.
+
+```bash
+GET /v1/payment-requests/:publicId/qr-image
+```
+
+Query parameter tuỳ chọn: `merchantId` khi render từ custom domain.
 
 ---
 

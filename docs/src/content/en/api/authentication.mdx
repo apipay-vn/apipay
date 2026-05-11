@@ -40,7 +40,7 @@ const response = await axios.post(
 	"https://app.apipay.vn/v1/client/payment-requests",
 	{
 		bankPublicId: "bank_abc123",
-		amount: "100000",
+		amount: 100000,
 		content: "ORDER-001",
 	},
 	{
@@ -68,7 +68,7 @@ response = requests.post(
     'https://app.apipay.vn/v1/client/payment-requests',
     json={
         'bankPublicId': 'bank_abc123',
-        'amount': '100000',
+        'amount': 100000,
         'content': 'ORDER-001'
     },
     headers={
@@ -87,5 +87,5 @@ AUTH=$(echo -n "your_access_key:your_secret_key" | base64)
 curl -X POST https://app.apipay.vn/v1/client/payment-requests \
   -H "Authorization: Bearer $AUTH" \
   -H "Content-Type: application/json" \
-  -d '{"bankPublicId": "bank_abc123", "amount": "100000", "content": "ORDER-001"}'
+  -d '{"bankPublicId": "bank_abc123", "amount": 100000, "content": "ORDER-001"}'
 ```

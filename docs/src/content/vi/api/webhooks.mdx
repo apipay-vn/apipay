@@ -7,9 +7,49 @@ description: Nhận thông báo thanh toán theo thời gian thực
 
 Webhook cho phép bạn nhận thông báo theo thời gian thực khi có sự kiện thanh toán.
 
-## Cấu hình Webhook
+## Đăng ký Webhook
 
-Cấu hình webhook URL trong dashboard tại **Cài đặt → Webhooks**.
+Cấu hình webhook URL trong dashboard tại **Cài đặt → Webhooks**, hoặc tạo bằng API.
+
+```bash
+POST /v1/client/webhooks
+```
+
+### Request Body
+
+| Tham số        | Kiểu   | Bắt buộc | Mô tả                                      |
+| -------------- | ------ | -------- | ------------------------------------------ |
+| `webhookUrl`   | string | **✓ Có** | HTTPS URL để nhận webhook                  |
+| `bankPublicId` | string | **✓ Có** | Public ID của tài khoản ngân hàng          |
+| `type`         | string | **✓ Có** | Loại giao dịch: `IN`, `OUT`, hoặc `ALL`    |
+
+### Response
+
+```json
+{
+	"data": {
+		"message": "Tạo webhook thành công",
+		"id": "wh_abc123",
+		"bankPublicId": "bnk_abc123",
+		"webhookUrl": "https://your-domain.com/webhooks/apipay",
+		"type": "IN",
+		"secret": "a1b2c3d4..."
+	}
+}
+```
+
+Hãy lưu `secret`; khoá này được dùng để xác minh `ApiPay-Signature`.
+
+## Quản lý Webhooks
+
+| Endpoint | Mô tả |
+| -------- | ----- |
+| `GET /v1/client/webhooks` | Danh sách webhook (`page`, `limit`) |
+| `PATCH /v1/client/webhooks/:id` | Cập nhật `webhookUrl` hoặc `type` |
+| `PATCH /v1/client/webhooks/:id/toggle` | Bật hoặc tắt webhook |
+| `DELETE /v1/client/webhooks/:id` | Xoá webhook |
+| `GET /v1/client/webhooks/:id/history` | Xem lịch sử gửi (`page`, `limit`) |
+| `POST /v1/client/webhooks/history/:historyId/resend` | Gửi lại một lần gửi thất bại |
 
 ## Sự kiện (Events)
 

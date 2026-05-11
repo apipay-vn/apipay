@@ -60,7 +60,7 @@ curl -X POST https://app.apipay.vn/v1/client/payment-requests \
   -H "Authorization: Bearer <Auth>" \
   -d '{
     "bankPublicId": "bank_abc123",
-    "amount": "500000",
+    "amount": 500000,
     "content": "THANHTOAN-001",
     "title": "DON HANG 12345",
     "redirectUrl": "https://yoursite.com/payment/result"
@@ -78,7 +78,7 @@ curl -X POST https://app.apipay.vn/v1/client/payment-requests \
 		"bankCode": "MB",
 		"accountNumber": "0123456789",
 		"accountName": "NGUYEN VAN A",
-		"amount": "100000",
+		"amount": 100000,
 		"content": "ORDER-12345",
 		"expiresAt": "2026-12-31T23:59:59Z",
 		"createdAt": "2026-03-06T10:00:00Z",

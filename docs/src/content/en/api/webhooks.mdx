@@ -7,9 +7,49 @@ description: Receive real-time payment notifications
 
 Webhooks allow you to receive real-time notifications when payment events occur.
 
-## Configure Webhook
+## Register Webhook
 
-Configure webhook URL in the dashboard at **Settings → Webhooks**.
+Configure webhook URL in the dashboard at **Settings → Webhooks**, or create one with the API.
+
+```bash
+POST /v1/client/webhooks
+```
+
+### Request Body
+
+| Parameter      | Type   | Required       | Description                                      |
+| -------------- | ------ | -------------- | ------------------------------------------------ |
+| `webhookUrl`   | string | **✓ Yes** | HTTPS URL to receive webhook notifications       |
+| `bankPublicId` | string | **✓ Yes** | Public ID of the bank account                    |
+| `type`         | string | **✓ Yes** | Transaction events: `IN`, `OUT`, or `ALL`        |
+
+### Response
+
+```json
+{
+	"data": {
+		"message": "Tạo webhook thành công",
+		"id": "wh_abc123",
+		"bankPublicId": "bnk_abc123",
+		"webhookUrl": "https://your-domain.com/webhooks/apipay",
+		"type": "IN",
+		"secret": "a1b2c3d4..."
+	}
+}
+```
+
+Keep `secret`; it is used to verify `ApiPay-Signature`.
+
+## Manage Webhooks
+
+| Endpoint | Description |
+| -------- | ----------- |
+| `GET /v1/client/webhooks` | List registered webhooks (`page`, `limit`) |
+| `PATCH /v1/client/webhooks/:id` | Update `webhookUrl` or `type` |
+| `PATCH /v1/client/webhooks/:id/toggle` | Enable or disable a webhook |
+| `DELETE /v1/client/webhooks/:id` | Delete a webhook |
+| `GET /v1/client/webhooks/:id/history` | View delivery history (`page`, `limit`) |
+| `POST /v1/client/webhooks/history/:historyId/resend` | Retry a failed delivery |
 
 ## Events
 

@@ -28,7 +28,7 @@ curl -X POST https://app.apipay.vn/v1/client/payment-requests \
   -H "Authorization: Bearer <Auth>" \
   -d '{
     "bankPublicId": "your-bank-public-id",
-    "amount": "100000",
+    "amount": 100000,
     "content": "ORDER-12345"
   }'
 ```
@@ -43,7 +43,7 @@ Response:
 		"qrUrl": "https://api.qrserver.com/...",
 		"bankCode": "MB",
 		"accountNumber": "0123456789",
-		"amount": "100000",
+		"amount": 100000,
 		"content": "ORDER-12345"
 	}
 }
@@ -69,7 +69,7 @@ Cấu hình webhook URL trong dashboard để nhận thông báo khi hệ thốn
 	"data": {
 		"transactionId": "550e8400-e29b-41d4-a716-446655440000",
 		"referenceCode": "TX123456789",
-		"amount": "100000",
+		"amount": 100000,
 		"type": "IN",
 		"content": "ORDER-12345",
 		"transactionDate": "2026-03-06T10:30:00Z",
@@ -115,7 +115,7 @@ async function createPaymentLink(bankPublicId, amount, content) {
 }
 
 // Sử dụng
-const payment = await createPaymentLink("bank-123", "100000", "ORDER-001");
+const payment = await createPaymentLink("bank-123", 100000, "ORDER-001");
 console.log("Payment URL:", payment.payUrl);
 ```
 
@@ -129,7 +129,7 @@ API_BASE = 'https://app.apipay.vn'
 ACCESS_KEY = 'your_access_key'
 SECRET_KEY = 'your_secret_key'
 
-def create_payment_link(bank_public_id: str, amount: str, content: str):
+def create_payment_link(bank_public_id: str, amount: int, content: str):
     # Tạo chuỗi auth base64
     auth = base64.b64encode(f'{ACCESS_KEY}:{SECRET_KEY}'.encode()).decode()
 
@@ -148,7 +148,7 @@ def create_payment_link(bank_public_id: str, amount: str, content: str):
     return response.json()['data']
 
 # Sử dụng
-payment = create_payment_link('bank-123', '100000', 'ORDER-001')
+payment = create_payment_link('bank-123', 100000, 'ORDER-001')
 print(f"Payment URL: {payment['payUrl']}")
 ```
 

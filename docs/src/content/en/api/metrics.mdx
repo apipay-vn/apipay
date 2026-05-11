@@ -28,20 +28,28 @@ GET /v1/client/metrics/overview
 | `period` | string | — | Time period: `today`, `this_week`, `last_week`, `this_month`, `last_month`, `last_3_months`, `last_6_months`, `this_year`, `custom` |
 | `dateFrom` | string | — | Start date (ISO 8601) |
 | `dateTo` | string | — | End date (ISO 8601) |
-| `search` | string | — | Search by publicId or content |
+| `search` | string | — | Search by reference code, content, account number, bank name, bank code, or VA number |
 
 ### Response
 
 ```json
 {
   "data": {
-    "totalAmount": "5000000",
+    "totalIn": 5000000,
+    "totalOut": 750000,
     "totalTransactions": 50,
-    "completedTransactions": 45,
-    "pendingTransactions": 3,
-    "failedTransactions": 2,
-    "averageAmount": "100000",
-    "successRate": 90
+    "averageAmount": 115000,
+    "successRate": 90,
+    "byBank": [
+      {
+        "bankName": "MB",
+        "accountNumber": "0123456789",
+        "totalIn": 3000000,
+        "countIn": 30,
+        "totalOut": 500000,
+        "countOut": 5
+      }
+    ]
   }
 }
 ```
@@ -72,12 +80,14 @@ GET /v1/client/metrics/time-series
   "data": [
     {
       "date": "2026-03-01",
-      "amount": "1000000",
+      "totalIn": 1000000,
+      "totalOut": 200000,
       "count": 10
     },
     {
       "date": "2026-03-02",
-      "amount": "1500000",
+      "totalIn": 1500000,
+      "totalOut": 0,
       "count": 15
     }
   ]
@@ -150,9 +160,15 @@ GET /v1/client/metrics/bank-distribution
 ```json
 {
   "data": [
-    { "bankCode": "MB", "count": 20, "amount": "2000000" },
-    { "bankCode": "ACB", "count": 15, "amount": "1500000" },
-    { "bankCode": "VCB", "count": 10, "amount": "1000000" }
+    {
+      "bankCode": "MB",
+      "bankName": "MB Bank",
+      "accountNumber": "0123456789",
+      "accountName": "NGUYEN VAN A",
+      "totalIn": 2000000,
+      "totalOut": 500000,
+      "transactionCount": 20
+    }
   ]
 }
 ```
@@ -172,10 +188,12 @@ GET /v1/client/metrics/amount-histogram
 ```json
 {
   "data": [
-    { "range": "0-100000", "count": 10 },
-    { "range": "100001-500000", "count": 25 },
-    { "range": "500001-1000000", "count": 10 },
-    { "range": "1000000+", "count": 5 }
+    { "range": "0-100K", "countIn": 10, "countOut": 2 },
+    { "range": "100K-500K", "countIn": 25, "countOut": 5 },
+    { "range": "500K-1M", "countIn": 10, "countOut": 1 },
+    { "range": "1M-5M", "countIn": 5, "countOut": 0 },
+    { "range": "5M-10M", "countIn": 1, "countOut": 0 },
+    { "range": "10M+", "countIn": 0, "countOut": 0 }
   ]
 }
 ```
@@ -197,7 +215,7 @@ GET /v1/client/metrics/transactions
 | `period` | string | — | Time period |
 | `dateFrom` | string | — | Start date (ISO 8601) |
 | `dateTo` | string | — | End date (ISO 8601) |
-| `search` | string | — | Search by publicId or content |
+| `search` | string | — | Search by reference code, content, account number, bank name, bank code, or VA number |
 | `page` | number | — | Page number (default: 1) |
 | `limit` | number | — | Items per page (default: 20, max: 100) |
 | `sortBy` | string | — | Sort field: `transactionDate`, `amount`, `createdAt` |
@@ -207,23 +225,31 @@ GET /v1/client/metrics/transactions
 
 ```json
 {
-  "data": [
-    {
-      "publicId": "APIPAYJSC69C3F00A3212",
-      "bankCode": "MB",
-      "accountNumber": "0123456789",
-      "amount": "100000",
-      "content": "ORDER-001",
-      "status": "COMPLETED",
-      "createdAt": "2026-03-06T10:00:00Z",
-      "completedAt": "2026-03-06T10:05:00Z"
+  "data": {
+    "data": [
+      {
+        "id": "txn_abc123",
+        "amount": "100000",
+        "type": "IN",
+        "content": "ORDER-001",
+        "referenceCode": "TX123456789",
+        "transactionDate": "2026-03-06T10:05:00Z",
+        "status": "SUCCESS",
+        "createdAt": "2026-03-06T10:00:00Z",
+        "bankAccount": {
+          "bankShortName": "MB",
+          "bankName": "MB Bank",
+          "accountNumber": "0123456789",
+          "accountName": "NGUYEN VAN A"
+        }
+      }
+    ],
+    "meta": {
+      "total": 50,
+      "page": 1,
+      "limit": 20,
+      "totalPages": 3
     }
-  ],
-  "meta": {
-    "total": 50,
-    "page": 1,
-    "limit": 20,
-    "totalPages": 3
   }
 }
 ```

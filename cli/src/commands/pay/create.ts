@@ -50,7 +50,7 @@ export default class PayCreate extends ApiKeyCommand {
 		};
 
 		if (amount.trim() !== "") {
-			payload.amount = amount.trim();
+			payload.amount = Number(amount.trim());
 		}
 
 		if (note.trim() !== "") {
