@@ -26,32 +26,32 @@ POST /v1/client/payment-requests
 
 ### Request Body
 
-| Parameter      | Type   | Required       | Description                                                                                                                                                                                                                           |
-| -------------- | ------ | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Parameter      | Type   | Required  | Description                                                                                                                                                                                                                           |
+| -------------- | ------ | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `bankPublicId` | string | **✓ Yes** | Public ID of your connected bank                                                                                                                                                                                                      |
-| `amount`       | number | —              | Amount (VND, integer, max `300000000`). Leave empty to allow customer input                                                                                                                                                           |
-| `content`      | string | —              | Transfer content (max 140 characters)                                                                                                                                                                                                 |
-| `title`        | string | —              | Title displayed on payment page                                                                                                                                                                                                       |
-| `expiresAt`    | string | —              | Expiration time (ISO 8601). Leave empty for no limit                                                                                                                                                                                  |
-| `redirectUrl`  | string | —              | URL to redirect after payment completion. When payment completes, the system will redirect to this URL with a signed payload (`?data=<base64>&signature=<hmac>`) for verification. Leave empty to use merchant's default redirect URL |
+| `amount`       | number | —         | Amount (VND, integer, max `300000000`). Leave empty to allow customer input                                                                                                                                                           |
+| `content`      | string | —         | Transfer content (max 140 characters)                                                                                                                                                                                                 |
+| `title`        | string | —         | Title displayed on payment page                                                                                                                                                                                                       |
+| `expiresAt`    | string | —         | Expiration time (ISO 8601). Leave empty for no limit                                                                                                                                                                                  |
+| `redirectUrl`  | string | —         | URL to redirect after payment completion. When payment completes, the system will redirect to this URL with a signed payload (`?data=<base64>&signature=<hmac>`) for verification. Leave empty to use merchant's default redirect URL |
 
 ### Response
 
 ```json
 {
-	"data": {
-		"publicId": "APIPAYJSC69C3F00A3212",
-		"payUrl": "https://pay.apipay.vn/APIPAYJSC69C3F00A3212",
-		"qrUrl": "https://api.qrserver.com/v1/create-qr-code?...",
-		"bankCode": "MB",
-		"accountNumber": "0123456789",
-		"accountName": "NGUYEN VAN A",
-		"amount": 100000,
-		"content": "ORDER-12345",
-		"expiresAt": "2026-12-31T23:59:59Z",
-		"createdAt": "2026-03-06T10:00:00Z",
-		"redirectSecret": "a1b2c3d4e5f6..."
-	}
+  "data": {
+    "publicId": "APIPAYJSC69C3F00A3212",
+    "payUrl": "https://pay.apipay.vn/APIPAYJSC69C3F00A3212",
+    "qrUrl": "https://api.qrserver.com/v1/create-qr-code?...",
+    "bankCode": "MB",
+    "accountNumber": "0123456789",
+    "accountName": "NGUYEN VAN A",
+    "amount": 100000,
+    "content": "ORDER-12345",
+    "expiresAt": "2026-12-31T23:59:59Z",
+    "createdAt": "2026-03-06T10:00:00Z",
+    "redirectSecret": "a1b2c3d4e5f6..."
+  }
 }
 ```
 
@@ -84,29 +84,28 @@ GET /v1/payment-requests/:publicId
 
 ```json
 {
-	"data": {
-		"publicId": "APIPAYJSC69C3F00A3212",
-		"bankCode": "MB",
-		"accountNumber": "0123456789",
-		"accountName": "NGUYEN VAN A",
-		"amount": "100000",
-		"content": "ORDER-12345",
-		"title": "Payment for Order #123",
-		"status": "ACTIVE",
-		"qrUrl": "https://api.qrserver.com/...",
-		"expiresAt": "2026-12-31T23:59:59Z",
-		"createdAt": "2026-03-06T10:00:00Z",
-		"pbRecordId": "pb_abc123",
-		"canChangeBank": true,
-		"bankChangedByCustomer": false,
-		"redirectUrl": "https://yoursite.com/payment/result",
-		"completedRedirectUrl": "https://yoursite.com/payment/result?data=eyJ...&signature=abc...",
-		"merchant": {
-			"name": "Store Name",
-			"logoUrl": "https://yoursite.com/logo.png",
-			"companyName": "Company ABC"
-		}
-	}
+  "data": {
+    "publicId": "APIPAYJSC69C3F00A3212",
+    "bankCode": "MB",
+    "accountNumber": "0123456789",
+    "accountName": "NGUYEN VAN A",
+    "amount": "100000",
+    "content": "ORDER-12345",
+    "title": "Payment for Order #123",
+    "status": "ACTIVE",
+    "qrUrl": "https://api.qrserver.com/...",
+    "expiresAt": "2026-12-31T23:59:59Z",
+    "createdAt": "2026-03-06T10:00:00Z",
+    "canChangeBank": true,
+    "bankChangedByCustomer": false,
+    "redirectUrl": "https://yoursite.com/payment/result",
+    "completedRedirectUrl": "https://yoursite.com/payment/result?data=eyJ...&signature=abc...",
+    "merchant": {
+      "name": "Store Name",
+      "logoUrl": "https://yoursite.com/logo.png",
+      "companyName": "Company ABC"
+    }
+  }
 }
 ```
 
@@ -139,44 +138,44 @@ GET /v1/client/payment-requests
 
 ```json
 {
-	"data": {
-		"status": true,
-		"data": [
-			{
-				"publicId": "APIPAYJSC69C3F00A3212",
-				"bankCode": "MB",
-				"accountNumber": "0123456789",
-				"accountName": "NGUYEN VAN A",
-				"amount": "100000",
-				"content": "ORDER-001",
-				"title": "Payment for Order #001",
-				"status": "COMPLETED",
-				"expiresAt": "2026-12-31T23:59:59Z",
-				"redirectUrl": "https://yoursite.com/payment/result",
-				"createdAt": "2026-03-06T10:00:00Z"
-			}
-		],
-		"pagination": {
-			"page": 1,
-			"limit": 20,
-			"total": 1,
-			"totalPages": 1
-		}
-	}
+  "data": {
+    "status": true,
+    "data": [
+      {
+        "publicId": "APIPAYJSC69C3F00A3212",
+        "bankCode": "MB",
+        "accountNumber": "0123456789",
+        "accountName": "NGUYEN VAN A",
+        "amount": "100000",
+        "content": "ORDER-001",
+        "title": "Payment for Order #001",
+        "status": "COMPLETED",
+        "expiresAt": "2026-12-31T23:59:59Z",
+        "redirectUrl": "https://yoursite.com/payment/result",
+        "createdAt": "2026-03-06T10:00:00Z"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "limit": 20,
+      "total": 1,
+      "totalPages": 1
+    }
+  }
 }
 ```
 
 ### Query Parameters
 
-| Parameter       | Type     | Required | Description                                                                 |
-| --------------- | -------- | -------- | --------------------------------------------------------------------------- |
-| `page`          | number   | —        | Page number (default: `1`)                                                  |
-| `limit`         | number   | —        | Items per page (default: `20`, max: `100`)                                  |
-| `search`        | string   | —        | Search by public ID, content, title, or account number                      |
-| `status`        | string[] | —        | Filter by status. Can be passed multiple times                              |
-| `bankAccountId` | number   | —        | Filter by bank account ID                                                   |
-| `dateFrom`      | string   | —        | Filter by creation date from this ISO date                                  |
-| `dateTo`        | string   | —        | Filter by creation date through this ISO date                               |
+| Parameter       | Type     | Required | Description                                            |
+| --------------- | -------- | -------- | ------------------------------------------------------ |
+| `page`          | number   | —        | Page number (default: `1`)                             |
+| `limit`         | number   | —        | Items per page (default: `20`, max: `100`)             |
+| `search`        | string   | —        | Search by public ID, content, title, or account number |
+| `status`        | string[] | —        | Filter by status. Can be passed multiple times         |
+| `bankAccountId` | number   | —        | Filter by bank account ID                              |
+| `dateFrom`      | string   | —        | Filter by creation date from this ISO date             |
+| `dateTo`        | string   | —        | Filter by creation date through this ISO date          |
 
 ---
 
@@ -190,8 +189,8 @@ POST /v1/payment-requests/change-bank
 
 ### Request Body
 
-| Parameter      | Type   | Required       | Description                            |
-| -------------- | ------ | -------------- | -------------------------------------- |
+| Parameter      | Type   | Required  | Description                            |
+| -------------- | ------ | --------- | -------------------------------------- |
 | `publicId`     | string | **✓ Yes** | Payment request public ID              |
 | `bankPublicId` | string | **✓ Yes** | Public ID of the selected bank account |
 
@@ -199,12 +198,12 @@ POST /v1/payment-requests/change-bank
 
 ```json
 {
-	"data": {
-		"bankCode": "ACB",
-		"accountNumber": "9876543210",
-		"accountName": "NGUYEN VAN A",
-		"qrUrl": "https://app.apipay.vn/v1/payment-requests/APIPAYJSC69C3F00A3212/qr-image"
-	}
+  "data": {
+    "bankCode": "ACB",
+    "accountNumber": "9876543210",
+    "accountName": "NGUYEN VAN A",
+    "qrUrl": "https://app.apipay.vn/v1/payment-requests/APIPAYJSC69C3F00A3212/qr-image"
+  }
 }
 ```
 
@@ -222,19 +221,19 @@ GET /v1/payment-requests/:publicId/banks
 
 ```json
 {
-	"data": {
-		"banks": [
-			{
-				"publicId": "bnk_abc123",
-				"bankName": "ACB",
-				"bankShortName": "ACB",
-				"accountNumber": "9876543210",
-				"accountName": "NGUYEN VAN A",
-				"status": "ACTIVE"
-			}
-		],
-		"currentBankPublicId": "bnk_abc123"
-	}
+  "data": {
+    "banks": [
+      {
+        "publicId": "bnk_abc123",
+        "bankName": "ACB",
+        "bankShortName": "ACB",
+        "accountNumber": "9876543210",
+        "accountName": "NGUYEN VAN A",
+        "status": "ACTIVE"
+      }
+    ],
+    "currentBankPublicId": "bnk_abc123"
+  }
 }
 ```
 
@@ -258,12 +257,12 @@ Older examples used `meta`. The current API returns `pagination` inside the wrap
 
 ```json
 {
-	"pagination": {
-		"total": 2,
-		"page": 1,
-		"limit": 20,
-		"totalPages": 1
-	}
+  "pagination": {
+    "total": 2,
+    "page": 1,
+    "limit": 20,
+    "totalPages": 1
+  }
 }
 ```
 
@@ -281,10 +280,10 @@ DELETE /v1/client/payment-requests/:publicId
 
 ```json
 {
-	"data": {
-		"status": true,
-		"message": "Payment request cancelled"
-	}
+  "data": {
+    "status": true,
+    "message": "Payment request cancelled"
+  }
 }
 ```
 
@@ -313,11 +312,11 @@ The `data` parameter contains a base64-encoded JSON object:
 
 ```json
 {
-	"status": "success",
-	"transactionId": "txn_abc123",
-	"amount": "100000",
-	"content": "ORDER-12345",
-	"timestamp": 1700000000
+  "status": "success",
+  "transactionId": "txn_abc123",
+  "amount": "100000",
+  "content": "ORDER-12345",
+  "timestamp": 1700000000
 }
 ```
 
@@ -327,50 +326,44 @@ Possible `status` values: `success`, `cancel`, `expired`
 
 ```javascript
 // Node.js example
-const crypto = require("crypto");
+const crypto = require('crypto');
 
 function verifyRedirectPayload(query, redirectSecret) {
-	// Decode the payload
-	const payloadJson = Buffer.from(query.data, "base64url").toString("utf-8");
-	const payload = JSON.parse(payloadJson);
+  // Decode the payload
+  const payloadJson = Buffer.from(query.data, 'base64url').toString('utf-8');
+  const payload = JSON.parse(payloadJson);
 
-	// Calculate expected signature
-	const expectedSignature = crypto
-		.createHmac("sha256", redirectSecret)
-		.update(payloadJson)
-		.digest("hex");
+  // Calculate expected signature
+  const expectedSignature = crypto.createHmac('sha256', redirectSecret).update(payloadJson).digest('hex');
 
-	// Use timing-safe comparison to prevent timing attacks
-	const isValid = crypto.timingSafeEqual(
-		Buffer.from(query.signature),
-		Buffer.from(expectedSignature),
-	);
+  // Use timing-safe comparison to prevent timing attacks
+  const isValid = crypto.timingSafeEqual(Buffer.from(query.signature), Buffer.from(expectedSignature));
 
-	if (!isValid) {
-		throw new Error("Invalid signature");
-	}
+  if (!isValid) {
+    throw new Error('Invalid signature');
+  }
 
-	return payload;
+  return payload;
 }
 
 // Express route handler
-app.get("/payment/result", (req, res) => {
-	const {data, signature} = req.query;
-	const redirectSecret = "a1b2c3d4e5f6..."; // From payment request response
+app.get('/payment/result', (req, res) => {
+  const {data, signature} = req.query;
+  const redirectSecret = 'a1b2c3d4e5f6...'; // From payment request response
 
-	try {
-		const payload = verifyRedirectPayload({data, signature}, redirectSecret);
-		console.log("Payment status:", payload.status);
-		console.log("Transaction ID:", payload.transactionId);
-		console.log("Amount:", payload.amount);
+  try {
+    const payload = verifyRedirectPayload({data, signature}, redirectSecret);
+    console.log('Payment status:', payload.status);
+    console.log('Transaction ID:', payload.transactionId);
+    console.log('Amount:', payload.amount);
 
-		if (payload.status === "success") {
-			// Process the payment
-			res.send("Payment successful!");
-		}
-	} catch (error) {
-		res.status(400).send("Invalid redirect");
-	}
+    if (payload.status === 'success') {
+      // Process the payment
+      res.send('Payment successful!');
+    }
+  } catch (error) {
+    res.status(400).send('Invalid redirect');
+  }
 });
 ```
 
