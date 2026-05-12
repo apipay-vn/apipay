@@ -95,7 +95,23 @@ Với `OCB`, chỉ cần các field cơ bản: `type`, `bankShortName`, `account
 
 ### Response
 
-ApiPay trả về trực tiếp kết quả từ luồng kết nối ngân hàng. Một số ngân hàng sẽ yêu cầu OTP, khi đó response thường báo cần xác thực thêm và hệ thống tạo bank record ở trạng thái `PENDING`.
+ApiPay trả về kết quả từ luồng kết nối ngân hàng và kèm các bank record nội bộ khi tạo hoặc tìm thấy record tương ứng.
+
+```json
+{
+  "status": true,
+  "message": "Bank account submitted successfully",
+  "banks": [
+    {
+      "publicId": "bnk_abc123",
+      "vaNumber": "DANH001",
+      "status": "ACTIVE"
+    }
+  ]
+}
+```
+
+Một số ngân hàng sẽ yêu cầu OTP, khi đó response thường báo cần xác thực thêm và hệ thống tạo bank record ở trạng thái `PENDING`.
 
 ## 2. Xác thực OTP khi kết nối
 

@@ -93,7 +93,23 @@ MB Bank business accounts require the Tax code (MST) to be provided in `cccd`:
 
 ### Response
 
-ApiPay returns the connection result directly. Some banks require OTP verification, and in that case the system creates a local bank record with `PENDING` status first.
+ApiPay returns the connection result and includes local bank records when they are created or matched.
+
+```json
+{
+  "status": true,
+  "message": "Bank account submitted successfully",
+  "banks": [
+    {
+      "publicId": "bnk_abc123",
+      "vaNumber": "DANH001",
+      "status": "ACTIVE"
+    }
+  ]
+}
+```
+
+Some banks require OTP verification, and in that case the system creates a local bank record with `PENDING` status first.
 
 ## 2. Confirm OTP for bank connection
 
