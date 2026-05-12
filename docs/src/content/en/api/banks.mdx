@@ -45,6 +45,38 @@ POST /v1/client/banks
 }
 ```
 
+### Business bank account
+
+For business accounts, include `accountType: "BUSINESS"`.
+
+ACB Onebiz business accounts also require the internet banking `username`:
+
+```json
+{
+  "type": "openapi",
+  "bankShortName": "ACB",
+  "accountNumber": "24550721",
+  "accName": "PHAM THANH DANH",
+  "accMobile": "0858838502",
+  "accountType": "BUSINESS",
+  "username": "internet_banking_user"
+}
+```
+
+MB Bank business accounts require the Tax code (MST) to be provided in `cccd`:
+
+```json
+{
+  "type": "openapi",
+  "bankShortName": "MBB",
+  "accountNumber": "24550721",
+  "accName": "PHAM THANH DANH",
+  "accMobile": "0858838502",
+  "cccd": "012345678901",
+  "accountType": "BUSINESS"
+}
+```
+
 ### Important fields
 
 - `type`: `openapi`
@@ -55,6 +87,7 @@ POST /v1/client/banks
 - `cccd`: required for `BIDV` and `MBB`
 - `merchantId`: required for `BIDV`
 - `accEmail`: required for `BIDV`
+- `accountType`: set to `BUSINESS` for supported business bank accounts
 - `username`: required for `ICB`, `VCB`, or `ACB` when `accountType` is `BUSINESS`
 - `password`: required for `ICB` and `VCB`
 

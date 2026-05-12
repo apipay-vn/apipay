@@ -17,14 +17,14 @@ Base route:
 
 Sử dụng các mã `bankShortName` đúng với logic backend:
 
-| Mã    | Ngân hàng   | Trạng thái |
-| ----- | ----------- | ---------- |
-| `ACB` | ACB         | Hỗ trợ     |
-| `BIDV` | BIDV       | Hỗ trợ     |
-| `MBB` | MB Bank     | Hỗ trợ     |
-| `OCB` | OCB         | Hỗ trợ     |
-| `ICB` | VietinBank  | Sắp ra mắt |
-| `VCB` | Vietcombank | Sắp ra mắt |
+| Mã     | Ngân hàng   | Trạng thái |
+| ------ | ----------- | ---------- |
+| `ACB`  | ACB         | Hỗ trợ     |
+| `BIDV` | BIDV        | Hỗ trợ     |
+| `MBB`  | MB Bank     | Hỗ trợ     |
+| `OCB`  | OCB         | Hỗ trợ     |
+| `ICB`  | VietinBank  | Sắp ra mắt |
+| `VCB`  | Vietcombank | Sắp ra mắt |
 
 ## 1. Kết nối tài khoản ngân hàng
 
@@ -45,6 +45,38 @@ POST /v1/client/banks
 }
 ```
 
+### Tài khoản ngân hàng doanh nghiệp
+
+Với tài khoản doanh nghiệp, gửi thêm `accountType: "BUSINESS"`.
+
+Tài khoản doanh nghiệp ACB Onebiz cần thêm `username` internet banking:
+
+```json
+{
+  "type": "openapi",
+  "bankShortName": "ACB",
+  "accountNumber": "24550721",
+  "accName": "PHAM THANH DANH",
+  "accMobile": "0858838502",
+  "accountType": "BUSINESS",
+  "username": "internet_banking_user"
+}
+```
+
+Tài khoản doanh nghiệp MB Bank cần truyền MST (Tax code) vào `cccd`:
+
+```json
+{
+  "type": "openapi",
+  "bankShortName": "MBB",
+  "accountNumber": "24550721",
+  "accName": "PHAM THANH DANH",
+  "accMobile": "0858838502",
+  "cccd": "012345678901",
+  "accountType": "BUSINESS"
+}
+```
+
 ### Các field quan trọng
 
 - `type`: `openapi`
@@ -55,6 +87,7 @@ POST /v1/client/banks
 - `cccd`: bắt buộc với `BIDV` và `MBB`
 - `merchantId`: bắt buộc với `BIDV`
 - `accEmail`: bắt buộc với `BIDV`
+- `accountType`: gửi `BUSINESS` với các tài khoản ngân hàng doanh nghiệp được hỗ trợ
 - `username`: bắt buộc với `ICB`, `VCB`, hoặc `ACB` khi `accountType` là `BUSINESS`
 - `password`: bắt buộc với `ICB` và `VCB`
 
