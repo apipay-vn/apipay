@@ -95,19 +95,17 @@ Với `OCB`, chỉ cần các field cơ bản: `type`, `bankShortName`, `account
 
 ### Response
 
-ApiPay trả về kết quả từ luồng kết nối ngân hàng và kèm các bank record nội bộ khi tạo hoặc tìm thấy record tương ứng.
+ApiPay trả về kết quả từ luồng kết nối ngân hàng và kèm bank record khi tạo hoặc tìm thấy record tương ứng.
 
 ```json
 {
   "status": true,
   "message": "Bank account submitted successfully",
-  "banks": [
-    {
-      "publicId": "bnk_abc123",
-      "vaNumber": "DANH001",
-      "status": "ACTIVE"
-    }
-  ]
+  "bank": {
+    "publicId": "bnk_abc123",
+    "vaNumber": "DANH001",
+    "status": "ACTIVE"
+  }
 }
 ```
 
