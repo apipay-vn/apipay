@@ -1,0 +1,74 @@
+---
+title: Shopify
+description: Reconcile Shopify manual bank transfer orders with ApiPay.
+---
+
+# Shopify
+
+ApiPay helps Shopify stores automate manual VND bank transfers. Customers choose your manual payment method at checkout, Shopify sends the order to ApiPay, ApiPay creates a hosted VietQR payment request, then ApiPay marks the Shopify order paid after the bank transfer is reconciled.
+
+<Callout type="warning">
+This v1 flow is for Shopify manual payment methods. It is not a native Shopify payment gateway, checkout redirect extension, or Shopify Payments app.
+</Callout>
+
+## Before You Start
+
+Prepare these items:
+
+- An active ApiPay bank account
+- An ApiPay API key in the dashboard
+- A Shopify custom app Admin API token with `read_orders` and `write_orders`
+- The custom app webhook signing secret
+- A Shopify manual payment method named `ApiPay Bank Transfer`
+
+## Set Up Shopify
+
+1. In Shopify admin, create a custom app for your store.
+2. Grant Admin API scopes `read_orders` and `write_orders`.
+3. Install the app and copy the Admin API access token.
+4. Copy the webhook signing secret.
+5. Open **Settings > Payments > Manual payment methods**.
+6. Add a custom manual payment method named `ApiPay Bank Transfer`.
+
+Use the exact same manual payment method name in ApiPay. Matching is case-insensitive after trimming spaces.
+
+## Connect in ApiPay
+
+1. Open **Integrations > Web App > Shopify** in the ApiPay dashboard.
+2. Enter your `myshopify.com` shop domain.
+3. Paste the Admin API access token and webhook signing secret.
+4. Select the active bank account that should receive Shopify transfers.
+5. Optionally select a verified custom domain for the hosted payment page.
+6. Save the connection, then run **Test connection**.
+
+## Register Order Webhooks
+
+In Shopify, add webhooks for:
+
+- `orders/create`
+- `orders/updated`
+
+Use the webhook URL shown on the ApiPay Shopify page:
+
+```text
+https://app.apipay.vn/v1/gateway/shopify/webhooks/orders
+```
+
+## Test the Journey
+
+1. Place a Shopify test order in VND.
+2. Choose `ApiPay Bank Transfer`.
+3. Confirm ApiPay creates one payment request for the order.
+4. Pay the VietQR with the exact amount and transfer content.
+5. After ApiPay matches the bank transaction, check that the Shopify order is marked paid.
+
+## Troubleshooting
+
+If an order is ignored, check that:
+
+- The order currency is VND.
+- The order is not already paid.
+- The selected Shopify payment method name matches ApiPay.
+- The Shopify webhook signing secret is correct.
+- The Admin API token still has `read_orders` and `write_orders`.
+- The ApiPay bank account selected for Shopify is active.

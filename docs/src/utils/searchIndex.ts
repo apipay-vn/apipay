@@ -51,6 +51,12 @@ export const searchItems: SearchItem[] = [
 		section: "Tích hợp",
 	},
 	{
+		title: "Shopify",
+		description: "Tự động đối soát đơn Shopify thanh toán chuyển khoản thủ công",
+		href: "/vi/integrations/shopify",
+		section: "Tích hợp",
+	},
+	{
 		title: "WHMCS",
 		description: "Cài đặt module thanh toán ApiPay cho WHMCS",
 		href: "/vi/integrations/whmcs",
@@ -140,6 +146,12 @@ export const searchItems: SearchItem[] = [
 		title: "WooCommerce",
 		description: "Install the ApiPay WooCommerce payment gateway plugin",
 		href: "/en/integrations/woocommerce",
+		section: "Integrations",
+	},
+	{
+		title: "Shopify",
+		description: "Reconcile Shopify manual bank transfer orders with ApiPay",
+		href: "/en/integrations/shopify",
 		section: "Integrations",
 	},
 	{

@@ -1,0 +1,74 @@
+---
+title: Shopify
+description: Đối soát đơn Shopify thanh toán chuyển khoản thủ công bằng ApiPay.
+---
+
+# Shopify
+
+ApiPay giúp cửa hàng Shopify tự động hóa đơn chuyển khoản VND thủ công. Khách chọn phương thức thanh toán thủ công khi checkout, Shopify gửi đơn hàng về ApiPay, ApiPay tạo yêu cầu thanh toán VietQR, rồi ApiPay đánh dấu đơn Shopify đã thanh toán sau khi đối soát được giao dịch ngân hàng.
+
+<Callout type="warning">
+Luồng v1 này dành cho phương thức thanh toán thủ công của Shopify. Đây không phải cổng thanh toán Shopify native, checkout redirect extension, hoặc Shopify Payments app.
+</Callout>
+
+## Chuẩn bị
+
+Bạn cần có:
+
+- Một tài khoản ngân hàng ApiPay đang hoạt động
+- Một API key ApiPay trong dashboard
+- Shopify custom app Admin API token có quyền `read_orders` và `write_orders`
+- Webhook signing secret của custom app
+- Phương thức thanh toán thủ công Shopify tên `ApiPay Bank Transfer`
+
+## Cài đặt trong Shopify
+
+1. Trong Shopify admin, tạo custom app cho cửa hàng.
+2. Cấp quyền Admin API `read_orders` và `write_orders`.
+3. Cài app và sao chép Admin API access token.
+4. Sao chép webhook signing secret.
+5. Mở **Settings > Payments > Manual payment methods**.
+6. Thêm phương thức thanh toán thủ công tên `ApiPay Bank Transfer`.
+
+Hãy dùng đúng tên phương thức này trong ApiPay. Hệ thống so khớp không phân biệt hoa thường sau khi bỏ khoảng trắng đầu cuối.
+
+## Kết nối trong ApiPay
+
+1. Mở **Tích hợp > Web App > Shopify** trong dashboard ApiPay.
+2. Nhập tên miền shop dạng `myshopify.com`.
+3. Dán Admin API access token và webhook signing secret.
+4. Chọn tài khoản ngân hàng đang hoạt động để nhận tiền Shopify.
+5. Có thể chọn thêm tên miền riêng đã xác minh cho trang thanh toán.
+6. Lưu kết nối, sau đó bấm **Kiểm tra kết nối**.
+
+## Đăng ký webhook đơn hàng
+
+Trong Shopify, thêm webhook cho:
+
+- `orders/create`
+- `orders/updated`
+
+Dùng webhook URL hiển thị trên trang Shopify trong ApiPay:
+
+```text
+https://app.apipay.vn/v1/gateway/shopify/webhooks/orders
+```
+
+## Test hành trình thanh toán
+
+1. Tạo đơn test Shopify bằng VND.
+2. Chọn `ApiPay Bank Transfer`.
+3. Kiểm tra ApiPay tạo một yêu cầu thanh toán cho đơn hàng.
+4. Quét VietQR và chuyển đúng số tiền, đúng nội dung.
+5. Sau khi ApiPay khớp giao dịch ngân hàng, kiểm tra đơn Shopify đã được đánh dấu thanh toán.
+
+## Xử lý lỗi
+
+Nếu đơn bị bỏ qua, hãy kiểm tra:
+
+- Đơn hàng dùng tiền tệ VND.
+- Đơn chưa được thanh toán trước đó.
+- Tên phương thức thanh toán Shopify khớp với cấu hình ApiPay.
+- Webhook signing secret của Shopify chính xác.
+- Admin API token vẫn có quyền `read_orders` và `write_orders`.
+- Tài khoản ngân hàng ApiPay đã chọn cho Shopify đang hoạt động.
