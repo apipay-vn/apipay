@@ -26,6 +26,7 @@ export const viSidebarConfig: SidebarItem[] = [
     children: [
       {label: 'Web App', href: '/vi/integrations/webapp'},
       {label: 'WooCommerce', href: '/vi/integrations/woocommerce'},
+      {label: 'Haravan', href: '/vi/integrations/haravan'},
       {label: 'Vibe Code', href: '/vi/integrations/vibe-code'},
       {label: 'WHMCS', href: '/vi/integrations/whmcs'},
       {label: 'HostBill', href: '/vi/integrations/hostbill'},
@@ -71,6 +72,7 @@ export const enSidebarConfig: SidebarItem[] = [
     label: 'Integrations',
     children: [
       {label: 'WooCommerce', href: '/en/integrations/woocommerce'},
+      {label: 'Haravan', href: '/en/integrations/haravan'},
       {label: 'WHMCS', href: '/en/integrations/whmcs'},
       {label: 'HostBill', href: '/en/integrations/hostbill'},
       {label: 'Vibe Code', href: '/en/integrations/vibe-code'},

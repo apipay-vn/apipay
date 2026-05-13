@@ -51,6 +51,12 @@ export const searchItems: SearchItem[] = [
 		section: "Tích hợp",
 	},
 	{
+		title: "Haravan",
+		description: "Kết nối đơn hàng Haravan với thanh toán chuyển khoản ApiPay",
+		href: "/vi/integrations/haravan",
+		section: "Tích hợp",
+	},
+	{
 		title: "WHMCS",
 		description: "Cài đặt module thanh toán ApiPay cho WHMCS",
 		href: "/vi/integrations/whmcs",
@@ -140,6 +146,12 @@ export const searchItems: SearchItem[] = [
 		title: "WooCommerce",
 		description: "Install the ApiPay WooCommerce payment gateway plugin",
 		href: "/en/integrations/woocommerce",
+		section: "Integrations",
+	},
+	{
+		title: "Haravan",
+		description: "Connect Haravan orders to ApiPay bank-transfer payments",
+		href: "/en/integrations/haravan",
 		section: "Integrations",
 	},
 	{

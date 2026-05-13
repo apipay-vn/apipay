@@ -1,0 +1,76 @@
+---
+title: Haravan
+description: Cho phép khách Haravan thanh toán bằng chuyển khoản ngân hàng qua ApiPay.
+---
+
+# Haravan
+
+ApiPay giúp merchant Haravan nhận chuyển khoản VND mà không phải kiểm tra từng đơn thủ công. Khách chọn chuyển khoản khi checkout, thanh toán trên trang hosted của ApiPay, và đơn hàng được cập nhật sau khi ApiPay đối soát được giao dịch ngân hàng.
+
+Hướng dẫn này tập trung vào luồng vận hành, trải nghiệm khách hàng và các điểm cần kiểm tra trước khi chạy thật.
+
+<Callout type="tip">
+Mở **Tích hợp > Haravan** trong dashboard để chuẩn bị cấu hình thanh toán Haravan.
+
+[Mở Haravan trong dashboard](https://my.apipay.vn/vi/integrations/haravan)
+</Callout>
+
+## Khi Nào Nên Dùng
+
+Haravan với ApiPay phù hợp khi:
+
+- Cửa hàng bán bằng VND và khách quen thanh toán qua chuyển khoản ngân hàng Việt Nam.
+- Doanh nghiệp muốn hiển thị QR và nội dung chuyển khoản rõ ràng thay vì nhắn số tài khoản thủ công.
+- Vận hành muốn đơn được cập nhật sau đối soát, không phụ thuộc vào việc nhân viên kiểm tra sao kê.
+- Kế toán cần liên kết giao dịch ngân hàng với đơn Haravan để chốt ngày nhanh hơn.
+
+## Hành Trình Merchant
+
+1. **Chuẩn bị phương thức thanh toán**  
+   Trong ApiPay, kết nối tài khoản ngân hàng sẽ nhận tiền từ đơn Haravan. Nếu dùng tên miền thanh toán riêng, hãy xác minh trước khi chạy thật.
+
+2. **Chọn trải nghiệm trên cửa hàng**  
+   Xác định nơi khách sẽ thấy lựa chọn thanh toán ApiPay trong checkout hoặc luồng mua hàng Haravan. Tên phương thức nên rõ ràng, ví dụ **Chuyển khoản qua ApiPay**.
+
+3. **Bàn giao gói thiết lập**  
+   Tại **Tích hợp > Haravan**, tải gói Haravan đã chuẩn bị và gửi cho người phụ trách triển khai cửa hàng. Gói này chứa thông tin cần thiết để kết nối luồng đơn hàng Haravan với ApiPay.
+
+4. **Chạy thử một đơn nhỏ**  
+   Tạo một đơn VND, thanh toán đúng số tiền và nội dung ApiPay hiển thị, sau đó kiểm tra đơn Haravan chuyển sang trạng thái đã thanh toán như mong đợi.
+
+5. **Hướng dẫn hỗ trợ và kế toán**  
+   Đảm bảo đội hỗ trợ biết cách tra cứu trang thanh toán ApiPay từ đơn hàng, và kế toán biết tài khoản ngân hàng nào nhận tiền Haravan.
+
+## Hành Trình Khách Hàng
+
+1. Khách checkout trên cửa hàng Haravan.
+2. Khách chọn phương thức chuyển khoản qua ApiPay.
+3. ApiPay hiển thị số tiền, nội dung chuyển khoản và mã QR.
+4. Khách mở app ngân hàng và chuyển khoản.
+5. ApiPay đối soát giao dịch và gửi kết quả thanh toán về luồng cửa hàng.
+6. Đơn Haravan được cập nhật để đội vận hành xử lý giao hàng.
+
+## Checklist Trước Khi Chạy Thật
+
+- Đơn hàng thanh toán qua ApiPay dùng tiền tệ VND.
+- Tài khoản ngân hàng nhận tiền trong ApiPay đang hoạt động và thuộc đúng pháp nhân/doanh nghiệp.
+- Tên phương thức checkout nói rõ khách sẽ thanh toán bằng chuyển khoản.
+- Trang thanh toán hiển thị đúng tên doanh nghiệp, số tiền và nội dung chuyển khoản.
+- Một đơn test đã thanh toán được cập nhật đúng trong Haravan.
+- Đội hỗ trợ biết xử lý tình huống khách chuyển sai số tiền, sai nội dung hoặc đóng trang thanh toán.
+
+## Ghi Chú Vận Hành
+
+Trong vận hành hằng ngày, hãy xem ApiPay là nguồn xác nhận thanh toán cho đơn Haravan trả bằng chuyển khoản. Nhân viên không nên tự đánh dấu đơn đã thanh toán chỉ vì khách báo đã chuyển tiền; hãy chờ đối soát, trừ khi kế toán đã kiểm tra trực tiếp trên sao kê.
+
+Nếu khách chuyển sai số tiền, sai nội dung hoặc thanh toán sau khi trang hết hạn, hãy kiểm tra giao dịch trong ApiPay trước khi xử lý giao hàng.
+
+## Xử Lý Sự Cố
+
+Nếu đơn Haravan chưa cập nhật sau khi khách đã chuyển khoản:
+
+- Kiểm tra số tiền và nội dung chuyển khoản có khớp với trang thanh toán ApiPay không.
+- Kiểm tra tài khoản ngân hàng nhận tiền còn hoạt động trong ApiPay.
+- Kiểm tra giao dịch đã được ApiPay đối soát chưa.
+- Kiểm tra thiết lập Haravan còn dùng đúng thông tin ApiPay hiện tại.
+- Nếu ApiPay đã ghi nhận thanh toán hoàn tất nhưng Haravan chưa đổi trạng thái, nhờ người phụ trách triển khai kiểm tra log phía cửa hàng.

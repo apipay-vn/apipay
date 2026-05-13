@@ -1,0 +1,76 @@
+---
+title: Haravan
+description: Let Haravan customers pay by Vietnamese bank transfer with ApiPay.
+---
+
+# Haravan
+
+ApiPay helps Haravan merchants accept VND bank transfers without manually checking every order. Customers choose bank transfer at checkout, pay on the ApiPay hosted page, and the order is updated after ApiPay matches the incoming bank transaction.
+
+Use this guide to plan the business flow, prepare your store, and know what each team needs to verify before going live.
+
+<Callout type="tip">
+Open **Integrations > Haravan** in the dashboard to prepare your Haravan payment setup.
+
+[Open Haravan in dashboard](https://my.apipay.vn/en/integrations/haravan)
+</Callout>
+
+## When to Use It
+
+Haravan with ApiPay is a good fit when:
+
+- Your store sells in VND and customers are comfortable paying by Vietnamese bank transfer.
+- Your team wants QR-based payment instructions instead of manual bank-account messages.
+- Operations needs paid orders to update after reconciliation, not after a staff member checks the statement.
+- Finance wants bank transfers tied back to Haravan orders for faster end-of-day review.
+
+## Merchant Journey
+
+1. **Prepare the payment option**  
+   In ApiPay, connect the bank account that should receive Haravan payments. If you use a branded payment domain, verify it before launch.
+
+2. **Choose the store experience**  
+   Decide where customers will see the ApiPay bank-transfer option in your Haravan checkout or storefront flow. Keep the label clear, for example **Bank transfer with ApiPay**.
+
+3. **Hand off the setup package**  
+   From **Integrations > Haravan**, download the prepared Haravan package and give it to the person responsible for your store implementation. The package contains the information needed to connect your Haravan order flow with ApiPay.
+
+4. **Run a pilot order**  
+   Place a small VND test order, pay with the exact amount and transfer content shown by ApiPay, then confirm the Haravan order moves to the expected paid state.
+
+5. **Train support and finance**  
+   Make sure support can find the ApiPay payment page from an order, and finance knows which bank account receives Haravan payments.
+
+## Customer Journey
+
+1. The customer checks out on your Haravan store.
+2. The customer selects the ApiPay bank-transfer payment option.
+3. ApiPay shows the payment amount, transfer content, and QR code.
+4. The customer completes the bank transfer from their banking app.
+5. ApiPay reconciles the transaction and sends the payment result back to your store flow.
+6. The Haravan order is updated so your team can fulfill it.
+
+## Go-Live Checklist
+
+- The Haravan store currency is VND for orders paid through ApiPay.
+- The receiving bank account in ApiPay is active and belongs to the correct business entity.
+- The checkout label explains that the customer will pay by bank transfer.
+- The payment page shows the correct business name, amount, and transfer content.
+- A paid test order updates correctly in Haravan.
+- Support knows how to handle customers who transferred the wrong amount or closed the payment page.
+
+## Operating Notes
+
+For daily operations, treat ApiPay as the payment confirmation source for Haravan bank-transfer orders. Staff should avoid marking an order as paid only because the customer says they transferred money; wait for reconciliation unless finance has manually verified the bank statement.
+
+If a customer pays the wrong amount, uses the wrong transfer content, or pays after the payment page expires, review the transaction in ApiPay before fulfilling the order.
+
+## Troubleshooting
+
+If a Haravan order does not update after the customer paid:
+
+- Confirm the transfer amount and content match the ApiPay payment page.
+- Confirm the receiving bank account is active in ApiPay.
+- Check whether the payment was reconciled in ApiPay.
+- Confirm the Haravan store setup is still connected to the current ApiPay credentials.
+- Ask the implementation owner to review store-side logs if ApiPay shows the payment as completed but Haravan has not changed.
