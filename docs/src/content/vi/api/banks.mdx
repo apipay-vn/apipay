@@ -1,11 +1,11 @@
 ---
 title: Quản lý ngân hàng
-description: API kết nối và quản lý tài khoản ngân hàng của client
+description: API kết nối và quản lý tài khoản ngân hàng
 ---
 
 # Quản lý ngân hàng
 
-Trang này mô tả API thực tế dùng để client kết nối, xác thực và quản lý tài khoản ngân hàng trên ApiPay.
+Trang này mô tả API dùng để kết nối, xác thực và quản lý tài khoản ngân hàng trên ApiPay.
 
 Base route:
 
@@ -15,7 +15,7 @@ Base route:
 
 ## Mã ngân hàng hợp lệ
 
-Sử dụng các mã `bankShortName` đúng với logic backend:
+Dùng đúng mã `bankShortName` bên dưới:
 
 | Mã     | Ngân hàng   | Trạng thái |
 | ------ | ----------- | ---------- |
@@ -63,7 +63,7 @@ Tài khoản doanh nghiệp ACB Onebiz cần thêm `username` internet banking:
 }
 ```
 
-Tài khoản doanh nghiệp MB Bank cần truyền MST (Tax code) vào `cccd`:
+Tài khoản doanh nghiệp MB Bank cần truyền MST (tax code) vào `cccd`:
 
 ```json
 {
@@ -77,7 +77,7 @@ Tài khoản doanh nghiệp MB Bank cần truyền MST (Tax code) vào `cccd`:
 }
 ```
 
-### Các field quan trọng
+### Field quan trọng
 
 - `type`: `openapi`
 - `bankShortName`: một trong `BIDV`, `ACB`, `MBB`, `OCB`, `ICB`, `VCB`
@@ -87,15 +87,15 @@ Tài khoản doanh nghiệp MB Bank cần truyền MST (Tax code) vào `cccd`:
 - `cccd`: bắt buộc với `BIDV` và `MBB`
 - `merchantId`: bắt buộc với `BIDV`
 - `accEmail`: bắt buộc với `BIDV`
-- `accountType`: gửi `BUSINESS` với các tài khoản ngân hàng doanh nghiệp được hỗ trợ
+- `accountType`: gửi `BUSINESS` với tài khoản ngân hàng doanh nghiệp được hỗ trợ
 - `username`: bắt buộc với `ICB`, `VCB`, hoặc `ACB` khi `accountType` là `BUSINESS`
 - `password`: bắt buộc với `ICB` và `VCB`
 
-Với `OCB`, chỉ cần các field cơ bản: `type`, `bankShortName`, `accountNumber`, `accName`, và `accMobile`.
+Với `OCB`, chỉ cần các field cơ bản: `type`, `bankShortName`, `accountNumber`, `accName` và `accMobile`.
 
 ### Response
 
-ApiPay trả về kết quả từ luồng kết nối ngân hàng và kèm bank record khi tạo hoặc tìm thấy record tương ứng.
+ApiPay trả về kết quả của luồng kết nối ngân hàng, kèm bank record khi tạo mới hoặc tìm thấy record phù hợp.
 
 ```json
 {
@@ -109,7 +109,7 @@ ApiPay trả về kết quả từ luồng kết nối ngân hàng và kèm bank
 }
 ```
 
-Một số ngân hàng sẽ yêu cầu OTP, khi đó response thường báo cần xác thực thêm và hệ thống tạo bank record ở trạng thái `PENDING`.
+Một số ngân hàng yêu cầu OTP. Khi đó response sẽ báo cần xác thực thêm, và hệ thống tạo bank record ở trạng thái `PENDING`.
 
 ## 2. Xác thực OTP khi kết nối
 
@@ -131,9 +131,9 @@ POST /v1/client/banks/confirm-otp
 
 ### Ghi chú
 
-- Dùng endpoint này khi bước kết nối trả về yêu cầu OTP
+- Dùng endpoint này khi bước kết nối yêu cầu OTP
 - `merchantId` có thể cần cho một số trường hợp như `BIDV`
-- Khi xác thực thành công, bank record sẽ được chuyển từ `PENDING` sang `ACTIVE`
+- Khi xác thực thành công, bank record chuyển từ `PENDING` sang `ACTIVE`
 
 ## 3. Lấy danh sách tài khoản ngân hàng đã liên kết
 
@@ -166,7 +166,7 @@ GET /v1/client/banks
 
 - `ACTIVE`: đang hoạt động
 - `INACTIVE`: đã tắt
-- `PENDING`: đang chờ xác thực OTP hoặc hoàn tất liên kết
+- `PENDING`: đang chờ OTP hoặc chưa hoàn tất liên kết
 
 ## 4. Lấy chi tiết một tài khoản ngân hàng
 
@@ -224,7 +224,7 @@ Trong route này, `:id` là `publicId` của bank account.
 
 ### Ghi chú
 
-- Chỉ dùng được với tài khoản đã liên kết đầy đủ
+- Chỉ dùng với tài khoản đã liên kết đầy đủ
 - Nếu tài khoản chưa hoàn tất kích hoạt, API sẽ trả lỗi
 
 ## 7. Ngắt kết nối tài khoản ngân hàng
@@ -238,7 +238,7 @@ Trong route này, `:id` là `publicId` của bank account.
 ### Ghi chú
 
 - Một số ngân hàng có thể yêu cầu OTP khi xóa
-- Nếu cần OTP, API sẽ trả về kết quả yêu cầu xác thực thay vì xóa ngay
+- Nếu cần OTP, API sẽ yêu cầu xác thực thay vì xóa ngay
 
 ## 8. Xác thực OTP khi ngắt kết nối
 

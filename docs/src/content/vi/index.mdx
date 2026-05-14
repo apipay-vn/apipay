@@ -5,34 +5,34 @@ description: Tích hợp ApiPay vào hệ thống của bạn
 
 # Giới thiệu ApiPay
 
-ApiPay là cổng thanh toán API giúp bạn dễ dàng tạo liên kết thanh toán qua chuyển khoản ngân hàng tại Việt Nam.
+ApiPay giúp bạn nhận thanh toán chuyển khoản ngân hàng qua API. Bạn tạo link thanh toán, khách quét QR hoặc chuyển khoản, ApiPay ghi nhận giao dịch và gửi webhook về hệ thống của bạn.
 
 ![Tổng quan tài liệu ApiPay](/apipay-docs.jpg)
 
 ## Tính năng chính
 
 - **Tạo liên kết thanh toán** qua QR Code hoặc thông tin chuyển khoản
-- **Tự động xác nhận** khi có thanh toán
-- **Webhook notifications** - Nhận thông báo thanh toán theo thời gian thực
+- **Tự động xác nhận** khi tiền vào tài khoản
+- **Webhook notifications** - Nhận thông báo thanh toán gần như ngay lập tức
 - **Nhiều ngân hàng** - Hỗ trợ Vietcombank, MB, ACB, OCB, TPBank, BIDV, Sacombank...
-- **Miễn phí** - Không phí transaction
+- **Không phí transaction** - Không thu thêm trên mỗi giao dịch
 
 ## Cách hoạt động
 
 1. **Tạo payment link** bằng API
-2. **Gửi link cho khách** - Khách hàng quét QR hoặc chuyển khoản
-3. **Tự động xác nhận** - Hệ thống tự nhận biết khi có thanh toán
-4. **Nhận webhook** - Bạn nhận thông báo thanh toán thành công
+2. **Gửi link cho khách** - Khách quét QR hoặc chuyển khoản
+3. **ApiPay ghi nhận giao dịch** - Hệ thống khớp giao dịch với payment request
+4. **Nhận webhook** - Hệ thống của bạn nhận thông báo thanh toán thành công
 
 ## Bắt đầu
 
-- **Merchants mới?** Bắt đầu với [Hướng dẫn bắt đầu](/vi/onboarding) để thiết lập tài khoản và nhận thanh toán đầu tiên
-- **Đã có tài khoản?** Truy cập [Quick Start](/vi/quickstart) để bắt đầu tích hợp API trong 5 phút
+- **Mới dùng ApiPay?** Xem [Hướng dẫn bắt đầu](/vi/onboarding) để thiết lập tài khoản và nhận thanh toán đầu tiên
+- **Đã có tài khoản?** Mở [Quick Start](/vi/quickstart) để tích hợp API trong vài phút
 
 ## Tài liệu hướng dẫn
 
 | Hướng dẫn                                | Mô tả                                  |
 | ---------------------------------------- | -------------------------------------- |
-| [Hướng dẫn bắt đầu](/vi/onboarding)      | Quy trình thiết lập tài khoản merchant |
-| [Đăng ký & Thanh toán](/vi/subscription) | Quản lý gói dịch vụ và thanh toán      |
+| [Hướng dẫn bắt đầu](/vi/onboarding)      | Thiết lập tài khoản từ đầu             |
+| [Đăng ký & Thanh toán](/vi/subscription) | Quản lý gói dịch vụ và hóa đơn         |
 | [Quản lý Ngân hàng](/vi/banking)         | Kết nối và quản lý tài khoản ngân hàng |

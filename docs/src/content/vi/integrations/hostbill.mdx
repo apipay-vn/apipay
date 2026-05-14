@@ -1,14 +1,14 @@
 ---
 title: HostBill
-description: Cài đặt và cấu hình module thanh toán ApiPay cho HostBill.
+description: Cài đặt module thanh toán ApiPay cho HostBill.
 ---
 
 # HostBill
 
-Module ApiPay HostBill cho phép khách thanh toán hoá đơn HostBill bằng chuyển khoản ngân hàng VND qua trang thanh toán hosted của ApiPay. File ZIP tải từ dashboard đã điền sẵn API credentials, tài khoản ngân hàng đã chọn và tên miền riêng nếu có.
+Module ApiPay HostBill cho phép khách thanh toán hóa đơn HostBill bằng chuyển khoản ngân hàng VND qua trang thanh toán hosted của ApiPay. File ZIP tải từ dashboard đã có sẵn API credentials, tài khoản ngân hàng đã chọn và tên miền riêng nếu có.
 
 <Callout type="tip">
-Mở **Tích hợp > HostBill** trong dashboard để tạo file ZIP module đã điền sẵn cấu hình.
+Mở **Tích hợp > HostBill** trong dashboard để tạo file ZIP module có sẵn cấu hình.
 
 [Mở HostBill trong dashboard](https://my.apipay.vn/vi/integrations/hostbill)
 </Callout>
@@ -17,14 +17,14 @@ Mở **Tích hợp > HostBill** trong dashboard để tạo file ZIP module đã
 
 - Tạo API key trong **Tích hợp > API Keys**.
 - Kết nối ít nhất một tài khoản ngân hàng đang hoạt động trong **Tài khoản ngân hàng**.
-- Tuỳ chọn: xác minh tên miền thanh toán riêng trong **Hướng dẫn Dashboard > Tên miền riêng**.
+- Tùy chọn: xác minh tên miền thanh toán riêng trong **Hướng dẫn Dashboard > Tên miền riêng**.
 - Đảm bảo website HostBill có thể nhận callback công khai qua HTTPS.
 
 ## Tải module
 
 1. Trong dashboard ApiPay, mở **Tích hợp > HostBill**.
-2. Chọn tài khoản ngân hàng đang hoạt động để nhận thanh toán hoá đơn.
-3. Có thể chọn thêm tên miền riêng đã xác minh cho trang thanh toán hosted.
+2. Chọn tài khoản ngân hàng đang hoạt động để nhận thanh toán hóa đơn.
+3. Nếu có, chọn thêm tên miền riêng đã xác minh cho trang thanh toán hosted.
 4. Tải `apipay-hostbill.zip`.
 
 ## Cài đặt trong HostBill
@@ -38,20 +38,20 @@ Mở **Tích hợp > HostBill** trong dashboard để tạo file ZIP module đã
 
 ## Test thanh toán
 
-1. Tạo hoá đơn test bằng VND.
+1. Tạo hóa đơn test bằng VND.
 2. Chọn **ApiPay** làm phương thức thanh toán.
 3. Kiểm tra HostBill chuyển khách sang trang thanh toán hosted của ApiPay.
 4. Chuyển khoản đúng số tiền và đúng nội dung hiển thị.
-5. Sau khi ApiPay xác nhận giao dịch, hoá đơn được đánh dấu đã thanh toán trong HostBill.
+5. Sau khi ApiPay xác nhận giao dịch, hóa đơn sẽ được đánh dấu đã thanh toán trong HostBill.
 
 ## Xử lý lỗi
 
-Nếu hoá đơn chưa cập nhật, hãy kiểm tra:
+Nếu hóa đơn chưa cập nhật, hãy kiểm tra:
 
-- Website HostBill truy cập công khai được qua HTTPS.
+- Website HostBill có thể truy cập công khai qua HTTPS.
 - Gateway ApiPay đã được kích hoạt trong HostBill.
 - API key trong HostBill khớp với API key đang hoạt động trên dashboard.
 - Tài khoản ngân hàng đã chọn đang hoạt động trong ApiPay.
-- Số tiền hoá đơn dùng VND.
+- Số tiền hóa đơn dùng VND.
 - Firewall hoặc rule bảo mật không chặn callback endpoint của HostBill.
 - Nếu chọn tên miền riêng, tên miền đó đã được xác minh và đang hoạt động trong ApiPay.

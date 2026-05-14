@@ -1,23 +1,23 @@
 ---
 title: Xác thực API
-description: Hướng dẫn xác thực API
+description: Cách xác thực request khi gọi ApiPay API
 ---
 
 # Xác thực API
 
-ApiPay sử dụng API keys để xác thực. Tất cả các endpoint cần xác thực đều yêu cầu header `Authorization`.
+ApiPay dùng API keys để xác thực request. Các endpoint cần xác thực đều yêu cầu header `Authorization`.
 
 ## Header Authorization
 
 Định dạng: `Authorization: Bearer <Auth>`
 
-Trong đó `<Auth>` là thông tin đăng nhập được mã hóa base64:
+Trong đó `<Auth>` là chuỗi base64 của `accessKey:secretKey`:
 
 ```
 base64(accessKey:secretKey)
 ```
 
-## Lấy API Keys
+## Lấy API keys
 
 1. Đăng nhập vào [dashboard](https://my.apipay.vn)
 2. Vào mục **Tích hợp → API Keys**

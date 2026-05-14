@@ -39,7 +39,7 @@ Vào **Sandbox** ở thanh bên trái. Trang này hiển thị:
 Trước khi test, bạn cần có:
 
 - Ít nhất một **tài khoản ngân hàng đang hoạt động** đã kết nối
-- Ít nhất một **webhook đang hoạt động** được cấu hình cho tài khoản ngân hàng đó
+- Ít nhất một **webhook đang hoạt động** cho tài khoản ngân hàng đó
 
 Nếu chưa có webhook, vào **Cài đặt → Webhooks** để tạo trước.
 
@@ -60,7 +60,7 @@ Nếu chưa có webhook, vào **Cài đặt → Webhooks** để tạo trước.
 | Chiều giao dịch | Không | `IN` (tiền vào) hoặc `OUT` (tiền ra). Mặc định là `IN` |
 | Webhook đích | Không | Chọn một webhook cụ thể, hoặc để trống để gửi đến tất cả webhook phù hợp |
 
-Nhấn **Tạo**. Lúc này hệ thống chỉ lưu payment request và tạo một run có trạng thái `CREATED`. Webhook chưa được gửi.
+Nhấn **Tạo**. Lúc này hệ thống chỉ lưu payment request và tạo một run có trạng thái `CREATED`. Webhook vẫn chưa gửi.
 
 ### Bước 2 — Trigger giao dịch
 
@@ -178,7 +178,7 @@ Bạn cũng có thể đổi webhook đích lúc trigger. Endpoint trigger nhậ
 | `SUCCESS` | Tất cả webhook delivery thành công (HTTP 2xx) |
 | `FAILED` | Tất cả webhook delivery thất bại |
 | `PARTIAL` | Một số thành công, một số thất bại |
-| `NO_WEBHOOKS` | Không tìm thấy webhook đang hoạt động phù hợp. Không có gì được gửi |
+| `NO_WEBHOOKS` | Không tìm thấy webhook đang hoạt động phù hợp. Không có gì để gửi |
 
 ---
 

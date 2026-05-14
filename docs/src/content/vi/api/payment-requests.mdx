@@ -1,15 +1,15 @@
 ---
 title: Payment Requests API
-description: API tạo và quản lý liên kết thanh toán
+description: API tạo và quản lý payment link
 ---
 
 # Payment Requests API
 
-API để tạo và quản lý liên kết thanh toán.
+API dùng để tạo và quản lý payment link.
 
-## Tạo Payment Link
+## Tạo payment link
 
-Tạo liên kết thanh toán sử dụng ngân hàng đã kết nối.
+Tạo link thanh toán bằng tài khoản ngân hàng đã kết nối.
 
 ```bash
 POST /v1/client/payment-requests
@@ -22,18 +22,18 @@ POST /v1/client/payment-requests
 | `Authorization` | `Bearer <Auth>`    |
 | `Content-Type`  | `application/json` |
 
-> **Lưu ý:** `<Auth>` là thông tin đăng nhập được mã hóa base64. Xem [Xác thực API](/vi/api/authentication) để biết chi tiết.
+> **Lưu ý:** `<Auth>` là chuỗi base64 của `accessKey:secretKey`. Xem [Xác thực API](/vi/api/authentication) để biết chi tiết.
 
 ### Request Body
 
 | Tham số        | Kiểu   | Bắt buộc | Mô tả                                                                                                                                                                                                                        |
 | -------------- | ------ | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `bankPublicId` | string | **✓ Có** | Public ID của ngân hàng đã kết nối                                                                                                                                                                                           |
-| `amount`       | number | —        | Số tiền (VND, số nguyên, tối đa `300000000`). Để trống nếu cho phép người tự nhập                                                                                                                                            |
+| `amount`       | number | —        | Số tiền VND, dạng số nguyên, tối đa `300000000`. Để trống nếu cho phép khách tự nhập                                                                                                                                         |
 | `content`      | string | —        | Nội dung chuyển khoản (tối đa 140 ký tự)                                                                                                                                                                                     |
 | `title`        | string | —        | Tiêu đề hiển thị trên trang thanh toán                                                                                                                                                                                       |
 | `expiresAt`    | string | —        | Thời hạn (ISO 8601). Để trống nếu không giới hạn                                                                                                                                                                             |
-| `redirectUrl`  | string | —        | URL chuyển hướng sau khi thanh toán hoàn tất. Khi thanh toán hoàn tất, hệ thống sẽ chuyển hướng đến URL này với payload đã ký (`?data=<base64>&signature=<hmac>`) để xác minh. Để trống để sử dụng URL mặc định của merchant |
+| `redirectUrl`  | string | —        | URL đưa khách về sau khi thanh toán. Khi hoàn tất, hệ thống chuyển đến URL này kèm payload đã ký (`?data=<base64>&signature=<hmac>`). Để trống để dùng URL mặc định của merchant                                            |
 
 ### Response
 
@@ -72,9 +72,9 @@ curl -X POST https://app.apipay.vn/v1/client/payment-requests \
 
 ---
 
-## Lấy thông tin Payment Link
+## Lấy thông tin payment link
 
-Lấy chi tiết một payment request (bao gồm QR code).
+Lấy chi tiết một payment request, gồm cả QR code.
 
 ```bash
 GET /v1/payment-requests/:publicId
@@ -116,11 +116,11 @@ GET /v1/payment-requests/:publicId
 | `ACTIVE`    | Đang chờ thanh toán |
 | `COMPLETED` | Đã thanh toán       |
 | `EXPIRED`   | Đã hết hạn          |
-| `CANCELLED` | Đã huỷ              |
+| `CANCELLED` | Đã hủy              |
 
 ---
 
-## Danh sách Payment Links
+## Danh sách payment links
 
 Lấy danh sách payment requests đã tạo.
 
@@ -170,7 +170,7 @@ GET /v1/client/payment-requests
 | Tham số         | Kiểu     | Bắt buộc | Mô tả                                                   |
 | --------------- | -------- | -------- | ------------------------------------------------------- |
 | `page`          | number   | —        | Số trang (mặc định: `1`)                                |
-| `limit`         | number   | —        | Số item mỗi trang (mặc định: `20`, tối đa: `100`)       |
+| `limit`         | number   | —        | Số item trên mỗi trang (mặc định: `20`, tối đa: `100`)  |
 | `search`        | string   | —        | Tìm theo public ID, nội dung, tiêu đề hoặc số tài khoản |
 | `status`        | string[] | —        | Lọc theo trạng thái. Có thể truyền nhiều lần            |
 | `bankAccountId` | number   | —        | Lọc theo ID tài khoản ngân hàng                         |
@@ -181,7 +181,7 @@ GET /v1/client/payment-requests
 
 ## Đổi ngân hàng thanh toán
 
-Đổi một payment request đang hoạt động sang tài khoản ngân hàng khác đã được cấu hình.
+Đổi một payment request đang hoạt động sang tài khoản ngân hàng khác đã cấu hình.
 
 ```bash
 POST /v1/payment-requests/change-bank
@@ -241,19 +241,19 @@ GET /v1/payment-requests/:publicId/banks
 
 ## Lấy ảnh QR
 
-Stream ảnh QR PNG có branding ApiPay cho payment request.
+Trả về ảnh QR PNG có branding ApiPay cho payment request.
 
 ```bash
 GET /v1/payment-requests/:publicId/qr-image
 ```
 
-Query parameter tuỳ chọn: `merchantId` khi render từ custom domain.
+Query parameter tùy chọn: `merchantId` khi render từ custom domain.
 
 ---
 
-## Huỷ Payment Link
+## Hủy Payment Link
 
-Huỷ một payment request đang hoạt động.
+Hủy một payment request đang hoạt động.
 
 ```bash
 DELETE /v1/client/payment-requests/:publicId
@@ -272,26 +272,26 @@ DELETE /v1/client/payment-requests/:publicId
 
 ### Lưu ý
 
-- Chỉ có thể huỷ payment request có status là `ACTIVE`
-- Sau khi huỷ, status sẽ chuyển thành `CANCELLED`
+- Chỉ có thể hủy payment request có status là `ACTIVE`
+- Sau khi hủy, status sẽ chuyển thành `CANCELLED`
 
 ---
 
-## Xác minh Signed Redirect URL
+## Xác minh signed redirect URL
 
-Khi bạn cung cấp `redirectUrl` khi tạo payment request, sau khi thanh toán hoàn tất, khách hàng sẽ được chuyển hướng đến URL của bạn với payload đã được ký.
+Khi tạo payment request có `redirectUrl`, sau khi thanh toán xong, khách sẽ được chuyển về URL của bạn kèm payload đã ký.
 
-### Định dạng Redirect
+### Định dạng redirect
 
-Sau khi thanh toán hoàn tất, khách hàng được chuyển hướng đến:
+Sau khi thanh toán xong, khách được chuyển đến:
 
 ```
 https://yoursite.com/payment/result?data=<base64>&signature=<hmac>
 ```
 
-### Cấu trúc Payload
+### Cấu trúc payload
 
-Tham số `data` chứa JSON được mã hoá base64:
+Tham số `data` chứa JSON được mã hóa base64:
 
 ```json
 {
@@ -356,13 +356,13 @@ Khi tạo payment request, bạn nhận được:
 
 | Trường                 | Mô tả                                                                           |
 | ---------------------- | ------------------------------------------------------------------------------- |
-| `redirectSecret`       | Khoá bí mật (32 ký tự hex) để xác minh signed redirect payload. **Giữ bí mật!** |
-| `completedRedirectUrl` | Full signed URL (có sau khi thanh toán hoàn tất) - chỉ để tham khảo             |
+| `redirectSecret`       | Khóa bí mật (32 ký tự hex) để xác minh signed redirect payload. **Giữ bí mật!** |
+| `completedRedirectUrl` | Full signed URL sau khi thanh toán hoàn tất. Chỉ dùng để tham khảo              |
 
 ### Lưu ý bảo mật
 
-- **Luôn xác minh signature** trước khi xử lý thanh toán
-- Sử dụng `timingSafeEqual` để chống timing attacks
+- **Luôn kiểm tra signature** trước khi xử lý thanh toán
+- Dùng `timingSafeEqual` để chống timing attacks
 - `redirectSecret` là duy nhất cho mỗi payment request
 - Không để lộ `redirectSecret` trong client-side code
-- Validate `status === 'success'` trước khi xử lý đơn hàng
+- Kiểm tra `status === 'success'` trước khi xử lý đơn hàng

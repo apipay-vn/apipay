@@ -1,15 +1,15 @@
 ---
 title: Webhooks
-description: Nhận thông báo thanh toán theo thời gian thực
+description: Nhận thông báo thanh toán qua webhook
 ---
 
 # Webhooks
 
-Webhook cho phép bạn nhận thông báo theo thời gian thực khi có sự kiện thanh toán.
+Webhook giúp hệ thống của bạn nhận thông báo khi có sự kiện thanh toán.
 
-## Đăng ký Webhook
+## Đăng ký webhook
 
-Cấu hình webhook URL trong dashboard tại **Cài đặt → Webhooks**, hoặc tạo bằng API.
+Bạn có thể tạo webhook URL trong dashboard tại **Cài đặt → Webhooks**, hoặc tạo bằng API.
 
 ```bash
 POST /v1/client/webhooks
@@ -38,16 +38,16 @@ POST /v1/client/webhooks
 }
 ```
 
-Hãy lưu `secret`; khoá này được dùng để xác minh `ApiPay-Signature`.
+Hãy lưu `secret`; khóa này dùng để kiểm tra `ApiPay-Signature`.
 
-## Quản lý Webhooks
+## Quản lý webhooks
 
 | Endpoint | Mô tả |
 | -------- | ----- |
 | `GET /v1/client/webhooks` | Danh sách webhook (`page`, `limit`) |
 | `PATCH /v1/client/webhooks/:id` | Cập nhật `webhookUrl` hoặc `type` |
 | `PATCH /v1/client/webhooks/:id/toggle` | Bật hoặc tắt webhook |
-| `DELETE /v1/client/webhooks/:id` | Xoá webhook |
+| `DELETE /v1/client/webhooks/:id` | Xóa webhook |
 | `GET /v1/client/webhooks/:id/history` | Xem lịch sử gửi (`page`, `limit`) |
 | `POST /v1/client/webhooks/history/:historyId/resend` | Gửi lại một lần gửi thất bại |
 
@@ -99,7 +99,7 @@ Khi có tiền chuyển ra khỏi tài khoản ngân hàng của bạn.
 }
 ```
 
-### Các trường dữ liệu
+### Trường dữ liệu
 
 | Trường                     | Kiểu   | Mô tả                                                 |
 | -------------------------- | ------ | ----------------------------------------------------- |
@@ -113,12 +113,12 @@ Khi có tiền chuyển ra khỏi tài khoản ngân hàng của bạn.
 | `data.bankAccountPublicId` | string | Public ID của tài khoản ngân hàng                     |
 | `data.gateway`             | string | Mã ngân hàng (VD: BIDV, ACB, MBB, OCB)                |
 | `data.rawTransactionDate`  | string | Ngày giao dịch gốc từ ngân hàng                       |
-| `data.vaNumber`            | string | Số tài khoản ảo (tuỳ chọn)                            |
+| `data.vaNumber`            | string | Số tài khoản ảo (tùy chọn)                            |
 | `data.accountNumber`       | string | Số tài khoản người gửi/nhận                           |
 
-## Xác thực Webhook
+## Xác thực webhook
 
-Tất cả webhook requests đều có header `ApiPay-Signature` để xác thực.
+Tất cả webhook requests đều có header `ApiPay-Signature` để bạn xác thực.
 
 ### Node.js
 
@@ -202,30 +202,30 @@ def handle_webhook():
     return {'received': True}, 200
 ```
 
-## Retry Policy
+## Retry policy
 
 - Lần 0: Ngay lập tức
 
-Nếu webhook delivery thất bại, hệ thống sẽ retry:
+Nếu webhook delivery thất bại, hệ thống sẽ thử gửi lại:
 
 - Lần 1: Sau 5 giây
 - Lần 2: Sau 20 giây
 - Lần 3: Sau 1 phút
 
-Sau 3 lần retry thất bại, webhook sẽ bị vô hiệu hoá.
+Sau 3 lần retry thất bại, webhook sẽ bị vô hiệu hóa.
 
-## Testing Webhooks
+## Test webhooks
 
-Sử dụng [Webhook.site](https://webhook.site) để test webhook trong quá trình development:
+Dùng [Webhook.site](https://webhook.site) để test webhook trong quá trình development:
 
 1. Tạo URL test tại webhook.site
 2. Cấu hình webhook URL trong dashboard
 3. Tạo payment và hoàn thành thanh toán
 4. Xem request trên webhook.site
 
-## Best Practices
+## Best practices
 
 1. **Luôn verify signature** trước khi xử lý webhook
-2. **Response nhanh** - Trả 200 ngay lập tức, xử lý async
-3. **Idempotent** - Xử lý duplicate events không gây lỗi
-4. **Log events** - Ghi log để debug nếu cần
+2. **Response nhanh** - Trả 200 ngay, rồi xử lý async
+3. **Idempotent** - Duplicate events không được làm cập nhật sai
+4. **Log events** - Ghi log để debug khi cần

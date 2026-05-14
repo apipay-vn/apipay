@@ -12,12 +12,12 @@ export const viSidebarConfig: SidebarItem[] = [
   {label: 'Quick Start', href: '/vi/quickstart'},
   {label: 'Hướng dẫn bắt đầu', href: '/vi/onboarding'},
   {label: 'Đăng ký & Thanh toán', href: '/vi/subscription'},
-  {label: 'Quản lý Ngân hàng', href: '/vi/banking'},
+  {label: 'Quản lý ngân hàng', href: '/vi/banking'},
   {
     label: 'Hướng dẫn Dashboard',
     href: '/vi/dashboard',
     children: [
-      {label: 'Kết nối Ngân hàng', href: '/vi/connect-banks'},
+      {label: 'Kết nối ngân hàng', href: '/vi/connect-banks'},
       {label: 'Tên miền riêng', href: '/vi/custom-domains'},
       {label: 'Sandbox', href: '/vi/sandbox'},
     ],

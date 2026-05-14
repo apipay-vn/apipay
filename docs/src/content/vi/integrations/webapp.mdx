@@ -1,16 +1,16 @@
 ---
 title: Web App
-description: Tích hợp ApiPay vào web app tuỳ chỉnh với helper JavaScript và Python kiểu SDK.
+description: Tích hợp ApiPay vào web app tùy chỉnh bằng helper JavaScript và Python.
 ---
 
 # Web App
 
-Sử dụng ApiPay client API từ web app của bạn để tạo hosted payment request, chuyển khách đến `payUrl`, và nhận cập nhật thanh toán qua redirect hoặc webhook.
+Dùng ApiPay client API trong web app của bạn để tạo hosted payment request, chuyển khách đến `payUrl`, rồi nhận kết quả qua redirect hoặc webhook.
 
-Các ví dụ bên dưới là helper kiểu SDK để copy vào server-side code. Bạn không cần cài đặt package SDK ApiPay riêng.
+Các ví dụ bên dưới là helper nhỏ để dùng trong server-side code. Bạn không cần cài thêm SDK ApiPay riêng.
 
 <Callout type="tip">
-Mở **Tích hợp > API Keys** trong dashboard để tạo credentials cho web app tuỳ chỉnh.
+Mở **Tích hợp > API Keys** trong dashboard để tạo credentials cho web app tùy chỉnh.
 
 [Mở API Keys trong dashboard](https://my.apipay.vn/vi/integrations/api-keys)
 </Callout>
@@ -20,7 +20,7 @@ Mở **Tích hợp > API Keys** trong dashboard để tạo credentials cho web 
 - Tạo API key trong **Tích hợp > API Keys**.
 - Kết nối ít nhất một tài khoản ngân hàng đang hoạt động trong **Tài khoản ngân hàng**.
 - Lưu `accessKey`, `secretKey` và `bankPublicId` mặc định trong environment variables.
-- Không gọi ApiPay bằng secret credentials từ code chỉ chạy trên browser.
+- Không gọi ApiPay bằng secret credentials từ code chỉ chạy trong browser.
 
 ## JavaScript helper
 
@@ -77,7 +77,7 @@ const payment = await createApiPayPayment({
 console.log(payment.payUrl);
 ```
 
-Chuyển khách đến `payment.payUrl` sau khi đơn hàng được tạo.
+Sau khi tạo đơn hàng, chuyển khách đến `payment.payUrl`.
 
 ## Python helper
 
@@ -136,18 +136,18 @@ payment = create_apipay_payment(
 print(payment["payUrl"])
 ```
 
-Chuyển khách đến `payment["payUrl"]` sau khi đơn hàng được tạo.
+Sau khi tạo đơn hàng, chuyển khách đến `payment["payUrl"]`.
 
 ## Xử lý kết quả thanh toán
 
-Khi bạn gửi `redirectUrl`, ApiPay chuyển khách về website của bạn sau thanh toán với query parameters đã ký. Hãy lưu `redirectSecret` từ response tạo payment request cùng với đơn hàng để trang kết quả có thể xác minh payload trả về.
+Khi bạn gửi `redirectUrl`, ApiPay sẽ đưa khách về website của bạn sau thanh toán kèm query parameters đã ký. Hãy lưu `redirectSecret` từ response tạo payment request cùng với đơn hàng để trang kết quả kiểm tra được payload trả về.
 
-Để nhận cập nhật server-to-server, đăng ký webhook trong **Tích hợp > Webhooks** và cập nhật trạng thái đơn hàng khi endpoint của bạn nhận được payment event tương ứng.
+Để nhận cập nhật server-to-server, tạo webhook trong **Tích hợp > Webhooks**. Khi endpoint nhận payment event tương ứng, cập nhật trạng thái đơn hàng trong hệ thống của bạn.
 
 ## Checklist production
 
 - Tạo `content` duy nhất cho từng đơn hàng.
 - Lưu ApiPay payment request ID và `redirectSecret` cùng đơn hàng.
-- Xác minh signed redirect payload trước khi hiển thị trạng thái đã thanh toán.
+- Kiểm tra signed redirect payload trước khi hiển thị trạng thái đã thanh toán.
 - Xử lý webhook theo kiểu idempotent để delivery trùng lặp không cập nhật đơn hàng hai lần.
-- Trả HTTP 200 từ webhook route thật nhanh, rồi xử lý tác vụ nặng bất đồng bộ.
+- Trả HTTP 200 từ webhook route thật nhanh, rồi xử lý tác vụ nặng ở background.

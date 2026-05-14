@@ -1,15 +1,15 @@
 ---
 title: Metrics API
-description: API lấy số liệu thống kê và phân tích giao dịch
+description: API lấy số liệu thống kê giao dịch
 ---
 
 # Metrics API
 
-API lấy số liệu thống kê và phân tích dữ liệu giao dịch.
+API dùng để lấy số liệu thống kê và phân tích giao dịch.
 
 ## Tổng quan
 
-Lấy tổng quan các số liệu thống kê giao dịch bao gồm tổng số tiền, số lượng và trung bình.
+Lấy tổng quan giao dịch, gồm tổng tiền, số lượng và giá trị trung bình.
 
 ```bash
 GET /v1/client/metrics/overview
@@ -58,7 +58,7 @@ GET /v1/client/metrics/overview
 
 ## Time Series
 
-Lấy dữ liệu chuỗi thời gian cho biểu đồ.
+Lấy dữ liệu theo thời gian để vẽ biểu đồ.
 
 ```bash
 GET /v1/client/metrics/time-series
@@ -98,7 +98,7 @@ GET /v1/client/metrics/time-series
 
 ## Giao dịch trong ngày
 
-Lấy hoạt động giao dịch theo từng giờ cho một ngày cụ thể tại Việt Nam.
+Lấy giao dịch theo từng giờ trong một ngày theo giờ Việt Nam.
 
 ```bash
 GET /v1/client/metrics/hourly-transactions
@@ -108,7 +108,7 @@ GET /v1/client/metrics/hourly-transactions
 
 | Tham số | Kiểu | Bắt buộc | Mô tả |
 |---------|------|----------|--------|
-| `date` | string | — | Ngày theo định dạng `YYYY-MM-DD`, được hiểu theo múi giờ `Asia/Ho_Chi_Minh`. Mặc định là hôm nay tại Việt Nam. |
+| `date` | string | — | Ngày dạng `YYYY-MM-DD`, hiểu theo múi giờ `Asia/Ho_Chi_Minh`. Mặc định là hôm nay tại Việt Nam. |
 | `status` | string[] | — | Lọc theo trạng thái giao dịch: `SUCCESS`, `FAILED`, `PENDING` |
 | `bankAccountId` | number[] | — | Lọc theo một hoặc nhiều ID tài khoản ngân hàng |
 
@@ -149,7 +149,7 @@ GET /v1/client/metrics/hourly-transactions
 
 ## Phân bố theo ngân hàng
 
-Lấy phân bố giao dịch theo ngân hàng.
+Lấy tỷ trọng giao dịch theo ngân hàng.
 
 ```bash
 GET /v1/client/metrics/bank-distribution
@@ -177,7 +177,7 @@ GET /v1/client/metrics/bank-distribution
 
 ## Biểu đồ phân bố số tiền
 
-Lấy biểu đồ phân bố số tiền giao dịch.
+Lấy dữ liệu phân bố số tiền giao dịch.
 
 ```bash
 GET /v1/client/metrics/amount-histogram
@@ -202,7 +202,7 @@ GET /v1/client/metrics/amount-histogram
 
 ## Danh sách giao dịch
 
-Lấy danh sách giao dịch có phân trang.
+Lấy danh sách giao dịch, có phân trang.
 
 ```bash
 GET /v1/client/metrics/transactions
@@ -217,7 +217,7 @@ GET /v1/client/metrics/transactions
 | `dateTo` | string | — | Ngày kết thúc (ISO 8601) |
 | `search` | string | — | Tìm theo mã tham chiếu, nội dung, số tài khoản, tên ngân hàng, mã ngân hàng hoặc số VA |
 | `page` | number | — | Số trang (mặc định: 1) |
-| `limit` | number | — | Số item trên trang (mặc định: 20, tối đa: 100) |
+| `limit` | number | — | Số item trên mỗi trang (mặc định: 20, tối đa: 100) |
 | `sortBy` | string | — | Sắp xếp theo: `transactionDate`, `amount`, `createdAt` |
 | `sortOrder` | string | — | Thứ tự sắp xếp: `asc`, `desc` |
 

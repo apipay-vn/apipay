@@ -1,27 +1,27 @@
 ---
-title: Quản Lý Tài Khoản Ngân Hàng
+title: Quản lý tài khoản ngân hàng
 description: Kết nối và quản lý tài khoản ngân hàng Việt Nam để nhận thanh toán qua ApiPay
 ---
 
-# Quản Lý Tài Khoản Ngân Hàng
+# Quản lý tài khoản ngân hàng
 
-Tài khoản ngân hàng là nền tảng để nhận thanh toán trên ApiPay. Mỗi tài khoản ngân hàng được kết nối tạo ra một kênh thanh toán mà khách hàng có thể sử dụng để chuyển tiền cho bạn theo thời gian thực.
+Tài khoản ngân hàng là nơi khách chuyển tiền cho bạn. Khi kết nối ngân hàng vào ApiPay, hệ thống có thể ghi nhận giao dịch và gửi webhook gần như ngay lập tức.
 
 ---
 
-## Cách Hoạt Động
+## Cách hoạt động
 
 Khi khách hàng chuyển tiền vào tài khoản ngân hàng đã liên kết, ApiPay sẽ:
 
 1. **Phát hiện** khoản chuyển vào qua OpenBanking
 2. **Đối chiếu** khoản chuyển với yêu cầu thanh toán tương ứng
-3. **Thông báo** cho bạn ngay lập tức qua webhook
+3. **Thông báo** cho hệ thống của bạn qua webhook
 
-Điều này có nghĩa là bạn không cần đối soát thanh toán thủ công — mọi thứ đều tự động.
+Nhờ vậy, bạn không cần đối soát thủ công cho từng đơn hàng.
 
 ---
 
-## Ngân Hàng Được Hỗ Trợ
+## Ngân hàng được hỗ trợ
 
 | Ngân hàng   | Mã   | Cá nhân | Doanh nghiệp | Tính năng chính                  |
 | ----------- | ---- | :-----: | :----------: | -------------------------------- |
@@ -34,37 +34,37 @@ Các ngân hàng khác (VietinBank, VietcomBank) sắp ra mắt.
 
 ---
 
-## Các Khái Niệm Quan Trọng
+## Các khái niệm quan trọng
 
-### Loại Tài Khoản
+### Loại tài khoản
 
 Khi kết nối ngân hàng, bạn sẽ chọn giữa:
 
 - **Cá nhân** — dành cho tài khoản ngân hàng cá nhân
 - **Doanh nghiệp** — dành cho tài khoản công ty (chỉ ACB và MB Bank; BIDV và OCB chỉ hỗ trợ cá nhân)
 
-### Trạng Thái
+### Trạng thái
 
 Sau khi kết nối, tài khoản ngân hàng sẽ có một trong các trạng thái:
 
-- **Hoạt động** — đang vận hành, nhận thanh toán bình thường
+- **Hoạt động** — đang nhận thanh toán bình thường
 - **Đang chờ** — OTP đã xác minh nhưng đang chờ xác nhận cuối cùng
 - **Không hoạt động** — tạm thời tắt; thanh toán sẽ không được chuyển đến đây
 
-BIDV hỗ trợ **Số Tài Khoản Ảo (VA)**. Hệ thống sẽ tạo VA dựa trên **Merchant ID** do bạn tự nhập. **Lưu ý quan trọng:** Bạn bắt buộc phải chuyển tiền vào đúng Tài khoản ảo này thì hệ thống mới có thể nhận được thông báo giao dịch.
+BIDV hỗ trợ **Số Tài Khoản Ảo (VA)**. Hệ thống tạo VA từ **Merchant ID** do bạn tự nhập. **Lưu ý quan trọng:** Bạn cần chuyển tiền đúng vào tài khoản ảo này thì hệ thống mới nhận được thông báo giao dịch.
 
 ---
 
-## Quản Lý Nhiều Ngân Hàng
+## Quản lý nhiều ngân hàng
 
-### Tại Sao Nên Kết Nối Nhiều Hơn Một?
+### Vì sao nên kết nối nhiều ngân hàng?
 
-- **Nhiều tùy chọn thanh toán** — Ngân hàng khác nhau phù hợp với sở thích khách hàng khác nhau
-- **Phân bổ tải** — Trải rộng giao dịch qua các tài khoản để tránh tắc nghẽn
-- **Dự phòng** — Tài khoản backup đảm bảo dịch vụ liên tục nếu một ngân hàng gặp sự cố
-- **Giới hạn giao dịch** — Một số ngân hàng có giới hạn chuyển tiền hàng ngày; thêm tài khoản giúp tăng dung lượng
+- **Nhiều lựa chọn hơn** — Khách có thể chuyển qua ngân hàng quen thuộc.
+- **Chia tải tốt hơn** — Giao dịch được phân bổ qua nhiều tài khoản.
+- **Có phương án dự phòng** — Nếu một ngân hàng gặp sự cố, bạn vẫn còn ngân hàng khác.
+- **Tăng hạn mức vận hành** — Một số ngân hàng có giới hạn giao dịch mỗi ngày.
 
-### Cấu Hình Khuyến Nghị
+### Gợi ý cấu hình
 
 | Quy mô     | Khuyến nghị                    |
 | ---------- | ------------------------------ |
@@ -74,28 +74,28 @@ BIDV hỗ trợ **Số Tài Khoản Ảo (VA)**. Hệ thống sẽ tạo VA dự
 
 ---
 
-## Điều Hướng Dashboard
+## Điều hướng dashboard
 
-Trong ApiPay Dashboard, phần **Ngân hàng** có thể truy cập từ thanh sidebar:
+Trong ApiPay Dashboard, bạn mở phần **Ngân hàng** từ thanh sidebar:
 
 - **Ngân hàng** (`/banks`) — Xem tất cả tài khoản đã kết nối, thêm mới, xem giao dịch theo ngân hàng
 - Mỗi dòng ngân hàng hiển thị trạng thái, loại tài khoản và các thao tác
 
-> Để xem hướng dẫn từng bước cách kết nối ngân hàng, xem bài viết [Kết Nối Ngân Hàng](/vi/connect-banks).
+> Xem [Kết nối ngân hàng](/vi/connect-banks) nếu bạn cần hướng dẫn từng bước.
 
 ---
 
 ## Bảo Mật
 
-- **Sử dụng tài khoản doanh nghiệp** — Giữ tài khoản thanh toán mang tên doanh nghiệp của bạn
-- **Hạn chế quyền truy cập** — Chỉ nhân viên được ủy quyền mới quản lý ngân hàng đã kết nối
-- **Giám sát giao dịch** — Thường xuyên xem lại lịch sử giao dịch để phát hiện hoạt động đáng ngờ
-- **Bật 2FA** — Thêm lớp bảo mật cho tài khoản dashboard của bạn
+- **Dùng tài khoản doanh nghiệp** — Nên nhận tiền vào tài khoản mang tên doanh nghiệp.
+- **Giới hạn quyền truy cập** — Chỉ người được phân quyền mới nên quản lý ngân hàng.
+- **Theo dõi giao dịch** — Kiểm tra lịch sử giao dịch thường xuyên.
+- **Bật 2FA** — Thêm lớp bảo vệ cho tài khoản dashboard.
 
 ---
 
-## Tài Liệu Liên Quan
+## Tài liệu liên quan
 
-- [Hướng Dẫn Kết Nối Ngân Hàng](/vi/connect-banks) — Hướng dẫn từng bước cách liên kết tài khoản ngân hàng
-- [API Reference: Ngân Hàng](/vi/api/banks) — Quản lý ngân hàng bằng lập trình qua API
-- [Thiết Lập Webhook](/vi/api/webhooks) — Nhận thông báo thanh toán theo thời gian thực
+- [Hướng dẫn kết nối ngân hàng](/vi/connect-banks) — Liên kết tài khoản ngân hàng từng bước
+- [API Reference: Ngân hàng](/vi/api/banks) — Quản lý ngân hàng qua API
+- [Thiết lập webhook](/vi/api/webhooks) — Nhận thông báo thanh toán gần như ngay lập tức

@@ -5,7 +5,7 @@ description: Bắt đầu tích hợp nhanh với ApiPay trong 5 phút
 
 # Quick Start
 
-Hướng dẫn nhanh để tích hợp ApiPay vào hệ thống của bạn.
+Trang này giúp bạn tạo payment link đầu tiên bằng API và nhận webhook khi có giao dịch.
 
 ## Bước 1: Lấy API Key
 
@@ -13,14 +13,14 @@ Hướng dẫn nhanh để tích hợp ApiPay vào hệ thống của bạn.
 
 Bạn sẽ nhận được:
 
-- `accessKey` - Public key để xác định tài khoản
-- `secretKey` - Private key để ký request
+- `accessKey` - Public key để định danh tài khoản
+- `secretKey` - Private key dùng để xác thực request
 
-> **Lưu ý:** `Authorization: Bearer <Auth>` với `<Auth>` là thông tin đăng nhập được mã hóa `base64(accessKey:secretKey)`. Xem [Xác thực API](/vi/api/authentication) để biết chi tiết.
+> **Lưu ý:** Header `Authorization: Bearer <Auth>` dùng `<Auth>` là chuỗi `base64(accessKey:secretKey)`. Xem [Xác thực API](/vi/api/authentication) để biết chi tiết.
 
 ## Bước 2: Tạo Payment Link
 
-Gọi API để tạo liên kết thanh toán:
+Gọi API dưới đây để tạo link thanh toán:
 
 ```bash
 curl -X POST https://app.apipay.vn/v1/client/payment-requests \
@@ -33,7 +33,7 @@ curl -X POST https://app.apipay.vn/v1/client/payment-requests \
   }'
 ```
 
-Response:
+Response mẫu:
 
 ```json
 {
@@ -51,13 +51,13 @@ Response:
 
 ## Bước 3: Gửi cho khách hàng
 
-Gửi `payUrl` cho khách hàng qua:
+Gửi `payUrl` cho khách qua:
 
 - Email/SMS
 - Chat (Zalo, Facebook, Telegram)
 - Website của bạn
 
-Khách hàng sẽ thấy trang thanh toán với QR Code để quét bằng app ngân hàng.
+Khách sẽ thấy trang thanh toán có QR Code để quét bằng app ngân hàng.
 
 ## Bước 4: Nhận thông báo
 
@@ -80,7 +80,7 @@ Cấu hình webhook URL trong dashboard để nhận thông báo khi hệ thốn
 }
 ```
 
-ApiPay gửi `transaction.in` khi có tiền vào và `transaction.out` khi có tiền ra. Xem [Webhook](/vi/api/webhooks) để biết đầy đủ payload và cách xác minh chữ ký.
+ApiPay gửi `transaction.in` khi có tiền vào và `transaction.out` khi có tiền ra. Xem [Webhook](/vi/api/webhooks) để biết đầy đủ payload và cách kiểm tra chữ ký.
 
 ## Ví dụ Code
 
@@ -154,6 +154,6 @@ print(f"Payment URL: {payment['payUrl']}")
 
 ## Tiếp theo
 
-- [API Reference](/vi/api/payment-requests) - Chi tiết tất cả API endpoints
+- [API Reference](/vi/api/payment-requests) - Chi tiết các API endpoint
 - [Webhook](/vi/api/webhooks) - Cấu hình nhận thông báo
 - [Danh sách ngân hàng](/vi/api/banks) - Các ngân hàng được hỗ trợ

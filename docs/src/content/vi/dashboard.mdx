@@ -1,36 +1,36 @@
 ---
-title: Hướng Dẫn Dashboard
-description: Điều hướng và sử dụng dashboard ApiPay một cách hiệu quả
+title: Hướng dẫn Dashboard
+description: Cách dùng dashboard ApiPay để quản lý thanh toán, ngân hàng và tích hợp
 ---
 
-# Hướng Dẫn Dashboard
+# Hướng dẫn Dashboard
 
-Dashboard ApiPay là trung tâm điều khiển để quản lý thanh toán, tài khoản ngân hàng và tích hợp. Hướng dẫn này cover tất cả các tính năng chính.
+Dashboard ApiPay là nơi bạn quản lý thanh toán, tài khoản ngân hàng và các tích hợp. Trang này tóm tắt những phần bạn sẽ dùng thường xuyên nhất.
 
 ---
 
-## Tổng Quan Dashboard
+## Tổng quan Dashboard
 
-Khi đăng nhập, bạn sẽ thấy dashboard chính với:
+Sau khi đăng nhập, bạn sẽ thấy:
 
-- **Thanh bên** - Truy cập tất cả tính năng
+- **Thanh bên** - Mở các tính năng chính
 - **Header** - Thông tin tài khoản, thông báo, cài đặt
-- **Khu vực nội dung chính** - Nội dung theo ngữ cảnh
+- **Khu vực nội dung chính** - Nội dung của trang hiện tại
 
-### Các Phần Chính
+### Các phần chính
 
-| Phần | Mô Tả |
+| Phần | Mô tả |
 |--------|-------------|
 | Tổng quan | Thống kê nhanh và hoạt động gần đây |
 | Yêu cầu thanh toán | Tạo và quản lý link thanh toán |
-| Giao dịch | Xem các khoản thanh toán đến |
+| Giao dịch | Xem các giao dịch ngân hàng |
 | Cài đặt | Tài khoản, ngân hàng, webhook, API keys |
 
 ---
 
-## Hướng Dẫn Điều Hướng
+## Điều hướng
 
-### Menu Thanh Bên
+### Menu thanh bên
 
 ```
 📊 Tổng quan
@@ -56,90 +56,90 @@ Khi đăng nhập, bạn sẽ thấy dashboard chính với:
 
 ## Trang Tổng Quan
 
-Trang tổng quan cho bạn cái nhìn nhanh về doanh nghiệp:
+Trang tổng quan cho bạn cái nhìn nhanh về tình hình thanh toán:
 
-### Các Chỉ Số Chính
+### Chỉ số chính
 
 1. **Tổng doanh thu** - Tổng tất cả thanh toán thành công
 2. **Số giao dịch** - Số giao dịch thành công
-3. **Tháng này** - Doanh thu và số lượng tháng hiện tại
-4. **Giao dịch trung bình** - Số tiền thanh toán trung bình
+3. **Tháng này** - Doanh thu và số giao dịch trong tháng
+4. **Giao dịch trung bình** - Giá trị trung bình của mỗi giao dịch
 
-### Biểu Đồ
+### Biểu đồ
 
-- **Timeline giao dịch** - Biểu diễn trực quan các giao dịch theo thời gian
-- **Phân bổ ngân hàng** - Ngân hàng nào khách hàng sử dụng nhiều nhất
+- **Timeline giao dịch** - Giao dịch theo thời gian
+- **Phân bổ ngân hàng** - Ngân hàng được khách dùng nhiều nhất
 
-### Hoạt Động Gần Đây
+### Hoạt động gần đây
 
 - Giao dịch mới nhất với trạng thái
-- Thao tác nhanh cho các tác vụ phổ biến
+- Thao tác nhanh cho các việc thường dùng
 
 ---
 
-## Yêu Cầu Thanh Toán
+## Yêu cầu thanh toán
 
 Tạo và quản lý link thanh toán cho khách hàng.
 
-### Tạo Yêu Cầu Thanh Toán
+### Tạo yêu cầu thanh toán
 
 1. Nhấn **Tạo yêu cầu thanh toán**
-2. Điền vào form:
+2. Điền form:
    - **Ngân hàng** - Chọn tài khoản ngân hàng đã kết nối
    - **Số tiền** - Số tiền thanh toán bằng VND
-   - **Nội dung** - Text tham chiếu (ví dụ: số đơn hàng)
+   - **Nội dung** - Mã hoặc ghi chú chuyển khoản (ví dụ: số đơn hàng)
    - **Tiêu đề** - (Tùy chọn) Mô tả thanh toán
-   - **Redirect URL** - Nơi chuyển hướng khách hàng sau thanh toán
+   - **Redirect URL** - Nơi đưa khách về sau khi thanh toán
 3. Nhấn **Tạo**
 
-### Tính Năng Yêu Cầu Thanh Toán
+### Tính năng
 
-- **Mã QR** - Tự động tạo để quét bằng app ngân hàng
+- **Mã QR** - Tạo sẵn để khách quét bằng app ngân hàng
 - **Link thanh toán** - URL có thể chia sẻ cho khách hàng
-- **Sao chép** - Chức năng sao chép nhanh
+- **Sao chép** - Sao chép nhanh link hoặc thông tin thanh toán
 - **Chia sẻ** - Chia sẻ qua email, chat, v.v.
 
-### Quản Lý Yêu Cầu Thanh Toán
+### Quản lý yêu cầu thanh toán
 
-- **Xem chi tiết** - Nhấn để xem đầy đủ
-- **Hủy** - Hủy yêu cầu thanh toán không sử dụng
+- **Xem chi tiết** - Mở để xem đầy đủ thông tin
+- **Hủy** - Hủy yêu cầu thanh toán không còn dùng
 - **Trạng thái** - ĐANG CHỜ, HOÀN THÀNH, HẾT HẠN, ĐÃ HỦY
 
 ---
 
-## Giao Dịch
+## Giao dịch
 
-Xem tất cả các khoản thanh toán đến và chi tiết.
+Xem giao dịch ngân hàng và thông tin khớp thanh toán.
 
-### Danh Sách Giao Dịch
+### Danh sách giao dịch
 
-| Cột | Mô Tả |
+| Cột | Mô tả |
 |--------|-------------|
-| Ngày | Khi thanh toán được nhận |
-| Tham chiếu | Nội dung/tham chiếu thanh toán |
+| Ngày | Thời điểm nhận giao dịch |
+| Tham chiếu | Nội dung hoặc mã thanh toán |
 | Số tiền | Số tiền thanh toán |
-| Ngân hàng | Ngân hàng nào được sử dụng |
+| Ngân hàng | Ngân hàng nhận giao dịch |
 | Trạng thái | Trạng thái giao dịch |
 
-### Lọc & Tìm Kiếm
+### Lọc & tìm kiếm
 
 - Lọc theo khoảng ngày
-- Lọm theo trạng thái
+- Lọc theo trạng thái
 - Tìm kiếm theo tham chiếu hoặc số tiền
 
-### Chi Tiết Giao Dịch
+### Chi tiết giao dịch
 
 Nhấn bất kỳ giao dịch nào để xem:
 - ID giao dịch đầy đủ
-- Tài khoản ngân hàng được sử dụng
+- Tài khoản ngân hàng liên quan
 - Thời gian thanh toán
 - Yêu cầu thanh toán liên quan
 
 ---
 
-## Cài Đặt
+## Cài đặt
 
-### Hồ Sơ Tài Khoản
+### Hồ sơ tài khoản
 
 Quản lý thông tin cá nhân và doanh nghiệp:
 
@@ -149,17 +149,17 @@ Quản lý thông tin cá nhân và doanh nghiệp:
 - **Mã số thuế** - Để xuất hóa đơn
 - **Địa chỉ doanh nghiệp** - Địa chỉ đăng ký
 
-### Tài Khoản Ngân Hàng
+### Tài khoản ngân hàng
 
 - Xem các ngân hàng đã kết nối
 - Thêm/xóa tài khoản ngân hàng
 - Bật/tắt trạng thái tài khoản
 
-Xem [Quản Lý Tài Khoản Ngân Hàng](/vi/banking) để biết chi tiết.
+Xem [Quản lý tài khoản ngân hàng](/vi/banking) để biết chi tiết.
 
-### Cài Đặt Thanh Toán
+### Cài đặt thanh toán
 
-- **Redirect URL mặc định** - Nơi khách hàng đến sau thanh tiền
+- **Redirect URL mặc định** - Nơi đưa khách về sau khi thanh toán
 - **Tiêu đề mặc định** - Mô tả mặc định cho thanh toán
 
 ### API Keys
@@ -168,23 +168,23 @@ Tạo và quản lý API keys để tích hợp:
 
 1. Nhấn **Tạo Key mới**
 2. Đặt tên cho key
-3. Sao chép và lưu trữ an toàn
-4. Sử dụng trong API requests
+3. Sao chép và lưu ở nơi an toàn
+4. Dùng key trong API requests
 
-> **Quan trọng:** Lưu trữ secret key của bạn an toàn. Nó không thể được truy xuất sau khi tạo.
+> **Quan trọng:** Hãy giữ `secretKey` an toàn. Sau khi tạo, bạn không thể xem lại key này.
 
 ### Webhooks
 
-Cấu hình webhook endpoints để nhận thông báo thời gian thực:
+Tạo webhook endpoint để nhận thông báo gần như ngay lập tức:
 
 1. Thêm webhook URL
 2. Chọn loại sự kiện
 3. Test endpoint
-4. Theo dõi lịch sử giao hàng
+4. Theo dõi lịch sử gửi
 
 Xem [Tài liệu Webhook](/vi/api/webhooks) để biết chi tiết kỹ thuật.
 
-### Đăng Ký
+### Đăng ký
 
 Xem và quản lý gói của bạn:
 
@@ -193,31 +193,31 @@ Xem và quản lý gói của bạn:
 - Lịch sử thanh toán
 - Ngày gia hạn
 
-Xem [Hướng Dẫn Đăng Ký](/vi/subscription) để biết chi tiết.
+Xem [Đăng ký & Thanh toán](/vi/subscription) để biết chi tiết.
 
-### Giao Diện
+### Giao diện
 
 Tùy chỉnh trang thanh toán mà khách hàng nhìn thấy:
 
-- **Tên merchant** - Tên doanh nghiệp của bạn
-- **Logo merchant** - Tải lên logo của bạn
+- **Tên merchant** - Tên doanh nghiệp
+- **Logo merchant** - Logo hiển thị trên trang thanh toán
 - **Theme** - Chế độ sáng/tối
 
-### Bảo Mật
+### Bảo mật
 
 Bảo vệ tài khoản của bạn:
 
 - **Xác thực hai yếu tố (2FA)** - Bật 2FA dựa trên TOTP
-- **Đổi mật khẩu** - Cập nhật mật khẩu của bạn
-- **Lịch sử đăng nhập** - Xem các đăng nhập gần đây
+- **Đổi mật khẩu** - Cập nhật mật khẩu
+- **Lịch sử đăng nhập** - Xem các lần đăng nhập gần đây
 
 ---
 
-## Thao Tác Nhanh
+## Thao tác nhanh
 
-### Các Tác Vụ Phổ Biến
+### Tác vụ thường dùng
 
-| Tác Vụ | Nơi Tìm |
+| Tác vụ | Nơi tìm |
 |------|------------|
 | Tạo thanh toán | Yêu cầu thanh toán → Tạo |
 | Kiểm tra doanh thu | Tổng quan |
@@ -227,30 +227,30 @@ Bảo vệ tài khoản của bạn:
 
 ---
 
-## Phím Tắt
+## Phím tắt
 
 - `Ctrl/Cmd + K` - Tìm kiếm nhanh
 - `Ctrl/Cmd + N` - Yêu cầu thanh toán mới
 
 ---
 
-## Mẹo & Thủ Thuật
+## Mẹo
 
-### Quy Trình Làm Việc Hiệu Quả
+### Làm việc nhanh hơn
 
-1. **Sử dụng tìm kiếm nhanh** - Tìm bất cứ điều gì với Ctrl+K
-2. **Đánh dấu trang thường xuyên** - Truy cập nhanh
-3. **Thiết lập mặc định thanh toán** - Tiết kiệm thời gian cho mỗi yêu cầu
+1. **Dùng tìm kiếm nhanh** - Tìm nhanh bằng Ctrl+K
+2. **Đánh dấu trang hay dùng** - Mở lại nhanh hơn
+3. **Thiết lập mặc định thanh toán** - Tiết kiệm thời gian khi tạo yêu cầu mới
 
-### Cập Nhật Thông Tin
+### Theo dõi vận hành
 
 1. **Bật thông báo** - Nhận cảnh báo cho các sự kiện quan trọng
-2. **Kiểm tra dashboard thường xuyên** - Theo dõi mẫu giao dịch
-3. **Xem lại webhooks** - Đảm bảo giao hàng đang hoạt động
+2. **Kiểm tra dashboard thường xuyên** - Theo dõi xu hướng giao dịch
+3. **Xem lại webhooks** - Đảm bảo webhook vẫn gửi thành công
 
 ---
 
-## Cần Hỗ Trợ?
+## Cần hỗ trợ?
 
 - 📧 Email: support@apipay.vn
 - 💬 Chat trong app
@@ -258,8 +258,8 @@ Bảo vệ tài khoản của bạn:
 
 ---
 
-## Bước Tiếp Theo
+## Bước tiếp theo
 
-- [Hướng Dẫn Bắt Đầu](/vi/onboarding) - Quy trình thiết lập hoàn chỉnh
-- [Hướng Dẫn Đăng Ký](/vi/subscription) - Quản lý gói của bạn
-- [Quản Lý Ngân Hàng](/vi/banking) - Kết nối và quản lý ngân hàng
+- [Hướng dẫn bắt đầu](/vi/onboarding) - Thiết lập tài khoản từ đầu
+- [Đăng ký & Thanh toán](/vi/subscription) - Quản lý gói của bạn
+- [Quản lý Ngân hàng](/vi/banking) - Kết nối và quản lý ngân hàng
