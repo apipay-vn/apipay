@@ -79,6 +79,15 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.8.1',
+    date: '2026-05-14',
+    features: [
+      'Sandbox environment — simulate bank transactions and test webhook integrations without real money. Create payment requests, trigger synthetic transactions, and inspect full delivery logs including HTTP response codes and response bodies. Supports both IN and OUT transaction directions, single-webhook targeting or broadcast to all matching webhooks, and manual resend for failed deliveries.',
+    ],
+    fixes: [],
+    improvements: [],
+  },
+  {
     version: '1.8',
     date: '2026-05-11',
     features: [
@@ -254,6 +263,15 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.8.1',
+    date: '2026-05-14',
+    features: [
+      'Môi trường Sandbox — mô phỏng giao dịch ngân hàng và kiểm tra tích hợp webhook mà không cần tiền thật. Tạo payment request, trigger giao dịch tổng hợp và xem toàn bộ log gửi bao gồm mã phản hồi HTTP và nội dung phản hồi. Hỗ trợ cả hai chiều giao dịch IN và OUT, chọn một webhook cụ thể hoặc broadcast đến tất cả webhook phù hợp, và gửi lại thủ công cho các delivery thất bại.',
+    ],
+    fixes: [],
+    improvements: [],
+  },
   {
     version: '1.8',
     date: '2026-05-11',

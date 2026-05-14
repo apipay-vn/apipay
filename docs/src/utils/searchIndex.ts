@@ -45,6 +45,12 @@ export const searchItems: SearchItem[] = [
 		section: "Hướng dẫn",
 	},
 	{
+		title: "Sandbox",
+		description: "Mô phỏng giao dịch và kiểm tra tích hợp webhook mà không cần tiền thật",
+		href: "/vi/sandbox",
+		section: "Hướng dẫn",
+	},
+	{
 		title: "WooCommerce",
 		description: "Cài đặt plugin thanh toán ApiPay cho WooCommerce",
 		href: "/vi/integrations/woocommerce",
@@ -134,6 +140,12 @@ export const searchItems: SearchItem[] = [
 		title: "Custom Domains",
 		description: "Use your own domain for the ApiPay payment page",
 		href: "/en/custom-domains",
+		section: "Guides",
+	},
+	{
+		title: "Sandbox",
+		description: "Simulate transactions and test your webhook integration without real money",
+		href: "/en/sandbox",
 		section: "Guides",
 	},
 	{
