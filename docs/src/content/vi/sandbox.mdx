@@ -1,91 +1,91 @@
 ---
 title: Sandbox
-description: Mô phỏng giao dịch và kiểm tra tích hợp webhook mà không cần tiền thật
+description: Tạo giao dịch thử và kiểm tra webhook mà không cần dùng tiền thật
 ---
 
 # Sandbox
 
-Sandbox cho phép bạn mô phỏng giao dịch ngân hàng và gửi webhook thật đến endpoint của bạn — không cần tiền thật, không cần chờ chuyển khoản thực tế. Đây là cách nhanh nhất để xác minh tích hợp của bạn hoạt động đúng trước khi đưa vào production.
+Sandbox giúp bạn tạo giao dịch ngân hàng thử và gửi webhook thật đến endpoint của mình. Không cần tiền thật, cũng không phải chờ một lệnh chuyển khoản thật. Dùng sandbox để kiểm tra luồng tích hợp trước khi bật production.
 
-> **Có sẵn trên tất cả các gói trả phí.** Bạn cần có gói đang hoạt động và ít nhất một tài khoản ngân hàng đã kết nối để sử dụng sandbox.
-
----
-
-## Cách Hoạt Động
-
-Sandbox phản ánh chính xác cấu trúc payload webhook như production. Khi bạn trigger một sandbox run, ApiPay sẽ:
-
-1. Tạo một giao dịch tổng hợp với mã tham chiếu duy nhất (`SBX-{timestamp}-{hex}`)
-2. Xây dựng payload `transaction.in` hoặc `transaction.out` giống hệt webhook thật của bạn
-3. Gửi **đồng bộ** đến endpoint webhook của bạn — không qua hàng đợi, kết quả ngay lập tức
-4. Ghi lại toàn bộ log gửi bao gồm mã phản hồi và nội dung phản hồi
-
-Payload có `"sandbox": true` để bạn phân biệt sự kiện test với sự kiện thật trong handler.
+> **Có trên tất cả gói trả phí.** Bạn cần một gói đang hoạt động và ít nhất một tài khoản ngân hàng đã kết nối.
 
 ---
 
-## Bắt Đầu
+## Cách hoạt động
+
+Sandbox dùng cùng cấu trúc payload webhook như production. Khi bạn trigger một sandbox run, ApiPay sẽ:
+
+1. Tạo một giao dịch thử với mã tham chiếu riêng (`SBX-{timestamp}-{hex}`)
+2. Tạo payload `transaction.in` hoặc `transaction.out` giống webhook thật
+3. Gửi **ngay** đến endpoint webhook của bạn, không đi qua hàng đợi
+4. Lưu log gửi, gồm mã phản hồi và nội dung phản hồi
+
+Payload có `"sandbox": true` để handler của bạn biết đây là sự kiện test.
+
+---
+
+## Bắt đầu
 
 ### Từ Dashboard
 
-Vào **Sandbox** trong thanh điều hướng bên trái. Trang hiển thị:
+Vào **Sandbox** ở thanh bên trái. Trang này hiển thị:
 
-- Các tài khoản ngân hàng đang hoạt động của bạn
-- Các webhook đang hoạt động và ngân hàng chúng được gắn với
+- Tài khoản ngân hàng đang hoạt động
+- Webhook đang hoạt động và ngân hàng được gắn với từng webhook
 - Các sandbox run gần đây
 
-### Điều Kiện Tiên Quyết
+### Cần chuẩn bị
 
-Trước khi chạy test sandbox, hãy đảm bảo bạn có:
+Trước khi test, bạn cần có:
 
 - Ít nhất một **tài khoản ngân hàng đang hoạt động** đã kết nối
 - Ít nhất một **webhook đang hoạt động** được cấu hình cho tài khoản ngân hàng đó
 
-Nếu chưa có webhook, vào **Cài đặt → Webhooks** và tạo một cái trước.
+Nếu chưa có webhook, vào **Cài đặt → Webhooks** để tạo trước.
 
 ---
 
-## Chạy Test
+## Chạy test
 
 ### Bước 1 — Tạo Payment Request
 
-Điền vào form sandbox:
+Điền form sandbox:
 
 | Trường | Bắt buộc | Mô tả |
 |--------|----------|-------|
-| Tài khoản ngân hàng | **Có** | Chọn một trong các ngân hàng đang hoạt động |
+| Tài khoản ngân hàng | **Có** | Chọn một ngân hàng đang hoạt động |
 | Số tiền | **Có** | Số nguyên VND, từ 1 đến 300.000.000 |
-| Nội dung chuyển khoản | Không | Nội dung/mô tả, tối đa 140 ký tự |
-| Tiêu đề | Không | Nhãn cho lần test này, tối đa 200 ký tự |
-| Chiều giao dịch | Không | `IN` (tiền vào) hoặc `OUT` (tiền ra) — mặc định là `IN` |
-| Webhook đích | Không | Gửi đến một webhook cụ thể, hoặc để trống để gửi đến tất cả webhook phù hợp |
+| Nội dung chuyển khoản | Không | Nội dung hoặc ghi chú, tối đa 140 ký tự |
+| Tiêu đề | Không | Tên gợi nhớ cho lần test, tối đa 200 ký tự |
+| Chiều giao dịch | Không | `IN` (tiền vào) hoặc `OUT` (tiền ra). Mặc định là `IN` |
+| Webhook đích | Không | Chọn một webhook cụ thể, hoặc để trống để gửi đến tất cả webhook phù hợp |
 
-Nhấn **Tạo** — thao tác này lưu payment request và tạo một run với trạng thái `CREATED`. Chưa có gì được gửi đi.
+Nhấn **Tạo**. Lúc này hệ thống chỉ lưu payment request và tạo một run có trạng thái `CREATED`. Webhook chưa được gửi.
 
-### Bước 2 — Trigger Giao Dịch
+### Bước 2 — Trigger giao dịch
 
 Nhấn **Trigger** trên run. ApiPay sẽ:
 
-- Tạo giao dịch tổng hợp
-- Xác định webhook đích (cái bạn đã chọn, hoặc tất cả webhook đang hoạt động khớp với chiều giao dịch trên ngân hàng đó)
-- Gửi payload ngay lập tức
-- Hiển thị kết quả trực tiếp
+- Tạo giao dịch thử
+- Tìm webhook đích: webhook bạn đã chọn, hoặc tất cả webhook đang hoạt động khớp với chiều giao dịch của ngân hàng đó
+- Gửi payload ngay
+- Hiển thị kết quả trên trang
 
-### Bước 3 — Kiểm Tra Kết Quả
+### Bước 3 — Xem kết quả
 
 Mỗi run hiển thị:
 
 - **Trạng thái run** — `SUCCESS`, `FAILED`, `PARTIAL`, hoặc `NO_WEBHOOKS`
-- **Log gửi** — kết quả từng webhook với mã phản hồi HTTP và nội dung phản hồi (giới hạn 4 KB)
-- **Payload** — JSON chính xác đã được gửi đi
+- **Log gửi** — kết quả của từng webhook, gồm mã phản hồi HTTP và nội dung phản hồi (giới hạn 4 KB)
+- **Payload** — JSON đã gửi
 
-Nếu một lần gửi thất bại, bạn có thể **Gửi lại** trực tiếp từ trang chi tiết run.
+Nếu một lần gửi bị lỗi, bạn có thể bấm **Gửi lại** ngay trong trang chi tiết run.
 
 ---
 
 ## Payload Webhook
 
-Payload sandbox giống hệt production, với hai điểm khác biệt: `"sandbox": true` ở cấp cao nhất, và mã tham chiếu có tiền tố `SBX-`.
+Payload sandbox giống production. Chỉ có hai điểm để nhận biết: `"sandbox": true` ở cấp cao nhất, và mã tham chiếu bắt đầu bằng `SBX-`.
 
 ### transaction.in (sandbox)
 
@@ -131,9 +131,9 @@ Payload sandbox giống hệt production, với hai điểm khác biệt: `"sand
 }
 ```
 
-### Phát Hiện Sự Kiện Sandbox
+### Nhận biết sự kiện sandbox
 
-Kiểm tra `sandbox: true` trong handler để bỏ qua logic xử lý đơn hàng khi test:
+Trong handler, kiểm tra `sandbox: true` để bỏ qua phần xử lý đơn hàng khi đang test:
 
 ```javascript
 app.post('/webhooks/apipay', (req, res) => {
@@ -155,50 +155,50 @@ app.post('/webhooks/apipay', (req, res) => {
 
 ---
 
-## Chọn Webhook Đích
+## Chọn webhook đích
 
-Khi tạo sandbox payment request, bạn có thể chọn cách webhook được xác định:
+Khi tạo sandbox payment request, bạn có thể chọn cách ApiPay tìm webhook:
 
-**Chế độ broadcast** (mặc định — để trống trường webhook)
-Tất cả webhook đang hoạt động trên tài khoản ngân hàng đã chọn khớp với chiều giao dịch (`IN`, `OUT`, hoặc `ALL`) sẽ nhận được delivery. Phù hợp để kiểm tra routing của bạn có đúng không.
+**Chế độ broadcast** (mặc định, để trống trường webhook)
+Tất cả webhook đang hoạt động trên tài khoản ngân hàng đã chọn và khớp với chiều giao dịch (`IN`, `OUT`, hoặc `ALL`) sẽ nhận delivery. Cách này phù hợp khi bạn muốn kiểm tra routing.
 
 **Chế độ đơn lẻ** (chọn một webhook cụ thể)
-Chỉ webhook được chọn nhận delivery. Hữu ích khi bạn muốn kiểm tra riêng một endpoint cụ thể.
+Chỉ webhook được chọn nhận delivery. Dùng cách này khi bạn muốn kiểm tra riêng một endpoint.
 
-Bạn cũng có thể ghi đè webhook đích lúc trigger — endpoint trigger nhận `webhookId` tùy chọn, ưu tiên hơn cái đã chọn lúc tạo.
+Bạn cũng có thể đổi webhook đích lúc trigger. Endpoint trigger nhận `webhookId` tùy chọn và sẽ ưu tiên giá trị này hơn webhook đã chọn lúc tạo.
 
 ---
 
-## Trạng Thái Run
+## Trạng thái run
 
 | Trạng thái | Ý nghĩa |
 |------------|---------|
-| `CREATED` | Payment request đã lưu, chưa trigger |
+| `CREATED` | Payment request đã lưu, chưa được trigger |
 | `DELIVERING` | Đang trigger |
 | `SUCCESS` | Tất cả webhook delivery thành công (HTTP 2xx) |
 | `FAILED` | Tất cả webhook delivery thất bại |
 | `PARTIAL` | Một số thành công, một số thất bại |
-| `NO_WEBHOOKS` | Không tìm thấy webhook đang hoạt động phù hợp — không có gì được gửi |
+| `NO_WEBHOOKS` | Không tìm thấy webhook đang hoạt động phù hợp. Không có gì được gửi |
 
 ---
 
-## Gửi Lại Delivery
+## Gửi lại delivery
 
-Nếu một delivery thất bại (server của bạn đang down, trả về non-2xx, hoặc timeout), bạn có thể gửi lại từ trang chi tiết run mà không cần trigger lại toàn bộ run. Lần gửi lại dùng đúng payload đã gửi ban đầu.
+Nếu một delivery thất bại vì server của bạn đang down, trả về non-2xx, hoặc timeout, bạn có thể gửi lại từ trang chi tiết run. Không cần trigger lại toàn bộ run. Lần gửi lại dùng đúng payload ban đầu.
 
-Mỗi delivery theo dõi số lần gửi lại. Sau 3 lần, `nextRetryAt` được xóa — bạn vẫn có thể gửi lại thủ công, nhưng lịch tự động dừng lại.
+Mỗi delivery có số lần gửi lại riêng. Sau 3 lần, `nextRetryAt` sẽ được xóa. Bạn vẫn có thể gửi lại thủ công, nhưng lịch tự động sẽ dừng.
 
 ---
 
-## Xóa Lịch Sử
+## Xóa lịch sử
 
-Dùng nút **Xóa lịch sử** để xóa toàn bộ sandbox run của tài khoản bạn. Đây là xóa cứng — run, giao dịch và log gửi đều bị xóa. Dùng để giữ sandbox sạch sẽ giữa các phiên test.
+Dùng nút **Xóa lịch sử** để xóa toàn bộ sandbox run của tài khoản. Đây là xóa cứng: run, giao dịch và log gửi đều bị xóa. Hữu ích khi bạn muốn dọn sạch dữ liệu giữa các buổi test.
 
 ---
 
 ## Mẹo
 
-- Dùng [Webhook.site](https://webhook.site) hoặc [ngrok](https://ngrok.com) để expose server local khi test nhanh mà không cần deploy
-- Test cả hai chiều `IN` và `OUT` nếu tích hợp của bạn xử lý cả hai loại sự kiện
-- Giữ nội dung chuyển khoản ở dạng chữ cái, số và các ký tự `. , - +` — mọi ký tự khác sẽ bị xóa trước khi lưu
-- Mỗi payment request chỉ có thể trigger một lần; tạo mới cho mỗi lần test
+- Dùng [Webhook.site](https://webhook.site) hoặc [ngrok](https://ngrok.com) để test server local mà chưa cần deploy
+- Test cả `IN` và `OUT` nếu hệ thống của bạn xử lý cả hai loại sự kiện
+- Nội dung chuyển khoản chỉ nên dùng chữ, số và các ký tự `. , - +`. Ký tự khác sẽ bị xóa trước khi lưu
+- Mỗi payment request chỉ trigger được một lần. Tạo request mới cho mỗi lần test
