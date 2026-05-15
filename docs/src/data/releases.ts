@@ -79,6 +79,19 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.8.2',
+    date: '2026-05-15',
+    features: [],
+    fixes: [
+      'Upgraded Next.js to latest — addresses multiple security vulnerabilities of high, moderate, and low severity including one upstream React issue. Upgrade is strongly recommended. See the official Next.js release notes for full details.',
+    ],
+    improvements: [
+      'Browser notification permission prompt now uses a non-blocking toast action instead of a modal, so it no longer interrupts the current workflow',
+      'Notification permission state is re-evaluated on each dashboard load, ensuring the prompt reappears correctly after a browser data clear or permission reset',
+      'Notification click handler now focuses the existing dashboard tab instead of opening a new window when the dashboard is already open',
+    ],
+  },
+  {
     version: '1.8.1',
     date: '2026-05-14',
     features: [
@@ -264,6 +277,19 @@ export const enReleases: ReleaseNote[] = withAnchors([
 
 export const viReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.8.2',
+    date: '2026-05-15',
+    features: [],
+    fixes: [
+      'Nâng cấp Next.js lên bản mới nhất — vá nhiều lỗ hổng bảo mật mức cao, trung bình và thấp, bao gồm một lỗi từ React upstream. Khuyến nghị cập nhật ngay. Xem ghi chú phát hành chính thức của Next.js để biết chi tiết đầy đủ.',
+    ],
+    improvements: [
+      'Yêu cầu quyền thông báo trình duyệt nay hiển thị dưới dạng toast action không chặn, không còn làm gián đoạn luồng làm việc hiện tại',
+      'Trạng thái quyền thông báo được kiểm tra lại mỗi lần tải dashboard, đảm bảo prompt xuất hiện lại đúng sau khi xóa dữ liệu trình duyệt hoặc đặt lại quyền',
+      'Khi nhấn vào thông báo, dashboard đang mở sẽ được focus thay vì mở tab mới',
+    ],
+  },
+  {
     version: '1.8.1',
     date: '2026-05-14',
     features: [
@@ -364,14 +390,8 @@ export const viReleases: ReleaseNote[] = withAnchors([
       'Mẫu thông báo tùy chỉnh — đặt mẫu tin nhắn cho từng kênh Telegram, Slack, Discord, Lark và Email',
       'Nhãn thông báo rõ hơn cho các loại sự kiện mới',
     ],
-    fixes: [
-      'Gửi thông báo ổn định hơn trên tất cả kênh',
-      'Sửa lỗi hiển thị ký tự đặc biệt trong dữ liệu giao dịch',
-    ],
-    improvements: [
-      'Tối ưu hàng đợi thông báo để xử lý nhanh hơn',
-      'Render mẫu nhanh hơn và dùng ít bộ nhớ hơn',
-    ],
+    fixes: ['Gửi thông báo ổn định hơn trên tất cả kênh', 'Sửa lỗi hiển thị ký tự đặc biệt trong dữ liệu giao dịch'],
+    improvements: ['Tối ưu hàng đợi thông báo để xử lý nhanh hơn', 'Render mẫu nhanh hơn và dùng ít bộ nhớ hơn'],
   },
   {
     version: '1.3',
