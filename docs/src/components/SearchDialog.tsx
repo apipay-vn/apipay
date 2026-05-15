@@ -15,6 +15,13 @@ interface SearchDialogProps {
 	items: SearchItem[];
 }
 
+const searchOptions = {
+	keys: ["title", "description", "section"],
+	threshold: 0.45,
+	ignoreLocation: true,
+	includeScore: true,
+};
+
 export function SearchDialog({isOpen, onClose, items}: SearchDialogProps) {
 	const [query, setQuery] = useState("");
 	const [results, setResults] = useState<SearchItem[]>([]);
@@ -23,20 +30,12 @@ export function SearchDialog({isOpen, onClose, items}: SearchDialogProps) {
 	const navigate = useNavigate();
 
 	const fuse = useRef(
-		new Fuse(items, {
-			keys: ["title", "description", "section"],
-			threshold: 0.3,
-			includeScore: true,
-		}),
+		new Fuse(items, searchOptions),
 	);
 
 	// Update fuse index when items change
 	useEffect(() => {
-		fuse.current = new Fuse(items, {
-			keys: ["title", "description", "section"],
-			threshold: 0.3,
-			includeScore: true,
-		});
+		fuse.current = new Fuse(items, searchOptions);
 	}, [items]);
 
 	// Focus input on open
