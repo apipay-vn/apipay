@@ -7,6 +7,8 @@ description: Receive real-time payment notifications
 
 Webhooks allow you to receive real-time notifications when payment events occur.
 
+> **Note for developers coming from other gateways:** ApiPay webhooks are equivalent to what many payment gateways call **IPN** (Instant Payment Notification). The flow is the same: register a URL, receive a signed `POST` when a transaction occurs, and return HTTP `200` to acknowledge.
+
 ## Register Webhook
 
 Configure webhook URL in the dashboard at **Settings → Webhooks**, or create one with the API.

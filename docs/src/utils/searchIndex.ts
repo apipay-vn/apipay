@@ -88,7 +88,7 @@ export const searchItems: SearchItem[] = [
 	},
 	{
 		title: "Webhooks",
-		description: "Nhận thông báo thanh toán theo thời gian thực",
+		description: "Nhận thông báo thanh toán theo thời gian thực qua webhook/IPN",
 		href: "/vi/api/webhooks",
 		section: "API Reference",
 	},
@@ -186,7 +186,7 @@ export const searchItems: SearchItem[] = [
 	},
 	{
 		title: "Webhooks",
-		description: "Receive real-time payment notifications",
+		description: "Receive real-time payment notifications via webhook/IPN",
 		href: "/en/api/webhooks",
 		section: "API Reference",
 	},

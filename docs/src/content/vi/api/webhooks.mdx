@@ -7,6 +7,8 @@ description: Nhận thông báo thanh toán qua webhook
 
 Webhook giúp hệ thống của bạn nhận thông báo khi có sự kiện thanh toán.
 
+> **Lưu ý cho lập trình viên đã dùng cổng thanh toán khác:** Webhook của ApiPay tương đương với khái niệm **IPN** (Instant Payment Notification) mà nhiều cổng thanh toán sử dụng. Luồng hoạt động giống nhau: đăng ký URL, nhận `POST` có chữ ký khi phát sinh giao dịch, và trả HTTP `200` để xác nhận.
+
 ## Đăng ký webhook
 
 Bạn có thể tạo webhook URL trong dashboard tại **Cài đặt → Webhooks**, hoặc tạo bằng API.
