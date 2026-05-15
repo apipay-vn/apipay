@@ -1,6 +1,7 @@
 import type {ComponentPropsWithoutRef, ElementType, ReactNode} from "react";
 import React, {useCallback, useState, useEffect} from "react";
 import {codeToHtml} from "shiki";
+import {CodeTabs} from "./CodeTabs";
 
 /**
  * Creates a heading component with an anchor link.
@@ -234,6 +235,7 @@ export const mdxComponents = {
 	code: Code,
 	pre: Pre,
 	Callout,
+	CodeTabs,
 	hr: (props: any) => <hr {...props} className="my-8 border-border-light" />,
 	table: (props: any) => (
 		<div className="table-container">

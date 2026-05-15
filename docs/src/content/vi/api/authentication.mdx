@@ -25,8 +25,7 @@ base64(accessKey:secretKey)
 
 ## Ví dụ
 
-### JavaScript/Node.js
-
+<CodeTabs>
 ```javascript
 const axios = require("axios");
 
@@ -52,8 +51,6 @@ const response = await axios.post(
 );
 ```
 
-### Python
-
 ```python
 import requests
 import base64
@@ -78,7 +75,26 @@ response = requests.post(
 )
 ```
 
-### cURL
+```php
+<?php
+
+use Illuminate\Support\Facades\Http;
+
+$accessKey = 'your_access_key';
+$secretKey = 'your_secret_key';
+
+// Tạo chuỗi auth base64
+$auth = base64_encode("{$accessKey}:{$secretKey}");
+
+$response = Http::withHeaders([
+    'Authorization' => "Bearer {$auth}",
+    'Content-Type' => 'application/json',
+])->post('https://app.apipay.vn/v1/client/payment-requests', [
+    'bankPublicId' => 'bank_abc123',
+    'amount' => 100000,
+    'content' => 'ORDER-001',
+]);
+```
 
 ```bash
 # Mã hóa credentials: echo -n "accessKey:secretKey" | base64
@@ -89,3 +105,4 @@ curl -X POST https://app.apipay.vn/v1/client/payment-requests \
   -H "Content-Type: application/json" \
   -d '{"bankPublicId": "bank_abc123", "amount": 100000, "content": "ORDER-001"}'
 ```
+</CodeTabs>

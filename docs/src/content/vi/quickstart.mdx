@@ -84,8 +84,7 @@ ApiPay gửi `transaction.in` khi có tiền vào và `transaction.out` khi có 
 
 ## Ví dụ Code
 
-### Node.js
-
+<CodeTabs>
 ```javascript
 const axios = require("axios");
 
@@ -119,8 +118,6 @@ const payment = await createPaymentLink("bank-123", 100000, "ORDER-001");
 console.log("Payment URL:", payment.payUrl);
 ```
 
-### Python
-
 ```python
 import requests
 import base64
@@ -151,6 +148,40 @@ def create_payment_link(bank_public_id: str, amount: int, content: str):
 payment = create_payment_link('bank-123', 100000, 'ORDER-001')
 print(f"Payment URL: {payment['payUrl']}")
 ```
+
+```php
+<?php
+
+use Illuminate\Support\Facades\Http;
+
+$apiBase = 'https://app.apipay.vn';
+$accessKey = 'your_access_key';
+$secretKey = 'your_secret_key';
+
+function createPaymentLink(string $bankPublicId, int $amount, string $content): array
+{
+    global $apiBase, $accessKey, $secretKey;
+
+    // Create base64 auth string
+    $auth = base64_encode("{$accessKey}:{$secretKey}");
+
+    $response = Http::withHeaders([
+        'Authorization' => "Bearer {$auth}",
+        'Content-Type'  => 'application/json',
+    ])->post("{$apiBase}/v1/client/payment-requests", [
+        'bankPublicId' => $bankPublicId,
+        'amount'       => $amount,
+        'content'      => $content,
+    ]);
+
+    return $response->json('data');
+}
+
+// Usage
+$payment = createPaymentLink('bank-123', 100000, 'ORDER-001');
+echo 'Payment URL: ' . $payment['payUrl'];
+```
+</CodeTabs>
 
 ## Tiếp theo
 

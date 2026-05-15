@@ -626,3 +626,153 @@ body {
 	background: #3b82f6 !important;
 	color: #ffffff !important;
 }
+
+/* ===== CodeTabs Component ===== */
+
+/* Container — matches .code-block-container styling */
+.code-tabs-container {
+	margin: 2rem 0;
+	background: var(--color-bg-code);
+	border: 1px solid var(--color-border);
+	border-radius: 12px;
+	overflow: hidden;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+	transition:
+		border-color 0.2s,
+		box-shadow 0.2s;
+}
+
+.dark .code-tabs-container {
+	box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+	background: #080808;
+	border-color: #1a1a1a;
+}
+
+/* Header row: macOS dots + tab bar */
+.code-tabs-header {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	padding: 0.75rem 1rem;
+	background: var(--color-bg-tertiary);
+	border-bottom: 1px solid var(--color-border-light);
+}
+
+.dark .code-tabs-header {
+	background: #282a36;
+	border-bottom-color: #44475a;
+}
+
+/* Tab bar — horizontally scrollable on narrow viewports */
+.code-tabs-tablist {
+	display: flex;
+	align-items: center;
+	gap: 0;
+	overflow-x: auto;
+	/* Hide scrollbar visually but keep it functional */
+	scrollbar-width: none; /* Firefox */
+	-ms-overflow-style: none; /* IE/Edge */
+	/* Prevent the tab bar scroll from leaking to the page body */
+	overscroll-behavior-x: contain;
+}
+
+.code-tabs-tablist::-webkit-scrollbar {
+	display: none; /* Chrome/Safari */
+}
+
+/* Tab buttons */
+.code-tab-button {
+	flex-shrink: 0;
+	background: transparent;
+	border: none;
+	border-bottom: 2px solid transparent;
+	padding: 0.25rem 0.75rem;
+	font-family: var(--font-mono);
+	font-size: 0.75rem;
+	font-weight: 500;
+	color: var(--color-text-tertiary);
+	cursor: pointer;
+	white-space: nowrap;
+	transition:
+		color 0.15s,
+		border-color 0.15s;
+	/* Ensure focus ring is visible */
+	outline-offset: 2px;
+}
+
+.code-tab-button:hover {
+	color: var(--color-text);
+}
+
+/* Active tab */
+.code-tab-button--active {
+	color: var(--color-text);
+	border-bottom-color: var(--color-text);
+}
+
+.dark .code-tab-button--active {
+	border-bottom-color: var(--color-text);
+}
+
+/* Code panel */
+.code-tabs-panel {
+	position: relative;
+}
+
+/* Inner wrapper — enables horizontal scroll for wide code without page-body scroll */
+.code-tabs-panel-inner {
+	overflow-x: auto;
+	overscroll-behavior-x: contain;
+}
+
+/* Shiki output inside CodeTabs — same sizing as .code-block-body .highlighted-html .shiki */
+.code-tabs-panel .highlighted-html .shiki {
+	margin: 0;
+	padding: 1.25rem 1.5rem;
+	font-family: var(--font-mono);
+	font-size: 0.875rem;
+	line-height: 1.7;
+	background: var(--color-bg-code) !important;
+	overflow-x: auto;
+}
+
+.dark .code-tabs-panel .highlighted-html .shiki {
+	background: #080808 !important;
+}
+
+/* Plain-text fallback inside CodeTabs */
+.code-tabs-panel .shiki-fallback {
+	padding: 1.25rem 1.5rem;
+	font-family: var(--font-mono);
+	font-size: 0.875rem;
+	line-height: 1.7;
+	color: var(--color-text-secondary);
+	background: transparent;
+	overflow-x: auto;
+}
+
+/* Copy button — positioned top-right of the panel */
+.code-tabs-copy-button {
+	position: absolute;
+	top: 0.75rem;
+	right: 0.75rem;
+	z-index: 1;
+}
+
+/* ── Responsive: tab bar scrolls horizontally below 640 px ── */
+@media (max-width: 640px) {
+	.code-tabs-header {
+		padding: 0.5rem 0.75rem;
+	}
+
+	.code-tab-button {
+		padding: 0.25rem 0.5rem;
+		font-size: 0.7rem;
+	}
+
+	.code-tabs-panel .highlighted-html .shiki,
+	.code-tabs-panel .shiki-fallback {
+		padding: 1rem 1rem;
+		font-size: 0.8rem;
+	}
+}

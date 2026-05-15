@@ -170,3 +170,6 @@ pnpm-lock.yaml
 .yarn-integrity
 dashboard-example
 integration-example
+.claude
+.commandcode
+.kiro

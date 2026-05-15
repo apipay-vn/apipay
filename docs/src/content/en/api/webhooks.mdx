@@ -120,8 +120,7 @@ When money is transferred out from your bank account.
 
 All webhook requests include an `ApiPay-Signature` header for verification.
 
-### Node.js
-
+<CodeTabs>
 ```javascript
 const crypto = require("crypto");
 
@@ -163,8 +162,6 @@ app.post("/webhook", (req, res) => {
 });
 ```
 
-### Python
-
 ```python
 import hmac
 import hashlib
@@ -201,6 +198,46 @@ def handle_webhook():
 
     return {'received': True}, 200
 ```
+
+```php
+<?php
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+
+function verifyWebhookSignature(string $payload, string $signature, string $secretKey): bool
+{
+    $expectedSignature = hash_hmac('sha256', $payload, $secretKey);
+
+    return hash_equals($expectedSignature, $signature);
+}
+
+// Usage in Laravel route
+Route::post('/webhook', function (Request $request) {
+    $signature = $request->header('ApiPay-Signature');
+    $payload = $request->getContent();
+
+    if (!verifyWebhookSignature($payload, $signature, config('services.apipay.webhook_secret'))) {
+        return response()->json(['error' => 'Invalid signature'], 401);
+    }
+
+    $data = $request->json()->all();
+    $event = $data['event'] ?? null;
+
+    if ($event === 'transaction.in') {
+        logger('Money received: ' . $data['data']['amount']);
+        logger('Reference: ' . $data['data']['referenceCode']);
+        logger('Content: ' . $data['data']['content']);
+        // Update order in your database
+    } elseif ($event === 'transaction.out') {
+        logger('Money sent: ' . $data['data']['amount']);
+        logger('Reference: ' . $data['data']['referenceCode']);
+    }
+
+    return response()->json(['received' => true]);
+});
+```
+</CodeTabs>
 
 ## Retry Policy
 

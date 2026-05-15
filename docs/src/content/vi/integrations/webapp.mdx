@@ -22,8 +22,9 @@ Mở **Tích hợp > API Keys** trong dashboard để tạo credentials cho web 
 - Lưu `accessKey`, `secretKey` và `bankPublicId` mặc định trong environment variables.
 - Không gọi ApiPay bằng secret credentials từ code chỉ chạy trong browser.
 
-## JavaScript helper
+## Helper
 
+<CodeTabs>
 ```javascript
 const API_BASE = "https://app.apipay.vn";
 
@@ -76,10 +77,6 @@ const payment = await createApiPayPayment({
 
 console.log(payment.payUrl);
 ```
-
-Sau khi tạo đơn hàng, chuyển khách đến `payment.payUrl`.
-
-## Python helper
 
 ```python
 import base64
@@ -136,7 +133,63 @@ payment = create_apipay_payment(
 print(payment["payUrl"])
 ```
 
-Sau khi tạo đơn hàng, chuyển khách đến `payment["payUrl"]`.
+```php
+<?php
+
+use Illuminate\Support\Facades\Http;
+
+$apiBase = 'https://app.apipay.vn';
+
+function apipayAuth(string $accessKey, string $secretKey): string
+{
+    $token = base64_encode("{$accessKey}:{$secretKey}");
+    return "Bearer {$token}";
+}
+
+function createApipayPayment(
+    string $accessKey,
+    string $secretKey,
+    string $bankPublicId,
+    int $amount,
+    string $content,
+    string $title,
+    string $redirectUrl,
+): array {
+    global $apiBase;
+
+    $response = Http::withHeaders([
+        'Authorization' => apipayAuth($accessKey, $secretKey),
+        'Content-Type'  => 'application/json',
+    ])->post("{$apiBase}/v1/client/payment-requests", [
+        'bankPublicId' => $bankPublicId,
+        'amount'       => $amount,
+        'content'      => $content,
+        'title'        => $title,
+        'redirectUrl'  => $redirectUrl,
+    ]);
+
+    if ($response->failed()) {
+        throw new \RuntimeException('ApiPay request failed: ' . $response->status());
+    }
+
+    return $response->json('data');
+}
+
+$payment = createApipayPayment(
+    accessKey: env('APIPAY_ACCESS_KEY'),
+    secretKey: env('APIPAY_SECRET_KEY'),
+    bankPublicId: env('APIPAY_BANK_PUBLIC_ID'),
+    amount: 100000,
+    content: 'ORDER-001',
+    title: 'Payment for Order #001',
+    redirectUrl: 'https://your-site.com/payment/result',
+);
+
+echo $payment['payUrl'];
+```
+</CodeTabs>
+
+Sau khi tạo đơn hàng, chuyển khách đến `payUrl`.
 
 ## Xử lý kết quả thanh toán
 
