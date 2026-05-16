@@ -1,48 +1,49 @@
 ---
 title: Passkey
-description: Đăng nhập ApiPay bằng Face ID, vân tay hoặc passkey trên thiết bị
+description: Đăng nhập ApiPay nhanh hơn bằng Face ID, vân tay hoặc passkey trên thiết bị
 ---
 
 # Passkey
 
-Passkey giúp bạn đăng nhập dashboard ApiPay mà không cần nhập mật khẩu. Thay vào đó, bạn xác thực bằng Face ID, vân tay hoặc mã thiết bị — nhanh hơn, tiện hơn và an toàn hơn mật khẩu truyền thống.
+Passkey giúp bạn đăng nhập vào ApiPay mà không cần nhập mật khẩu. Bạn chỉ cần xác nhận bằng phương thức bảo mật quen thuộc trên thiết bị, như Face ID, vân tay, Windows Hello hoặc mã mở khóa màn hình.
+
+Cách đăng nhập này nhanh hơn, thuận tiện hơn và giảm đáng kể rủi ro từ việc lộ, quên hoặc dùng lại mật khẩu.
 
 ## Passkey hoạt động như thế nào?
 
-Passkey dùng chuẩn [WebAuthn](https://webauthn.io/). Khi bạn đăng ký passkey, thiết bị tạo ra một cặp khóa:
+Khi bạn tạo passkey, thiết bị của bạn sẽ lưu một phương thức xác thực an toàn dành riêng cho tài khoản ApiPay. Mỗi lần đăng nhập, ApiPay chỉ yêu cầu thiết bị xác nhận rằng đúng là bạn đang truy cập.
 
-- **Khóa riêng** (private key) nằm trên thiết bị của bạn, được bảo vệ bằng Face ID, Touch ID, Windows Hello hoặc mã khóa màn hình.
-- **Khóa công khai** (public key) lưu trên server ApiPay.
+Điều quan trọng là bạn không cần nhập mật khẩu và ApiPay cũng không yêu cầu bạn chia sẻ thông tin sinh trắc học. Face ID, vân tay hoặc mã mở khóa chỉ được xử lý trên thiết bị của bạn.
 
-Khi đăng nhập, thiết bị chứng minh nó đang giữ khóa riêng — mà không bao giờ gửi khóa đó đi. Không có gì để bị lừa đánh cắp, không có gì để quên, và không cần gõ bất cứ thứ gì.
+Vì passkey gắn với đúng trang ApiPay, kẻ gian khó có thể sử dụng nó trên một website giả mạo. Đây là lý do passkey phù hợp cho các tài khoản cần bảo vệ thông tin thanh toán, giao dịch và dữ liệu doanh nghiệp.
 
 ---
 
-## Đăng ký passkey
+## Tạo passkey
 
-Mỗi tài khoản ApiPay đăng ký được **1 passkey**.
+Mỗi tài khoản ApiPay hiện có thể tạo **một passkey**.
 
-1. Đăng nhập [my.apipay.vn](https://my.apipay.vn)
+1. Đăng nhập vào [my.apipay.vn](https://my.apipay.vn)
 2. Vào **Cài đặt → Tài khoản**
-3. Ở phần **Passkey**, nhấn **Thêm passkey**
-4. Trình duyệt hoặc thiết bị sẽ yêu cầu bạn xác thực (Face ID, vân tay, v.v.)
-5. Xác nhận — passkey được lưu tự động
+3. Tại mục **Passkey**, chọn **Thêm passkey**
+4. Xác nhận bằng Face ID, vân tay, Windows Hello hoặc mã mở khóa thiết bị
+5. Hoàn tất xác nhận, passkey sẽ được lưu tự động
 
-Passkey được đặt tên theo thiết bị và trình duyệt của bạn (ví dụ "MacBook Pro Chrome Passkey"). Bạn có thể đổi tên sau.
+Passkey thường được đặt tên theo thiết bị và trình duyệt bạn đang dùng, ví dụ: "MacBook Pro Chrome Passkey". Bạn có thể đổi tên sau để dễ nhận biết hơn.
 
-> **Lưu ý:** Passkey cần trình duyệt và thiết bị hỗ trợ. Nếu nút **Thêm passkey** bị vô hiệu hóa, trình duyệt hiện tại không hỗ trợ WebAuthn.
+> **Lưu ý:** Passkey cần trình duyệt và thiết bị có hỗ trợ tính năng này. Nếu nút **Thêm passkey** bị tắt, vui lòng thử lại bằng một trình duyệt hoặc thiết bị khác.
 
 ---
 
 ## Đăng nhập bằng passkey
 
-Trên trang đăng nhập:
+Tại trang đăng nhập:
 
-1. Nhấn **Tiếp tục với passkey**
-2. Thiết bị yêu cầu bạn xác thực
-3. Nếu xác nhận, bạn đã đăng nhập — không cần mật khẩu
+1. Chọn **Tiếp tục với passkey**
+2. Xác nhận trên thiết bị của bạn
+3. Sau khi xác nhận thành công, bạn sẽ được đăng nhập ngay mà không cần nhập mật khẩu
 
-Bạn vẫn có thể đăng nhập bằng mật khẩu, Google hoặc GitHub bất kỳ lúc nào. Passkey là thêm một lựa chọn, không thay thế cách đăng nhập cũ.
+Bạn vẫn có thể đăng nhập bằng mật khẩu, Google hoặc GitHub như bình thường. Passkey là một lựa chọn đăng nhập bổ sung, không thay thế hoàn toàn các phương thức hiện có.
 
 ---
 
@@ -51,67 +52,67 @@ Bạn vẫn có thể đăng nhập bằng mật khẩu, Google hoặc GitHub b�
 ### Đổi tên
 
 1. Vào **Cài đặt → Tài khoản → Passkey**
-2. Nhấn biểu tượng đổi tên bên cạnh passkey
-3. Nhập tên mới và nhấn **Lưu tên**
+2. Chọn biểu tượng đổi tên bên cạnh passkey
+3. Nhập tên mới và chọn **Lưu tên**
 
 ### Xóa
 
 1. Vào **Cài đặt → Tài khoản → Passkey**
-2. Nhấn biểu tượng xóa bên cạnh passkey
-3. Xác nhận việc xóa
+2. Chọn biểu tượng xóa bên cạnh passkey
+3. Xác nhận thao tác xóa
 
-> **Cảnh báo:** Sau khi xóa passkey, bạn sẽ cần đăng nhập bằng mật khẩu hoặc tài khoản mạng xã hội đã liên kết. Sau đó có thể đăng ký passkey mới.
+> **Cảnh báo:** Sau khi xóa passkey, bạn cần đăng nhập bằng mật khẩu hoặc tài khoản Google/GitHub đã liên kết. Bạn có thể tạo passkey mới sau khi đăng nhập lại.
 
 ---
 
-### Thiết bị và trình duyệt hỗ trợ
+## Thiết bị và trình duyệt hỗ trợ
 
 Passkey hoạt động trên hầu hết thiết bị và trình duyệt hiện đại:
 
-| Nền tảng | Trình duyệt | Hỗ trợ |
-| -------- | ----------- | ------ |
-| macOS | Chrome, Safari, Edge | Face ID / Touch ID |
+| Nền tảng | Trình duyệt | Phương thức xác nhận |
+| -------- | ----------- | -------------------- |
+| macOS | Chrome, Safari, Edge | Touch ID hoặc xác nhận trên thiết bị Apple |
 | Windows | Chrome, Edge | Windows Hello |
-| iOS | Safari, Chrome | Face ID / Touch ID |
-| Android | Chrome | Vân tay / Mã khóa màn hình |
+| iOS | Safari, Chrome | Face ID hoặc Touch ID |
+| Android | Chrome | Vân tay hoặc mã khóa màn hình |
 
-Nếu trình duyệt không hỗ trợ passkey, nút **Thêm passkey** sẽ bị vô hiệu hóa và bạn sẽ thấy thông báo trong Cài đặt.
+Nếu trình duyệt không hỗ trợ passkey, nút **Thêm passkey** sẽ bị tắt và bạn sẽ thấy thông báo trong phần Cài đặt.
 
 ---
 
-## Về bảo mật
+## Lợi ích bảo mật
 
-- **Chống lừa đảo (phishing)** — Passkey gắn với tên miền ApiPay, nên không thể dùng trên trang giả mạo.
-- **Không chia sẻ bí mật** — Khóa riêng không bao giờ rời khỏi thiết bị. Ngay cả khi database ApiPay bị lộ, passkey của bạn không thể bị lấy cắp.
-- **Gắn với thiết bị** — Passkey lưu trong phần cứng bảo mật của thiết bị. Kẻ gian cần có thiết bị vật lý và sinh trắc học của bạn mới dùng được.
-- **Khôi phục tài khoản** — Nếu mất thiết bị, bạn vẫn đăng nhập được bằng mật khẩu hoặc tài khoản mạng xã hội đã liên kết, rồi đăng ký passkey mới.
+- **Giảm rủi ro lừa đảo**: Passkey chỉ hoạt động với đúng trang ApiPay, giúp hạn chế nguy cơ đăng nhập nhầm vào website giả mạo.
+- **Không cần ghi nhớ mật khẩu**: Bạn không phải tạo, lưu hoặc nhập mật khẩu cho mỗi lần đăng nhập.
+- **Bảo vệ bằng thiết bị cá nhân**: Người khác cần có quyền truy cập vào thiết bị của bạn và vượt qua bước xác nhận bảo mật mới có thể sử dụng passkey.
+- **Vẫn có phương án dự phòng**: Nếu mất thiết bị, bạn có thể đăng nhập bằng mật khẩu hoặc tài khoản Google/GitHub đã liên kết, sau đó xóa passkey cũ và tạo passkey mới.
 
-> **Mẹo:** Giữ ít nhất một cách đăng nhập thay thế (mật khẩu, Google hoặc GitHub) để không bao giờ bị khóa ngoài tài khoản.
+> **Gợi ý:** Hãy duy trì ít nhất một phương thức đăng nhập dự phòng, như mật khẩu, Google hoặc GitHub, để tránh bị gián đoạn khi đổi hoặc mất thiết bị.
 
 ---
 
 ## Câu hỏi thường gặp
 
-### Tôi có thể đăng ký nhiều passkey không?
+### Tôi có thể tạo nhiều passkey không?
 
-Hiện tại mỗi tài khoản ApiPay chỉ đăng ký được **1 passkey**. Nếu muốn đổi thiết bị, hãy xóa passkey hiện tại rồi đăng ký passkey mới.
+Hiện tại, mỗi tài khoản ApiPay có thể tạo **một passkey**. Nếu muốn chuyển sang thiết bị khác, bạn cần xóa passkey hiện tại và tạo passkey mới.
 
-### Mất thiết bị thì sao?
+### Nếu tôi mất thiết bị thì sao?
 
-Bạn vẫn đăng nhập được bằng mật khẩu, Google hoặc GitHub. Sau khi đăng nhập, xóa passkey cũ và đăng ký passkey mới từ thiết bị mới.
+Bạn vẫn có thể đăng nhập bằng mật khẩu, Google hoặc GitHub. Sau khi đăng nhập, hãy xóa passkey cũ và tạo passkey mới trên thiết bị đang sử dụng.
 
 ### Passkey có giống mật khẩu không?
 
-Không. Passkey là chứng thực mật mã lưu trên thiết bị. Không thể đoán, không thể lừa đảo, không thể dùng lại trên trang khác. An toàn hơn mật khẩu rất nhiều.
+Không. Passkey là một phương thức đăng nhập hiện đại, được xác nhận trực tiếp trên thiết bị của bạn. Bạn không cần nhập chuỗi ký tự như mật khẩu, nên khó bị đoán, bị lộ hoặc bị lừa nhập vào website giả mạo.
 
-### Dùng passkey thì còn cần 2FA không?
+### Tôi có còn cần 2FA khi dùng passkey không?
 
-2FA (dựa trên TOTP) và passkey phục vụ mục đích khác. Nên giữ 2FA bật để thêm lớp bảo vệ, nhất là khi bạn vẫn dùng đăng nhập bằng mật khẩu.
+Passkey và 2FA phục vụ các lớp bảo vệ khác nhau. ApiPay khuyến nghị bạn tiếp tục bật 2FA, đặc biệt nếu tài khoản vẫn cho phép đăng nhập bằng mật khẩu.
 
 ---
 
 ## Bước tiếp theo
 
-- [Hướng dẫn Dashboard](/vi/dashboard) — Tìm hiểu các tính năng trên dashboard
-- [Xác thực API](/vi/api/authentication) — Xác thực bằng API key cho tích hợp
-- [Đăng ký & Thanh toán](/vi/subscription) — Quản lý gói và thanh toán
+- [Hướng dẫn Dashboard](/vi/dashboard) — Tìm hiểu các tính năng trong dashboard
+- [Xác thực API](/vi/api/authentication) — Xác thực API key cho tích hợp
+- [Đăng ký & Thanh toán](/vi/subscription) — Quản lý gói dịch vụ và thanh toán
