@@ -535,6 +535,7 @@ body {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
+	gap: 0.4rem;
 	min-height: 2.5rem;
 	padding: 0.8rem 0.8rem 0.5rem;
 	border: 1px solid transparent;
@@ -615,6 +616,17 @@ body {
 @media (max-width: 560px) {
 	.pricing-tabs__list {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+
+	.pricing-tabs__trigger {
+		padding: 0.65rem 0.75rem;
+	}
+
+	.pricing-tabs__badge {
+		position: static;
+		transform: none;
+		flex: 0 0 auto;
+		box-shadow: 0 0 0 2px var(--color-bg-secondary);
 	}
 }
 
