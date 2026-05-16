@@ -79,6 +79,20 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.9',
+    date: '2026-05-16',
+    features: [
+      'Passkey sign-in — register a passkey (Face ID, fingerprint, or device passkey) and sign in to the dashboard without typing your password. Each account can register one passkey, which can be renamed or deleted from Account Settings.',
+      'Term-based pricing — choose 1, 3, 6, or 12 months at checkout. Longer terms include automatic discounts: 3 months saves 5%, 6 months saves 10%, and 12 months saves 15%. Invoices and renewal flows now display the selected term and effective monthly price.',
+    ],
+    fixes: [],
+    improvements: [
+      'Renewal invoices automatically use the same term as your last payment, so you keep your discount without extra steps',
+      'Invoice list now shows the billing term for each invoice',
+      'Plan checkout dialog shows subtotal, discount, and effective monthly price before you confirm',
+    ],
+  },
+  {
     version: '1.8.2',
     date: '2026-05-15',
     features: [],
@@ -276,6 +290,20 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.9',
+    date: '2026-05-16',
+    features: [
+      'Đăng nhập bằng passkey — đăng ký passkey (Face ID, vân tay hoặc passkey trên thiết bị) rồi đăng nhập dashboard mà không cần nhập mật khẩu. Mỗi tài khoản đăng ký được 1 passkey, có thể đổi tên hoặc xóa trong Cài đặt tài khoản.',
+      'Bảng giá theo kỳ hạn — chọn kỳ hạn 1, 3, 6 hoặc 12 tháng khi thanh toán. Kỳ hạn dài hơn được giảm giá tự động: 3 tháng giảm 5%, 6 tháng giảm 10%, 12 tháng giảm 15%. Hóa đơn và luồng gia hạn nay hiển thị kỳ hạn đã chọn và giá tương đương mỗi tháng.',
+    ],
+    fixes: [],
+    improvements: [
+      'Hóa đơn gia hạn tự động dùng kỳ hạn giống lần thanh toán trước, bạn không cần chọn lại để giữ giảm giá',
+      'Danh sách hóa đơn nay hiển thị kỳ hạn của từng hóa đơn',
+      'Dialog thanh toán gói hiển thị tạm tính, giảm giá và giá tương đương mỗi tháng trước khi xác nhận',
+    ],
+  },
   {
     version: '1.8.2',
     date: '2026-05-15',

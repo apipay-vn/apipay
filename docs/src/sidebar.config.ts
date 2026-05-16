@@ -19,6 +19,7 @@ export const viSidebarConfig: SidebarItem[] = [
     children: [
       {label: 'Kết nối ngân hàng', href: '/vi/connect-banks'},
       {label: 'Tên miền riêng', href: '/vi/custom-domains'},
+      {label: 'Passkey', href: '/vi/passkeys'},
       {label: 'Sandbox', href: '/vi/sandbox'},
     ],
   },
@@ -66,6 +67,7 @@ export const enSidebarConfig: SidebarItem[] = [
     children: [
       {label: 'Connect Banks', href: '/en/connect-banks'},
       {label: 'Custom Domains', href: '/en/custom-domains'},
+      {label: 'Passkeys', href: '/en/passkeys'},
       {label: 'Sandbox', href: '/en/sandbox'},
     ],
   },

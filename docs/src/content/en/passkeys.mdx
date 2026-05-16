@@ -1,0 +1,117 @@
+---
+title: Passkeys
+description: Sign in to ApiPay with Face ID, fingerprint, or a device passkey
+---
+
+# Passkeys
+
+Passkeys let you sign in to the ApiPay dashboard without typing your password. Instead, you authenticate with something only you have — your face, your fingerprint, or a device-level passkey. It's faster, simpler, and more secure than a traditional password.
+
+## How Passkeys Work
+
+Passkeys are built on the [WebAuthn](https://webauthn.io/) standard. When you register a passkey, your device generates a cryptographic key pair:
+
+- The **private key** stays on your device (secured by Face ID, Touch ID, Windows Hello, or your phone's screen lock).
+- The **public key** is stored on ApiPay's server.
+
+When you sign in, your device proves it holds the private key — without ever sending the private key itself. There's nothing to phish, nothing to forget, and nothing to type.
+
+---
+
+## Registering a Passkey
+
+You can register **one passkey** per ApiPay account.
+
+1. Log in to [my.apipay.vn](https://my.apipay.vn)
+2. Go to **Settings → Account**
+3. In the **Passkeys** section, click **Add passkey**
+4. Your browser or device will prompt you to authenticate (Face ID, fingerprint, etc.)
+5. Confirm — the passkey is saved automatically
+
+The passkey is named after your device and browser (for example, "MacBook Pro Chrome Passkey"). You can rename it later.
+
+> **Note:** Passkeys require a supported browser and device. If the **Add passkey** button is disabled, your current browser doesn't support WebAuthn.
+
+---
+
+## Signing In with a Passkey
+
+On the sign-in page:
+
+1. Click **Continue with passkey**
+2. Your device prompts you to authenticate
+3. If approved, you're signed in — no password needed
+
+You can still sign in with your password, Google, or GitHub at any time. Passkey is an additional option, not a replacement.
+
+---
+
+## Managing Your Passkey
+
+### Renaming
+
+1. Go to **Settings → Account → Passkeys**
+2. Click the rename icon next to your passkey
+3. Enter a new name and click **Save name**
+
+### Deleting
+
+1. Go to **Settings → Account → Passkeys**
+2. Click the delete icon next to your passkey
+3. Confirm the deletion
+
+> **Warning:** After deleting your passkey, you'll need to sign in with your password or a connected social account. You can register a new passkey afterward.
+
+---
+
+## Supported Devices & Browsers
+
+Passkeys work on most modern devices and browsers:
+
+| Platform | Browser | Support |
+| -------- | ------- | ------- |
+| macOS | Chrome, Safari, Edge | Face ID / Touch ID |
+| Windows | Chrome, Edge | Windows Hello |
+| iOS | Safari, Chrome | Face ID / Touch ID |
+| Android | Chrome | Fingerprint / Screen lock |
+
+If your browser doesn't support passkeys, the **Add passkey** button will be disabled and you'll see a notice in Settings.
+
+---
+
+## Security Considerations
+
+- **Phishing-resistant** — Passkeys are tied to the ApiPay domain, so they can't be used on a fake site.
+- **No shared secrets** — The private key never leaves your device. Even if ApiPay's database is breached, your passkey can't be stolen.
+- **Device-bound** — Your passkey is stored on your device's secure hardware. Someone would need physical access to your device and your biometric to use it.
+- **Account recovery** — If you lose your device, you can still sign in with your password or a connected social account, then register a new passkey.
+
+> **Tip:** Keep at least one alternative sign-in method (password, Google, or GitHub) active so you're never locked out of your account.
+
+---
+
+## FAQ
+
+### Can I have more than one passkey?
+
+Currently, each ApiPay account can register **one passkey**. If you want to switch devices, delete the existing passkey and register a new one.
+
+### What happens if I lose my device?
+
+You can still sign in with your password, Google, or GitHub. Once signed in, delete the old passkey and register a new one from your new device.
+
+### Are passkeys the same as passwords?
+
+No. Passkeys are cryptographic credentials stored on your device. They can't be guessed, phished, or reused on another site. They're significantly more secure than passwords.
+
+### Do I still need 2FA with passkeys?
+
+2FA (TOTP-based) and passkeys serve different purposes. We recommend keeping 2FA enabled as an extra layer of security, especially if you also use password-based sign-in.
+
+---
+
+## Next Steps
+
+- [Dashboard Guide](/en/dashboard) — Learn about all dashboard features
+- [Authentication API](/en/api/authentication) — API key authentication for integrations
+- [Subscription & Billing](/en/subscription) — Manage your plan and billing
