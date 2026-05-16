@@ -2,6 +2,7 @@ import type {ComponentPropsWithoutRef, ElementType, ReactNode} from "react";
 import React, {useCallback, useState, useEffect} from "react";
 import {codeToHtml} from "shiki";
 import {CodeTabs} from "./CodeTabs";
+import {PricingTabs} from "./PricingTabs";
 
 /**
  * Creates a heading component with an anchor link.
@@ -236,6 +237,7 @@ export const mdxComponents = {
 	pre: Pre,
 	Callout,
 	CodeTabs,
+	PricingTabs,
 	hr: (props: any) => <hr {...props} className="my-8 border-border-light" />,
 	table: (props: any) => (
 		<div className="table-container">
@@ -243,4 +245,3 @@ export const mdxComponents = {
 		</div>
 	),
 };
-

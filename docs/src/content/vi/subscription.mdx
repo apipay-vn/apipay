@@ -11,16 +11,9 @@ Trang này giúp bạn chọn gói, mua gói và quản lý chu kỳ thanh toán
 
 ## Tổng quan gói dịch vụ
 
-Giá ApiPay dựa trên số lượng tài khoản ngân hàng bạn cần kết nối. Tất cả gói đều có giao dịch không giới hạn và không thu phí trên mỗi giao dịch.
+ApiPay cung cấp giá minh bạch dựa trên số lượng tài khoản ngân hàng bạn cần. Tất cả các gói đều bao gồm giao dịch không giới hạn mà không có phí mỗi giao dịch. Khi thanh toán, bạn có thể chọn kỳ hạn 1, 3, 6 hoặc 12 tháng; kỳ hạn dài được giảm giá tự động.
 
-| Gói       | Giá                 | Tài Khoản Ngân Hàng | Phù Hợp Với                     |
-| --------- | ------------------- | ------------------- | ------------------------------- |
-| BASIC     | 100.000 VND/tháng   | 1                   | Cá nhân kinh doanh              |
-| STARTER   | 200.000 VND/tháng   | 3                   | Doanh nghiệp đang phát triển    |
-| PRO       | 400.000 VND/tháng   | 5                   | Doanh nghiệp đã ổn định         |
-| TEAM      | 700.000 VND/tháng   | 10                  | Merchant có lượng giao dịch cao |
-| COMPANY   | 1.700.000 VND/tháng | 25                  | Tổ chức lớn                     |
-| CORPORATE | 3.200.000 VND/tháng | 50                  | Doanh nghiệp lớn                |
+<PricingTabs locale="vi" />
 
 ### Tất cả gói đều bao gồm
 
@@ -70,7 +63,7 @@ Giá ApiPay dựa trên số lượng tài khoản ngân hàng bạn cần kết
 
 Hiện tại, bạn có thể mua gói qua:
 
-- **Chuyển khoản ngân hàng** - Dùng hóa đơn ApiPay tạo sẵn để thanh toán qua ngân hàng đã kết nối
+- **Chuyển khoản ngân hàng** - Sử dụng yêu cầu thanh toán và hóa đơn được tạo để chuyển khoản cho ApiPay
 
 Sau khi thanh toán được xác nhận, gói sẽ được kích hoạt ngay.
 
@@ -109,17 +102,17 @@ Sau khi thanh toán được xác nhận, gói sẽ được kích hoạt ngay.
 
 ## Chu kỳ thanh toán
 
-- **Thanh toán hàng tháng** - Tính phí vào cùng ngày mỗi tháng
-- **Tính theo tỷ lệ** - Khi nâng cấp, phí được tính theo phần còn lại của chu kỳ
-- **Hóa đơn** - Xem tất cả hóa đơn trong **Cài đặt → Hóa đơn**
+- **Kỳ hạn linh hoạt** - Chọn 1, 3, 6 hoặc 12 tháng khi thanh toán
+- **Giảm giá theo kỳ hạn** - 3 tháng giảm 5%, 6 tháng giảm 10%, 12 tháng giảm 15%
+- **Hóa đơn** - Tất cả hóa đơn có sẵn trong **Cài đặt → Hóa đơn**
 - **Không hoàn tiền** - Không hoàn tiền cho phần thời gian đã sử dụng
 
 ### Gia hạn
 
-1. 3 ngày trước khi gia hạn, bạn sẽ nhận email nhắc nhở
-2. Tự động gia hạn vào ngày gia hạn
-3. Nếu thanh toán thất bại, bạn sẽ được thông báo ngay
-4. Sau 7 ngày thanh toán thất bại, quyền truy cập có thể bị hạn chế
+1. ApiPay tạo hóa đơn gia hạn 5 ngày trước khi hết hạn theo kỳ hạn đã thanh toán gần nhất
+2. Bạn có thể thanh toán hóa đơn nháp hoặc đổi sang kỳ hạn khác trước khi thanh toán
+3. Gói được gia hạn sau khi ApiPay xác nhận chuyển khoản
+4. Sau thời gian gia hạn, hóa đơn chưa thanh toán sẽ bị hủy và quyền truy cập có thể bị hạn chế
 
 ---
 
