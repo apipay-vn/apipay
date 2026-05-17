@@ -52,6 +52,109 @@ Keep `secret`; it is used to verify `ApiPay-Signature`.
 | `DELETE /v1/client/webhooks/:id` | Delete a webhook |
 | `GET /v1/client/webhooks/:id/history` | View delivery history (`page`, `limit`) |
 | `POST /v1/client/webhooks/history/:historyId/resend` | Retry a failed delivery |
+| `GET /v1/client/webhooks/deliveries` | View production delivery history with filters |
+
+## Delivery Log
+
+The Delivery Log shows every webhook sent in production. Access it via the **Delivery Log tab** on the **Settings → Webhooks** page in the dashboard.
+
+### Filters
+
+| Filter | Description |
+| -------- | ----- |
+| Date range | Filter by delivery date |
+| Bank | Filter by bank account |
+| Webhook | Filter by specific endpoint |
+| Direction | `IN` (money in) or `OUT` (money out) |
+| Status | `SUCCESS` or `FAILED` |
+
+### Per-record details
+
+Each delivery record includes:
+
+- **Timestamp** — When the webhook was sent
+- **Endpoint** — URL the webhook was sent to
+- **Bank** — Associated bank account
+- **Direction** — IN or OUT
+- **Status** — Success/failure with HTTP response code
+- **Retry count** — Number of retry attempts made
+- **Reference** — Related transaction reference code
+- **Amount** — Transaction amount
+
+Click a record to view full details: the **response body** from your server and the full **payload** that was sent.
+
+### Resend
+
+From the Delivery Log, you can resend a failed webhook immediately — no need to navigate away.
+
+### API
+
+Query delivery history via API:
+
+```bash
+GET /v1/client/webhooks/deliveries
+```
+
+**Query parameters:**
+
+| Parameter | Type | Description |
+| -------- | ---- | ----- |
+| `page` | number | Page number (default: 1) |
+| `limit` | number | Items per page (default: 20, max: 100) |
+| `webhookId` | string | Filter by webhook ID |
+| `bankAccountId` | number | Filter by bank account |
+| `direction` | string | `IN` or `OUT` |
+| `status` | string | `SUCCESS` or `FAILED` |
+| `dateFrom` | string | Start date (YYYY-MM-DD) |
+| `dateTo` | string | End date (YYYY-MM-DD) |
+
+**Response:**
+
+```json
+{
+  "status": true,
+  "data": [
+    {
+      "id": "del_abc123",
+      "clientWebhookId": "wh_xyz789",
+      "transactionId": "txn_abc456",
+      "status": "SUCCESS",
+      "responseCode": 200,
+      "responseBody": "{\"received\": true}",
+      "payload": {
+        "event": "transaction.in",
+        "data": {
+          "amount": 100000,
+          "referenceCode": "ORDER-12345",
+          "type": "IN"
+        }
+      },
+      "retryCount": 0,
+      "createdAt": "2026-05-17T10:30:00.000Z",
+      "clientWebhook": {
+        "id": "wh_xyz789",
+        "webhookUrl": "https://your-domain.com/webhooks/apipay",
+        "bankAccount": {
+          "bankShortName": "VCB",
+          "accountNumber": "1234567890"
+        }
+      },
+      "transaction": {
+        "id": "txn_abc456",
+        "amount": 100000,
+        "type": "IN",
+        "referenceCode": "ORDER-12345"
+      }
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 20,
+    "total": 150,
+    "totalPages": 8
+  }
+}
+```
 
 ## Events
 

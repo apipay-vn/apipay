@@ -21,6 +21,7 @@ export const viSidebarConfig: SidebarItem[] = [
       {label: 'Tên miền riêng', href: '/vi/custom-domains'},
       {label: 'Passkey', href: '/vi/passkeys'},
       {label: 'Sandbox', href: '/vi/sandbox'},
+      {label: 'Lịch sử gửi webhook', href: '/vi/api/webhooks#delivery-log'},
     ],
   },
   {
@@ -69,6 +70,7 @@ export const enSidebarConfig: SidebarItem[] = [
       {label: 'Custom Domains', href: '/en/custom-domains'},
       {label: 'Passkeys', href: '/en/passkeys'},
       {label: 'Sandbox', href: '/en/sandbox'},
+      {label: 'Webhook Delivery', href: '/en/api/webhooks#delivery-log'},
     ],
   },
   {

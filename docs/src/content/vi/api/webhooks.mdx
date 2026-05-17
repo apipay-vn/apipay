@@ -52,6 +52,111 @@ Hãy lưu `secret`; khóa này dùng để kiểm tra `ApiPay-Signature`.
 | `DELETE /v1/client/webhooks/:id` | Xóa webhook |
 | `GET /v1/client/webhooks/:id/history` | Xem lịch sử gửi (`page`, `limit`) |
 | `POST /v1/client/webhooks/history/:historyId/resend` | Gửi lại một lần gửi thất bại |
+| `GET /v1/client/webhooks/deliveries` | Xem lịch sử gửi webhook trên production, kèm bộ lọc |
+
+<span id="delivery-log"></span>
+
+## Lịch sử gửi (Delivery Log)
+
+Lịch sử gửi webhook cho bạn xem lại mọi lần ApiPay gửi webhook trong môi trường production. Bạn có thể mở mục này từ **tab Lịch sử gửi** trên trang **Cài đặt → Webhooks** trong dashboard.
+
+### Bộ lọc
+
+| Bộ lọc | Mô tả |
+| -------- | ----- |
+| Khoảng ngày | Lọc theo ngày gửi |
+| Ngân hàng | Lọc theo tài khoản ngân hàng |
+| Webhook | Lọc theo endpoint cụ thể |
+| Hướng giao dịch | `IN` (tiền vào) hoặc `OUT` (tiền ra) |
+| Trạng thái | `SUCCESS` (thành công) hoặc `FAILED` (thất bại) |
+
+### Chi tiết bản ghi
+
+Mỗi bản ghi trong Lịch sử gửi bao gồm:
+
+- **Thời gian** — Thời điểm gửi webhook
+- **Endpoint** — URL webhook đã gửi đến
+- **Ngân hàng** — Tài khoản ngân hàng liên quan
+- **Hướng giao dịch** — `IN` hoặc `OUT`
+- **Trạng thái** — Thành công hoặc thất bại, kèm mã phản hồi HTTP
+- **Số lần thử lại** — Số lần hệ thống đã thử gửi lại
+- **Mã tham chiếu** — Mã giao dịch liên quan
+- **Số tiền** — Số tiền giao dịch
+
+Nhấn vào một bản ghi để xem đầy đủ **nội dung phản hồi** (response body) từ server của bạn và **payload** mà ApiPay đã gửi.
+
+### Gửi lại
+
+Trong Lịch sử gửi, bạn có thể gửi lại ngay một webhook thất bại mà không cần rời khỏi trang.
+
+### API
+
+Truy vấn lịch sử gửi bằng API:
+
+```bash
+GET /v1/client/webhooks/deliveries
+```
+
+**Tham số truy vấn:**
+
+| Tham số | Kiểu | Mô tả |
+| -------- | ---- | ----- |
+| `page` | number | Số trang (mặc định: 1) |
+| `limit` | number | Số bản ghi mỗi trang (mặc định: 20, tối đa: 100) |
+| `webhookId` | string | Lọc theo ID webhook |
+| `bankAccountId` | number | Lọc theo tài khoản ngân hàng |
+| `direction` | string | `IN` hoặc `OUT` |
+| `status` | string | `SUCCESS` hoặc `FAILED` |
+| `dateFrom` | string | Từ ngày (YYYY-MM-DD) |
+| `dateTo` | string | Đến ngày (YYYY-MM-DD) |
+
+**Phản hồi:**
+
+```json
+{
+  "status": true,
+  "data": [
+    {
+      "id": "del_abc123",
+      "clientWebhookId": "wh_xyz789",
+      "transactionId": "txn_abc456",
+      "status": "SUCCESS",
+      "responseCode": 200,
+      "responseBody": "{\"received\": true}",
+      "payload": {
+        "event": "transaction.in",
+        "data": {
+          "amount": 100000,
+          "referenceCode": "ORDER-12345",
+          "type": "IN"
+        }
+      },
+      "retryCount": 0,
+      "createdAt": "2026-05-17T10:30:00.000Z",
+      "clientWebhook": {
+        "id": "wh_xyz789",
+        "webhookUrl": "https://your-domain.com/webhooks/apipay",
+        "bankAccount": {
+          "bankShortName": "VCB",
+          "accountNumber": "1234567890"
+        }
+      },
+      "transaction": {
+        "id": "txn_abc456",
+        "amount": 100000,
+        "type": "IN",
+        "referenceCode": "ORDER-12345"
+      }
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 20,
+    "total": 150,
+    "totalPages": 8
+  }
+}
+```
 
 ## Sự kiện (Events)
 

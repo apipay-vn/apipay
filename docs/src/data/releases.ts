@@ -79,6 +79,18 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.9.2',
+    date: '2026-05-17',
+    features: [
+      'Delivery Log — a new tab on the Webhooks page that shows every production webhook delivery, filterable by bank, endpoint, direction, status, and date range. Each record displays the HTTP response code, response body, and payload that was sent.',
+      'Resend failed webhooks directly from the Delivery Log tab without switching tabs.',
+    ],
+    fixes: [],
+    improvements: [
+      'Delivery log data is now accessible via API — `GET /v1/client/webhooks/deliveries` supports the same filters as the dashboard.',
+    ],
+  },
+  {
     version: '1.9.1',
     date: '2026-05-17',
     features: [],
@@ -300,6 +312,18 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.9.2',
+    date: '2026-05-17',
+    features: [
+      'Tab **Lịch sử gửi** trên trang Webhooks — xem lại mọi lần gửi webhook trên production, có thể lọc theo ngân hàng, endpoint, hướng giao dịch, trạng thái và khoảng ngày. Mỗi bản ghi hiển thị mã phản hồi HTTP, nội dung phản hồi và payload đã gửi.',
+      'Gửi lại webhook thất bại ngay trong Lịch sử gửi, không cần rời khỏi trang.',
+    ],
+    fixes: [],
+    improvements: [
+      'Có thể truy vấn lịch sử gửi webhook qua API — `GET /v1/client/webhooks/deliveries` hỗ trợ cùng các bộ lọc như trên dashboard.',
+    ],
+  },
   {
     version: '1.9.1',
     date: '2026-05-17',
