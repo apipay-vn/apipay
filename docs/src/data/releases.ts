@@ -79,6 +79,16 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.9.1',
+    date: '2026-05-17',
+    features: [],
+    fixes: [],
+    improvements: [
+      'Notification preferences are now grouped by Payments, Account & Security, Plans & Billing, and System, making it easier to scan and adjust the channels for each notification type.',
+      'The notification filter also follows the same grouping and includes bank unlink notifications.',
+    ],
+  },
+  {
     version: '1.9',
     date: '2026-05-16',
     features: [
@@ -290,6 +300,16 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.9.1',
+    date: '2026-05-17',
+    features: [],
+    fixes: [],
+    improvements: [
+      'Cài đặt thông báo nay được gom theo nhóm Thanh toán, Tài khoản & bảo mật, Gói dịch vụ & hóa đơn và Hệ thống, dễ nhìn hơn khi chọn kênh nhận cho từng loại thông báo.',
+      'Bộ lọc trong trang thông báo cũng dùng cùng cách nhóm và đã bổ sung loại thông báo hủy liên kết ngân hàng.',
+    ],
+  },
   {
     version: '1.9',
     date: '2026-05-16',
