@@ -79,6 +79,18 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.9.3',
+    date: '2026-05-19',
+    features: [
+      'Webhook statistics — track delivery volume, success rate, and failed deliveries for your configured webhooks in a clearer performance summary.',
+    ],
+    fixes: [],
+    improvements: [
+      'Improved webhook insights with more focused success and error indicators, helping teams review delivery health faster.',
+      'Refined responsive layouts across webhook views so key metrics, filters, and delivery details remain easy to review on smaller screens.',
+    ],
+  },
+  {
     version: '1.9.2',
     date: '2026-05-17',
     features: [
@@ -312,6 +324,18 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.9.3',
+    date: '2026-05-19',
+    features: [
+      'Thống kê webhook — theo dõi tổng lượt gửi, tỷ lệ thành công và các lần gửi thất bại của webhook đã cấu hình trong một phần tổng quan rõ ràng hơn.',
+    ],
+    fixes: [],
+    improvements: [
+      'Cải thiện phần phân tích webhook với các chỉ số thành công và lỗi tập trung hơn, giúp đội ngũ đánh giá tình trạng gửi nhanh hơn.',
+      'Tinh chỉnh giao diện responsive cho các màn hình webhook, giúp chỉ số, bộ lọc và chi tiết gửi vẫn dễ xem trên thiết bị có màn hình nhỏ.',
+    ],
+  },
   {
     version: '1.9.2',
     date: '2026-05-17',
