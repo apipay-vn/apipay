@@ -79,6 +79,19 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.9.4',
+    date: '2026-05-22',
+    features: [
+      'Affiliate program — share your referral link from the dashboard and earn commission when a referred customer completes their first successful plan payment.',
+      'Affiliate dashboard — track clicks, successful referrals, available balance, withdrawn amount, and commission history in one place.',
+      'Custom referral code — personalize your referral code before sharing your link with customers or partners.',
+    ],
+    fixes: [],
+    improvements: [
+      'Referral links now stay connected from the public website through sign-up, making partner attribution smoother for new customers.',
+    ],
+  },
+  {
     version: '1.9.3',
     date: '2026-05-19',
     features: [
@@ -324,6 +337,20 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.9.4',
+    date: '2026-05-22',
+    features: [
+      'Chương trình giới thiệu — chia sẻ link giới thiệu trong dashboard và nhận hoa hồng khi khách được giới thiệu thanh toán gói đầu tiên thành công.',
+      'Trang giới thiệu riêng — theo dõi lượt nhấp, số khách giới thiệu thành công, số dư có thể rút, số tiền đã rút và lịch sử hoa hồng ở cùng một nơi.',
+      'Mã giới thiệu tùy chỉnh — đổi mã giới thiệu theo tên thương hiệu hoặc tên cá nhân trước khi chia sẻ link.',
+    ],
+    fixes: [],
+    improvements: [
+      'Link giới thiệu nay được giữ liền mạch từ website công khai đến bước đăng ký, giúp ghi nhận đối tác giới thiệu rõ ràng hơn.',
+      'Cải thiện quy trình theo dõi và hỗ trợ hoa hồng, giúp việc đối soát khi cần rõ ràng hơn.',
+    ],
+  },
   {
     version: '1.9.3',
     date: '2026-05-19',

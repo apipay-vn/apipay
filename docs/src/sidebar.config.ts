@@ -13,6 +13,7 @@ export const viSidebarConfig: SidebarItem[] = [
   {label: 'Hướng dẫn bắt đầu', href: '/vi/onboarding'},
   {label: 'Đăng ký & Thanh toán', href: '/vi/subscription'},
   {label: 'Quản lý ngân hàng', href: '/vi/banking'},
+  {label: 'Tiếp thị liên kết', href: '/vi/affiliates'},
   {
     label: 'Hướng dẫn Dashboard',
     href: '/vi/dashboard',
@@ -62,6 +63,7 @@ export const enSidebarConfig: SidebarItem[] = [
   {label: 'Onboarding', href: '/en/onboarding'},
   {label: 'Subscription & Billing', href: '/en/subscription'},
   {label: 'Bank Accounts', href: '/en/banking'},
+  {label: 'Affiliates', href: '/en/affiliates'},
   {
     label: 'Dashboard Guide',
     href: '/en/dashboard',
