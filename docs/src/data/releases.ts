@@ -79,6 +79,23 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.10.0',
+    date: '2026-06-06',
+    features: [
+      'Expanded bank connection support — improved setup flows for three additional bank connections, making onboarding faster and easier to complete from the dashboard.',
+      'Per-bank virtual account improvements — virtual account setup is now clearer for each supported bank, helping merchants configure payment receiving details with fewer manual checks.',
+      'Create QR codes for each connected bank, making it easier to present the right payment QR for each receiving account.',
+    ],
+    fixes: [
+      'Fixed an issue where some webhook deliveries could not be sent successfully.',
+    ],
+    improvements: [
+      'Improved connection guidance, status messaging, and setup reliability across supported banks.',
+      'Refined bank-specific setup details so merchants can review requirements and complete configuration more confidently.',
+      'Bank disconnection is now faster, helping merchants remove unused connections with less waiting time.',
+    ],
+  },
+  {
     version: '1.9.4',
     date: '2026-05-22',
     features: [
@@ -308,7 +325,7 @@ export const enReleases: ReleaseNote[] = withAnchors([
     ],
     fixes: [
       'Optimized transaction notifications and payment confirmations for ACB bank',
-      'Improved bank connection reliability and auto-reconnection logic',
+      'Improved bank connection reliability and auto-reconnection behavior',
       'Fixed UI layout issues on specific mobile browser environments',
       'Resolved webhook delivery retry timing synchronization',
     ],
@@ -337,6 +354,23 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.10.0',
+    date: '2026-06-06',
+    features: [
+      'Mở rộng hỗ trợ kết nối ngân hàng — cải thiện luồng thiết lập cho ba kết nối ngân hàng mới, giúp onboarding nhanh hơn và dễ hoàn tất ngay trên dashboard.',
+      'Cải thiện tài khoản ảo theo từng ngân hàng — phần thiết lập tài khoản ảo nay rõ ràng hơn cho từng ngân hàng được hỗ trợ, giúp merchant cấu hình thông tin nhận thanh toán với ít bước kiểm tra thủ công hơn.',
+      'Tạo mã QR cho từng ngân hàng đã kết nối, giúp hiển thị đúng mã QR thanh toán cho từng tài khoản nhận tiền.',
+    ],
+    fixes: [
+      'Sửa lỗi một số webhook không gửi được thành công.',
+    ],
+    improvements: [
+      'Cải thiện hướng dẫn kết nối, thông báo trạng thái và độ ổn định khi thiết lập trên các ngân hàng được hỗ trợ.',
+      'Tinh chỉnh thông tin thiết lập theo từng ngân hàng để merchant dễ xem yêu cầu và hoàn tất cấu hình tự tin hơn.',
+      'Ngắt kết nối ngân hàng nhanh hơn, giúp merchant gỡ các kết nối không còn dùng với ít thời gian chờ hơn.',
+    ],
+  },
   {
     version: '1.9.4',
     date: '2026-05-22',

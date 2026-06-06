@@ -1,5 +1,6 @@
 import chalk from "chalk";
 import {ApiKeyCommand} from "../../lib/base-command.js";
+import {formatBankLabel} from "../../lib/banks.js";
 import {createTable, formatCurrency} from "../../lib/formatters.js";
 
 export default class MetricsSummary extends ApiKeyCommand {
@@ -27,7 +28,7 @@ export default class MetricsSummary extends ApiKeyCommand {
 			const table = createTable(
 				["Bank", "Total In", "Total Out", "Count In", "Count Out"],
 				items.map((s: any) => [
-					s.bankName ?? s.bankShortName ?? "—",
+					formatBankLabel(s),
 					chalk.green(formatCurrency(s.totalIn ?? 0)),
 					chalk.red(formatCurrency(s.totalOut ?? 0)),
 					s.countIn?.toString() ?? "0",

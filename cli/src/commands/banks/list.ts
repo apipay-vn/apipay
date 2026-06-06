@@ -1,5 +1,6 @@
 import chalk from "chalk";
 import {ApiKeyCommand} from "../../lib/base-command.js";
+import {formatBankLabel} from "../../lib/banks.js";
 import {
 	createTable,
 	maskAccountNumber,
@@ -35,7 +36,7 @@ export default class BanksList extends ApiKeyCommand {
 				["Public ID", "Bank", "Account #", "VA Number", "Status"],
 				banks.map((b: any) => [
 					b.publicId ? maskLongString(b.publicId) : "—",
-					b.bankShortName ?? b.bankName ?? "—",
+					formatBankLabel(b),
 					b.accountNumber ? maskAccountNumber(b.accountNumber) : "—",
 					b.vaNumber ?? "—",
 					statusBadge(b.status ?? "UNKNOWN"),

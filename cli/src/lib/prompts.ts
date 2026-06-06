@@ -1,4 +1,5 @@
 import {confirm, input, password, select} from "@inquirer/prompts";
+import {formatBankLabel} from "./banks.js";
 import {SUPPORTED_BANKS, WEBHOOK_TYPES} from "./constants.js";
 import {
 	validateAccountName,
@@ -152,7 +153,7 @@ export async function promptBankFromList(
 		message: "Select a bank account:",
 		choices: banks.map((b) => ({
 			value: b.publicId,
-			name: `${b.bankName} — ${b.accountNumber} (${b.status})`,
+			name: `${formatBankLabel(b)} — ${b.accountNumber} (${b.status})`,
 		})),
 	});
 }

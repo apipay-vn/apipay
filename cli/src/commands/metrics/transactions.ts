@@ -1,6 +1,7 @@
 import {Flags} from "@oclif/core";
 import chalk from "chalk";
 import {ApiKeyCommand} from "../../lib/base-command.js";
+import {formatBankLabel} from "../../lib/banks.js";
 import {createTable, formatDate} from "../../lib/formatters.js";
 
 export default class MetricsTransactions extends ApiKeyCommand {
@@ -49,7 +50,7 @@ export default class MetricsTransactions extends ApiKeyCommand {
 						? chalk.green(`+${t.amount}`)
 						: chalk.red(`-${t.amount}`),
 					t.type ?? "—",
-					t.bankAccount?.bankShortName ?? "—",
+					t.bankAccount ? formatBankLabel(t.bankAccount) : "—",
 					formatDate(t.transactionDate ?? t.createdAt),
 					t.status ?? "—",
 				]),

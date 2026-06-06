@@ -1,5 +1,6 @@
 import chalk from "chalk";
 import {ApiKeyCommand} from "../../lib/base-command.js";
+import {formatBankShortName} from "../../lib/banks.js";
 import {
 	createTable,
 	formatCurrency,
@@ -44,7 +45,7 @@ export default class PayList extends ApiKeyCommand {
 					pr.amount ? formatCurrency(pr.amount) : "-",
 					pr.content ?? pr.title ?? "—",
 					statusBadge(pr.status ?? "PENDING"),
-					pr.bankCode ?? "—",
+					formatBankShortName(pr.bankCode) || "—",
 					pr.payUrl ?? "—",
 				]),
 			);

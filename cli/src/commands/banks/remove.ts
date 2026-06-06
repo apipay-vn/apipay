@@ -2,6 +2,7 @@ import {select} from "@inquirer/prompts";
 import {Args} from "@oclif/core";
 import chalk from "chalk";
 import {ApiKeyCommand} from "../../lib/base-command.js";
+import {formatBankLabel} from "../../lib/banks.js";
 import {
 	info,
 	maskAccountNumber,
@@ -56,7 +57,7 @@ export default class BanksRemove extends ApiKeyCommand {
 					message: "Select a bank account to remove:",
 					choices: banks.map((b: any) => ({
 						value: b.publicId,
-						name: `${maskLongString(b.publicId)} — ${b.bankShortName ?? b.bankName ?? "—"} — ${b.accountNumber ? maskAccountNumber(b.accountNumber) : "—"}`,
+						name: `${maskLongString(b.publicId)} — ${formatBankLabel(b)} — ${b.accountNumber ? maskAccountNumber(b.accountNumber) : "—"}`,
 					})),
 				});
 			} catch (error: any) {

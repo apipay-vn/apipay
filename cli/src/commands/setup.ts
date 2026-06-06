@@ -1,5 +1,6 @@
 import chalk from 'chalk';
 import {BaseCommand} from '../lib/base-command.js';
+import {formatBankLabel} from '../lib/banks.js';
 import {getApiKey, getAuth, isLoggedIn, markStepComplete} from '../lib/config.js';
 import {SETUP_STEPS, type SetupStep} from '../lib/constants.js';
 import {
@@ -108,7 +109,7 @@ export default class Setup extends BaseCommand {
       console.log('');
       for (const b of existingBanks) {
         kvLine(
-          `${b.bankShortName ?? b.bankName ?? '—'} ${maskAccountNumber(b.accountNumber ?? '')}`,
+          `${formatBankLabel(b)} ${maskAccountNumber(b.accountNumber ?? '')}`,
           statusBadge(b.status ?? 'UNKNOWN')
         );
       }
@@ -162,8 +163,8 @@ export default class Setup extends BaseCommand {
           w.webhookUrl ? maskLongString(w.webhookUrl) : '—',
           w.type ?? '—',
           statusBadge(w.isActive ? 'ACTIVE' : 'INACTIVE'),
-          w.bankAccount?.bankShortName
-            ? `${w.bankAccount.bankShortName} ${maskAccountNumber(w.bankAccount.accountNumber ?? '')}`
+          w.bankAccount
+            ? `${formatBankLabel(w.bankAccount)} ${maskAccountNumber(w.bankAccount.accountNumber ?? '')}`
             : '—',
         ])
       );

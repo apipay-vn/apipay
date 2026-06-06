@@ -1,5 +1,6 @@
 import chalk from "chalk";
 import {ApiKeyCommand} from "../../lib/base-command.js";
+import {formatBankLabel} from "../../lib/banks.js";
 import {
 	createTable,
 	maskLongString,
@@ -35,7 +36,7 @@ export default class WebhooksList extends ApiKeyCommand {
 					w.webhookUrl ? maskLongString(w.webhookUrl) : "—",
 					w.type ?? "—",
 					statusBadge(w.isActive ? "ACTIVE" : "INACTIVE"),
-					w.bankAccount?.bankShortName ?? w.bankAccountId?.toString() ?? "—",
+					w.bankAccount ? formatBankLabel(w.bankAccount) : (w.bankAccountId?.toString() ?? "—"),
 				]),
 			);
 			console.log(table);
