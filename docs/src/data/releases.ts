@@ -124,7 +124,7 @@ export const enReleases: ReleaseNote[] = withAnchors([
     version: '1.9.2',
     date: '2026-05-17',
     features: [
-      'Delivery Log — a new tab on the Webhooks page that shows every production webhook delivery, filterable by bank, endpoint, direction, status, and date range. Each record displays the HTTP response code, response body, and payload that was sent.',
+      'Delivery Log — a new tab on the Webhooks page that shows every production webhook delivery, filterable by bank, endpoint, status, and date range. Each record displays the HTTP response code, response body, and payload that was sent.',
       'Resend failed webhooks directly from the Delivery Log tab without switching tabs.',
     ],
     fixes: [],
@@ -173,7 +173,7 @@ export const enReleases: ReleaseNote[] = withAnchors([
     version: '1.8.1',
     date: '2026-05-14',
     features: [
-      'Sandbox environment — simulate bank transactions and test webhook integrations without real money. Create payment requests, trigger synthetic transactions, and inspect full delivery logs including HTTP response codes and response bodies. Supports both IN and OUT transaction directions, single-webhook targeting or broadcast to all matching webhooks, and manual resend for failed deliveries.',
+      'Sandbox environment — simulate incoming bank transactions and test webhook integrations without real money. Create payment requests, trigger synthetic transactions, and inspect full delivery logs including HTTP response codes and response bodies.',
     ],
     fixes: [],
     improvements: [],
@@ -195,7 +195,7 @@ export const enReleases: ReleaseNote[] = withAnchors([
     version: '1.7.2',
     date: '2026-05-10',
     features: [
-      'Realtime dashboard notifications — receive live bank transaction alerts in the dashboard as soon as new money-in or money-out events are processed',
+      'Realtime dashboard notifications — receive live bank transaction alerts in the dashboard as soon as new incoming payments are processed',
     ],
     fixes: [],
     improvements: [
@@ -450,7 +450,7 @@ export const viReleases: ReleaseNote[] = withAnchors([
     version: '1.8.1',
     date: '2026-05-14',
     features: [
-      'Sandbox — tạo giao dịch ngân hàng thử và kiểm tra webhook mà không cần tiền thật. Bạn có thể tạo payment request, trigger giao dịch thử, xem log gửi với mã phản hồi HTTP và nội dung phản hồi. Hỗ trợ cả IN/OUT, gửi đến một webhook cụ thể hoặc broadcast đến các webhook phù hợp, và gửi lại thủ công khi delivery thất bại.',
+      'Sandbox — tạo giao dịch tiền vào thử và kiểm tra webhook mà không cần tiền thật. Bạn có thể tạo payment request, trigger giao dịch thử, xem log gửi với mã phản hồi HTTP và nội dung phản hồi.',
     ],
     fixes: [],
     improvements: [],

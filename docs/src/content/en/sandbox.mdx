@@ -16,7 +16,7 @@ The sandbox lets you simulate bank transactions and fire real webhook deliveries
 The sandbox mirrors the exact same webhook payload structure as production. When you trigger a sandbox run, ApiPay:
 
 1. Creates a synthetic transaction with a unique reference code (`SBX-{timestamp}-{hex}`)
-2. Builds the same `transaction.in` or `transaction.out` payload your live webhooks receive
+2. Builds the same `transaction.in` payload your live webhooks receive
 3. Delivers it **synchronously** to your webhook endpoint — no queue, immediate result
 4. Records the full delivery log including response code and body
 
@@ -57,7 +57,6 @@ Fill in the sandbox form:
 | Amount | **Yes** | Integer VND, between 1 and 300,000,000 |
 | Transfer content | No | The memo/description, max 140 characters |
 | Title | No | A label for this test run, max 200 characters |
-| Direction | No | `IN` (money received) or `OUT` (money sent) — defaults to `IN` |
 | Target webhook | No | Send to a specific webhook, or leave blank to broadcast to all matching ones |
 
 Click **Create** — this saves the payment request and creates a run in `CREATED` status. Nothing is delivered yet.
@@ -67,7 +66,7 @@ Click **Create** — this saves the payment request and creates a run in `CREATE
 Click **Trigger** on the run. ApiPay will:
 
 - Generate the synthetic transaction
-- Resolve the target webhooks (the one you selected, or all active webhooks matching the transaction direction on that bank)
+- Resolve the target webhooks (the one you selected, or all active webhooks on that bank)
 - Deliver the payload immediately
 - Show you the result inline
 
@@ -109,7 +108,9 @@ Sandbox payloads are identical to production, with two additions: `"sandbox": tr
 }
 ```
 
-### transaction.out (sandbox)
+### transaction.out (deprecated legacy sandbox)
+
+Sandbox `transaction.out` is deprecated since June 2026 because Tingee does not support outgoing transaction events. New tests should use `transaction.in`.
 
 ```json
 {
@@ -160,7 +161,7 @@ app.post('/webhooks/apipay', (req, res) => {
 When creating a sandbox payment request, you can choose how webhooks are selected:
 
 **Broadcast mode** (default — leave webhook field empty)
-All active webhooks on the selected bank account that match the transaction direction (`IN`, `OUT`, or `ALL`) will receive the delivery. Good for testing that your routing is correct.
+All active webhooks on the selected bank account will receive the delivery. Good for testing that your routing is correct.
 
 **Single mode** (select a specific webhook)
 Only the chosen webhook receives the delivery. Useful when you want to isolate a specific endpoint.
@@ -199,6 +200,5 @@ Use the **Clear History** button to wipe all sandbox runs for your account. This
 ## Tips
 
 - Use [Webhook.site](https://webhook.site) or [ngrok](https://ngrok.com) to expose a local server for quick testing without deploying
-- Test both `IN` and `OUT` directions if your integration handles both event types
 - Keep the transfer content to plain letters, numbers, and the characters `. , - +` — anything else will be stripped before saving
 - A payment request can only be triggered once; create a new one for each test run

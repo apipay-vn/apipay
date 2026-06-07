@@ -80,7 +80,7 @@ Configure a webhook URL in the dashboard to receive notifications when bank tran
 }
 ```
 
-ApiPay sends `transaction.in` for incoming money and `transaction.out` for outgoing transfers. See [Webhooks](/en/api/webhooks) for the full payload and signature verification.
+ApiPay sends `transaction.in` when an incoming payment is detected. `transaction.out` is deprecated legacy behavior since June 2026. See [Webhooks](/en/api/webhooks) for the full payload and signature verification.
 
 ## Code Examples
 

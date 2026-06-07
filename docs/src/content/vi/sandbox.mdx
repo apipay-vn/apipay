@@ -16,7 +16,7 @@ Sandbox giúp bạn tạo giao dịch ngân hàng thử và gửi webhook thật
 Sandbox dùng cùng cấu trúc payload webhook như production. Khi bạn trigger một sandbox run, ApiPay sẽ:
 
 1. Tạo một giao dịch thử với mã tham chiếu riêng (`SBX-{timestamp}-{hex}`)
-2. Tạo payload `transaction.in` hoặc `transaction.out` giống webhook thật
+2. Tạo payload `transaction.in` giống webhook thật
 3. Gửi **ngay** đến endpoint webhook của bạn, không đi qua hàng đợi
 4. Lưu log gửi, gồm mã phản hồi và nội dung phản hồi
 
@@ -57,7 +57,6 @@ Nếu chưa có webhook, vào **Cài đặt → Webhooks** để tạo trước.
 | Số tiền | **Có** | Số nguyên VND, từ 1 đến 300.000.000 |
 | Nội dung chuyển khoản | Không | Nội dung hoặc ghi chú, tối đa 140 ký tự |
 | Tiêu đề | Không | Tên gợi nhớ cho lần test, tối đa 200 ký tự |
-| Chiều giao dịch | Không | `IN` (tiền vào) hoặc `OUT` (tiền ra). Mặc định là `IN` |
 | Webhook đích | Không | Chọn một webhook cụ thể, hoặc để trống để gửi đến tất cả webhook phù hợp |
 
 Nhấn **Tạo**. Lúc này hệ thống chỉ lưu payment request và tạo một run có trạng thái `CREATED`. Webhook vẫn chưa gửi.
@@ -109,7 +108,9 @@ Payload sandbox giống production. Chỉ có hai điểm để nhận biết: `
 }
 ```
 
-### transaction.out (sandbox)
+### transaction.out (sandbox legacy, đã deprecated)
+
+Sandbox `transaction.out` đã deprecated từ tháng 6/2026 vì Tingee không hỗ trợ sự kiện tiền ra. Test mới nên dùng `transaction.in`.
 
 ```json
 {
@@ -160,7 +161,7 @@ app.post('/webhooks/apipay', (req, res) => {
 Khi tạo sandbox payment request, bạn có thể chọn cách ApiPay tìm webhook:
 
 **Chế độ broadcast** (mặc định, để trống trường webhook)
-Tất cả webhook đang hoạt động trên tài khoản ngân hàng đã chọn và khớp với chiều giao dịch (`IN`, `OUT`, hoặc `ALL`) sẽ nhận delivery. Cách này phù hợp khi bạn muốn kiểm tra routing.
+Tất cả webhook đang hoạt động trên tài khoản ngân hàng đã chọn sẽ nhận delivery. Cách này phù hợp khi bạn muốn kiểm tra routing.
 
 **Chế độ đơn lẻ** (chọn một webhook cụ thể)
 Chỉ webhook được chọn nhận delivery. Dùng cách này khi bạn muốn kiểm tra riêng một endpoint.
@@ -199,6 +200,5 @@ Dùng nút **Xóa lịch sử** để xóa toàn bộ sandbox run của tài kho
 ## Mẹo
 
 - Dùng [Webhook.site](https://webhook.site) hoặc [ngrok](https://ngrok.com) để test server local mà chưa cần deploy
-- Test cả `IN` và `OUT` nếu hệ thống của bạn xử lý cả hai loại sự kiện
 - Nội dung chuyển khoản chỉ nên dùng chữ, số và các ký tự `. , - +`. Ký tự khác sẽ bị xóa trước khi lưu
 - Mỗi payment request chỉ trigger được một lần. Tạo request mới cho mỗi lần test

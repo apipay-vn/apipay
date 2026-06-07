@@ -23,7 +23,7 @@ POST /v1/client/webhooks
 | -------------- | ------ | -------------- | ------------------------------------------------ |
 | `webhookUrl`   | string | **✓ Yes** | HTTPS URL to receive webhook notifications       |
 | `bankPublicId` | string | **✓ Yes** | Public ID of the bank account                    |
-| `type`         | string | **✓ Yes** | Transaction events: `IN`, `OUT`, or `ALL`        |
+| `type`         | string | **✓ Yes** | Use `ALL` for new webhooks. `IN` and `OUT` are legacy values deprecated since June 2026. |
 
 ### Response
 
@@ -34,7 +34,7 @@ POST /v1/client/webhooks
 		"id": "wh_abc123",
 		"bankPublicId": "bnk_abc123",
 		"webhookUrl": "https://your-domain.com/webhooks/apipay",
-		"type": "IN",
+		"type": "ALL",
 		"secret": "a1b2c3d4..."
 	}
 }
@@ -65,7 +65,6 @@ The Delivery Log shows every webhook sent in production. Access it via the **Del
 | Date range | Filter by delivery date |
 | Bank | Filter by bank account |
 | Webhook | Filter by specific endpoint |
-| Direction | `IN` (money in) or `OUT` (money out) |
 | Status | `SUCCESS` or `FAILED` |
 
 ### Per-record details
@@ -103,7 +102,7 @@ GET /v1/client/webhooks/deliveries
 | `limit` | number | Items per page (default: 20, max: 100) |
 | `webhookId` | string | Filter by webhook ID |
 | `bankAccountId` | number | Filter by bank account |
-| `direction` | string | `IN` or `OUT` |
+| `direction` | string | Deprecated since June 2026; accepted for compatibility and ignored |
 | `status` | string | `SUCCESS` or `FAILED` |
 | `dateFrom` | string | Start date (YYYY-MM-DD) |
 | `dateTo` | string | End date (YYYY-MM-DD) |
@@ -181,9 +180,9 @@ When money is received into your bank account.
 }
 ```
 
-### transaction.out
+### transaction.out (deprecated legacy)
 
-When money is transferred out from your bank account.
+`transaction.out` is deprecated since June 2026 because Tingee does not support outgoing transaction events. It may appear in historical data or legacy integrations only.
 
 ```json
 {
@@ -208,11 +207,11 @@ When money is transferred out from your bank account.
 
 | Field                      | Type   | Description                                       |
 | -------------------------- | ------ | ------------------------------------------------- |
-| `event`                    | string | Event type: `transaction.in` or `transaction.out` |
+| `event`                    | string | Event type. New integrations should handle `transaction.in`; `transaction.out` is deprecated legacy behavior. |
 | `data.transactionId`       | string | Internal transaction ID (UUID)                    |
 | `data.referenceCode`       | string | Bank transaction reference code                   |
 | `data.amount`              | number | Transaction amount in VND                         |
-| `data.type`                | string | Transaction type: `IN` or `OUT`                   |
+| `data.type`                | string | Transaction type. New production events use `IN`; `OUT` is deprecated legacy behavior. |
 | `data.content`             | string | Transaction content/memo                          |
 | `data.transactionDate`     | string | Transaction timestamp (ISO 8601)                  |
 | `data.bankAccountPublicId` | string | Public ID of the bank account                     |
@@ -258,9 +257,6 @@ app.post("/webhook", (req, res) => {
 		console.log("Reference:", data.referenceCode);
 		console.log("Content:", data.content);
 		// Update order in your database
-	} else if (event === "transaction.out") {
-		console.log("Money sent:", data.amount);
-		console.log("Reference:", data.referenceCode);
 	}
 
 	res.status(200).json({received: true});
@@ -297,10 +293,6 @@ def handle_webhook():
         print(f"Reference: {data['data']['referenceCode']}")
         print(f"Content: {data['data']['content']}")
         # Update order
-    elif event == 'transaction.out':
-        print(f"Money sent: {data['data']['amount']}")
-        # Handle outgoing transaction
-
     return {'received': True}, 200
 ```
 
@@ -334,9 +326,6 @@ Route::post('/webhook', function (Request $request) {
         logger('Reference: ' . $data['data']['referenceCode']);
         logger('Content: ' . $data['data']['content']);
         // Update order in your database
-    } elseif ($event === 'transaction.out') {
-        logger('Money sent: ' . $data['data']['amount']);
-        logger('Reference: ' . $data['data']['referenceCode']);
     }
 
     return response()->json(['received' => true]);

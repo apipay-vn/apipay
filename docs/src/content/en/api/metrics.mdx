@@ -36,7 +36,7 @@ GET /v1/client/metrics/overview
 {
   "data": {
     "totalIn": 5000000,
-    "totalOut": 750000,
+    "totalOut": 0,
     "totalTransactions": 50,
     "averageAmount": 115000,
     "successRate": 90,
@@ -46,8 +46,8 @@ GET /v1/client/metrics/overview
         "accountNumber": "0123456789",
         "totalIn": 3000000,
         "countIn": 30,
-        "totalOut": 500000,
-        "countOut": 5
+        "totalOut": 0,
+        "countOut": 0
       }
     ]
   }
@@ -81,7 +81,7 @@ GET /v1/client/metrics/time-series
     {
       "date": "2026-03-01",
       "totalIn": 1000000,
-      "totalOut": 200000,
+      "totalOut": 0,
       "count": 10
     },
     {
@@ -166,7 +166,7 @@ GET /v1/client/metrics/bank-distribution
       "accountNumber": "0123456789",
       "accountName": "NGUYEN VAN A",
       "totalIn": 2000000,
-      "totalOut": 500000,
+      "totalOut": 0,
       "transactionCount": 20
     }
   ]
@@ -188,9 +188,9 @@ GET /v1/client/metrics/amount-histogram
 ```json
 {
   "data": [
-    { "range": "0-100K", "countIn": 10, "countOut": 2 },
-    { "range": "100K-500K", "countIn": 25, "countOut": 5 },
-    { "range": "500K-1M", "countIn": 10, "countOut": 1 },
+    { "range": "0-100K", "countIn": 10, "countOut": 0 },
+    { "range": "100K-500K", "countIn": 25, "countOut": 0 },
+    { "range": "500K-1M", "countIn": 10, "countOut": 0 },
     { "range": "1M-5M", "countIn": 5, "countOut": 0 },
     { "range": "5M-10M", "countIn": 1, "countOut": 0 },
     { "range": "10M+", "countIn": 0, "countOut": 0 }
