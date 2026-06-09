@@ -14,6 +14,7 @@ export const SUPPORTED_BANKS = [
 	{value: "ACB", name: "ACB — Ngân hàng TMCP Á Châu"},
 	{value: "MBB", name: "MB Bank — Ngân hàng TMCP Quân đội"},
 	{value: "OCB", name: "OCB — Ngân hàng TMCP Phương Đông"},
+	{value: "ICB", name: "ICB — Ngân hàng TMCP Công Thương Việt Nam"},
 ] as const;
 
 export const WEBHOOK_TYPES = [

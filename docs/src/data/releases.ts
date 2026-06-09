@@ -79,6 +79,22 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.11.0',
+    date: '2026-06-09',
+    features: [
+      'Added support for VietinBank and OCB connections, giving merchants more options for receiving and tracking bank-transfer payments.',
+    ],
+    fixes: [
+      'Fixed bank names appearing inconsistently in payment and account notifications.',
+      'Fixed duplicate account information appearing on some bank detail pages.',
+    ],
+    improvements: [
+      'Simplified bank connection requirements and expanded setup guidance across the dashboard, documentation, and command-line tools.',
+      'Supported banks are now presented in a clearer order, making the right connection easier to find.',
+      'Improved the admin overview with today’s transaction count and payment volume.',
+    ],
+  },
+  {
     version: '1.10.0',
     date: '2026-06-06',
     features: [
@@ -354,6 +370,22 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.11.0',
+    date: '2026-06-09',
+    features: [
+      'Bổ sung kết nối VietinBank và OCB, giúp merchant có thêm lựa chọn nhận và theo dõi thanh toán chuyển khoản.',
+    ],
+    fixes: [
+      'Sửa lỗi tên ngân hàng hiển thị không nhất quán trong thông báo thanh toán và tài khoản.',
+      'Sửa lỗi thông tin tài khoản bị hiển thị trùng trên một số trang chi tiết ngân hàng.',
+    ],
+    improvements: [
+      'Đơn giản hóa yêu cầu kết nối ngân hàng và bổ sung hướng dẫn thiết lập trên dashboard, tài liệu và công cụ dòng lệnh.',
+      'Danh sách ngân hàng được sắp xếp rõ ràng hơn, giúp tìm kết nối phù hợp nhanh hơn.',
+      'Cải thiện trang tổng quan quản trị với số giao dịch và tổng giá trị thanh toán trong ngày.',
+    ],
+  },
   {
     version: '1.10.0',
     date: '2026-06-06',

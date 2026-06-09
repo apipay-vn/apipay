@@ -1,6 +1,7 @@
 import chalk from "chalk";
 import {ApiKeyCommand} from "../../lib/base-command.js";
-import {markStepComplete} from "../../lib/config.js";
+import {ApiClient} from "../../lib/api-client.js";
+import {getApiBaseUrl, markStepComplete} from "../../lib/config.js";
 import {info, kvLine, success} from "../../lib/formatters.js";
 import {
 	promptAccountName,
@@ -29,9 +30,13 @@ export default class BanksAdd extends ApiKeyCommand {
 		const accountNumber = await promptAccountNumber(bankShortName);
 		const accName = await promptAccountName();
 		const accMobile = await promptMobile();
+		const usesV2Api = bankShortName === "ICB";
+		const api = usesV2Api
+			? new ApiClient(getApiBaseUrl().replace(/\/v1\/?$/, "/v2"))
+			: this.api;
 
 		let cccd = undefined;
-		if (bankShortName === "MBB") {
+		if (bankShortName === "MBB" || bankShortName === "ICB") {
 			cccd = await promptCccd();
 		}
 
@@ -39,24 +44,35 @@ export default class BanksAdd extends ApiKeyCommand {
 		this.spinner.start("Adding bank account...");
 
 		try {
-			const data = await this.api.post(
+			const data = await api.post(
 				"/client/banks",
-				{
-					type: "openapi",
-					bankShortName,
-					accountNumber,
-					accName,
-					accMobile,
-					...(cccd ? {cccd} : {}),
-				},
+				usesV2Api
+					? {
+							bankBin: "970415",
+							bankName: "VietinBank",
+							accountType: "personal-account",
+							accountNumber,
+							accountName: accName,
+							mobile: accMobile,
+							identity: cccd,
+						}
+					: {
+							type: "openapi",
+							bankShortName,
+							accountNumber,
+							accName,
+							accMobile,
+							...(cccd ? {cccd} : {}),
+						},
 				"apikey",
 			);
 
-			const bank = data?.data ?? data;
+			const result = data?.data ?? data;
+			const bank = result?.bank ?? result;
 			this.spinner.succeed("Bank account submitted!");
 
 			// Check if OTP is required
-			if (bank?.OTP === 1) {
+			if (result?.OTP === 1) {
 				console.log("");
 				info(
 					`OTP verification required. Check your phone or your bank app for the code.`,
@@ -67,15 +83,21 @@ export default class BanksAdd extends ApiKeyCommand {
 
 				this.spinner.start("Confirming OTP...");
 				try {
-					const otpResult = await this.api.post(
+					const otpResult = await api.post(
 						"/client/banks/confirm-otp",
-						{
-							type: "openapi",
-							bankShortName,
-							accountNumber,
-							accountName: accName,
-							otp,
-						},
+						usesV2Api
+							? {
+									bankBin: "970415",
+									accountNumber,
+									otpNumber: otp,
+								}
+							: {
+									type: "openapi",
+									bankShortName,
+									accountNumber,
+									accountName: accName,
+									otp,
+								},
 						"apikey",
 					);
 

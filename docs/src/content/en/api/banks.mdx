@@ -23,8 +23,8 @@ Use these `bankShortName` values to match the current backend logic:
 | `BIDV` | BIDV        | Supported   |
 | `MBB`  | MB Bank     | Supported   |
 | `OCB`  | OCB         | Supported   |
-| `ICB`  | VietinBank  | Coming soon |
-| `VCB`  | Vietcombank | Coming soon |
+| `ICB`  | VietinBank  | Supported   |
+| `VCB`  | Vietcombank | Unavailable |
 
 ## 1. Connect a bank account
 
@@ -84,12 +84,14 @@ MB Bank business accounts require the Tax code (MST) to be provided in `cccd`:
 - `accountNumber`: bank account number
 - `accName`: account holder name
 - `accMobile`: phone number used for verification
-- `cccd`: required for `BIDV` and `MBB`
+- `cccd`: required for `BIDV`, `MBB`, and `ICB`
 - `merchantId`: required for `BIDV`
 - `accEmail`: required for `BIDV`
 - `accountType`: set to `BUSINESS` for supported business bank accounts
-- `username`: required for `ICB`, `VCB`, or `ACB` when `accountType` is `BUSINESS`
-- `password`: required for `ICB` and `VCB`
+- `username`: required for `VCB` or `ACB` when `accountType` is `BUSINESS`
+- `password`: required for `VCB`
+
+For `OCB`, only the base fields are required: `type`, `bankShortName`, `accountNumber`, `accName`, and `accMobile`.
 
 ### Response
 
