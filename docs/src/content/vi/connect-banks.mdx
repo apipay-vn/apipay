@@ -7,7 +7,16 @@ description: Liên kết tài khoản ngân hàng Việt Nam để bắt đầu 
 
 Liên kết tài khoản ngân hàng Việt Nam vào ApiPay để nhận thanh toán chuyển khoản. Sau khi kết nối, ApiPay sẽ đồng bộ giao dịch và gửi webhook khi có tiền vào hoặc tiền ra.
 
-<iframe width="100%" height="315" src="https://www.youtube.com/embed/hstBeBMvwUM?si=LhJBZAJZheZORspg" title="Hướng dẫn kết nối ngân hàng trên ApiPay" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe
+  width="100%"
+  height="315"
+  src="https://www.youtube.com/embed/hstBeBMvwUM?si=LhJBZAJZheZORspg"
+  title="Hướng dẫn kết nối ngân hàng trên ApiPay"
+  frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+  referrerpolicy="strict-origin-when-cross-origin"
+  allowfullscreen
+></iframe>
 
 ---
 
@@ -22,13 +31,13 @@ Sau khi kết nối thành công, tài khoản sẽ xuất hiện trong phần *
 
 **Danh sách ngân hàng được hỗ trợ:**
 
-| Ngân hàng | Cá nhân | Doanh nghiệp | Tính năng |
-|-----------|:-------:|:------------:|------------|
-| **ACB** | Có | Có | OpenBanking, Đồng bộ tiền vào/ra |
-| **MB Bank** | Có | Có | OpenBanking, Đồng bộ tiền vào/ra |
-| **BIDV** | Có | Không | OpenBanking, Tài khoản Ảo |
-| **OCB** | Có | Không | OpenBanking, Đồng bộ tiền vào/ra |
-| **VietinBank (CTG)** | Có | Không | OpenBanking, Đồng bộ tiền vào/ra |
+| Ngân hàng            | Cá nhân | Doanh nghiệp | Tính năng                        |
+| -------------------- | :-----: | :----------: | -------------------------------- |
+| **ACB**              |   Có    |      Có      | OpenBanking, Đồng bộ tiền vào/ra |
+| **MB Bank**          |   Có    |      Có      | OpenBanking, Đồng bộ tiền vào/ra |
+| **BIDV**             |   Có    |    Không     | OpenBanking, Tài khoản Ảo        |
+| **OCB**              |   Có    |    Không     | OpenBanking, Đồng bộ tiền vào/ra |
+| **VietinBank (CTG)** |   Có    |    Không     | OpenBanking, Đồng bộ tiền vào/ra |
 
 ---
 
@@ -40,8 +49,8 @@ Bạn cần chuẩn bị:
 - Tài khoản ngân hàng Việt Nam đang hoạt động thuộc danh sách hỗ trợ bên trên
 - Số điện thoại đã đăng ký với ngân hàng (để xác minh OTP)
 - Đối với **BIDV**: Mã Merchant ID để thiết lập tài khoản ảo (bạn tự nhập)
-- Đối với **MB Bank**: Số CCCD/CMND (12 chữ số)
-- Đối với **VietinBank**: Số CCCD/CMND (12 chữ số)
+- Đối với **MB Bank**: Số CCCD (12 chữ số)
+- Đối với **VietinBank**: Số CCCD (12 chữ số)
 - Đối với **ACB Doanh nghiệp**: Tên đăng nhập ACB OneBiz
 
 ---
@@ -75,11 +84,11 @@ Nhấn vào thẻ phù hợp với loại tài khoản của bạn để tiếp 
 
 #### Trường chung cho tất cả ngân hàng
 
-| Trường | Mô tả |
-|--------|-------|
+| Trường            | Mô tả                                    |
+| ----------------- | ---------------------------------------- |
 | **Chủ tài khoản** | Tên chủ tài khoản, viết IN HOA không dấu |
-| **Số tài khoản** | Số tài khoản ngân hàng của bạn |
-| **Số điện thoại** | Số điện thoại đã đăng ký với ngân hàng |
+| **Số tài khoản**  | Số tài khoản ngân hàng của bạn           |
+| **Số điện thoại** | Số điện thoại đã đăng ký với ngân hàng   |
 
 #### ACB — Tài khoản cá nhân
 
@@ -87,29 +96,29 @@ Không cần thêm trường nào ngoài các trường chung bên trên.
 
 #### ACB — Tài khoản doanh nghiệp
 
-| Trường bổ sung | Mô tả |
-|---------------|-------|
+| Trường bổ sung               | Mô tả                            |
+| ---------------------------- | -------------------------------- |
 | **Tên đăng nhập ACB OneBiz** | Tên đăng nhập ACB OneBiz của bạn |
 
 #### MB Bank — Tài khoản cá nhân
 
-| Trường bổ sung | Mô tả |
-|---------------|-------|
-| **CCCD / CMND** | Số CCCD 12 chữ số của bạn (Căn cước công dân) |
+| Trường bổ sung | Mô tả                                         |
+| -------------- | --------------------------------------------- |
+| **CCCD**       | Số CCCD 12 chữ số của bạn (Căn cước công dân) |
 
 #### MB Bank — Tài khoản doanh nghiệp
 
-| Trường bổ sung | Mô tả |
-|---------------|-------|
+| Trường bổ sung       | Mô tả                      |
+| -------------------- | -------------------------- |
 | **Mã số thuế (MST)** | Mã số thuế của công ty bạn |
 
 #### BIDV — Tài khoản cá nhân
 
-| Trường bổ sung | Mô tả |
-|---------------|-------|
-| **Mã Merchant ID** | Mã Merchant ID bạn tự nhập để tạo tài khoản ảo (ví dụ: `SHOP01`) |
-| **CCCD / CMND** | Số CCCD 12 chữ số |
-| **Email tài khoản** | Địa chỉ email đã đăng ký với BIDV |
+| Trường bổ sung      | Mô tả                                                            |
+| ------------------- | ---------------------------------------------------------------- |
+| **Mã Merchant ID**  | Mã Merchant ID bạn tự nhập để tạo tài khoản ảo (ví dụ: `SHOP01`) |
+| **CCCD**            | Số CCCD 12 chữ số                                                |
+| **Email tài khoản** | Địa chỉ email đã đăng ký với BIDV                                |
 
 > **Lưu ý cho BIDV:** Merchant ID là mã bạn tự nhập để hệ thống tạo Tài khoản ảo (VA). Bạn cần chuyển tiền đúng vào tài khoản ảo này thì hệ thống mới nhận được thông báo giao dịch.
 
@@ -119,9 +128,9 @@ Không cần thêm trường nào ngoài các trường chung bên trên.
 
 #### VietinBank (CTG/ICB) — Tài khoản cá nhân
 
-| Trường bổ sung | Mô tả |
-|---------------|-------|
-| **CCCD / CMND** | Số CCCD 12 chữ số của bạn (Căn cước công dân) |
+| Trường bổ sung | Mô tả                                         |
+| -------------- | --------------------------------------------- |
+| **CCCD**       | Số CCCD 12 chữ số của bạn (Căn cước công dân) |
 
 Sau khi điền đầy đủ các trường:
 
@@ -188,15 +197,15 @@ Nếu muốn tạm ngừng nhận thanh toán qua một ngân hàng:
 
 ## Xử lý sự cố
 
-| Sự cố | Giải pháp |
-|-------|-----------|
-| Không nhận được OTP | Kiểm tra số điện thoại đã nhập có khớp với số đăng ký ở ngân hàng không. Chờ một chút rồi thử lại. |
-| Mã OTP không đúng | Kiểm tra kỹ mã bạn nhập, gồm 6 chữ số. |
-| Không biết nhập gì vào Merchant ID | Đây là mã định danh bạn tự chọn để tạo tài khoản ảo (ví dụ: tên shop hoặc mã khách hàng của bạn). |
-| CCCD bị từ chối | Hãy nhập đúng 12 chữ số, không có khoảng trắng hay ký tự đặc biệt. |
-| Ngân hàng hiển thị trạng thái "Đang chờ" | Sau khi liên kết, ngân hàng thường chuyển sang Hoạt động trong vài giây. Nếu vẫn Đang chờ, hãy tải lại trang. |
-| Số tài khoản đã được liên kết | Mỗi tài khoản ngân hàng chỉ có thể liên kết một lần. Nếu thấy lỗi này, tài khoản có thể đã được liên kết với tài khoản ApiPay khác. |
-| Loại tài khoản không khả dụng | BIDV, OCB và VietinBank hiện chỉ hỗ trợ tài khoản Cá nhân. Đối với tài khoản doanh nghiệp, hãy sử dụng ACB hoặc MB Bank. |
+| Sự cố                                    | Giải pháp                                                                                                                           |
+| ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| Không nhận được OTP                      | Kiểm tra số điện thoại đã nhập có khớp với số đăng ký ở ngân hàng không. Chờ một chút rồi thử lại.                                  |
+| Mã OTP không đúng                        | Kiểm tra kỹ mã bạn nhập, gồm 6 chữ số.                                                                                              |
+| Không biết nhập gì vào Merchant ID       | Đây là mã định danh bạn tự chọn để tạo tài khoản ảo (ví dụ: tên shop hoặc mã khách hàng của bạn).                                   |
+| CCCD bị từ chối                          | Hãy nhập đúng 12 chữ số, không có khoảng trắng hay ký tự đặc biệt.                                                                  |
+| Ngân hàng hiển thị trạng thái "Đang chờ" | Sau khi liên kết, ngân hàng thường chuyển sang Hoạt động trong vài giây. Nếu vẫn Đang chờ, hãy tải lại trang.                       |
+| Số tài khoản đã được liên kết            | Mỗi tài khoản ngân hàng chỉ có thể liên kết một lần. Nếu thấy lỗi này, tài khoản có thể đã được liên kết với tài khoản ApiPay khác. |
+| Loại tài khoản không khả dụng            | BIDV, OCB và VietinBank hiện chỉ hỗ trợ tài khoản Cá nhân. Đối với tài khoản doanh nghiệp, hãy sử dụng ACB hoặc MB Bank.            |
 
 ---
 
@@ -204,7 +213,16 @@ Nếu muốn tạm ngừng nhận thanh toán qua một ngân hàng:
 
 Xem video hướng dẫn từng bước:
 
-<iframe width="100%" height="315" src="https://www.youtube.com/embed/hstBeBMvwUM?si=LhJBZAJZheZORspg" title="Hướng dẫn kết nối ngân hàng trên ApiPay" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe
+  width="100%"
+  height="315"
+  src="https://www.youtube.com/embed/hstBeBMvwUM?si=LhJBZAJZheZORspg"
+  title="Hướng dẫn kết nối ngân hàng trên ApiPay"
+  frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+  referrerpolicy="strict-origin-when-cross-origin"
+  allowfullscreen
+></iframe>
 
 ---
 

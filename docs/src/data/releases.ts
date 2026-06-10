@@ -79,6 +79,18 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.11.1',
+    date: '2026-06-10',
+    features: [
+      'Added verification for business bank accounts, making it easier for companies to complete bank setup with the right confirmation step.',
+    ],
+    fixes: [],
+    improvements: [
+      'Improved bank link and unlink notifications so teams can see clearly when verification is needed or a connection has been removed.',
+      'Cleaned up bank connection messages to make them shorter, clearer, and easier to act on.',
+    ],
+  },
+  {
     version: '1.11.0',
     date: '2026-06-09',
     features: [
@@ -370,6 +382,18 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.11.1',
+    date: '2026-06-10',
+    features: [
+      'Bổ sung bước xác thực cho tài khoản ngân hàng doanh nghiệp, giúp công ty hoàn tất kết nối ngân hàng đúng quy trình và dễ theo dõi hơn.',
+    ],
+    fixes: [],
+    improvements: [
+      'Cải thiện thông báo khi liên kết và hủy liên kết ngân hàng, giúp người dùng biết rõ khi nào cần nhập mã xác thực hoặc khi kết nối đã được gỡ thành công.',
+      'Tinh chỉnh nội dung thông báo kết nối ngân hàng để ngắn gọn, rõ ý và dễ thao tác hơn.',
+    ],
+  },
   {
     version: '1.11.0',
     date: '2026-06-09',
