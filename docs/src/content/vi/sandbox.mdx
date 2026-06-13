@@ -51,13 +51,13 @@ Nếu chưa có webhook, vào **Cài đặt → Webhooks** để tạo trước.
 
 Điền form sandbox:
 
-| Trường | Bắt buộc | Mô tả |
-|--------|----------|-------|
-| Tài khoản ngân hàng | **Có** | Chọn một ngân hàng đang hoạt động |
-| Số tiền | **Có** | Số nguyên VND, từ 1 đến 300.000.000 |
-| Nội dung chuyển khoản | Không | Nội dung hoặc ghi chú, tối đa 140 ký tự |
-| Tiêu đề | Không | Tên gợi nhớ cho lần test, tối đa 200 ký tự |
-| Webhook đích | Không | Chọn một webhook cụ thể, hoặc để trống để gửi đến tất cả webhook phù hợp |
+| Trường                | Bắt buộc | Mô tả                                                                    |
+| --------------------- | -------- | ------------------------------------------------------------------------ |
+| Tài khoản ngân hàng   | **Có**   | Chọn một ngân hàng đang hoạt động                                        |
+| Số tiền               | **Có**   | Số nguyên VND, từ 1 đến 300.000.000                                      |
+| Nội dung chuyển khoản | Không    | Nội dung hoặc ghi chú, tối đa 140 ký tự                                  |
+| Tiêu đề               | Không    | Tên gợi nhớ cho lần test, tối đa 200 ký tự                               |
+| Webhook đích          | Không    | Chọn một webhook cụ thể, hoặc để trống để gửi đến tất cả webhook phù hợp |
 
 Nhấn **Tạo**. Lúc này hệ thống chỉ lưu payment request và tạo một run có trạng thái `CREATED`. Webhook vẫn chưa gửi.
 
@@ -110,7 +110,7 @@ Payload sandbox giống production. Chỉ có hai điểm để nhận biết: `
 
 ### transaction.out (sandbox legacy, đã deprecated)
 
-Sandbox `transaction.out` đã deprecated từ tháng 6/2026 vì Tingee không hỗ trợ sự kiện tiền ra. Test mới nên dùng `transaction.in`.
+Sandbox `transaction.out` đã deprecated từ tháng 6/2026 vì ApiPay không hỗ trợ sự kiện tiền ra. Test mới nên dùng `transaction.in`.
 
 ```json
 {
@@ -138,11 +138,11 @@ Trong handler, kiểm tra `sandbox: true` để bỏ qua phần xử lý đơn h
 
 ```javascript
 app.post('/webhooks/apipay', (req, res) => {
-  const { event, sandbox, data } = req.body;
+  const {event, sandbox, data} = req.body;
 
   if (sandbox) {
     console.log('[sandbox] nhận sự kiện test:', event, data.referenceCode);
-    return res.status(200).json({ received: true });
+    return res.status(200).json({received: true});
   }
 
   // xử lý giao dịch thật
@@ -150,7 +150,7 @@ app.post('/webhooks/apipay', (req, res) => {
     // xử lý đơn hàng...
   }
 
-  res.status(200).json({ received: true });
+  res.status(200).json({received: true});
 });
 ```
 
@@ -172,13 +172,13 @@ Bạn cũng có thể đổi webhook đích lúc trigger. Endpoint trigger nhậ
 
 ## Trạng thái run
 
-| Trạng thái | Ý nghĩa |
-|------------|---------|
-| `CREATED` | Payment request đã lưu, chưa được trigger |
-| `DELIVERING` | Đang trigger |
-| `SUCCESS` | Tất cả webhook delivery thành công (HTTP 2xx) |
-| `FAILED` | Tất cả webhook delivery thất bại |
-| `PARTIAL` | Một số thành công, một số thất bại |
+| Trạng thái    | Ý nghĩa                                                           |
+| ------------- | ----------------------------------------------------------------- |
+| `CREATED`     | Payment request đã lưu, chưa được trigger                         |
+| `DELIVERING`  | Đang trigger                                                      |
+| `SUCCESS`     | Tất cả webhook delivery thành công (HTTP 2xx)                     |
+| `FAILED`      | Tất cả webhook delivery thất bại                                  |
+| `PARTIAL`     | Một số thành công, một số thất bại                                |
 | `NO_WEBHOOKS` | Không tìm thấy webhook đang hoạt động phù hợp. Không có gì để gửi |
 
 ---

@@ -19,10 +19,10 @@ POST /v1/client/webhooks
 
 ### Request Body
 
-| Tham số        | Kiểu   | Bắt buộc | Mô tả                                   |
-| -------------- | ------ | -------- | --------------------------------------- |
-| `webhookUrl`   | string | **✓ Có** | HTTPS URL để nhận webhook               |
-| `bankPublicId` | string | **✓ Có** | Public ID của tài khoản ngân hàng       |
+| Tham số        | Kiểu   | Bắt buộc | Mô tả                                                                                          |
+| -------------- | ------ | -------- | ---------------------------------------------------------------------------------------------- |
+| `webhookUrl`   | string | **✓ Có** | HTTPS URL để nhận webhook                                                                      |
+| `bankPublicId` | string | **✓ Có** | Public ID của tài khoản ngân hàng                                                              |
 | `type`         | string | **✓ Có** | Dùng `ALL` cho webhook mới. `IN` và `OUT` là giá trị cũ, đã ngừng khuyến nghị từ tháng 6/2026. |
 
 ### Response
@@ -62,12 +62,12 @@ Lịch sử gửi webhook cho bạn xem lại mọi lần ApiPay gửi webhook t
 
 ### Bộ lọc
 
-| Bộ lọc          | Mô tả                                           |
-| --------------- | ----------------------------------------------- |
-| Khoảng ngày     | Lọc theo ngày gửi                               |
-| Ngân hàng       | Lọc theo tài khoản ngân hàng                    |
-| Webhook         | Lọc theo endpoint cụ thể                        |
-| Trạng thái      | `SUCCESS` (thành công) hoặc `FAILED` (thất bại) |
+| Bộ lọc      | Mô tả                                           |
+| ----------- | ----------------------------------------------- |
+| Khoảng ngày | Lọc theo ngày gửi                               |
+| Ngân hàng   | Lọc theo tài khoản ngân hàng                    |
+| Webhook     | Lọc theo endpoint cụ thể                        |
+| Trạng thái  | `SUCCESS` (thành công) hoặc `FAILED` (thất bại) |
 
 ### Chi tiết bản ghi
 
@@ -184,7 +184,7 @@ Khi có tiền vào tài khoản ngân hàng của bạn.
 
 ### transaction.out (legacy, đã deprecated)
 
-`transaction.out` đã deprecated từ tháng 6/2026 vì Tingee không hỗ trợ sự kiện tiền ra. Sự kiện này chỉ có thể xuất hiện trong dữ liệu lịch sử hoặc tích hợp cũ.
+`transaction.out` đã deprecated từ tháng 6/2026 vì ApiPay không hỗ trợ sự kiện tiền ra. Sự kiện này chỉ có thể xuất hiện trong dữ liệu lịch sử hoặc tích hợp cũ.
 
 ```json
 {
@@ -207,20 +207,20 @@ Khi có tiền vào tài khoản ngân hàng của bạn.
 
 ### Trường dữ liệu
 
-| Trường                     | Kiểu   | Mô tả                                                 |
-| -------------------------- | ------ | ----------------------------------------------------- |
+| Trường                     | Kiểu   | Mô tả                                                                                                     |
+| -------------------------- | ------ | --------------------------------------------------------------------------------------------------------- |
 | `event`                    | string | Loại sự kiện. Tích hợp mới nên xử lý `transaction.in`; `transaction.out` là hành vi legacy đã deprecated. |
-| `data.transactionId`       | string | ID giao dịch nội bộ (UUID)                            |
-| `data.referenceCode`       | string | Mã tham chiếu giao dịch ngân hàng                     |
-| `data.amount`              | number | Số tiền giao dịch (VND)                               |
-| `data.type`                | string | Loại giao dịch. Sự kiện production mới dùng `IN`; `OUT` là hành vi legacy đã deprecated. |
-| `data.content`             | string | Nội dung giao dịch                                    |
-| `data.transactionDate`     | string | Thời gian giao dịch (ISO 8601)                        |
-| `data.bankAccountPublicId` | string | Public ID của tài khoản ngân hàng                     |
-| `data.gateway`             | string | Mã ngân hàng (VD: ACB, MBB, BIDV, OCB, ICB, VIB, STB, VPB) |
-| `data.rawTransactionDate`  | string | Ngày giao dịch gốc từ ngân hàng                       |
-| `data.vaNumber`            | string | Số tài khoản ảo (tùy chọn)                            |
-| `data.accountNumber`       | string | Số tài khoản người gửi/nhận                           |
+| `data.transactionId`       | string | ID giao dịch nội bộ (UUID)                                                                                |
+| `data.referenceCode`       | string | Mã tham chiếu giao dịch ngân hàng                                                                         |
+| `data.amount`              | number | Số tiền giao dịch (VND)                                                                                   |
+| `data.type`                | string | Loại giao dịch. Sự kiện production mới dùng `IN`; `OUT` là hành vi legacy đã deprecated.                  |
+| `data.content`             | string | Nội dung giao dịch                                                                                        |
+| `data.transactionDate`     | string | Thời gian giao dịch (ISO 8601)                                                                            |
+| `data.bankAccountPublicId` | string | Public ID của tài khoản ngân hàng                                                                         |
+| `data.gateway`             | string | Mã ngân hàng (VD: ACB, MBB, BIDV, OCB, ICB, VIB, STB, VPB)                                                |
+| `data.rawTransactionDate`  | string | Ngày giao dịch gốc từ ngân hàng                                                                           |
+| `data.vaNumber`            | string | Số tài khoản ảo (tùy chọn)                                                                                |
+| `data.accountNumber`       | string | Số tài khoản người gửi/nhận                                                                               |
 
 ## Xác thực webhook
 
@@ -231,39 +231,41 @@ Tất cả webhook requests đều có header `ApiPay-Signature` để bạn xá
 const crypto = require("crypto");
 
 function verifyWebhookSignature(payload, signature, secretKey) {
-	const expectedSignature = crypto
-		.createHmac("sha256", secretKey)
-		.update(payload)
-		.digest("hex");
+const expectedSignature = crypto
+.createHmac("sha256", secretKey)
+.update(payload)
+.digest("hex");
 
-	return crypto.timingSafeEqual(
-		Buffer.from(signature),
-		Buffer.from(expectedSignature),
-	);
+    return crypto.timingSafeEqual(
+    	Buffer.from(signature),
+    	Buffer.from(expectedSignature),
+    );
+
 }
 
 // Sử dụng trong Express
 app.post("/webhook", (req, res) => {
-	const signature = req.headers["apipay-signature"];
-	const payload = JSON.stringify(req.body);
+const signature = req.headers["apipay-signature"];
+const payload = JSON.stringify(req.body);
 
-	if (!verifyWebhookSignature(payload, signature, process.env.WEBHOOK_SECRET)) {
-		return res.status(401).json({error: "Invalid signature"});
-	}
+    if (!verifyWebhookSignature(payload, signature, process.env.WEBHOOK_SECRET)) {
+    	return res.status(401).json({error: "Invalid signature"});
+    }
 
-	const {event, data} = req.body;
+    const {event, data} = req.body;
 
-	if (event === "transaction.in") {
-		console.log("Tiền vào:", data.amount);
-		console.log("Mã tham chiếu:", data.referenceCode);
-		console.log("Nội dung:", data.content);
-		// Cập nhật đơn hàng trong database của bạn
-	}
+    if (event === "transaction.in") {
+    	console.log("Tiền vào:", data.amount);
+    	console.log("Mã tham chiếu:", data.referenceCode);
+    	console.log("Nội dung:", data.content);
+    	// Cập nhật đơn hàng trong database của bạn
+    }
 
-	res.status(200).json({received: true});
+    res.status(200).json({received: true});
+
 });
 
-```
+````
 
 ```python
 import hmac
@@ -296,7 +298,7 @@ def handle_webhook():
         print(f"Nội dung: {data['data']['content']}")
         # Cập nhật đơn hàng
     return {'received': True}, 200
-```
+````
 
 ```php
 <?php

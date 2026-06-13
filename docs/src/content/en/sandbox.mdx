@@ -51,13 +51,13 @@ If you don't have a webhook yet, head to **Settings → Webhooks** and create on
 
 Fill in the sandbox form:
 
-| Field | Required | Description |
-|-------|----------|-------------|
-| Bank account | **Yes** | Pick one of your active connected banks |
-| Amount | **Yes** | Integer VND, between 1 and 300,000,000 |
-| Transfer content | No | The memo/description, max 140 characters |
-| Title | No | A label for this test run, max 200 characters |
-| Target webhook | No | Send to a specific webhook, or leave blank to broadcast to all matching ones |
+| Field            | Required | Description                                                                  |
+| ---------------- | -------- | ---------------------------------------------------------------------------- |
+| Bank account     | **Yes**  | Pick one of your active connected banks                                      |
+| Amount           | **Yes**  | Integer VND, between 1 and 300,000,000                                       |
+| Transfer content | No       | The memo/description, max 140 characters                                     |
+| Title            | No       | A label for this test run, max 200 characters                                |
+| Target webhook   | No       | Send to a specific webhook, or leave blank to broadcast to all matching ones |
 
 Click **Create** — this saves the payment request and creates a run in `CREATED` status. Nothing is delivered yet.
 
@@ -110,7 +110,7 @@ Sandbox payloads are identical to production, with two additions: `"sandbox": tr
 
 ### transaction.out (deprecated legacy sandbox)
 
-Sandbox `transaction.out` is deprecated since June 2026 because Tingee does not support outgoing transaction events. New tests should use `transaction.in`.
+Sandbox `transaction.out` is deprecated since June 2026 because ApiPay does not support outgoing transaction events. New tests should use `transaction.in`.
 
 ```json
 {
@@ -138,11 +138,11 @@ Check for `sandbox: true` in your handler to skip order fulfillment logic during
 
 ```javascript
 app.post('/webhooks/apipay', (req, res) => {
-  const { event, sandbox, data } = req.body;
+  const {event, sandbox, data} = req.body;
 
   if (sandbox) {
     console.log('[sandbox] received test event:', event, data.referenceCode);
-    return res.status(200).json({ received: true });
+    return res.status(200).json({received: true});
   }
 
   // real transaction handling
@@ -150,7 +150,7 @@ app.post('/webhooks/apipay', (req, res) => {
     // fulfill order...
   }
 
-  res.status(200).json({ received: true });
+  res.status(200).json({received: true});
 });
 ```
 
@@ -172,13 +172,13 @@ You can also override the target at trigger time — the trigger endpoint accept
 
 ## Run Statuses
 
-| Status | Meaning |
-|--------|---------|
-| `CREATED` | Payment request saved, not yet triggered |
-| `DELIVERING` | Trigger in progress |
-| `SUCCESS` | All webhook deliveries succeeded (HTTP 2xx) |
-| `FAILED` | All webhook deliveries failed |
-| `PARTIAL` | Some deliveries succeeded, some failed |
+| Status        | Meaning                                                   |
+| ------------- | --------------------------------------------------------- |
+| `CREATED`     | Payment request saved, not yet triggered                  |
+| `DELIVERING`  | Trigger in progress                                       |
+| `SUCCESS`     | All webhook deliveries succeeded (HTTP 2xx)               |
+| `FAILED`      | All webhook deliveries failed                             |
+| `PARTIAL`     | Some deliveries succeeded, some failed                    |
 | `NO_WEBHOOKS` | No active matching webhooks found — nothing was delivered |
 
 ---

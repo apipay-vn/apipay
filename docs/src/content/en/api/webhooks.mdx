@@ -19,24 +19,24 @@ POST /v1/client/webhooks
 
 ### Request Body
 
-| Parameter      | Type   | Required       | Description                                      |
-| -------------- | ------ | -------------- | ------------------------------------------------ |
-| `webhookUrl`   | string | **✓ Yes** | HTTPS URL to receive webhook notifications       |
-| `bankPublicId` | string | **✓ Yes** | Public ID of the bank account                    |
+| Parameter      | Type   | Required  | Description                                                                              |
+| -------------- | ------ | --------- | ---------------------------------------------------------------------------------------- |
+| `webhookUrl`   | string | **✓ Yes** | HTTPS URL to receive webhook notifications                                               |
+| `bankPublicId` | string | **✓ Yes** | Public ID of the bank account                                                            |
 | `type`         | string | **✓ Yes** | Use `ALL` for new webhooks. `IN` and `OUT` are legacy values deprecated since June 2026. |
 
 ### Response
 
 ```json
 {
-	"data": {
-		"message": "Tạo webhook thành công",
-		"id": "wh_abc123",
-		"bankPublicId": "bnk_abc123",
-		"webhookUrl": "https://your-domain.com/webhooks/apipay",
-		"type": "ALL",
-		"secret": "a1b2c3d4..."
-	}
+  "data": {
+    "message": "Tạo webhook thành công",
+    "id": "wh_abc123",
+    "bankPublicId": "bnk_abc123",
+    "webhookUrl": "https://your-domain.com/webhooks/apipay",
+    "type": "ALL",
+    "secret": "a1b2c3d4..."
+  }
 }
 ```
 
@@ -44,15 +44,15 @@ Keep `secret`; it is used to verify `ApiPay-Signature`.
 
 ## Manage Webhooks
 
-| Endpoint | Description |
-| -------- | ----------- |
-| `GET /v1/client/webhooks` | List registered webhooks (`page`, `limit`) |
-| `PATCH /v1/client/webhooks/:id` | Update `webhookUrl` or `type` |
-| `PATCH /v1/client/webhooks/:id/toggle` | Enable or disable a webhook |
-| `DELETE /v1/client/webhooks/:id` | Delete a webhook |
-| `GET /v1/client/webhooks/:id/history` | View delivery history (`page`, `limit`) |
-| `POST /v1/client/webhooks/history/:historyId/resend` | Retry a failed delivery |
-| `GET /v1/client/webhooks/deliveries` | View production delivery history with filters |
+| Endpoint                                             | Description                                   |
+| ---------------------------------------------------- | --------------------------------------------- |
+| `GET /v1/client/webhooks`                            | List registered webhooks (`page`, `limit`)    |
+| `PATCH /v1/client/webhooks/:id`                      | Update `webhookUrl` or `type`                 |
+| `PATCH /v1/client/webhooks/:id/toggle`               | Enable or disable a webhook                   |
+| `DELETE /v1/client/webhooks/:id`                     | Delete a webhook                              |
+| `GET /v1/client/webhooks/:id/history`                | View delivery history (`page`, `limit`)       |
+| `POST /v1/client/webhooks/history/:historyId/resend` | Retry a failed delivery                       |
+| `GET /v1/client/webhooks/deliveries`                 | View production delivery history with filters |
 
 ## Delivery Log
 
@@ -60,12 +60,12 @@ The Delivery Log shows every webhook sent in production. Access it via the **Del
 
 ### Filters
 
-| Filter | Description |
-| -------- | ----- |
-| Date range | Filter by delivery date |
-| Bank | Filter by bank account |
-| Webhook | Filter by specific endpoint |
-| Status | `SUCCESS` or `FAILED` |
+| Filter     | Description                 |
+| ---------- | --------------------------- |
+| Date range | Filter by delivery date     |
+| Bank       | Filter by bank account      |
+| Webhook    | Filter by specific endpoint |
+| Status     | `SUCCESS` or `FAILED`       |
 
 ### Per-record details
 
@@ -96,16 +96,16 @@ GET /v1/client/webhooks/deliveries
 
 **Query parameters:**
 
-| Parameter | Type | Description |
-| -------- | ---- | ----- |
-| `page` | number | Page number (default: 1) |
-| `limit` | number | Items per page (default: 20, max: 100) |
-| `webhookId` | string | Filter by webhook ID |
-| `bankAccountId` | number | Filter by bank account |
-| `direction` | string | Deprecated since June 2026; accepted for compatibility and ignored |
-| `status` | string | `SUCCESS` or `FAILED` |
-| `dateFrom` | string | Start date (YYYY-MM-DD) |
-| `dateTo` | string | End date (YYYY-MM-DD) |
+| Parameter       | Type   | Description                                                        |
+| --------------- | ------ | ------------------------------------------------------------------ |
+| `page`          | number | Page number (default: 1)                                           |
+| `limit`         | number | Items per page (default: 20, max: 100)                             |
+| `webhookId`     | string | Filter by webhook ID                                               |
+| `bankAccountId` | number | Filter by bank account                                             |
+| `direction`     | string | Deprecated since June 2026; accepted for compatibility and ignored |
+| `status`        | string | `SUCCESS` or `FAILED`                                              |
+| `dateFrom`      | string | Start date (YYYY-MM-DD)                                            |
+| `dateTo`        | string | End date (YYYY-MM-DD)                                              |
 
 **Response:**
 
@@ -163,62 +163,62 @@ When money is received into your bank account.
 
 ```json
 {
-	"event": "transaction.in",
-	"data": {
-		"transactionId": "550e8400-e29b-41d4-a716-446655440000",
-		"referenceCode": "TX123456789",
-		"amount": 100000,
-		"type": "IN",
-		"content": "ORDER-12345",
-		"transactionDate": "2024-03-20T10:30:00.000Z",
-		"bankAccountPublicId": "bk_abcdef1234567890",
-		"gateway": "VCB",
-		"rawTransactionDate": "2024-03-20 10:30:00",
-		"vaNumber": "999988887777",
-		"accountNumber": "0123456789"
-	}
+  "event": "transaction.in",
+  "data": {
+    "transactionId": "550e8400-e29b-41d4-a716-446655440000",
+    "referenceCode": "TX123456789",
+    "amount": 100000,
+    "type": "IN",
+    "content": "ORDER-12345",
+    "transactionDate": "2024-03-20T10:30:00.000Z",
+    "bankAccountPublicId": "bk_abcdef1234567890",
+    "gateway": "VCB",
+    "rawTransactionDate": "2024-03-20 10:30:00",
+    "vaNumber": "999988887777",
+    "accountNumber": "0123456789"
+  }
 }
 ```
 
 ### transaction.out (deprecated legacy)
 
-`transaction.out` is deprecated since June 2026 because Tingee does not support outgoing transaction events. It may appear in historical data or legacy integrations only.
+`transaction.out` is deprecated since June 2026 because ApiPay does not support outgoing transaction events. It may appear in historical data or legacy integrations only.
 
 ```json
 {
-	"event": "transaction.out",
-	"data": {
-		"transactionId": "550e8400-e29b-41d4-a716-446655440000",
-		"referenceCode": "TX123456789",
-		"amount": 50000,
-		"type": "OUT",
-		"content": "Chuyen khoan tieu dung",
-		"transactionDate": "2024-03-20T10:30:00.000Z",
-		"bankAccountPublicId": "bk_abcdef1234567890",
-		"gateway": "VCB",
-		"rawTransactionDate": "2024-03-20 10:30:00",
-		"vaNumber": "999988887777",
-		"accountNumber": "0987654321"
-	}
+  "event": "transaction.out",
+  "data": {
+    "transactionId": "550e8400-e29b-41d4-a716-446655440000",
+    "referenceCode": "TX123456789",
+    "amount": 50000,
+    "type": "OUT",
+    "content": "Chuyen khoan tieu dung",
+    "transactionDate": "2024-03-20T10:30:00.000Z",
+    "bankAccountPublicId": "bk_abcdef1234567890",
+    "gateway": "VCB",
+    "rawTransactionDate": "2024-03-20 10:30:00",
+    "vaNumber": "999988887777",
+    "accountNumber": "0987654321"
+  }
 }
 ```
 
 ### Data Fields
 
-| Field                      | Type   | Description                                       |
-| -------------------------- | ------ | ------------------------------------------------- |
+| Field                      | Type   | Description                                                                                                   |
+| -------------------------- | ------ | ------------------------------------------------------------------------------------------------------------- |
 | `event`                    | string | Event type. New integrations should handle `transaction.in`; `transaction.out` is deprecated legacy behavior. |
-| `data.transactionId`       | string | Internal transaction ID (UUID)                    |
-| `data.referenceCode`       | string | Bank transaction reference code                   |
-| `data.amount`              | number | Transaction amount in VND                         |
-| `data.type`                | string | Transaction type. New production events use `IN`; `OUT` is deprecated legacy behavior. |
-| `data.content`             | string | Transaction content/memo                          |
-| `data.transactionDate`     | string | Transaction timestamp (ISO 8601)                  |
-| `data.bankAccountPublicId` | string | Public ID of the bank account                     |
-| `data.gateway`             | string | Bank code (e.g., ACB, MBB, BIDV, OCB, ICB, VIB, STB, VPB) |
-| `data.rawTransactionDate`  | string | Original transaction date from bank               |
-| `data.vaNumber`            | string | Virtual account number (optional)                 |
-| `data.accountNumber`       | string | Sender/receiver account number                    |
+| `data.transactionId`       | string | Internal transaction ID (UUID)                                                                                |
+| `data.referenceCode`       | string | Bank transaction reference code                                                                               |
+| `data.amount`              | number | Transaction amount in VND                                                                                     |
+| `data.type`                | string | Transaction type. New production events use `IN`; `OUT` is deprecated legacy behavior.                        |
+| `data.content`             | string | Transaction content/memo                                                                                      |
+| `data.transactionDate`     | string | Transaction timestamp (ISO 8601)                                                                              |
+| `data.bankAccountPublicId` | string | Public ID of the bank account                                                                                 |
+| `data.gateway`             | string | Bank code (e.g., ACB, MBB, BIDV, OCB, ICB, VIB, STB, VPB)                                                     |
+| `data.rawTransactionDate`  | string | Original transaction date from bank                                                                           |
+| `data.vaNumber`            | string | Virtual account number (optional)                                                                             |
+| `data.accountNumber`       | string | Sender/receiver account number                                                                                |
 
 ## Webhook Authentication
 
@@ -229,39 +229,42 @@ All webhook requests include an `ApiPay-Signature` header for verification.
 const crypto = require("crypto");
 
 function verifyWebhookSignature(payload, signature, secretKey) {
-	const expectedSignature = crypto
-		.createHmac("sha256", secretKey)
-		.update(payload)
-		.digest("hex");
+const expectedSignature = crypto
+.createHmac("sha256", secretKey)
+.update(payload)
+.digest("hex");
 
-	return crypto.timingSafeEqual(
-		Buffer.from(signature),
-		Buffer.from(expectedSignature),
-	);
+    return crypto.timingSafeEqual(
+    	Buffer.from(signature),
+    	Buffer.from(expectedSignature),
+    );
+
 }
 
 // Usage in Express
 app.post("/webhook", (req, res) => {
-	const signature = req.headers["apipay-signature"];
-	const payload = JSON.stringify(req.body);
+const signature = req.headers["apipay-signature"];
+const payload = JSON.stringify(req.body);
 
-	if (!verifyWebhookSignature(payload, signature, process.env.WEBHOOK_SECRET)) {
-		return res.status(401).json({error: "Invalid signature"});
-	}
+    if (!verifyWebhookSignature(payload, signature, process.env.WEBHOOK_SECRET)) {
+    	return res.status(401).json({error: "Invalid signature"});
+    }
 
-	// Process webhook
-	const {event, data} = req.body;
+    // Process webhook
+    const {event, data} = req.body;
 
-	if (event === "transaction.in") {
-		console.log("Money received:", data.amount);
-		console.log("Reference:", data.referenceCode);
-		console.log("Content:", data.content);
-		// Update order in your database
-	}
+    if (event === "transaction.in") {
+    	console.log("Money received:", data.amount);
+    	console.log("Reference:", data.referenceCode);
+    	console.log("Content:", data.content);
+    	// Update order in your database
+    }
 
-	res.status(200).json({received: true});
+    res.status(200).json({received: true});
+
 });
-```
+
+````
 
 ```python
 import hmac
@@ -294,7 +297,7 @@ def handle_webhook():
         print(f"Content: {data['data']['content']}")
         # Update order
     return {'received': True}, 200
-```
+````
 
 ```php
 <?php
@@ -331,6 +334,7 @@ Route::post('/webhook', function (Request $request) {
     return response()->json(['received' => true]);
 });
 ```
+
 </CodeTabs>
 
 ## Retry Policy
