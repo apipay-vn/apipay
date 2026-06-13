@@ -22,13 +22,16 @@ Once linked, your bank account appears in the **Banks** section of the dashboard
 
 **Supported banks:**
 
-| Bank | Personal | Business | Features |
-|------|:--------:|:--------:|----------|
-| **ACB** | Yes | Yes | OpenBanking, Sync inward/outward |
-| **MB Bank** | Yes | Yes | OpenBanking, Sync inward/outward |
-| **BIDV** | Yes | No | OpenBanking, Virtual Account |
-| **OCB** | Yes | No | OpenBanking, Sync inward/outward |
-| **VietinBank (CTG)** | Yes | No | OpenBanking, Sync inward/outward |
+| Bank                 | Personal | Business | Household | Features                         |
+| -------------------- | :------: | :------: | :-------: | -------------------------------- |
+| **ACB**              |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward/outward |
+| **MB Bank**          |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward/outward |
+| **BIDV**             |   Yes    |   Yes    |    Yes    | OpenBanking, Virtual Account     |
+| **OCB**              |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward/outward |
+| **VietinBank (CTG)** |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward/outward |
+| **VIB**              |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward/outward |
+| **Sacombank**        |   Yes    |    No    |    Yes    | OpenBanking, VietQR              |
+| **VPBank**           |   Yes    |   Yes    |    Yes    | OpenBanking, VietQR              |
 
 ---
 
@@ -39,10 +42,11 @@ Before linking a bank account, make sure you have:
 - An ApiPay account
 - An active Vietnamese bank account from the supported list above
 - The phone number registered with your bank (for OTP verification)
-- For **BIDV**: a custom Merchant ID for virtual account setup
-- For **MB Bank**: your CCCD/ID card number (12 digits)
-- For **VietinBank**: your CCCD/ID card number (12 digits)
+- For **BIDV** Personal: a custom Merchant ID for virtual account setup
+- For **MB Bank**, **VietinBank**, **VIB**, **Sacombank**, **VPBank** Personal: your CCCD/ID card number (12 digits)
+- For Business or Household Business accounts: your company/household Tax Code (MST)
 - For **ACB Business**: an ACB OneBiz username
+- For **MB Bank**, **OCB**, **VIB**, **VPBank** Business or Household, and **BIDV**/**VietinBank** Business: a signed API contract — these connections are manually activated by ApiPay after submission
 
 ---
 
@@ -60,12 +64,20 @@ Before linking a bank account, make sure you have:
    - Note the **Features** — each bank supports different capabilities
 6. Click **Connect** on your chosen bank
 
-### Step 2: Choose Account Type (ACB & MB Bank only)
+### Step 2: Choose Account Type
 
-If you selected **ACB** or **MB Bank**, you'll need to choose between:
+Most banks support three account types. Pick the one that matches your account:
 
 - **Personal** — for individual bank accounts
-- **Business** — for company/business bank accounts
+- **Business** — for company bank accounts
+- **Household Business** — for household business (hộ kinh doanh) accounts
+
+Per-bank availability:
+
+- **ACB**, **MB Bank**, **BIDV**, **OCB**, **VietinBank**, **VIB**, **VPBank** — Personal, Business, Household Business
+- **Sacombank** — Personal, Household Business (Business not supported)
+
+> **Manual activation notice.** If you choose Business or Household Business on **MB Bank**, **OCB**, **VIB**, or **VPBank**, or Business on **BIDV** or **VietinBank**, the connection is submitted as an activation request. ApiPay enables the account after the API contract is signed; you'll see an **Activation Requested** status until then.
 
 Click the card that matches your account type to continue.
 
@@ -123,6 +135,56 @@ No additional fields required beyond the base fields above.
 |-----------------|-------------|
 | **CCCD / ID Card Number** | Your 12-digit CCCD number (Citizen Identification Card) |
 
+#### VIB — Personal Account
+
+| Additional Field | Description |
+|-----------------|-------------|
+| **CCCD / ID Card Number** | Your 12-digit CCCD number |
+
+#### Sacombank (STB) — Personal Account
+
+| Additional Field | Description |
+|-----------------|-------------|
+| **CCCD / ID Card Number** | Your 12-digit CCCD number |
+
+#### Sacombank (STB) — Household Business Account
+
+| Additional Field | Description |
+|-----------------|-------------|
+| **Tax Code (MST)** | Tax Identification Number of the household business |
+
+> **Note for Sacombank:** Company (Business) accounts are not currently supported. Use Personal or Household Business.
+
+#### VPBank — Personal Account
+
+| Additional Field | Description |
+|-----------------|-------------|
+| **CCCD / ID Card Number** | Your 12-digit CCCD number |
+
+#### VPBank — Business / Household Business Account
+
+| Additional Field | Description |
+|-----------------|-------------|
+| **Tax Code (MST)** | Tax Identification Number of the company or household business |
+
+> **Manual activation:** Business and Household Business connections for VPBank are submitted for manual activation. ApiPay enables the account after the API contract is signed.
+
+#### MB Bank / OCB / VIB — Business or Household Business
+
+| Additional Field | Description |
+|-----------------|-------------|
+| **Tax Code (MST)** | Tax Identification Number of the company or household business |
+
+> **Manual activation:** Business and Household Business connections for MB Bank, OCB, and VIB are submitted for manual activation. ApiPay enables the account after the API contract is signed.
+
+#### BIDV / VietinBank — Business Account
+
+| Additional Field | Description |
+|-----------------|-------------|
+| **Tax Code (MST)** | Tax Identification Number of the company |
+
+> **Manual activation:** BIDV and VietinBank Business connections are submitted for manual activation. ApiPay enables the account after the API contract is signed.
+
 After filling in all fields:
 
 1. Read the consent text about privacy policy and terms of use
@@ -131,15 +193,17 @@ After filling in all fields:
 
 A confirmation modal will appear — review the details and click **Confirm** again.
 
-### Step 4: Verify with OTP
+### Step 4: Verify with OTP (Online Flow)
 
-After submitting your account details, an **OTP (One-Time Password)** is sent automatically to the phone number registered with your bank.
+For online connections, an **OTP (One-Time Password)** is sent automatically to the phone number registered with your bank.
 
 1. Enter the 6-digit OTP code in the input field
 2. Click **Confirm**
 3. Once verified, your bank account is successfully linked
 
 If the OTP code is incorrect, you'll see an error message. Re-enter the correct code and try again.
+
+> **Manual activation accounts skip OTP.** When the flow is manual (MB/OCB/VIB/VPB Business or Household, BIDV/VietinBank Business), you'll see an **Activation Requested** screen instead. ApiPay reviews the request, signs the API contract with you, and activates the connection. No OTP step is required at this stage.
 
 ---
 
@@ -195,8 +259,9 @@ If you want to temporarily stop receiving payments on a specific bank:
 | Not sure what to enter for Merchant ID | This is a custom identifier you choose to create your virtual account (e.g., your shop name). |
 | CCCD rejected | Make sure you enter exactly 12 digits without spaces or special characters. |
 | Bank shows "Pending" status | After linking, the bank should become Active within seconds. If it stays Pending, try refreshing the page. |
+| Bank shows "Activation Requested" | This is expected for manual-activation flows (MB/OCB/VIB/VPB Business or Household, BIDV/VietinBank Business). ApiPay will contact you to sign the API contract and activate the account. |
 | Account number already linked | Each bank account can only be linked once. If you see this error, the account may already be connected to another ApiPay account. |
-| Account type not available | BIDV, OCB, and VietinBank currently support Personal accounts. For business accounts, use ACB or MB Bank. |
+| Account type not available | Sacombank does not currently support Business accounts — use Personal or Household Business instead. |
 
 ---
 

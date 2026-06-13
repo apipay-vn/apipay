@@ -23,13 +23,16 @@ Nhờ vậy, bạn không cần đối soát thủ công cho từng đơn hàng.
 
 ## Ngân hàng được hỗ trợ
 
-| Ngân hàng   | Mã   | Cá nhân | Doanh nghiệp | Tính năng chính                  |
-| ----------- | ---- | :-----: | :----------: | -------------------------------- |
-| **ACB**     | ACB  |   Có    |      Có      | OpenBanking, Đồng bộ tiền vào/ra |
-| **MB Bank** | MBB  |   Có    |      Có      | OpenBanking, Đồng bộ tiền vào/ra |
-| **BIDV**    | BIDV |   Có    |    Không     | OpenBanking, Tài khoản Ảo        |
-| **OCB**     | OCB  |   Có    |    Không     | OpenBanking, Đồng bộ tiền vào/ra |
-| **VietinBank (CTG)** | ICB | Có | Không | OpenBanking, Đồng bộ tiền vào/ra |
+| Ngân hàng            | Mã   | Cá nhân | Doanh nghiệp | Hộ kinh doanh | Tính năng chính               |
+| -------------------- | ---- | :-----: | :----------: | :-----------: | ----------------------------- |
+| **ACB**              | ACB  |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào |
+| **MB Bank**          | MBB  |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào |
+| **BIDV**             | BIDV |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào |
+| **OCB**              | OCB  |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào |
+| **VietinBank (CTG)** | ICB  |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào |
+| **VIB**              | VIB  |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào |
+| **Sacombank**        | STB  |   Có    |    Không     |      Có       | OpenBanking, Đồng bộ tiền vào |
+| **VPBank**           | VPB  |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào |
 
 ---
 
@@ -39,8 +42,16 @@ Nhờ vậy, bạn không cần đối soát thủ công cho từng đơn hàng.
 
 Khi kết nối ngân hàng, bạn sẽ chọn giữa:
 
-- **Cá nhân** — dành cho tài khoản ngân hàng cá nhân
-- **Doanh nghiệp** — dành cho tài khoản công ty (chỉ ACB và MB Bank; BIDV, OCB và VietinBank chỉ hỗ trợ cá nhân)
+- **Cá nhân** — tài khoản cá nhân
+- **Doanh nghiệp** — tài khoản công ty
+- **Hộ kinh doanh** — tài khoản hộ kinh doanh
+
+Lưu ý:
+
+- **Sacombank** không hỗ trợ tài khoản Doanh nghiệp; hãy dùng Cá nhân hoặc Hộ kinh doanh.
+- **BIDV** và **VietinBank** với tài khoản Doanh nghiệp cần ApiPay kích hoạt thủ công (ký hợp đồng API); Hộ kinh doanh chạy như luồng trực tuyến.
+- **MB Bank**, **OCB**, **VIB**, **VPBank** với tài khoản Doanh nghiệp và Hộ kinh doanh cần ApiPay kích hoạt thủ công (ký hợp đồng API). Tài khoản Cá nhân chạy hoàn toàn trực tuyến.
+- **ACB** Doanh nghiệp dùng thông tin ACB OneBiz và xử lý hoàn toàn trực tuyến.
 
 ### Trạng thái
 
@@ -48,9 +59,16 @@ Sau khi kết nối, tài khoản ngân hàng sẽ có một trong các trạng 
 
 - **Hoạt động** — đang nhận thanh toán bình thường
 - **Đang chờ** — OTP đã xác minh nhưng đang chờ xác nhận cuối cùng
+- **Yêu cầu kích hoạt** — đã gửi yêu cầu kích hoạt thủ công (Doanh nghiệp/Hộ kinh doanh của MB/OCB/VIB/VPB và Doanh nghiệp của BIDV/VietinBank)
 - **Không hoạt động** — tạm thời tắt; thanh toán sẽ không được chuyển đến đây
 
+### Tài khoản ảo (BIDV)
+
 BIDV hỗ trợ **Số Tài Khoản Ảo (VA)**. Hệ thống tạo VA từ **Merchant ID** do bạn tự nhập. **Lưu ý quan trọng:** Bạn cần chuyển tiền đúng vào tài khoản ảo này thì hệ thống mới nhận được thông báo giao dịch.
+
+### VietQR (Sacombank, VPBank)
+
+Sacombank và VPBank nhận thanh toán qua **VietQR**. ApiPay tạo VietQR cho mỗi payment request; khách quét và chuyển kèm mã nội dung để ApiPay đối chiếu giao dịch và gửi webhook gần như ngay lập tức.
 
 ---
 

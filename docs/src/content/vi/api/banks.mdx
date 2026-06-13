@@ -13,18 +13,27 @@ Base route:
 /v1/client/banks
 ```
 
+## Phiên bản API
+
+ApiPay cung cấp hai phiên bản API quản lý ngân hàng:
+
+- **v1** (`/v1/client/banks`) — luồng cũ dùng `bankShortName`. Hỗ trợ `ACB`, `BIDV`, `MBB`, `OCB`, `ICB`. Tài liệu bên dưới.
+- **v2** (`/v2/client/banks`) — luồng hiện tại dùng `bankBin` (mã BIN ngân hàng). Hỗ trợ đầy đủ 8 ngân hàng bên dưới gồm **VIB**, **Sacombank**, **VPBank** và loại tài khoản `business-household-account`. Xem [tài liệu v2](#10-luồng-ngân-hàng-v2-bankbin).
+
 ## Mã ngân hàng hợp lệ
 
-Dùng đúng mã `bankShortName` bên dưới:
+Dùng `bankShortName` bên dưới cho v1. Các tích hợp mới (VIB, STB, VPB) và loại `business-household-account` chỉ có ở v2 qua `bankBin`.
 
-| Mã     | Ngân hàng   | Trạng thái |
-| ------ | ----------- | ---------- |
-| `ACB`  | ACB         | Hỗ trợ     |
-| `BIDV` | BIDV        | Hỗ trợ     |
-| `MBB`  | MB Bank     | Hỗ trợ     |
-| `OCB`  | OCB         | Hỗ trợ     |
-| `ICB`  | VietinBank  | Hỗ trợ      |
-| `VCB`  | Vietcombank | Chưa hỗ trợ |
+| Mã     | Ngân hàng  | BIN      | v1  | v2  | Loại tài khoản                            |
+| ------ | ---------- | -------- | :-: | :-: | ----------------------------------------- |
+| `ACB`  | ACB        | `970416` | Có  | Có  | cá nhân, doanh nghiệp, hộ kinh doanh      |
+| `MBB`  | MB Bank    | `970422` | Có  | Có  | cá nhân, doanh nghiệp, hộ kinh doanh      |
+| `BIDV` | BIDV       | `970418` | Có  | Có  | cá nhân, doanh nghiệp, hộ kinh doanh      |
+| `OCB`  | OCB        | `970448` | Có  | Có  | cá nhân, doanh nghiệp, hộ kinh doanh      |
+| `ICB`  | VietinBank | `970415` | Có  | Có  | cá nhân, doanh nghiệp, hộ kinh doanh      |
+| `VIB`  | VIB        | `970441` | Không | Có | cá nhân, doanh nghiệp, hộ kinh doanh    |
+| `STB`  | Sacombank  | `970403` | Không | Có | cá nhân, hộ kinh doanh (không có doanh nghiệp) |
+| `VPB`  | VPBank     | `970432` | Không | Có | cá nhân, doanh nghiệp, hộ kinh doanh    |
 
 ## 1. Kết nối tài khoản ngân hàng
 
@@ -270,3 +279,106 @@ POST /v1/client/banks/remove-unconfirmed
 ```
 
 Endpoint này dùng để dọn record `PENDING` hoặc record chưa hoàn tất xác thực.
+
+## 10. Luồng ngân hàng v2 (bankBin)
+
+Các endpoint v2 thay `bankShortName` bằng `bankBin`, bổ sung luồng hộ kinh doanh và hỗ trợ **VIB**, **Sacombank**, **VPBank**. Trang "Thêm ngân hàng" trên Dashboard dùng các endpoint này.
+
+### 10.1 Kết nối tài khoản ngân hàng (v2)
+
+```bash
+POST /v2/client/banks
+```
+
+#### Request body
+
+```json
+{
+  "bankBin": "970422",
+  "bankName": "MB Bank",
+  "accountType": "personal-account",
+  "accountNumber": "24550721",
+  "accountName": "PHAM THANH DANH",
+  "mobile": "0858838502",
+  "identity": "012345678901"
+}
+```
+
+#### Field
+
+- `bankBin`: mã BIN của ngân hàng. Hỗ trợ: `970416` (ACB), `970422` (MBB), `970418` (BIDV), `970448` (OCB), `970415` (ICB), `970441` (VIB), `970432` (VPB), `970403` (STB).
+- `bankName`: tên đầy đủ của ngân hàng (ví dụ `MB Bank`).
+- `accountType`: `personal-account`, `business-account`, hoặc `business-household-account`.
+  - `STB` (Sacombank): chỉ chấp nhận `personal-account` và `business-household-account`.
+- `accountNumber`: số tài khoản ngân hàng.
+- `accountName`: tên chủ tài khoản, IN HOA không dấu.
+- `mobile`: số điện thoại đăng ký với ngân hàng để nhận OTP.
+- `identity`: CCCD (12 chữ số) cho tài khoản cá nhân của MBB, BIDV, ICB, VIB, STB, VPB; MST cho tài khoản doanh nghiệp / hộ kinh doanh. ACB không cần.
+- `acbUserId`: bắt buộc khi `bankBin` = `970416` (ACB) và `accountType` = `business-account` (tên đăng nhập ACB OneBiz).
+- `merchantId`: bắt buộc cho `BIDV` cá nhân (Merchant ID của tài khoản ảo).
+
+#### Response — Cần OTP (luồng trực tuyến)
+
+```json
+{
+  "OTP": 1,
+  "bank": {
+    "publicId": "bnk_abc123",
+    "status": "PENDING"
+  }
+}
+```
+
+Gọi **`POST /v2/client/banks/confirm-otp`** với OTP nhận được trên `mobile`.
+
+#### Response — Yêu cầu kích hoạt thủ công
+
+```json
+{
+  "activationRequested": true,
+  "bank": {
+    "publicId": "bnk_abc123",
+    "status": "ACTIVATION_REQUESTED"
+  }
+}
+```
+
+Trả về cho các kết nối cần ApiPay ký hợp đồng API trước khi kích hoạt:
+
+- `MBB`, `OCB`, `VIB`, `VPB` với `business-account` hoặc `business-household-account`
+- `BIDV`, `ICB` với `business-account`
+
+Đội ngũ ApiPay liên hệ hoàn tất hợp đồng rồi chuyển trạng thái ngân hàng sang `ACTIVE`.
+
+### 10.2 Xác thực OTP (v2)
+
+```bash
+POST /v2/client/banks/confirm-otp
+```
+
+```json
+{
+  "bankBin": "970422",
+  "accountNumber": "24550721",
+  "otpNumber": "123456"
+}
+```
+
+### 10.3 Danh sách ngân hàng khả dụng (v2)
+
+```bash
+GET /v2/client/banks/available
+```
+
+Trả về catalog ngân hàng người dùng có thể kết nối kèm `bankBin`, `bankName`, `shortName`, URL logo. Dùng response để hiển thị bộ chọn ngân hàng.
+
+### 10.4 Các endpoint v2 còn lại
+
+Controller v2 phản chiếu v1 cho các thao tác còn lại, dùng `:publicId` ở path:
+
+- `GET /v2/client/banks` — danh sách ngân hàng đã liên kết
+- `GET /v2/client/banks/summary` — thống kê
+- `GET /v2/client/banks/:publicId` — một ngân hàng
+- `PATCH /v2/client/banks/:id/status` — bật/tắt ACTIVE/INACTIVE
+- `DELETE /v2/client/banks/:id` — ngắt kết nối (có thể cần OTP)
+- `POST /v2/client/banks/:id/confirm-delete` — xác thực OTP ngắt kết nối

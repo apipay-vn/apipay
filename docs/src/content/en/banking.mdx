@@ -23,13 +23,16 @@ This means you don't need to manually reconcile payments — everything is autom
 
 ## Supported Banks
 
-| Bank        | Code | Personal | Business | Key Features                     |
-| ----------- | ---- | :------: | :------: | -------------------------------- |
-| **ACB**     | ACB  |   Yes    |   Yes    | OpenBanking, Sync inward/outward |
-| **MB Bank** | MBB  |   Yes    |   Yes    | OpenBanking, Sync inward/outward |
-| **BIDV**    | BIDV |   Yes    |    No    | OpenBanking, Virtual Account     |
-| **OCB**     | OCB  |   Yes    |    No    | OpenBanking, Sync inward/outward |
-| **VietinBank (CTG)** | ICB | Yes | No | OpenBanking, Sync inward/outward |
+| Bank                 | Code | Personal | Business | Household | Key Features             |
+| -------------------- | ---- | :------: | :------: | :-------: | ------------------------ |
+| **ACB**              | ACB  |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward |
+| **MB Bank**          | MBB  |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward |
+| **BIDV**             | BIDV |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward |
+| **OCB**              | OCB  |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward |
+| **VietinBank (CTG)** | ICB  |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward |
+| **VIB**              | VIB  |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward |
+| **Sacombank**        | STB  |   Yes    |    No    |    Yes    | OpenBanking, Sync inward |
+| **VPBank**           | VPB  |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward |
 
 ---
 
@@ -40,7 +43,15 @@ This means you don't need to manually reconcile payments — everything is autom
 When connecting a bank, you'll choose between:
 
 - **Personal** — for individual bank accounts
-- **Business** — for company accounts (ACB and MB Bank only; BIDV, OCB, and VietinBank are personal only)
+- **Business** — for company accounts
+- **Household Business** — for household business (hộ kinh doanh) accounts
+
+Notes:
+
+- **Sacombank** does not support Business accounts; use Personal or Household Business.
+- **BIDV** and **VietinBank** Business connections require manual activation by ApiPay (signed API contract); Household Business is treated as Personal-like online flow.
+- **MB Bank**, **OCB**, **VIB**, and **VPBank** Business and Household Business connections require manual activation by ApiPay (signed API contract). Personal flows are fully online.
+- **ACB** Business uses ACB OneBiz credentials and is fully online.
 
 ### Statuses
 
@@ -48,11 +59,16 @@ After connecting, a bank account has one of these statuses:
 
 - **Active** — fully operational, receiving payments
 - **Pending** — OTP verified but final confirmation in progress
+- **Activation Requested** — manual activation queued (Business/Household for MB/OCB/VIB/VPB and Business for BIDV/VietinBank)
 - **Inactive** — temporarily disabled; payments won't be routed here
 
 ### Virtual Accounts (BIDV)
 
 BIDV supports **Virtual Account (VA)**. The system generates VAs based on a **Merchant ID** that you define. **Important:** Real-time notifications are only triggered when money is transferred directly to this Virtual Account.
+
+### VietQR (Sacombank, VPBank)
+
+Sacombank and VPBank payments use **VietQR**. ApiPay generates a VietQR for each payment request; customers scan and transfer with the embedded content code so ApiPay can match the transaction and fire the webhook in real time.
 
 ---
 

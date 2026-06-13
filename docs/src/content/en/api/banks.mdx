@@ -13,18 +13,27 @@ Base route:
 /v1/client/banks
 ```
 
+## API versions
+
+ApiPay exposes two versions of the bank management API:
+
+- **v1** (`/v1/client/banks`) — legacy flow keyed by `bankShortName`. Supports `ACB`, `BIDV`, `MBB`, `OCB`, `ICB`. Documented below.
+- **v2** (`/v2/client/banks`) — current flow keyed by `bankBin` (bank BIN code). Supports all 8 banks below including the newer **VIB**, **Sacombank**, and **VPBank** integrations, plus the `business-household-account` account type. See [v2 reference](#v10-v2-bank-flow-bankbin).
+
 ## Valid bank codes
 
-Use these `bankShortName` values to match the current backend logic:
+Use these `bankShortName` values for the v1 endpoints. New integrations (VIB, STB, VPB) and the `business-household-account` type are only available via v2 with `bankBin`.
 
-| Code   | Bank        | Status      |
-| ------ | ----------- | ----------- |
-| `ACB`  | ACB         | Supported   |
-| `BIDV` | BIDV        | Supported   |
-| `MBB`  | MB Bank     | Supported   |
-| `OCB`  | OCB         | Supported   |
-| `ICB`  | VietinBank  | Supported   |
-| `VCB`  | Vietcombank | Unavailable |
+| Code   | Bank        | BIN      | v1  | v2  | Account types                              |
+| ------ | ----------- | -------- | :-: | :-: | ------------------------------------------ |
+| `ACB`  | ACB         | `970416` | Yes | Yes | personal, business, household business     |
+| `MBB`  | MB Bank     | `970422` | Yes | Yes | personal, business, household business     |
+| `BIDV` | BIDV        | `970418` | Yes | Yes | personal, business, household business     |
+| `OCB`  | OCB         | `970448` | Yes | Yes | personal, business, household business     |
+| `ICB`  | VietinBank  | `970415` | Yes | Yes | personal, business, household business     |
+| `VIB`  | VIB         | `970441` | No  | Yes | personal, business, household business     |
+| `STB`  | Sacombank   | `970403` | No  | Yes | personal, household business (no business) |
+| `VPB`  | VPBank      | `970432` | No  | Yes | personal, business, household business     |
 
 ## 1. Connect a bank account
 
@@ -270,3 +279,106 @@ POST /v1/client/banks/remove-unconfirmed
 ```
 
 Use this endpoint to clean up `PENDING` or otherwise unconfirmed bank records.
+
+## 10. v2 bank flow (bankBin)
+
+The v2 endpoints replace `bankShortName` with `bankBin` and add the household-business flow plus support for **VIB**, **Sacombank**, and **VPBank**. The Dashboard "Add Bank" page uses these endpoints.
+
+### 10.1 Connect a bank account (v2)
+
+```bash
+POST /v2/client/banks
+```
+
+#### Request body
+
+```json
+{
+  "bankBin": "970422",
+  "bankName": "MB Bank",
+  "accountType": "personal-account",
+  "accountNumber": "24550721",
+  "accountName": "PHAM THANH DANH",
+  "mobile": "0858838502",
+  "identity": "012345678901"
+}
+```
+
+#### Fields
+
+- `bankBin`: BIN of the target bank. Supported: `970416` (ACB), `970422` (MBB), `970418` (BIDV), `970448` (OCB), `970415` (ICB), `970441` (VIB), `970432` (VPB), `970403` (STB).
+- `bankName`: full name of the bank (e.g., `MB Bank`).
+- `accountType`: one of `personal-account`, `business-account`, `business-household-account`.
+  - `STB` (Sacombank): only `personal-account` and `business-household-account` are accepted.
+- `accountNumber`: bank account number.
+- `accountName`: account holder name in CAPITAL LETTERS without accents.
+- `mobile`: phone number registered with the bank for OTP.
+- `identity`: CCCD (12 digits) for personal accounts on MBB, BIDV, ICB, VIB, STB, VPB; MST (Tax Code) for business / household business accounts. Not required for ACB.
+- `acbUserId`: required for `ACB` when `accountType` is `business-account` (ACB OneBiz username).
+- `merchantId`: required for `BIDV` personal accounts (Virtual Account merchant id).
+
+#### Response — OTP required (online flow)
+
+```json
+{
+  "OTP": 1,
+  "bank": {
+    "publicId": "bnk_abc123",
+    "status": "PENDING"
+  }
+}
+```
+
+Call **`POST /v2/client/banks/confirm-otp`** with the OTP received on `mobile`.
+
+#### Response — Manual activation queued
+
+```json
+{
+  "activationRequested": true,
+  "bank": {
+    "publicId": "bnk_abc123",
+    "status": "ACTIVATION_REQUESTED"
+  }
+}
+```
+
+Returned for connections that require ApiPay to sign an API contract before activation:
+
+- `MBB`, `OCB`, `VIB`, `VPB` with `business-account` or `business-household-account`
+- `BIDV`, `ICB` with `business-account`
+
+The ApiPay team contacts you to complete the contract, then transitions the bank to `ACTIVE`.
+
+### 10.2 Confirm OTP (v2)
+
+```bash
+POST /v2/client/banks/confirm-otp
+```
+
+```json
+{
+  "bankBin": "970422",
+  "accountNumber": "24550721",
+  "otpNumber": "123456"
+}
+```
+
+### 10.3 List available banks (v2)
+
+```bash
+GET /v2/client/banks/available
+```
+
+Returns the catalog of banks the user can connect, including `bankBin`, `bankName`, `shortName`, and logo URL. Use the response to render the bank picker.
+
+### 10.4 Other v2 endpoints
+
+The v2 controller mirrors v1 for the remaining operations, using `:publicId` for path params:
+
+- `GET /v2/client/banks` — list linked banks
+- `GET /v2/client/banks/summary` — summary counts
+- `GET /v2/client/banks/:publicId` — single bank
+- `PATCH /v2/client/banks/:id/status` — toggle ACTIVE/INACTIVE
+- `DELETE /v2/client/banks/:id` — disconnect (may require OTP)
+- `POST /v2/client/banks/:id/confirm-delete` — confirm disconnect OTP
