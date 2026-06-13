@@ -27,7 +27,7 @@ Việc kết nối ngân hàng trên ApiPay có 2 bước chính:
 1. **Chọn ngân hàng** và loại tài khoản (Cá nhân hoặc Doanh nghiệp)
 2. **Nhập thông tin tài khoản** và xác minh quyền sở hữu qua OTP
 
-Sau khi kết nối thành công, tài khoản sẽ xuất hiện trong phần **Ngân hàng** với trạng thái **Hoạt động**. Bạn có thể tạo yêu cầu thanh toán và nhận chuyển khoản sau vài giây.
+Sau khi kết nối thành công, tài khoản sẽ xuất hiện trong phần **Ngân hàng** với trạng thái **Hoạt động**. Bạn có thể tạo yêu cầu thanh toán và nhận chuyển khoản sau ~1-2 giây.
 
 **Danh sách ngân hàng được hỗ trợ:**
 
@@ -158,8 +158,8 @@ Không cần thêm trường nào ngoài các trường chung bên trên.
 
 #### Sacombank (STB) — Hộ kinh doanh
 
-| Trường bổ sung       | Mô tả                       |
-| -------------------- | --------------------------- |
+| Trường bổ sung       | Mô tả                        |
+| -------------------- | ---------------------------- |
 | **Mã số thuế (MST)** | Mã số thuế của hộ kinh doanh |
 
 > **Lưu ý Sacombank:** Sacombank hiện chưa hỗ trợ tài khoản Doanh nghiệp. Hãy dùng Cá nhân hoặc Hộ kinh doanh.
@@ -172,16 +172,16 @@ Không cần thêm trường nào ngoài các trường chung bên trên.
 
 #### VPBank — Doanh nghiệp / Hộ kinh doanh
 
-| Trường bổ sung       | Mô tả                                |
-| -------------------- | ------------------------------------ |
+| Trường bổ sung       | Mô tả                                     |
+| -------------------- | ----------------------------------------- |
 | **Mã số thuế (MST)** | Mã số thuế của công ty hoặc hộ kinh doanh |
 
 > **Kích hoạt thủ công:** VPBank Doanh nghiệp và Hộ kinh doanh được gửi để ApiPay kích hoạt thủ công sau khi ký hợp đồng API.
 
 #### MB Bank / OCB / VIB — Doanh nghiệp hoặc Hộ kinh doanh
 
-| Trường bổ sung       | Mô tả                                |
-| -------------------- | ------------------------------------ |
+| Trường bổ sung       | Mô tả                                     |
+| -------------------- | ----------------------------------------- |
 | **Mã số thuế (MST)** | Mã số thuế của công ty hoặc hộ kinh doanh |
 
 > **Kích hoạt thủ công:** MB Bank, OCB, VIB với tài khoản Doanh nghiệp và Hộ kinh doanh được gửi để ApiPay kích hoạt thủ công sau khi ký hợp đồng API.
@@ -261,16 +261,16 @@ Nếu muốn tạm ngừng nhận thanh toán qua một ngân hàng:
 
 ## Xử lý sự cố
 
-| Sự cố                                    | Giải pháp                                                                                                                           |
-| ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| Không nhận được OTP                      | Kiểm tra số điện thoại đã nhập có khớp với số đăng ký ở ngân hàng không. Chờ một chút rồi thử lại.                                  |
-| Mã OTP không đúng                        | Kiểm tra kỹ mã bạn nhập, gồm 6 chữ số.                                                                                              |
-| Không biết nhập gì vào Merchant ID       | Đây là mã định danh bạn tự chọn để tạo tài khoản ảo (ví dụ: tên shop hoặc mã khách hàng của bạn).                                   |
-| CCCD bị từ chối                          | Hãy nhập đúng 12 chữ số, không có khoảng trắng hay ký tự đặc biệt.                                                                  |
-| Ngân hàng hiển thị trạng thái "Đang chờ" | Sau khi liên kết, ngân hàng thường chuyển sang Hoạt động trong vài giây. Nếu vẫn Đang chờ, hãy tải lại trang.                       |
+| Sự cố                                    | Giải pháp                                                                                                                                                                   |
+| ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Không nhận được OTP                      | Kiểm tra số điện thoại đã nhập có khớp với số đăng ký ở ngân hàng không. Chờ một chút rồi thử lại.                                                                          |
+| Mã OTP không đúng                        | Kiểm tra kỹ mã bạn nhập, gồm 6 chữ số.                                                                                                                                      |
+| Không biết nhập gì vào Merchant ID       | Đây là mã định danh bạn tự chọn để tạo tài khoản ảo (ví dụ: tên shop hoặc mã khách hàng của bạn).                                                                           |
+| CCCD bị từ chối                          | Hãy nhập đúng 12 chữ số, không có khoảng trắng hay ký tự đặc biệt.                                                                                                          |
+| Ngân hàng hiển thị trạng thái "Đang chờ" | Sau khi liên kết, ngân hàng thường chuyển sang Hoạt động trong vài giây. Nếu vẫn Đang chờ, hãy tải lại trang.                                                               |
 | Ngân hàng hiển thị "Yêu cầu kích hoạt"   | Đây là trạng thái bình thường cho luồng thủ công (MB/OCB/VIB/VPB Doanh nghiệp/Hộ kinh doanh, BIDV/VietinBank Doanh nghiệp). ApiPay sẽ liên hệ ký hợp đồng API và kích hoạt. |
-| Số tài khoản đã được liên kết            | Mỗi tài khoản ngân hàng chỉ có thể liên kết một lần. Nếu thấy lỗi này, tài khoản có thể đã được liên kết với tài khoản ApiPay khác. |
-| Loại tài khoản không khả dụng            | Sacombank hiện không hỗ trợ tài khoản Doanh nghiệp — hãy dùng Cá nhân hoặc Hộ kinh doanh.                                          |
+| Số tài khoản đã được liên kết            | Mỗi tài khoản ngân hàng chỉ có thể liên kết một lần. Nếu thấy lỗi này, tài khoản có thể đã được liên kết với tài khoản ApiPay khác.                                         |
+| Loại tài khoản không khả dụng            | Sacombank hiện không hỗ trợ tài khoản Doanh nghiệp — hãy dùng Cá nhân hoặc Hộ kinh doanh.                                                                                   |
 
 ---
 

@@ -7,7 +7,16 @@ description: Link your Vietnamese bank account to start receiving payments via A
 
 Connect a Vietnamese bank account to your ApiPay dashboard to start receiving real-time bank transfer payments. Once linked, ApiPay automatically syncs incoming transactions and delivers payment notifications via webhook.
 
-<iframe width="100%" height="315" src="https://www.youtube.com/embed/hstBeBMvwUM?si=LhJBZAJZheZORspg" title="How to Connect Banks on ApiPay" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe
+  width="100%"
+  height="315"
+  src="https://www.youtube.com/embed/hstBeBMvwUM?si=LhJBZAJZheZORspg"
+  title="How to Connect Banks on ApiPay"
+  frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+  referrerpolicy="strict-origin-when-cross-origin"
+  allowfullscreen
+></iframe>
 
 ---
 
@@ -18,7 +27,7 @@ Linking a bank account on ApiPay is a 2-step process:
 1. **Select your bank** and account type (Personal or Business)
 2. **Enter your account details** and verify ownership via OTP
 
-Once linked, your bank account appears in the **Banks** section of the dashboard with a status of **Active**. You can then create payment requests and receive transfers within 1-3 seconds.
+Once linked, your bank account appears in the **Banks** section of the dashboard with a status of **Active**. You can then create payment requests and receive transfers within 1-2 seconds.
 
 **Supported banks:**
 
@@ -87,11 +96,11 @@ Fill in the required fields. The fields shown depend on which bank you selected.
 
 #### Fields for All Banks
 
-| Field | Description |
-|-------|-------------|
-| **Account Name** | Your account holder name, written in CAPITAL LETTERS without accents |
-| **Account Number** | Your bank account number |
-| **Phone Number** | The phone number registered with your bank |
+| Field              | Description                                                          |
+| ------------------ | -------------------------------------------------------------------- |
+| **Account Name**   | Your account holder name, written in CAPITAL LETTERS without accents |
+| **Account Number** | Your bank account number                                             |
+| **Phone Number**   | The phone number registered with your bank                           |
 
 #### ACB — Personal Account
 
@@ -99,29 +108,29 @@ No additional fields required beyond the base fields above.
 
 #### ACB — Business Account
 
-| Additional Field | Description |
-|-----------------|-------------|
+| Additional Field        | Description                    |
+| ----------------------- | ------------------------------ |
 | **ACB OneBiz Username** | Your ACB OneBiz login username |
 
 #### MB Bank — Personal Account
 
-| Additional Field | Description |
-|-----------------|-------------|
+| Additional Field          | Description                                             |
+| ------------------------- | ------------------------------------------------------- |
 | **CCCD / ID Card Number** | Your 12-digit CCCD number (Citizen Identification Card) |
 
 #### MB Bank — Business Account
 
-| Additional Field | Description |
-|-----------------|-------------|
+| Additional Field   | Description                              |
+| ------------------ | ---------------------------------------- |
 | **Tax Code (MST)** | Your company's Tax Identification Number |
 
 #### BIDV — Personal Account
 
-| Additional Field | Description |
-|-----------------|-------------|
-| **Merchant ID** | A custom code you enter to generate your virtual account (e.g., `SHOP01`) |
-| **CCCD / ID Card Number** | Your 12-digit CCCD number |
-| **Account Email** | Your email address registered with BIDV |
+| Additional Field          | Description                                                               |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Merchant ID**           | A custom code you enter to generate your virtual account (e.g., `SHOP01`) |
+| **CCCD / ID Card Number** | Your 12-digit CCCD number                                                 |
+| **Account Email**         | Your email address registered with BIDV                                   |
 
 > **Note for BIDV:** The Merchant ID is a value you enter to create a Virtual Account (VA) based on your Merchant ID. **Important:** You must transfer money directly to this Virtual Account to receive payment notifications.
 
@@ -131,56 +140,56 @@ No additional fields required beyond the base fields above.
 
 #### VietinBank (CTG/ICB) — Personal Account
 
-| Additional Field | Description |
-|-----------------|-------------|
+| Additional Field          | Description                                             |
+| ------------------------- | ------------------------------------------------------- |
 | **CCCD / ID Card Number** | Your 12-digit CCCD number (Citizen Identification Card) |
 
 #### VIB — Personal Account
 
-| Additional Field | Description |
-|-----------------|-------------|
+| Additional Field          | Description               |
+| ------------------------- | ------------------------- |
 | **CCCD / ID Card Number** | Your 12-digit CCCD number |
 
 #### Sacombank (STB) — Personal Account
 
-| Additional Field | Description |
-|-----------------|-------------|
+| Additional Field          | Description               |
+| ------------------------- | ------------------------- |
 | **CCCD / ID Card Number** | Your 12-digit CCCD number |
 
 #### Sacombank (STB) — Household Business Account
 
-| Additional Field | Description |
-|-----------------|-------------|
+| Additional Field   | Description                                         |
+| ------------------ | --------------------------------------------------- |
 | **Tax Code (MST)** | Tax Identification Number of the household business |
 
 > **Note for Sacombank:** Company (Business) accounts are not currently supported. Use Personal or Household Business.
 
 #### VPBank — Personal Account
 
-| Additional Field | Description |
-|-----------------|-------------|
+| Additional Field          | Description               |
+| ------------------------- | ------------------------- |
 | **CCCD / ID Card Number** | Your 12-digit CCCD number |
 
 #### VPBank — Business / Household Business Account
 
-| Additional Field | Description |
-|-----------------|-------------|
+| Additional Field   | Description                                                    |
+| ------------------ | -------------------------------------------------------------- |
 | **Tax Code (MST)** | Tax Identification Number of the company or household business |
 
 > **Manual activation:** Business and Household Business connections for VPBank are submitted for manual activation. ApiPay enables the account after the API contract is signed.
 
 #### MB Bank / OCB / VIB — Business or Household Business
 
-| Additional Field | Description |
-|-----------------|-------------|
+| Additional Field   | Description                                                    |
+| ------------------ | -------------------------------------------------------------- |
 | **Tax Code (MST)** | Tax Identification Number of the company or household business |
 
 > **Manual activation:** Business and Household Business connections for MB Bank, OCB, and VIB are submitted for manual activation. ApiPay enables the account after the API contract is signed.
 
 #### BIDV / VietinBank — Business Account
 
-| Additional Field | Description |
-|-----------------|-------------|
+| Additional Field   | Description                              |
+| ------------------ | ---------------------------------------- |
 | **Tax Code (MST)** | Tax Identification Number of the company |
 
 > **Manual activation:** BIDV and VietinBank Business connections are submitted for manual activation. ApiPay enables the account after the API contract is signed.
@@ -252,16 +261,16 @@ If you want to temporarily stop receiving payments on a specific bank:
 
 ## Troubleshooting
 
-| Issue | Solution |
-|-------|----------|
-| OTP not received | Make sure the phone number you entered matches the number registered with your bank. Wait a moment and try again. |
-| OTP code incorrect | Double-check that you're entering the code sent to your phone. Codes are 6 digits. |
-| Not sure what to enter for Merchant ID | This is a custom identifier you choose to create your virtual account (e.g., your shop name). |
-| CCCD rejected | Make sure you enter exactly 12 digits without spaces or special characters. |
-| Bank shows "Pending" status | After linking, the bank should become Active within seconds. If it stays Pending, try refreshing the page. |
-| Bank shows "Activation Requested" | This is expected for manual-activation flows (MB/OCB/VIB/VPB Business or Household, BIDV/VietinBank Business). ApiPay will contact you to sign the API contract and activate the account. |
-| Account number already linked | Each bank account can only be linked once. If you see this error, the account may already be connected to another ApiPay account. |
-| Account type not available | Sacombank does not currently support Business accounts — use Personal or Household Business instead. |
+| Issue                                  | Solution                                                                                                                                                                                  |
+| -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| OTP not received                       | Make sure the phone number you entered matches the number registered with your bank. Wait a moment and try again.                                                                         |
+| OTP code incorrect                     | Double-check that you're entering the code sent to your phone. Codes are 6 digits.                                                                                                        |
+| Not sure what to enter for Merchant ID | This is a custom identifier you choose to create your virtual account (e.g., your shop name).                                                                                             |
+| CCCD rejected                          | Make sure you enter exactly 12 digits without spaces or special characters.                                                                                                               |
+| Bank shows "Pending" status            | After linking, the bank should become Active within seconds. If it stays Pending, try refreshing the page.                                                                                |
+| Bank shows "Activation Requested"      | This is expected for manual-activation flows (MB/OCB/VIB/VPB Business or Household, BIDV/VietinBank Business). ApiPay will contact you to sign the API contract and activate the account. |
+| Account number already linked          | Each bank account can only be linked once. If you see this error, the account may already be connected to another ApiPay account.                                                         |
+| Account type not available             | Sacombank does not currently support Business accounts — use Personal or Household Business instead.                                                                                      |
 
 ---
 
@@ -269,7 +278,16 @@ If you want to temporarily stop receiving payments on a specific bank:
 
 Watch the complete step-by-step guide:
 
-<iframe width="100%" height="315" src="https://www.youtube.com/embed/hstBeBMvwUM?si=LhJBZAJZheZORspg" title="How to Connect Banks on ApiPay" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe
+  width="100%"
+  height="315"
+  src="https://www.youtube.com/embed/hstBeBMvwUM?si=LhJBZAJZheZORspg"
+  title="How to Connect Banks on ApiPay"
+  frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+  referrerpolicy="strict-origin-when-cross-origin"
+  allowfullscreen
+></iframe>
 
 ---
 
