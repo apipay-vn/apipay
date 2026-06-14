@@ -79,6 +79,22 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.12.0',
+    date: '2026-06-14',
+    features: [
+      'Added bank connections for VIB, VietinBank, Sacombank, VPBank, and PGBank, expanding the choices available for automated bank-transfer payments.',
+      'Expanded connection options for personal, business, and household business accounts, subject to each bank’s supported account types.',
+    ],
+    fixes: [
+      'Improved bank identification consistency so incoming payments are matched to the correct connected bank more reliably.',
+    ],
+    improvements: [
+      'Made bank setup clearer with more specific requirements, verification guidance, and connection status messages for each supported bank.',
+      'Updated transaction processing guidance to approximately 1–2 seconds under normal bank and network conditions.',
+      'Expanded the bank API and webhook documentation with the current connection flow, supported account types, and integration examples.',
+    ],
+  },
+  {
     version: '1.11.1',
     date: '2026-06-10',
     features: [
@@ -382,6 +398,22 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.12.0',
+    date: '2026-06-14',
+    features: [
+      'Bổ sung kết nối VIB, VietinBank, Sacombank, VPBank và PGBank, mở rộng lựa chọn nhận thanh toán chuyển khoản tự động cho doanh nghiệp.',
+      'Mở rộng lựa chọn kết nối cho tài khoản cá nhân, doanh nghiệp và hộ kinh doanh, tùy theo loại tài khoản được từng ngân hàng hỗ trợ.',
+    ],
+    fixes: [
+      'Cải thiện độ chính xác khi nhận diện ngân hàng, giúp giao dịch tiền vào được ghi nhận đúng tài khoản đã kết nối ổn định hơn.',
+    ],
+    improvements: [
+      'Làm rõ quy trình kết nối với yêu cầu thông tin, hướng dẫn xác thực và trạng thái riêng cho từng ngân hàng được hỗ trợ.',
+      'Cập nhật thời gian xử lý giao dịch dự kiến khoảng 1–2 giây trong điều kiện ngân hàng và đường truyền ổn định.',
+      'Mở rộng tài liệu API ngân hàng và webhook với luồng kết nối hiện tại, loại tài khoản được hỗ trợ và ví dụ tích hợp.',
+    ],
+  },
   {
     version: '1.11.1',
     date: '2026-06-10',

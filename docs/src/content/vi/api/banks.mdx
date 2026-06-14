@@ -18,22 +18,23 @@ Base route:
 ApiPay cung cấp hai phiên bản API quản lý ngân hàng:
 
 - **v1** (`/v1/client/banks`) — luồng cũ dùng `bankShortName`. Hỗ trợ `ACB`, `BIDV`, `MBB`, `OCB`, `ICB`. Tài liệu bên dưới.
-- **v2** (`/v2/client/banks`) — luồng hiện tại dùng `bankBin` (mã BIN ngân hàng). Hỗ trợ đầy đủ 8 ngân hàng bên dưới gồm **VIB**, **Sacombank**, **VPBank** và loại tài khoản `business-household-account`. Xem [tài liệu v2](#10-luồng-ngân-hàng-v2-bankbin).
+- **v2** (`/v2/client/banks`) — luồng hiện tại dùng `bankBin` (mã BIN ngân hàng). Hỗ trợ đầy đủ 9 ngân hàng bên dưới gồm **VIB**, **Sacombank**, **VPBank**, **PGBank** và loại tài khoản `business-household-account`. Xem [tài liệu v2](#10-luồng-ngân-hàng-v2-bankbin).
 
 ## Mã ngân hàng hợp lệ
 
 Dùng `bankShortName` bên dưới cho v1. Các tích hợp mới (VIB, STB, VPB) và loại `business-household-account` chỉ có ở v2 qua `bankBin`.
 
-| Mã     | Ngân hàng  | BIN      | v1  | v2  | Loại tài khoản                            |
-| ------ | ---------- | -------- | :-: | :-: | ----------------------------------------- |
-| `ACB`  | ACB        | `970416` | Có  | Có  | cá nhân, doanh nghiệp, hộ kinh doanh      |
-| `MBB`  | MB Bank    | `970422` | Có  | Có  | cá nhân, doanh nghiệp, hộ kinh doanh      |
-| `BIDV` | BIDV       | `970418` | Có  | Có  | cá nhân, doanh nghiệp, hộ kinh doanh      |
-| `OCB`  | OCB        | `970448` | Có  | Có  | cá nhân, doanh nghiệp, hộ kinh doanh      |
-| `ICB`  | VietinBank | `970415` | Có  | Có  | cá nhân, doanh nghiệp, hộ kinh doanh      |
-| `VIB`  | VIB        | `970441` | Không | Có | cá nhân, doanh nghiệp, hộ kinh doanh    |
-| `STB`  | Sacombank  | `970403` | Không | Có | cá nhân, hộ kinh doanh (không có doanh nghiệp) |
-| `VPB`  | VPBank     | `970432` | Không | Có | cá nhân, doanh nghiệp, hộ kinh doanh    |
+| Mã     | Ngân hàng  | BIN      |  v1   | v2  | Loại tài khoản                                 |
+| ------ | ---------- | -------- | :---: | :-: | ---------------------------------------------- |
+| `ACB`  | ACB        | `970416` |  Có   | Có  | cá nhân, doanh nghiệp, hộ kinh doanh           |
+| `MBB`  | MB Bank    | `970422` |  Có   | Có  | cá nhân, doanh nghiệp, hộ kinh doanh           |
+| `BIDV` | BIDV       | `970418` |  Có   | Có  | cá nhân, doanh nghiệp, hộ kinh doanh           |
+| `OCB`  | OCB        | `970448` |  Có   | Có  | cá nhân, doanh nghiệp, hộ kinh doanh           |
+| `ICB`  | VietinBank | `970415` |  Có   | Có  | cá nhân, doanh nghiệp, hộ kinh doanh           |
+| `VIB`  | VIB        | `970441` | Không | Có  | cá nhân, doanh nghiệp, hộ kinh doanh           |
+| `STB`  | Sacombank  | `970403` | Không | Có  | cá nhân, hộ kinh doanh (không có doanh nghiệp) |
+| `VPB`  | VPBank     | `970432` | Không | Có  | cá nhân, doanh nghiệp, hộ kinh doanh           |
+| `PGB`  | PGBank     | `970430` | Không | Có  | cá nhân, doanh nghiệp, hộ kinh doanh           |
 
 ## 1. Kết nối tài khoản ngân hàng
 
@@ -282,7 +283,7 @@ Endpoint này dùng để dọn record `PENDING` hoặc record chưa hoàn tất
 
 ## 10. Luồng ngân hàng v2 (bankBin)
 
-Các endpoint v2 thay `bankShortName` bằng `bankBin`, bổ sung luồng hộ kinh doanh và hỗ trợ **VIB**, **Sacombank**, **VPBank**. Trang "Thêm ngân hàng" trên Dashboard dùng các endpoint này.
+Các endpoint v2 thay `bankShortName` bằng `bankBin`, bổ sung luồng hộ kinh doanh và hỗ trợ **VIB**, **Sacombank**, **VPBank**, **PGBank**. Trang "Thêm ngân hàng" trên Dashboard dùng các endpoint này.
 
 ### 10.1 Kết nối tài khoản ngân hàng (v2)
 
@@ -306,14 +307,14 @@ POST /v2/client/banks
 
 #### Field
 
-- `bankBin`: mã BIN của ngân hàng. Hỗ trợ: `970416` (ACB), `970422` (MBB), `970418` (BIDV), `970448` (OCB), `970415` (ICB), `970441` (VIB), `970432` (VPB), `970403` (STB).
+- `bankBin`: mã BIN của ngân hàng. Hỗ trợ: `970416` (ACB), `970422` (MBB), `970418` (BIDV), `970448` (OCB), `970415` (ICB), `970441` (VIB), `970432` (VPB), `970403` (STB), `970430` (PGB).
 - `bankName`: tên đầy đủ của ngân hàng (ví dụ `MB Bank`).
 - `accountType`: `personal-account`, `business-account`, hoặc `business-household-account`.
   - `STB` (Sacombank): chỉ chấp nhận `personal-account` và `business-household-account`.
 - `accountNumber`: số tài khoản ngân hàng.
 - `accountName`: tên chủ tài khoản, IN HOA không dấu.
 - `mobile`: số điện thoại đăng ký với ngân hàng để nhận OTP.
-- `identity`: CCCD (12 chữ số) cho tài khoản cá nhân của MBB, BIDV, ICB, VIB, STB, VPB; MST cho tài khoản doanh nghiệp / hộ kinh doanh. ACB không cần.
+- `identity`: CCCD (12 chữ số) cho tài khoản cá nhân của MBB, BIDV, ICB, VIB, STB, VPB, PGB; MST cho tài khoản doanh nghiệp / hộ kinh doanh. ACB không cần.
 - `acbUserId`: bắt buộc khi `bankBin` = `970416` (ACB) và `accountType` = `business-account` (tên đăng nhập ACB OneBiz).
 - `merchantId`: bắt buộc cho `BIDV` cá nhân (Merchant ID của tài khoản ảo).
 

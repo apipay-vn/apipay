@@ -83,6 +83,7 @@ ApiPay hỗ trợ các ngân hàng lớn tại Việt Nam:
 - VIB
 - Sacombank (STB)
 - VPBank (VPB)
+- PGBank (PGB)
 
 ### Quy trình kết nối
 
@@ -139,21 +140,18 @@ Bạn sẽ nhận được link thanh toán để gửi cho khách.
 ### Qua API
 
 ```javascript
-const response = await fetch(
-	"https://app.apipay.vn/v1/client/payment-requests",
-	{
-		method: "POST",
-		headers: {
-			Authorization: "Bearer <Auth>",
-			"Content-Type": "application/json",
-		},
-		body: JSON.stringify({
-			bankPublicId: "your-bank-id",
-			amount: 100000,
-			content: "ORDER-12345",
-		}),
-	},
-);
+const response = await fetch('https://app.apipay.vn/v1/client/payment-requests', {
+  method: 'POST',
+  headers: {
+    Authorization: 'Bearer <Auth>',
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    bankPublicId: 'your-bank-id',
+    amount: 100000,
+    content: 'ORDER-12345',
+  }),
+});
 
 const {payUrl, qrUrl} = await response.json();
 // Chia sẻ payUrl hoặc qrUrl với khách hàng

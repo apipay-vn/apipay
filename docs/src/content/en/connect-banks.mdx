@@ -31,16 +31,17 @@ Once linked, your bank account appears in the **Banks** section of the dashboard
 
 **Supported banks:**
 
-| Bank                 | Personal | Business | Household | Features                         |
-| -------------------- | :------: | :------: | :-------: | -------------------------------- |
-| **ACB**              |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward/outward |
-| **MB Bank**          |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward/outward |
-| **BIDV**             |   Yes    |   Yes    |    Yes    | OpenBanking, Virtual Account     |
-| **OCB**              |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward/outward |
-| **VietinBank (CTG)** |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward/outward |
-| **VIB**              |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward/outward |
-| **Sacombank**        |   Yes    |    No    |    Yes    | OpenBanking, VietQR              |
-| **VPBank**           |   Yes    |   Yes    |    Yes    | OpenBanking, VietQR              |
+| Bank                 | Personal | Business | Household | Features                 |
+| -------------------- | :------: | :------: | :-------: | ------------------------ |
+| **ACB**              |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward |
+| **MB Bank**          |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward |
+| **BIDV**             |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward |
+| **OCB**              |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward |
+| **VietinBank (CTG)** |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward |
+| **VIB**              |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward |
+| **Sacombank**        |   Yes    |    No    |    Yes    | OpenBanking, Sync inward |
+| **VPBank**           |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward |
+| **PGBank**           |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward |
 
 ---
 
@@ -52,10 +53,11 @@ Before linking a bank account, make sure you have:
 - An active Vietnamese bank account from the supported list above
 - The phone number registered with your bank (for OTP verification)
 - For **BIDV** Personal: a custom Merchant ID for virtual account setup
-- For **MB Bank**, **VietinBank**, **VIB**, **Sacombank**, **VPBank** Personal: your CCCD/ID card number (12 digits)
+- For **MB Bank**, **VietinBank**, **VIB**, **Sacombank**, **VPBank**, **PGBank** Personal: your CCCD/ID card number (12 digits)
 - For Business or Household Business accounts: your company/household Tax Code (MST)
 - For **ACB Business**: an ACB OneBiz username
 - For **MB Bank**, **OCB**, **VIB**, **VPBank** Business or Household, and **BIDV**/**VietinBank** Business: a signed API contract — these connections are manually activated by ApiPay after submission
+- **PGBank**: all account types are fully online, no signed API contract required
 
 ---
 
@@ -83,7 +85,7 @@ Most banks support three account types. Pick the one that matches your account:
 
 Per-bank availability:
 
-- **ACB**, **MB Bank**, **BIDV**, **OCB**, **VietinBank**, **VIB**, **VPBank** — Personal, Business, Household Business
+- **ACB**, **MB Bank**, **BIDV**, **OCB**, **VietinBank**, **VIB**, **VPBank**, **PGBank** — Personal, Business, Household Business
 - **Sacombank** — Personal, Household Business (Business not supported)
 
 > **Manual activation notice.** If you choose Business or Household Business on **MB Bank**, **OCB**, **VIB**, or **VPBank**, or Business on **BIDV** or **VietinBank**, the connection is submitted as an activation request. ApiPay enables the account after the API contract is signed; you'll see an **Activation Requested** status until then.
@@ -177,6 +179,20 @@ No additional fields required beyond the base fields above.
 | **Tax Code (MST)** | Tax Identification Number of the company or household business |
 
 > **Manual activation:** Business and Household Business connections for VPBank are submitted for manual activation. ApiPay enables the account after the API contract is signed.
+
+#### PGBank — Personal Account
+
+| Additional Field          | Description               |
+| ------------------------- | ------------------------- |
+| **CCCD / ID Card Number** | Your 12-digit CCCD number |
+
+#### PGBank — Business / Household Business Account
+
+| Additional Field   | Description                                                    |
+| ------------------ | -------------------------------------------------------------- |
+| **Tax Code (MST)** | Tax Identification Number of the company or household business |
+
+> **Note:** All PGBank account types (Personal, Business, Household Business) are processed fully online with no manual activation required.
 
 #### MB Bank / OCB / VIB — Business or Household Business
 
