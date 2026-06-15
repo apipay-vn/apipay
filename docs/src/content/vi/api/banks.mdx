@@ -5,112 +5,116 @@ description: API kết nối và quản lý tài khoản ngân hàng
 
 # Quản lý ngân hàng
 
-Trang này mô tả API dùng để kết nối, xác thực và quản lý tài khoản ngân hàng trên ApiPay.
+Dùng API quản lý ngân hàng để lấy danh sách ngân hàng hỗ trợ, kết nối tài khoản, hoàn tất xác thực và quản lý các tài khoản đã liên kết.
 
 Base route:
 
 ```bash
-/v1/client/banks
+/v2/client/banks
 ```
 
-## Phiên bản API
+## Ngân hàng hỗ trợ
 
-ApiPay cung cấp hai phiên bản API quản lý ngân hàng:
+| Ngân hàng  | Mã ngắn | BIN      | Loại tài khoản                       |
+| ---------- | ------- | -------- | ------------------------------------ |
+| ACB        | `ACB`   | `970416` | cá nhân, doanh nghiệp, hộ kinh doanh |
+| MB Bank    | `MBB`   | `970422` | cá nhân, doanh nghiệp, hộ kinh doanh |
+| BIDV       | `BIDV`  | `970418` | cá nhân, doanh nghiệp, hộ kinh doanh |
+| OCB        | `OCB`   | `970448` | cá nhân, doanh nghiệp, hộ kinh doanh |
+| VietinBank | `ICB`   | `970415` | cá nhân, doanh nghiệp, hộ kinh doanh |
+| VIB        | `VIB`   | `970441` | cá nhân, doanh nghiệp, hộ kinh doanh |
+| Sacombank  | `STB`   | `970403` | cá nhân, hộ kinh doanh               |
+| VPBank     | `VPB`   | `970432` | cá nhân, doanh nghiệp, hộ kinh doanh |
+| PGBank     | `PGB`   | `970430` | cá nhân, doanh nghiệp, hộ kinh doanh |
 
-- **v1** (`/v1/client/banks`) — luồng cũ dùng `bankShortName`. Hỗ trợ `ACB`, `BIDV`, `MBB`, `OCB`, `ICB`. Tài liệu bên dưới.
-- **v2** (`/v2/client/banks`) — luồng hiện tại dùng `bankBin` (mã BIN ngân hàng). Hỗ trợ đầy đủ 9 ngân hàng bên dưới gồm **VIB**, **Sacombank**, **VPBank**, **PGBank** và loại tài khoản `business-household-account`. Xem [tài liệu v2](#10-luồng-ngân-hàng-v2-bankbin).
+Dùng `GET /v2/client/banks/available` để lấy danh sách ngân hàng hiện có trước khi hiển thị bộ chọn ngân hàng.
 
-## Mã ngân hàng hợp lệ
-
-Dùng `bankShortName` bên dưới cho v1. Các tích hợp mới (VIB, STB, VPB) và loại `business-household-account` chỉ có ở v2 qua `bankBin`.
-
-| Mã     | Ngân hàng  | BIN      |  v1   | v2  | Loại tài khoản                                 |
-| ------ | ---------- | -------- | :---: | :-: | ---------------------------------------------- |
-| `ACB`  | ACB        | `970416` |  Có   | Có  | cá nhân, doanh nghiệp, hộ kinh doanh           |
-| `MBB`  | MB Bank    | `970422` |  Có   | Có  | cá nhân, doanh nghiệp, hộ kinh doanh           |
-| `BIDV` | BIDV       | `970418` |  Có   | Có  | cá nhân, doanh nghiệp, hộ kinh doanh           |
-| `OCB`  | OCB        | `970448` |  Có   | Có  | cá nhân, doanh nghiệp, hộ kinh doanh           |
-| `ICB`  | VietinBank | `970415` |  Có   | Có  | cá nhân, doanh nghiệp, hộ kinh doanh           |
-| `VIB`  | VIB        | `970441` | Không | Có  | cá nhân, doanh nghiệp, hộ kinh doanh           |
-| `STB`  | Sacombank  | `970403` | Không | Có  | cá nhân, hộ kinh doanh (không có doanh nghiệp) |
-| `VPB`  | VPBank     | `970432` | Không | Có  | cá nhân, doanh nghiệp, hộ kinh doanh           |
-| `PGB`  | PGBank     | `970430` | Không | Có  | cá nhân, doanh nghiệp, hộ kinh doanh           |
-
-## 1. Kết nối tài khoản ngân hàng
+## 1. Lấy danh sách ngân hàng khả dụng
 
 ```bash
-POST /v1/client/banks
+GET /v2/client/banks/available
+```
+
+### Response
+
+```json
+{
+  "status": true,
+  "message": [
+    {
+      "bankCode": "MBB",
+      "bankName": "MB Bank",
+      "bankBin": "970422",
+      "shortName": "MBB",
+      "logoUrl": "https://example.com/mbbank.png"
+    }
+  ]
+}
+```
+
+## 2. Kết nối tài khoản ngân hàng
+
+```bash
+POST /v2/client/banks
 ```
 
 ### Request body
 
 ```json
 {
-  "type": "openapi",
-  "bankShortName": "MBB",
+  "bankBin": "970422",
+  "bankName": "MB Bank",
+  "accountType": "personal-account",
   "accountNumber": "24550721",
-  "accName": "PHAM THANH DANH",
-  "accMobile": "0858838502",
-  "cccd": "012345678901"
+  "accountName": "PHAM THANH DANH",
+  "mobile": "0858838502",
+  "identity": "012345678901"
 }
 ```
 
-### Tài khoản ngân hàng doanh nghiệp
+### Field
 
-Với tài khoản doanh nghiệp, gửi thêm `accountType: "BUSINESS"`.
+| Field           | Kiểu   | Bắt buộc        | Mô tả                                                                        |
+| --------------- | ------ | --------------- | ---------------------------------------------------------------------------- |
+| `bankBin`       | string | Có              | Mã BIN từ endpoint danh sách ngân hàng khả dụng                               |
+| `bankName`      | string | Có              | Tên hiển thị của ngân hàng                                                    |
+| `accountType`   | string | Có              | `personal-account`, `business-account` hoặc `business-household-account`      |
+| `accountNumber` | string | Có              | Số tài khoản ngân hàng                                                        |
+| `accountName`   | string | Có              | Tên chủ tài khoản, viết hoa không dấu                                         |
+| `mobile`        | string | Có              | Số điện thoại đăng ký với ngân hàng                                           |
+| `identity`      | string | Trừ ACB         | CCCD cho tài khoản cá nhân, hoặc mã số thuế cho tài khoản doanh nghiệp        |
+| `acbUserId`     | string | Theo điều kiện  | Tên đăng nhập ACB OneBiz cho tài khoản doanh nghiệp và hộ kinh doanh ACB      |
+| `merchantId`    | string | Theo điều kiện  | Mã merchant khi cấu hình kết nối ngân hàng yêu cầu                            |
+| `shopId`        | string | Theo điều kiện  | Mã cửa hàng khi cấu hình kết nối ngân hàng yêu cầu                            |
 
-Tài khoản doanh nghiệp ACB Onebiz cần thêm `username` internet banking:
+Sacombank hỗ trợ `personal-account` và `business-household-account`.
 
-```json
-{
-  "type": "openapi",
-  "bankShortName": "ACB",
-  "accountNumber": "24550721",
-  "accName": "PHAM THANH DANH",
-  "accMobile": "0858838502",
-  "accountType": "BUSINESS",
-  "username": "internet_banking_user"
-}
-```
-
-Tài khoản doanh nghiệp MB Bank cần truyền MST (tax code) vào `cccd`:
-
-```json
-{
-  "type": "openapi",
-  "bankShortName": "MBB",
-  "accountNumber": "24550721",
-  "accName": "PHAM THANH DANH",
-  "accMobile": "0858838502",
-  "cccd": "012345678901",
-  "accountType": "BUSINESS"
-}
-```
-
-### Field quan trọng
-
-- `type`: `openapi`
-- `bankShortName`: một trong `BIDV`, `ACB`, `MBB`, `OCB`, `ICB`, `VCB`
-- `accountNumber`: số tài khoản ngân hàng
-- `accName`: tên chủ tài khoản
-- `accMobile`: số điện thoại dùng để xác thực
-- `cccd`: bắt buộc với `BIDV`, `MBB` và `ICB`
-- `merchantId`: bắt buộc với `BIDV`
-- `accEmail`: bắt buộc với `BIDV`
-- `accountType`: gửi `BUSINESS` với tài khoản ngân hàng doanh nghiệp được hỗ trợ
-- `username`: bắt buộc với `VCB` hoặc `ACB` khi `accountType` là `BUSINESS`
-- `password`: bắt buộc với `VCB`
-
-Với `OCB`, chỉ cần các field cơ bản: `type`, `bankShortName`, `accountNumber`, `accName` và `accMobile`.
-
-### Response
-
-ApiPay trả về kết quả của luồng kết nối ngân hàng, kèm bank record khi tạo mới hoặc tìm thấy record phù hợp.
+### Response khi cần OTP
 
 ```json
 {
   "status": true,
-  "message": "Bank account submitted successfully",
+  "OTP": 1,
+  "type": "openapi",
+  "message": "Vui lòng nhập mã OTP để hoàn tất liên kết tài khoản ngân hàng",
+  "bank": {
+    "publicId": "bnk_abc123",
+    "vaNumber": null,
+    "status": "PENDING"
+  }
+}
+```
+
+Gửi mã xác thực đến endpoint xác nhận OTP.
+
+### Response khi tài khoản đã hoạt động
+
+```json
+{
+  "status": true,
+  "OTP": 0,
+  "type": "openapi",
+  "message": "Liên kết tài khoản ngân hàng thành công",
   "bank": {
     "publicId": "bnk_abc123",
     "vaNumber": "DANH001",
@@ -119,36 +123,59 @@ ApiPay trả về kết quả của luồng kết nối ngân hàng, kèm bank r
 }
 ```
 
-Một số ngân hàng yêu cầu OTP. Khi đó response sẽ báo cần xác thực thêm, và hệ thống tạo bank record ở trạng thái `PENDING`.
+### Response khi cần kích hoạt thủ công
 
-## 2. Xác thực OTP khi kết nối
+```json
+{
+  "status": true,
+  "activationRequested": true,
+  "OTP": 0,
+  "type": "openapi",
+  "message": "Tài khoản đã được kết nối và đang chờ xác minh. Quá trình kích hoạt có thể mất đến 24 giờ.",
+  "bank": {
+    "publicId": "bnk_abc123",
+    "vaNumber": null,
+    "status": "PENDING"
+  }
+}
+```
+
+Kích hoạt thủ công áp dụng cho:
+
+- Tài khoản doanh nghiệp hoặc hộ kinh doanh của MB Bank, OCB, VIB và VPBank
+- Tài khoản doanh nghiệp của BIDV và VietinBank
+
+ApiPay sẽ liên hệ chủ tài khoản để hoàn tất kích hoạt.
+
+## 3. Xác nhận OTP
 
 ```bash
-POST /v1/client/banks/confirm-otp
+POST /v2/client/banks/confirm-otp
 ```
 
 ### Request body
 
 ```json
 {
-  "bankShortName": "MBB",
+  "bankBin": "970422",
   "accountNumber": "24550721",
-  "accountName": "PHAM THANH DANH",
-  "otp": "123456",
-  "type": "openapi"
+  "otpNumber": "123456"
 }
 ```
 
-### Ghi chú
+### Response
 
-- Dùng endpoint này khi bước kết nối yêu cầu OTP
-- `merchantId` có thể cần cho một số trường hợp như `BIDV`
-- Khi xác thực thành công, bank record chuyển từ `PENDING` sang `ACTIVE`
+```json
+{
+  "status": true,
+  "message": "Xác nhận ngân hàng thành công"
+}
+```
 
-## 3. Lấy danh sách tài khoản ngân hàng đã liên kết
+## 4. Lấy danh sách tài khoản ngân hàng đã liên kết
 
 ```bash
-GET /v1/client/banks
+GET /v2/client/banks
 ```
 
 ### Response
@@ -166,6 +193,7 @@ GET /v1/client/banks
       "accountName": "PHAM THANH DANH",
       "vaNumber": "DANH001",
       "status": "ACTIVE",
+      "manualActivationPending": false,
       "createdAt": "2026-04-25T10:00:00.000Z"
     }
   ]
@@ -174,14 +202,16 @@ GET /v1/client/banks
 
 ### Trạng thái tài khoản
 
-- `ACTIVE`: đang hoạt động
+- `ACTIVE`: đang hoạt động và có thể sử dụng
 - `INACTIVE`: đã tắt
-- `PENDING`: đang chờ OTP hoặc chưa hoàn tất liên kết
+- `PENDING`: đang chờ OTP hoặc kích hoạt thủ công
 
-## 4. Lấy chi tiết một tài khoản ngân hàng
+`manualActivationPending` là `true` trong thời gian ApiPay xử lý yêu cầu kích hoạt thủ công.
+
+## 5. Lấy chi tiết tài khoản ngân hàng
 
 ```bash
-GET /v1/client/banks/:publicId
+GET /v2/client/banks/:publicId
 ```
 
 ### Response thành công
@@ -191,14 +221,18 @@ GET /v1/client/banks/:publicId
   "status": true,
   "message": {
     "publicId": "bnk_abc123",
+    "bankName": "MB Bank",
     "bankShortName": "MBB",
     "accountNumber": "24550721",
-    "accountName": "PHAM THANH DANH"
+    "accountName": "PHAM THANH DANH",
+    "vaNumber": "DANH001",
+    "status": "ACTIVE",
+    "manualActivationPending": false
   }
 }
 ```
 
-### Nếu không tìm thấy
+### Response khi không tìm thấy
 
 ```json
 {
@@ -207,10 +241,10 @@ GET /v1/client/banks/:publicId
 }
 ```
 
-## 5. Lấy thống kê ngân hàng
+## 6. Lấy thống kê ngân hàng
 
 ```bash
-GET /v1/client/banks/summary
+GET /v2/client/banks/summary
 ```
 
 ### Response
@@ -224,36 +258,51 @@ GET /v1/client/banks/summary
 }
 ```
 
-## 6. Bật hoặc tắt trạng thái ngân hàng
+## 7. Bật hoặc tắt tài khoản ngân hàng
 
 ```bash
-PATCH /v1/client/banks/:id/status
+PATCH /v2/client/banks/:publicId/status
 ```
 
-Trong route này, `:id` là `publicId` của bank account.
+Endpoint chuyển trạng thái tài khoản giữa `ACTIVE` và `INACTIVE`.
 
-### Ghi chú
+### Response
 
-- Chỉ dùng với tài khoản đã liên kết đầy đủ
-- Nếu tài khoản chưa hoàn tất kích hoạt, API sẽ trả lỗi
-
-## 7. Ngắt kết nối tài khoản ngân hàng
-
-```bash
-DELETE /v1/client/banks/:id
+```json
+{
+  "status": true,
+  "message": "Cập nhật trạng thái ngân hàng thành công",
+  "newStatus": 1
+}
 ```
 
-Trong route này, `:id` là `publicId` của bank account.
+`newStatus` là `1` khi tài khoản hoạt động và `0` khi đã tắt. Không thể đổi trạng thái tài khoản đang chờ kích hoạt.
 
-### Ghi chú
-
-- Một số ngân hàng có thể yêu cầu OTP khi xóa
-- Nếu cần OTP, API sẽ yêu cầu xác thực thay vì xóa ngay
-
-## 8. Xác thực OTP khi ngắt kết nối
+## 8. Ngắt kết nối tài khoản ngân hàng
 
 ```bash
-POST /v1/client/banks/:id/confirm-delete
+DELETE /v2/client/banks/:publicId
+```
+
+Tài khoản được ngắt kết nối ngay, trừ khi ngân hàng yêu cầu xác nhận OTP.
+
+### Response khi cần OTP
+
+```json
+{
+  "status": true,
+  "OTP": 1,
+  "type": "openapi",
+  "message": "Vui lòng nhập mã OTP để xác nhận xóa ngân hàng"
+}
+```
+
+Không thể ngắt kết nối tài khoản đang chờ kích hoạt thủ công cho đến khi ApiPay xử lý xong yêu cầu.
+
+## 9. Xác nhận ngắt kết nối ngân hàng
+
+```bash
+POST /v2/client/banks/:publicId/confirm-delete
 ```
 
 ### Request body
@@ -264,122 +313,11 @@ POST /v1/client/banks/:id/confirm-delete
 }
 ```
 
-## 9. Xóa một ngân hàng chưa xác thực
-
-```bash
-POST /v1/client/banks/remove-unconfirmed
-```
-
-### Request body
+### Response
 
 ```json
 {
-  "bankShortName": "MBB",
-  "accountNumber": "24550721"
+  "status": true,
+  "message": "Xóa tài khoản ngân hàng thành công"
 }
 ```
-
-Endpoint này dùng để dọn record `PENDING` hoặc record chưa hoàn tất xác thực.
-
-## 10. Luồng ngân hàng v2 (bankBin)
-
-Các endpoint v2 thay `bankShortName` bằng `bankBin`, bổ sung luồng hộ kinh doanh và hỗ trợ **VIB**, **Sacombank**, **VPBank**, **PGBank**. Trang "Thêm ngân hàng" trên Dashboard dùng các endpoint này.
-
-### 10.1 Kết nối tài khoản ngân hàng (v2)
-
-```bash
-POST /v2/client/banks
-```
-
-#### Request body
-
-```json
-{
-  "bankBin": "970422",
-  "bankName": "MB Bank",
-  "accountType": "personal-account",
-  "accountNumber": "24550721",
-  "accountName": "PHAM THANH DANH",
-  "mobile": "0858838502",
-  "identity": "012345678901"
-}
-```
-
-#### Field
-
-- `bankBin`: mã BIN của ngân hàng. Hỗ trợ: `970416` (ACB), `970422` (MBB), `970418` (BIDV), `970448` (OCB), `970415` (ICB), `970441` (VIB), `970432` (VPB), `970403` (STB), `970430` (PGB).
-- `bankName`: tên đầy đủ của ngân hàng (ví dụ `MB Bank`).
-- `accountType`: `personal-account`, `business-account`, hoặc `business-household-account`.
-  - `STB` (Sacombank): chỉ chấp nhận `personal-account` và `business-household-account`.
-- `accountNumber`: số tài khoản ngân hàng.
-- `accountName`: tên chủ tài khoản, IN HOA không dấu.
-- `mobile`: số điện thoại đăng ký với ngân hàng để nhận OTP.
-- `identity`: CCCD (12 chữ số) cho tài khoản cá nhân của MBB, BIDV, ICB, VIB, STB, VPB, PGB; MST cho tài khoản doanh nghiệp / hộ kinh doanh. ACB không cần.
-- `acbUserId`: bắt buộc khi `bankBin` = `970416` (ACB) và `accountType` = `business-account` (tên đăng nhập ACB OneBiz).
-- `merchantId`: bắt buộc cho `BIDV` cá nhân (Merchant ID của tài khoản ảo).
-
-#### Response — Cần OTP (luồng trực tuyến)
-
-```json
-{
-  "OTP": 1,
-  "bank": {
-    "publicId": "bnk_abc123",
-    "status": "PENDING"
-  }
-}
-```
-
-Gọi **`POST /v2/client/banks/confirm-otp`** với OTP nhận được trên `mobile`.
-
-#### Response — Yêu cầu kích hoạt thủ công
-
-```json
-{
-  "activationRequested": true,
-  "bank": {
-    "publicId": "bnk_abc123",
-    "status": "ACTIVATION_REQUESTED"
-  }
-}
-```
-
-Trả về cho các kết nối cần ApiPay ký hợp đồng API trước khi kích hoạt:
-
-- `MBB`, `OCB`, `VIB`, `VPB` với `business-account` hoặc `business-household-account`
-- `BIDV`, `ICB` với `business-account`
-
-Đội ngũ ApiPay liên hệ hoàn tất hợp đồng rồi chuyển trạng thái ngân hàng sang `ACTIVE`.
-
-### 10.2 Xác thực OTP (v2)
-
-```bash
-POST /v2/client/banks/confirm-otp
-```
-
-```json
-{
-  "bankBin": "970422",
-  "accountNumber": "24550721",
-  "otpNumber": "123456"
-}
-```
-
-### 10.3 Danh sách ngân hàng khả dụng (v2)
-
-```bash
-GET /v2/client/banks/available
-```
-
-Trả về catalog ngân hàng người dùng có thể kết nối kèm `bankBin`, `bankName`, `shortName`, URL logo. Dùng response để hiển thị bộ chọn ngân hàng.
-
-### 10.4 Các endpoint v2 còn lại
-
-Controller v2 phản chiếu v1 cho các thao tác còn lại, dùng `:publicId` ở path:
-
-- `GET /v2/client/banks` — danh sách ngân hàng đã liên kết
-- `GET /v2/client/banks/summary` — thống kê
-- `GET /v2/client/banks/:publicId` — một ngân hàng
-- `PATCH /v2/client/banks/:id/status` — bật/tắt ACTIVE/INACTIVE
-- `DELETE /v2/client/banks/:id` — ngắt kết nối (có thể cần OTP)
-- `POST /v2/client/banks/:id/confirm-delete` — xác thực OTP ngắt kết nối
