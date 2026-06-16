@@ -1,6 +1,7 @@
 import chalk from "chalk";
 import {ApiKeyCommand} from "../../lib/base-command.js";
 import {formatBankLabel} from "../../lib/banks.js";
+import {fetchClientBanks} from "../../lib/client-banks.js";
 import {
 	createTable,
 	maskAccountNumber,
@@ -17,10 +18,7 @@ export default class BanksList extends ApiKeyCommand {
 		this.spinner.start("Fetching bank accounts...");
 
 		try {
-			const data = await this.api.get("/client/banks", "apikey");
-			const banks = Array.isArray(data)
-				? data
-				: (data?.message ?? data?.data ?? data);
+			const banks = await fetchClientBanks();
 
 			this.spinner.stop();
 

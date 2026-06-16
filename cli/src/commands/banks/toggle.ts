@@ -1,6 +1,7 @@
 import {Args} from "@oclif/core";
 import chalk from "chalk";
 import {ApiKeyCommand} from "../../lib/base-command.js";
+import {getClientBanksApi} from "../../lib/client-banks.js";
 import {statusBadge, success} from "../../lib/formatters.js";
 
 export default class BanksToggle extends ApiKeyCommand {
@@ -19,7 +20,7 @@ export default class BanksToggle extends ApiKeyCommand {
 		this.spinner.start("Toggling bank status...");
 
 		try {
-			const data = await this.api.patch(
+			const data = await getClientBanksApi().patch(
 				`/client/banks/${args.id}/status`,
 				undefined,
 				"apikey",

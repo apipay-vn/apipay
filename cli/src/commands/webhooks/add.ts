@@ -1,5 +1,6 @@
 import chalk from "chalk";
 import {ApiKeyCommand} from "../../lib/base-command.js";
+import {fetchClientBanks} from "../../lib/client-banks.js";
 import {markStepComplete} from "../../lib/config.js";
 import {kvLine, success, warn} from "../../lib/formatters.js";
 import {
@@ -24,10 +25,7 @@ export default class WebhooksAdd extends ApiKeyCommand {
 		this.spinner.start("Loading your bank accounts...");
 		let banks: any[];
 		try {
-			const data = await this.api.get("/client/banks", "apikey");
-			banks = Array.isArray(data)
-				? data
-				: (data?.message ?? data?.data ?? data);
+			banks = await fetchClientBanks();
 			this.spinner.stop();
 
 			if (!Array.isArray(banks) || banks.length === 0) {

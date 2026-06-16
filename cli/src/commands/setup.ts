@@ -1,6 +1,7 @@
 import chalk from 'chalk';
 import {BaseCommand} from '../lib/base-command.js';
 import {formatBankLabel} from '../lib/banks.js';
+import {fetchClientBanks} from '../lib/client-banks.js';
 import {getApiKey, getAuth, isLoggedIn, markStepComplete} from '../lib/config.js';
 import {SETUP_STEPS, type SetupStep} from '../lib/constants.js';
 import {
@@ -90,9 +91,7 @@ export default class Setup extends BaseCommand {
     let existingBanks: any[] = [];
     try {
       this.spinner.start('Checking existing bank accounts...');
-      const data = await this.api.get('/client/banks', 'apikey');
-      existingBanks = Array.isArray(data) ? data : (data?.message ?? data?.data ?? data ?? []);
-      if (!Array.isArray(existingBanks)) existingBanks = [];
+      existingBanks = await fetchClientBanks();
       this.spinner.stop();
     } catch (error: any) {
       this.spinner.stop();

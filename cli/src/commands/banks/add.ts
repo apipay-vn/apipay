@@ -1,9 +1,12 @@
 import chalk from "chalk";
 import {ApiKeyCommand} from "../../lib/base-command.js";
-import {ApiClient} from "../../lib/api-client.js";
-import {getApiBaseUrl, markStepComplete} from "../../lib/config.js";
+import {getClientBanksApi} from "../../lib/client-banks.js";
+import {markStepComplete} from "../../lib/config.js";
+import {getSupportedBank} from "../../lib/constants.js";
 import {info, kvLine, success} from "../../lib/formatters.js";
 import {
+	promptAccountType,
+	promptAcbUserId,
 	promptAccountName,
 	promptAccountNumber,
 	promptBankSelection,
@@ -25,19 +28,29 @@ export default class BanksAdd extends ApiKeyCommand {
 
 		// Step 1: Select bank
 		const bankShortName = await promptBankSelection();
+		const supportedBank = getSupportedBank(bankShortName);
+		if (!supportedBank) {
+			this.error(`Unsupported bank: ${bankShortName}`, {exit: 1});
+		}
 
 		// Step 2: Account details
 		const accountNumber = await promptAccountNumber(bankShortName);
 		const accName = await promptAccountName();
 		const accMobile = await promptMobile();
-		const usesV2Api = bankShortName === "ICB";
-		const api = usesV2Api
-			? new ApiClient(getApiBaseUrl().replace(/\/v1\/?$/, "/v2"))
-			: this.api;
+		const accountType = await promptAccountType(supportedBank);
+		const api = getClientBanksApi();
 
-		let cccd = undefined;
-		if (bankShortName === "MBB" || bankShortName === "ICB") {
-			cccd = await promptCccd();
+		let identity: string | undefined;
+		if (supportedBank.requiresIdentity) {
+			identity = await promptCccd();
+		}
+
+		let acbUserId: string | undefined;
+		if (
+			supportedBank.value === "ACB" &&
+			accountType !== "personal-account"
+		) {
+			acbUserId = await promptAcbUserId();
 		}
 
 		// Step 3: Submit to API
@@ -46,29 +59,21 @@ export default class BanksAdd extends ApiKeyCommand {
 		try {
 			const data = await api.post(
 				"/client/banks",
-				usesV2Api
-					? {
-							bankBin: "970415",
-							bankName: "VietinBank",
-							accountType: "personal-account",
-							accountNumber,
-							accountName: accName,
-							mobile: accMobile,
-							identity: cccd,
-						}
-					: {
-							type: "openapi",
-							bankShortName,
-							accountNumber,
-							accName,
-							accMobile,
-							...(cccd ? {cccd} : {}),
-						},
+				{
+					bankBin: supportedBank.bankBin,
+					bankName: supportedBank.bankName,
+					accountType,
+					accountNumber,
+					accountName: accName,
+					mobile: accMobile,
+					...(identity ? {identity} : {}),
+					...(acbUserId ? {acbUserId} : {}),
+				},
 				"apikey",
 			);
 
 			const result = data?.data ?? data;
-			const bank = result?.bank ?? result;
+			const createdBank = result?.bank ?? result;
 			this.spinner.succeed("Bank account submitted!");
 
 			// Check if OTP is required
@@ -85,19 +90,11 @@ export default class BanksAdd extends ApiKeyCommand {
 				try {
 					const otpResult = await api.post(
 						"/client/banks/confirm-otp",
-						usesV2Api
-							? {
-									bankBin: "970415",
-									accountNumber,
-									otpNumber: otp,
-								}
-							: {
-									type: "openapi",
-									bankShortName,
-									accountNumber,
-									accountName: accName,
-									otp,
-								},
+						{
+							bankBin: supportedBank.bankBin,
+							accountNumber,
+							otpNumber: otp,
+						},
 						"apikey",
 					);
 
@@ -105,6 +102,7 @@ export default class BanksAdd extends ApiKeyCommand {
 					this.spinner.succeed("Bank account verified!");
 					console.log("");
 					kvLine("Bank", bankShortName);
+					kvLine("Type", accountType);
 					kvLine("Account", accountNumber);
 					kvLine("Name", accName);
 					if (confirmed?.vaNumber) {
@@ -119,10 +117,11 @@ export default class BanksAdd extends ApiKeyCommand {
 			} else {
 				console.log("");
 				kvLine("Bank", bankShortName);
+				kvLine("Type", accountType);
 				kvLine("Account", accountNumber);
 				kvLine("Name", accName);
-				kvLine("Public ID", bank?.publicId ?? "—");
-				kvLine("Status", chalk.green(bank?.status ?? "ACTIVE"));
+				kvLine("Public ID", createdBank?.publicId ?? "—");
+				kvLine("Status", chalk.green(createdBank?.status ?? "ACTIVE"));
 				console.log("");
 			}
 
@@ -130,7 +129,7 @@ export default class BanksAdd extends ApiKeyCommand {
 			success("Bank account added successfully.");
 
 			if (this.jsonOutput) {
-				this.outputJson(bank);
+				this.outputJson(createdBank);
 			}
 		} catch (error: any) {
 			this.spinner.fail("Failed to add bank account. " + error?.message);

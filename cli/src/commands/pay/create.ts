@@ -1,5 +1,6 @@
 import chalk from "chalk";
 import {ApiKeyCommand} from "../../lib/base-command.js";
+import {fetchClientBanks} from "../../lib/client-banks.js";
 import {formatCurrency, kvLine, success} from "../../lib/formatters.js";
 import {
 	promptAmount,
@@ -22,11 +23,7 @@ export default class PayCreate extends ApiKeyCommand {
 		this.spinner.start("Fetching your bank accounts...");
 		let banks: any[] = [];
 		try {
-			const data = await this.api.get("/client/banks", "apikey");
-			banks = Array.isArray(data)
-				? data
-				: (data?.message ?? data?.data ?? data ?? []);
-			if (!Array.isArray(banks)) banks = [];
+			banks = await fetchClientBanks();
 			this.spinner.stop();
 		} catch (error: any) {
 			this.spinner.fail("Failed to fetch bank accounts.");

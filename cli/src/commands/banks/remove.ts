@@ -3,6 +3,7 @@ import {Args} from "@oclif/core";
 import chalk from "chalk";
 import {ApiKeyCommand} from "../../lib/base-command.js";
 import {formatBankLabel} from "../../lib/banks.js";
+import {fetchClientBanks, getClientBanksApi} from "../../lib/client-banks.js";
 import {
 	info,
 	maskAccountNumber,
@@ -39,12 +40,7 @@ export default class BanksRemove extends ApiKeyCommand {
 		if (!id) {
 			this.spinner.start("Fetching bank accounts...");
 			try {
-				const data = await this.api.get("/client/banks", "apikey");
-				let banks = Array.isArray(data)
-					? data
-					: (data?.message ?? data?.data ?? data);
-
-				if (!Array.isArray(banks)) banks = [];
+				const banks = await fetchClientBanks();
 
 				this.spinner.stop();
 
@@ -80,7 +76,8 @@ export default class BanksRemove extends ApiKeyCommand {
 		this.spinner.start("Removing bank account...");
 
 		try {
-			const data = await this.api.delete(`/client/banks/${id}`, "apikey");
+			const bankApi = getClientBanksApi();
+			const data = await bankApi.delete(`/client/banks/${id}`, "apikey");
 			const result = data?.data ?? data;
 
 			// Some banks require OTP confirmation for deletion
@@ -91,7 +88,7 @@ export default class BanksRemove extends ApiKeyCommand {
 				const otp = await promptOtp();
 
 				this.spinner.start("Confirming deletion...");
-				await this.api.post(
+				await bankApi.post(
 					`/client/banks/${id}/confirm-delete`,
 					{otp},
 					"apikey",

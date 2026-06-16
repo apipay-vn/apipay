@@ -51,7 +51,7 @@ apipay webhooks:add           # Register a webhook for notifications
 
 | Command | Description |
 |---------|-------------|
-| `apipay banks:add` | Add a bank account (BIDV, ACB, MB Bank, OCB) |
+| `apipay banks:add` | Add a supported bank account |
 | `apipay banks:list` | List connected bank accounts |
 | `apipay banks:toggle <ID>` | Toggle bank active/inactive |
 | `apipay banks:remove <ID>` | Remove a bank account |
@@ -116,10 +116,16 @@ apipay metrics:transactions --json --page 1 --limit 100
 
 ## Supported Banks
 
-- **BIDV** — Ngân hàng TMCP Đầu tư và Phát triển Việt Nam
 - **ACB** — Ngân hàng TMCP Á Châu
 - **MB Bank** — Ngân hàng TMCP Quân đội
+- **BIDV** — Ngân hàng TMCP Đầu tư và Phát triển Việt Nam
 - **OCB** — Ngân hàng TMCP Phương Đông
+- **VietinBank** — Ngân hàng TMCP Công Thương Việt Nam
+- **VIB** — Ngân hàng TMCP Quốc tế Việt Nam
+- **VPBank** — Ngân hàng TMCP Việt Nam Thịnh Vượng
+- **Sacombank** — Ngân hàng TMCP Sài Gòn Thương Tín
+- **PGBank** — Ngân hàng TMCP Thịnh Vượng và Phát Triển
+- **Shinhan Bank** — Ngân hàng TNHH MTV Shinhan Việt Nam
 
 ## Development
 

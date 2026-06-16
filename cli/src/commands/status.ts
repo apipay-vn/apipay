@@ -1,5 +1,6 @@
 import chalk from "chalk";
 import {BaseCommand} from "../lib/base-command.js";
+import {fetchClientBanks} from "../lib/client-banks.js";
 import {
 	getApiKey,
 	getAuth,
@@ -42,10 +43,7 @@ export default class Status extends BaseCommand {
 		// Banks & Webhooks — fetch from API if authenticated
 		if (apiKey?.accessKey && apiKey?.secretKey) {
 			try {
-				const bankData = await this.api.get("/client/banks", "apikey");
-				const banks = Array.isArray(bankData)
-					? bankData
-					: (bankData?.message ?? bankData?.data ?? bankData);
+				const banks = await fetchClientBanks();
 				if (Array.isArray(banks)) {
 					const active = banks.filter((b: any) => b.status === "ACTIVE").length;
 					const pending = banks.filter(

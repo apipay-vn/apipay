@@ -147,8 +147,11 @@ export function validateAccountName(input: string): string | true {
 
 export function validateCccd(input: string): string | true {
 	const trimmed = input.trim();
-	if (!trimmed) return "CCCD/Identity card is required";
-	if (trimmed.length < 9 || trimmed.length > 12)
-		return "CCCD/Identity card must be between 9 and 12 characters";
+	if (!trimmed) return "CCCD / tax code is required";
+	if (!/^[a-zA-Z0-9-]+$/.test(trimmed)) {
+		return "CCCD / tax code can only contain letters, numbers, and hyphens";
+	}
+	if (trimmed.length < 9 || trimmed.length > 14)
+		return "CCCD / tax code must be between 9 and 14 characters";
 	return true;
 }

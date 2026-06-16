@@ -1,6 +1,12 @@
 import {confirm, input, password, select} from "@inquirer/prompts";
 import {formatBankLabel} from "./banks.js";
-import {SUPPORTED_BANKS, WEBHOOK_TYPES} from "./constants.js";
+import {
+	ACCOUNT_TYPES,
+	type AccountType,
+	SUPPORTED_BANKS,
+	type SupportedBank,
+	WEBHOOK_TYPES,
+} from "./constants.js";
 import {
 	validateAccountName,
 	validateAccountNumber,
@@ -57,6 +63,20 @@ export async function promptBankSelection(): Promise<string> {
 	});
 }
 
+export async function promptAccountType(
+	bank: SupportedBank,
+): Promise<AccountType> {
+	return select({
+		message: "Account type:",
+		choices: ACCOUNT_TYPES.filter((type) =>
+			(bank.accountTypes as readonly string[]).includes(type.value),
+		).map((type) => ({
+			value: type.value,
+			name: type.name,
+		})),
+	});
+}
+
 export async function promptAccountNumber(
 	bankShortName?: string,
 ): Promise<string> {
@@ -89,8 +109,15 @@ export async function promptOtp(): Promise<string> {
 
 export async function promptCccd(): Promise<string> {
 	return input({
-		message: "CCCD/Identity card (linked to bank):",
+		message: "CCCD / tax code (linked to bank):",
 		validate: validateCccd,
+	});
+}
+
+export async function promptAcbUserId(): Promise<string> {
+	return input({
+		message: "ACB OneBiz username:",
+		validate: validateRequired("ACB OneBiz username"),
 	});
 }
 
