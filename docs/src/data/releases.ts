@@ -79,6 +79,15 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.12.1',
+    date: '2026-06-16',
+    features: [
+      'Added support for Shinhan and Co-opBank connections, giving merchants more options for receiving and tracking bank-transfer payments.',
+    ],
+    fixes: [],
+    improvements: [],
+  },
+  {
     version: '1.12.0',
     date: '2026-06-14',
     features: [
@@ -398,6 +407,15 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.12.1',
+    date: '2026-06-16',
+    features: [
+      'Bổ sung kết nối Shinhan và Co-opBank, giúp merchant có thêm lựa chọn nhận và theo dõi thanh toán chuyển khoản.',
+    ],
+    fixes: [],
+    improvements: [],
+  },
   {
     version: '1.12.0',
     date: '2026-06-14',
