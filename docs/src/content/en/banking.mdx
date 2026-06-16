@@ -64,10 +64,6 @@ After connecting, a bank account has one of these statuses:
 - **Activation Requested** — manual activation queued (Business/Household for MB/OCB/VIB/VPB and Business for BIDV/VietinBank)
 - **Inactive** — temporarily disabled; payments won't be routed here
 
-### Virtual Accounts (BIDV)
-
-BIDV supports **Virtual Account (VA)**. The system generates VAs based on a **Merchant ID** that you define. **Important:** Real-time notifications are only triggered when money is transferred directly to this Virtual Account.
-
 ### VietQR (Sacombank, VPBank)
 
 Sacombank and VPBank payments use **VietQR**. ApiPay generates a VietQR for each payment request; customers scan and transfer with the embedded content code so ApiPay can match the transaction and fire the webhook in real time.

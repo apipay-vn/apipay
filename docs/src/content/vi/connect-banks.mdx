@@ -52,7 +52,6 @@ Bạn cần chuẩn bị:
 - Tài khoản ApiPay
 - Tài khoản ngân hàng Việt Nam đang hoạt động thuộc danh sách hỗ trợ bên trên
 - Số điện thoại đã đăng ký với ngân hàng (để xác minh OTP)
-- Đối với **BIDV** Cá nhân: Mã Merchant ID để thiết lập tài khoản ảo (bạn tự nhập)
 - Đối với **MB Bank**, **VietinBank**, **VIB**, **Sacombank**, **VPBank**, **PGBank** Cá nhân: Số CCCD (12 chữ số)
 - Đối với tài khoản Doanh nghiệp hoặc Hộ kinh doanh: Mã số thuế (MST) của công ty/hộ kinh doanh
 - Đối với **ACB Doanh nghiệp**: Tên đăng nhập ACB OneBiz
@@ -130,11 +129,8 @@ Không cần thêm trường nào ngoài các trường chung bên trên.
 
 | Trường bổ sung      | Mô tả                                                            |
 | ------------------- | ---------------------------------------------------------------- |
-| **Mã Merchant ID**  | Mã Merchant ID bạn tự nhập để tạo tài khoản ảo (ví dụ: `SHOP01`) |
 | **CCCD**            | Số CCCD 12 chữ số                                                |
 | **Email tài khoản** | Địa chỉ email đã đăng ký với BIDV                                |
-
-> **Lưu ý cho BIDV:** Merchant ID là mã bạn tự nhập để hệ thống tạo Tài khoản ảo (VA). Bạn cần chuyển tiền đúng vào tài khoản ảo này thì hệ thống mới nhận được thông báo giao dịch.
 
 #### OCB — Tài khoản cá nhân
 
@@ -252,7 +248,6 @@ Sau khi liên kết ngân hàng thành công:
    - Tên chủ tài khoản
    - Số tài khoản (một phần bị ẩn)
    - Tên và logo ngân hàng
-   - Số tài khoản ảo (nếu có, ví dụ BIDV)
    - Trạng thái (Hoạt động / Không hoạt động)
    - Lịch sử giao dịch
 
@@ -281,7 +276,6 @@ Nếu muốn tạm ngừng nhận thanh toán qua một ngân hàng:
 | ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Không nhận được OTP                      | Kiểm tra số điện thoại đã nhập có khớp với số đăng ký ở ngân hàng không. Chờ một chút rồi thử lại.                                                                          |
 | Mã OTP không đúng                        | Kiểm tra kỹ mã bạn nhập, gồm 6 chữ số.                                                                                                                                      |
-| Không biết nhập gì vào Merchant ID       | Đây là mã định danh bạn tự chọn để tạo tài khoản ảo (ví dụ: tên shop hoặc mã khách hàng của bạn).                                                                           |
 | CCCD bị từ chối                          | Hãy nhập đúng 12 chữ số, không có khoảng trắng hay ký tự đặc biệt.                                                                                                          |
 | Ngân hàng hiển thị trạng thái "Đang chờ" | Sau khi liên kết, ngân hàng thường chuyển sang Hoạt động trong vài giây. Nếu vẫn Đang chờ, hãy tải lại trang.                                                               |
 | Ngân hàng hiển thị "Yêu cầu kích hoạt"   | Đây là trạng thái bình thường cho luồng thủ công (MB/OCB/VIB/VPB Doanh nghiệp/Hộ kinh doanh, BIDV/VietinBank Doanh nghiệp). ApiPay sẽ liên hệ ký hợp đồng API và kích hoạt. |
