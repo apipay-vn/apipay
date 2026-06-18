@@ -15,19 +15,19 @@ Base route:
 
 ## Supported banks
 
-| Bank       | Short name | BIN      | Account types                              |
-| ---------- | ---------- | -------- | ------------------------------------------ |
-| ACB        | `ACB`      | `970416` | personal, business, household business     |
-| MB Bank    | `MBB`      | `970422` | personal, business, household business     |
-| BIDV       | `BIDV`     | `970418` | personal, business, household business     |
-| OCB        | `OCB`      | `970448` | personal, business, household business     |
-| VietinBank | `ICB`      | `970415` | personal, business, household business     |
-| VIB        | `VIB`      | `970441` | personal, business, household business     |
-| Sacombank  | `STB`      | `970403` | personal, household business               |
-| VPBank     | `VPB`      | `970432` | personal, business, household business     |
-| PGBank     | `PGB`      | `970430` | personal, business, household business     |
-| Shinhan    | `SHBVN`    | `970424` | personal, business                         |
-| Co-opBank  | `COOPBANK` | `970446` | personal, business, household business     |
+| Bank       | Short name | BIN      | Account types                          |
+| ---------- | ---------- | -------- | -------------------------------------- |
+| ACB        | `ACB`      | `970416` | personal, business, household business |
+| MB Bank    | `MBB`      | `970422` | personal, business, household business |
+| BIDV       | `BIDV`     | `970418` | personal, business, household business |
+| OCB        | `OCB`      | `970448` | personal, business, household business |
+| VietinBank | `ICB`      | `970415` | business, household business           |
+| VIB        | `VIB`      | `970441` | personal, business, household business |
+| Sacombank  | `STB`      | `970403` | personal, household business           |
+| VPBank     | `VPB`      | `970432` | personal                               |
+| PGBank     | `PGB`      | `970430` | personal, business, household business |
+| Shinhan    | `SHBVN`    | `970424` | personal, business                     |
+| Co-opBank  | `COOPBANK` | `970446` | personal, business, household business |
 
 Use `GET /v2/client/banks/available` to retrieve the live bank catalog before showing a bank picker.
 
@@ -76,20 +76,23 @@ POST /v2/client/banks
 
 ### Fields
 
-| Field           | Type   | Required    | Description                                                                 |
-| --------------- | ------ | ----------- | --------------------------------------------------------------------------- |
-| `bankBin`       | string | Yes         | BIN returned by the available banks endpoint                                |
-| `bankName`      | string | Yes         | Bank display name                                                           |
-| `accountType`   | string | Yes         | `personal-account`, `business-account`, or `business-household-account`      |
-| `accountNumber` | string | Yes         | Bank account number                                                         |
-| `accountName`   | string | Yes         | Account holder name in uppercase without accents                            |
-| `mobile`        | string | Yes         | Phone number registered with the bank                                       |
-| `identity`      | string | Except ACB  | Citizen ID for personal accounts, or tax code for business account types    |
-| `acbUserId`     | string | Conditional | ACB OneBiz username for ACB business and household business accounts        |
-| `merchantId`    | string | Conditional | Merchant identifier when required for the configured bank connection        |
-| `shopId`        | string | Conditional | Shop identifier when required for the configured bank connection            |
+| Field           | Type   | Required    | Description                                                              |
+| --------------- | ------ | ----------- | ------------------------------------------------------------------------ |
+| `bankBin`       | string | Yes         | BIN returned by the available banks endpoint                             |
+| `bankName`      | string | Yes         | Bank display name                                                        |
+| `accountType`   | string | Yes         | `personal-account`, `business-account`, or `business-household-account`  |
+| `accountNumber` | string | Yes         | Bank account number                                                      |
+| `accountName`   | string | Yes         | Account holder name in uppercase without accents                         |
+| `mobile`        | string | Yes         | Phone number registered with the bank                                    |
+| `identity`      | string | Except ACB  | Citizen ID for personal accounts, or tax code for business account types |
+| `acbUserId`     | string | Conditional | ACB OneBiz username for ACB business and household business accounts     |
+| `merchantId`    | string | Conditional | Merchant identifier when required for the configured bank connection     |
+| `shopId`        | string | Conditional | Shop identifier when required for the configured bank connection         |
 
 Sacombank accepts `personal-account` and `business-household-account`.
+Shinhan accepts `personal-account` and `business-account`.
+VietinBank accepts `business-account` and `business-household-account` (personal accounts are not supported).
+VPBank accepts `personal-account` only (business and household business accounts are not supported).
 
 ### Response when OTP is required
 
@@ -144,7 +147,7 @@ Submit the verification code to the confirm OTP endpoint.
 
 Manual activation applies to:
 
-- MB Bank, OCB, VIB, and VPBank business or household business accounts
+- MB Bank, OCB, and VIB business or household business accounts
 - BIDV and VietinBank business accounts
 
 ApiPay contacts the account owner to complete activation.

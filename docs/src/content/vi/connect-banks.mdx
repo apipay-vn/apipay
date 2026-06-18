@@ -37,10 +37,10 @@ Sau khi kết nối thành công, tài khoản sẽ xuất hiện trong phần *
 | **MB Bank**          |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào |
 | **BIDV**             |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào |
 | **OCB**              |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào |
-| **VietinBank (CTG)** |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào |
+| **VietinBank (CTG)** |  Không  |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào |
 | **VIB**              |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào |
 | **Sacombank**        |   Có    |    Không     |      Có       | OpenBanking, Đồng bộ tiền vào |
-| **VPBank**           |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào |
+| **VPBank**           |   Có    |    Không     |     Không     | OpenBanking, Đồng bộ tiền vào |
 | **PGBank**           |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào |
 | **Co-opBank**        |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào |
 
@@ -53,11 +53,11 @@ Bạn cần chuẩn bị:
 - Tài khoản ApiPay
 - Tài khoản ngân hàng Việt Nam đang hoạt động thuộc danh sách hỗ trợ bên trên
 - Số điện thoại đã đăng ký với ngân hàng (để xác minh OTP)
-- Đối với **MB Bank**, **VietinBank**, **VIB**, **Sacombank**, **VPBank**, **PGBank** Cá nhân: Số CCCD (12 chữ số)
+- Đối với **MB Bank**, **VIB**, **Sacombank**, **VPBank**, **PGBank** Cá nhân: Số CCCD (12 chữ số)
 - Đối với tài khoản Doanh nghiệp hoặc Hộ kinh doanh: Mã số thuế (MST) của công ty/hộ kinh doanh
 - Đối với **ACB Doanh nghiệp**: Tên đăng nhập ACB OneBiz
-- Đối với **MB Bank**, **OCB**, **VIB**, **VPBank** Doanh nghiệp/Hộ kinh doanh và **BIDV**/**VietinBank** Doanh nghiệp: cần ký hợp đồng API — ApiPay sẽ kích hoạt thủ công sau khi nhận yêu cầu
-- **PGBank**, **Co-opBank**: tất cả loại tài khoản đều xử lý trực tuyến, không cần ký hợp đồng API
+- Đối với **MB Bank**, **OCB**, **VIB** Doanh nghiệp/Hộ kinh doanh và **BIDV**/**VietinBank** Doanh nghiệp: ApiPay sẽ kích hoạt thủ công sau khi nhận yêu cầu
+- **PGBank**, **Co-opBank**: tất cả loại tài khoản đều xử lý trực tuyến, không cần kích hoạt thủ công
 
 ---
 
@@ -85,10 +85,12 @@ Hầu hết các ngân hàng hỗ trợ ba loại tài khoản. Chọn loại ph
 
 Hỗ trợ theo từng ngân hàng:
 
-- **ACB**, **MB Bank**, **BIDV**, **OCB**, **VietinBank**, **VIB**, **VPBank**, **PGBank**, **Co-opBank** — Cá nhân, Doanh nghiệp, Hộ kinh doanh
+- **ACB**, **MB Bank**, **BIDV**, **OCB**, **VIB**, **PGBank**, **Co-opBank** — Cá nhân, Doanh nghiệp, Hộ kinh doanh
+- **VietinBank** — Doanh nghiệp, Hộ kinh doanh (chưa hỗ trợ Cá nhân)
+- **VPBank** — Cá nhân (chưa hỗ trợ Doanh nghiệp, Hộ kinh doanh)
 - **Sacombank** — Cá nhân, Hộ kinh doanh (chưa hỗ trợ Doanh nghiệp)
 
-> **Lưu ý kích hoạt thủ công.** Nếu chọn Doanh nghiệp hoặc Hộ kinh doanh trên **MB Bank**, **OCB**, **VIB**, **VPBank**, hoặc Doanh nghiệp trên **BIDV**, **VietinBank**, yêu cầu sẽ được gửi để ApiPay kích hoạt thủ công sau khi ký hợp đồng API. Trạng thái hiển thị **Yêu cầu kích hoạt** trong thời gian chờ. Co-opBank (tất cả loại tài khoản) và PGBank xử lý trực tuyến hoàn toàn, không cần kích hoạt thủ công.
+> **Lưu ý kích hoạt thủ công.** Nếu chọn Doanh nghiệp hoặc Hộ kinh doanh trên **MB Bank**, **OCB**, **VIB**, hoặc Doanh nghiệp trên **BIDV**, **VietinBank**, yêu cầu sẽ được gửi để ApiPay kích hoạt thủ công. Trạng thái hiển thị **Yêu cầu kích hoạt** trong thời gian chờ. Co-opBank (tất cả loại tài khoản) và PGBank xử lý trực tuyến hoàn toàn, không cần kích hoạt thủ công.
 
 Nhấn vào thẻ phù hợp với loại tài khoản của bạn để tiếp tục.
 
@@ -128,20 +130,14 @@ Không cần thêm trường nào ngoài các trường chung bên trên.
 
 #### BIDV — Tài khoản cá nhân
 
-| Trường bổ sung      | Mô tả                                                            |
-| ------------------- | ---------------------------------------------------------------- |
-| **CCCD**            | Số CCCD 12 chữ số                                                |
-| **Email tài khoản** | Địa chỉ email đã đăng ký với BIDV                                |
+| Trường bổ sung      | Mô tả                             |
+| ------------------- | --------------------------------- |
+| **CCCD**            | Số CCCD 12 chữ số                 |
+| **Email tài khoản** | Địa chỉ email đã đăng ký với BIDV |
 
 #### OCB — Tài khoản cá nhân
 
 Không cần thêm trường nào ngoài các trường chung bên trên.
-
-#### VietinBank (CTG/ICB) — Tài khoản cá nhân
-
-| Trường bổ sung | Mô tả                                         |
-| -------------- | --------------------------------------------- |
-| **CCCD**       | Số CCCD 12 chữ số của bạn (Căn cước công dân) |
 
 #### VIB — Tài khoản cá nhân
 
@@ -163,20 +159,6 @@ Không cần thêm trường nào ngoài các trường chung bên trên.
 
 > **Lưu ý Sacombank:** Sacombank hiện chưa hỗ trợ tài khoản Doanh nghiệp. Hãy dùng Cá nhân hoặc Hộ kinh doanh.
 
-#### VPBank — Tài khoản cá nhân
-
-| Trường bổ sung | Mô tả             |
-| -------------- | ----------------- |
-| **CCCD**       | Số CCCD 12 chữ số |
-
-#### VPBank — Doanh nghiệp / Hộ kinh doanh
-
-| Trường bổ sung       | Mô tả                                     |
-| -------------------- | ----------------------------------------- |
-| **Mã số thuế (MST)** | Mã số thuế của công ty hoặc hộ kinh doanh |
-
-> **Kích hoạt thủ công:** VPBank Doanh nghiệp và Hộ kinh doanh được gửi để ApiPay kích hoạt thủ công sau khi ký hợp đồng API.
-
 #### PGBank — Tài khoản cá nhân
 
 | Trường bổ sung | Mô tả             |
@@ -197,7 +179,7 @@ Không cần thêm trường nào ngoài các trường chung bên trên.
 | -------------------- | ----------------------------------------- |
 | **Mã số thuế (MST)** | Mã số thuế của công ty hoặc hộ kinh doanh |
 
-> **Kích hoạt thủ công:** MB Bank, OCB, VIB với tài khoản Doanh nghiệp và Hộ kinh doanh được gửi để ApiPay kích hoạt thủ công sau khi ký hợp đồng API.
+> **Kích hoạt thủ công:** MB Bank, OCB, VIB với tài khoản Doanh nghiệp và Hộ kinh doanh được gửi để ApiPay kích hoạt thủ công.
 
 #### BIDV / VietinBank — Doanh nghiệp
 
@@ -205,7 +187,7 @@ Không cần thêm trường nào ngoài các trường chung bên trên.
 | -------------------- | ---------------------- |
 | **Mã số thuế (MST)** | Mã số thuế của công ty |
 
-> **Kích hoạt thủ công:** BIDV và VietinBank Doanh nghiệp được gửi để ApiPay kích hoạt thủ công sau khi ký hợp đồng API.
+> **Kích hoạt thủ công:** BIDV và VietinBank Doanh nghiệp được gửi để ApiPay kích hoạt thủ công.
 
 Sau khi điền đầy đủ các trường:
 
@@ -225,7 +207,7 @@ Với các kết nối trực tuyến, ngân hàng sẽ gửi **OTP (Mật khẩ
 
 Nếu mã OTP không đúng, bạn sẽ thấy thông báo lỗi. Hãy nhập lại mã đúng và thử lại.
 
-> **Tài khoản kích hoạt thủ công bỏ qua OTP.** Với các luồng thủ công (MB/OCB/VIB/VPB Doanh nghiệp hoặc Hộ kinh doanh, BIDV/VietinBank Doanh nghiệp), bạn sẽ thấy màn hình **Yêu cầu kích hoạt** thay vì OTP. ApiPay xem xét yêu cầu, ký hợp đồng API và kích hoạt kết nối.
+> **Tài khoản kích hoạt thủ công bỏ qua OTP.** Với các luồng thủ công (MB/OCB/VIB Doanh nghiệp hoặc Hộ kinh doanh, BIDV/VietinBank Doanh nghiệp), bạn sẽ thấy màn hình **Yêu cầu kích hoạt** thay vì OTP. ApiPay xem xét yêu cầu và kích hoạt kết nối.
 
 ---
 
@@ -273,15 +255,15 @@ Nếu muốn tạm ngừng nhận thanh toán qua một ngân hàng:
 
 ## Xử lý sự cố
 
-| Sự cố                                    | Giải pháp                                                                                                                                                                   |
-| ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Không nhận được OTP                      | Kiểm tra số điện thoại đã nhập có khớp với số đăng ký ở ngân hàng không. Chờ một chút rồi thử lại.                                                                          |
-| Mã OTP không đúng                        | Kiểm tra kỹ mã bạn nhập, gồm 6 chữ số.                                                                                                                                      |
-| CCCD bị từ chối                          | Hãy nhập đúng 12 chữ số, không có khoảng trắng hay ký tự đặc biệt.                                                                                                          |
-| Ngân hàng hiển thị trạng thái "Đang chờ" | Sau khi liên kết, ngân hàng thường chuyển sang Hoạt động trong vài giây. Nếu vẫn Đang chờ, hãy tải lại trang.                                                               |
-| Ngân hàng hiển thị "Yêu cầu kích hoạt"   | Đây là trạng thái bình thường cho luồng thủ công (MB/OCB/VIB/VPB Doanh nghiệp/Hộ kinh doanh, BIDV/VietinBank Doanh nghiệp). ApiPay sẽ liên hệ ký hợp đồng API và kích hoạt. |
-| Số tài khoản đã được liên kết            | Mỗi tài khoản ngân hàng chỉ có thể liên kết một lần. Nếu thấy lỗi này, tài khoản có thể đã được liên kết với tài khoản ApiPay khác.                                         |
-| Loại tài khoản không khả dụng            | Sacombank hiện không hỗ trợ tài khoản Doanh nghiệp — hãy dùng Cá nhân hoặc Hộ kinh doanh.                                                                                   |
+| Sự cố                                    | Giải pháp                                                                                                                                            |
+| ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Không nhận được OTP                      | Kiểm tra số điện thoại đã nhập có khớp với số đăng ký ở ngân hàng không. Chờ một chút rồi thử lại.                                                   |
+| Mã OTP không đúng                        | Kiểm tra kỹ mã bạn nhập, gồm 6 chữ số.                                                                                                               |
+| CCCD bị từ chối                          | Hãy nhập đúng 12 chữ số, không có khoảng trắng hay ký tự đặc biệt.                                                                                   |
+| Ngân hàng hiển thị trạng thái "Đang chờ" | Sau khi liên kết, ngân hàng thường chuyển sang Hoạt động trong vài giây. Nếu vẫn Đang chờ, hãy tải lại trang.                                        |
+| Ngân hàng hiển thị "Yêu cầu kích hoạt"   | Đây là trạng thái bình thường cho luồng thủ công (MB/OCB/VIB Doanh nghiệp/Hộ kinh doanh, BIDV/VietinBank Doanh nghiệp). ApiPay sẽ liên hệ kích hoạt. |
+| Số tài khoản đã được liên kết            | Mỗi tài khoản ngân hàng chỉ có thể liên kết một lần. Nếu thấy lỗi này, tài khoản có thể đã được liên kết với tài khoản ApiPay khác.                  |
+| Loại tài khoản không khả dụng            | Sacombank hiện không hỗ trợ tài khoản Doanh nghiệp — hãy dùng Cá nhân hoặc Hộ kinh doanh.                                                            |
 
 ---
 

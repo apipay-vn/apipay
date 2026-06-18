@@ -29,10 +29,10 @@ Nhờ vậy, bạn không cần đối soát thủ công cho từng đơn hàng.
 | **MB Bank**          | MBB  |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào |
 | **BIDV**             | BIDV |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào |
 | **OCB**              | OCB  |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào |
-| **VietinBank (CTG)** | ICB  |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào |
+| **VietinBank (CTG)** | ICB  |  Không  |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào |
 | **VIB**              | VIB  |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào |
 | **Sacombank**        | STB  |   Có    |    Không     |      Có       | OpenBanking, Đồng bộ tiền vào |
-| **VPBank**           | VPB  |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào |
+| **VPBank**           | VPB  |   Có    |    Không     |     Không     | OpenBanking, Đồng bộ tiền vào |
 | **PGBank**           | PGB  |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào |
 
 ---
@@ -50,8 +50,10 @@ Khi kết nối ngân hàng, bạn sẽ chọn giữa:
 Lưu ý:
 
 - **Sacombank** không hỗ trợ tài khoản Doanh nghiệp; hãy dùng Cá nhân hoặc Hộ kinh doanh.
-- **BIDV** và **VietinBank** với tài khoản Doanh nghiệp cần ApiPay kích hoạt thủ công (ký hợp đồng API); Hộ kinh doanh chạy như luồng trực tuyến.
-- **MB Bank**, **OCB**, **VIB**, **VPBank** với tài khoản Doanh nghiệp và Hộ kinh doanh cần ApiPay kích hoạt thủ công (ký hợp đồng API). Tài khoản Cá nhân chạy hoàn toàn trực tuyến.
+- **VietinBank** không hỗ trợ tài khoản Cá nhân; hãy dùng Doanh nghiệp hoặc Hộ kinh doanh. Tài khoản Doanh nghiệp cần ApiPay kích hoạt thủ công.
+- **VPBank** chỉ hỗ trợ tài khoản Cá nhân. Doanh nghiệp và Hộ kinh doanh hiện chưa khả dụng.
+- **BIDV** và **VietinBank** với tài khoản Doanh nghiệp cần ApiPay kích hoạt thủ công; Hộ kinh doanh chạy như luồng trực tuyến.
+- **MB Bank**, **OCB**, **VIB** với tài khoản Doanh nghiệp và Hộ kinh doanh cần ApiPay kích hoạt thủ công. Tài khoản Cá nhân chạy hoàn toàn trực tuyến.
 - **PGBank** tất cả loại tài khoản (Cá nhân, Doanh nghiệp, Hộ kinh doanh) đều xử lý hoàn toàn trực tuyến, không cần kích hoạt thủ công.
 - **ACB** Doanh nghiệp dùng thông tin ACB OneBiz và xử lý hoàn toàn trực tuyến.
 
@@ -61,7 +63,7 @@ Sau khi kết nối, tài khoản ngân hàng sẽ có một trong các trạng 
 
 - **Hoạt động** — đang nhận thanh toán bình thường
 - **Đang chờ** — OTP đã xác minh nhưng đang chờ xác nhận cuối cùng
-- **Yêu cầu kích hoạt** — đã gửi yêu cầu kích hoạt thủ công (Doanh nghiệp/Hộ kinh doanh của MB/OCB/VIB/VPB và Doanh nghiệp của BIDV/VietinBank)
+- **Yêu cầu kích hoạt** — đã gửi yêu cầu kích hoạt thủ công (Doanh nghiệp/Hộ kinh doanh của MB/OCB/VIB và Doanh nghiệp của BIDV/VietinBank)
 - **Không hoạt động** — tạm thời tắt; thanh toán sẽ không được chuyển đến đây
 
 ### VietQR (Sacombank, VPBank)
