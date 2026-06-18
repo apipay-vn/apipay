@@ -70,7 +70,7 @@ export default class Login extends BaseCommand {
 		// Password flow (for CI/scripting)
 		if (flags.password) {
 			warn(
-				"Passing --password on the command line stores it in shell history and may be visible in process lists. Prefer the magic-link flow for interactive sessions.",
+				"Passing --password on the command line stores it in shell history and may be visible in process lists.",
 			);
 			return this.loginWithPassword(email, flags.password);
 		}
@@ -95,8 +95,14 @@ export default class Login extends BaseCommand {
 
 		const token = data?.data?.token ?? data?.token;
 		if (!token) {
-			this.spinner.fail("Failed to get magic link token");
-			this.error("Unexpected response from server", {exit: 2});
+			this.spinner.fail("CLI magic-link login is not available");
+			info(
+				"For security, the server no longer returns magic-link tokens to API clients.",
+			);
+			info(
+				`Use ${chalk.cyan("apipay login --email " + email + " --password <password>")} or sign in from the dashboard.`,
+			);
+			return;
 		}
 		this.spinner.succeed("Magic link requested!");
 
