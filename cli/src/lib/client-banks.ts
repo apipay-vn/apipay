@@ -1,8 +1,16 @@
 import {ApiClient} from "./api-client.js";
 import {getApiBaseUrl} from "./config.js";
 
+function getClientBanksBaseUrl(): string {
+	const baseUrl = getApiBaseUrl().replace(/\/+$/, "");
+	if (/\/v[12]$/.test(baseUrl)) {
+		return baseUrl.replace(/\/v[12]$/, "/v2");
+	}
+	return `${baseUrl}/v2`;
+}
+
 export function getClientBanksApi(): ApiClient {
-	return new ApiClient(getApiBaseUrl().replace(/\/v1\/?$/, "/v2"));
+	return new ApiClient(getClientBanksBaseUrl());
 }
 
 export function unwrapApiMessage<T = any>(data: any): T {

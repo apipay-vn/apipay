@@ -1,19 +1,13 @@
 import {Flags} from "@oclif/core";
 import chalk from "chalk";
-import open from "open";
 import {BaseCommand} from "../lib/base-command.js";
 import {
 	clearApiKey,
 	clearAuth,
 	getAuth,
-	getDashboardUrl,
 	isLoggedIn,
 	setAuth,
 } from "../lib/config.js";
-import {
-	MAGIC_LINK_POLL_INTERVAL_MS,
-	MAGIC_LINK_TIMEOUT_MS,
-} from "../lib/constants.js";
 import {
 	info,
 	kvLine,
@@ -43,7 +37,7 @@ export default class Login extends BaseCommand {
 			description: "Password for email+password login (CI/scripting)",
 		}),
 		"no-browser": Flags.boolean({
-			description: "Don't open the browser for magic link",
+			description: "Accepted for compatibility; browser is not opened during CLI magic-link login",
 			default: false,
 		}),
 	};
@@ -76,18 +70,18 @@ export default class Login extends BaseCommand {
 		}
 
 		// Magic link flow (default — best UX)
-		return this.loginWithMagicLink(email, flags["no-browser"]);
+		return this.loginWithMagicLink(email);
 	}
 
-	private async loginWithMagicLink(
-		email: string,
-		noBrowser: boolean,
-	): Promise<void> {
+	private async loginWithMagicLink(email: string): Promise<void> {
 		this.spinner.start("Requesting magic link...");
 
 		let data: any;
 		try {
-			data = await this.api.post("/auth/magic-link/request", {email});
+			data = await this.api.post("/auth/magic-link/request", {
+				email,
+				client: "cli",
+			});
 		} catch (error) {
 			this.spinner.fail("Failed to request magic link");
 			this.handleError(error);
@@ -104,96 +98,41 @@ export default class Login extends BaseCommand {
 			);
 			return;
 		}
-		this.spinner.succeed("Magic link requested!");
+		this.spinner.text = "Completing magic-link login...";
 
-		// Open browser
-		const verifyUrl = `${getDashboardUrl()}/verify?token=${token}`;
-		console.log("");
-		info(`Open this URL to authenticate:`);
-		console.log(`  ${chalk.underline.cyan(verifyUrl)}`);
-		console.log("");
+		try {
+			const authResult = await this.api.post("/auth/magic-link/verify", {
+				token,
+				client: "cli",
+			});
+			const result = authResult?.data ?? authResult;
+			const user = result?.user;
+			const tokens = result?.tokens;
 
-		if (!noBrowser) {
-			try {
-				await open(verifyUrl);
-				info("Browser opened automatically.");
-			} catch {
-				warn("Could not open browser. Please open the URL manually.");
+			if (!tokens?.accessToken) {
+				this.spinner.fail("Login failed");
+				this.error("Unexpected response from server", {exit: 2});
 			}
-		}
 
-		// Poll for verification
-		this.spinner.start("Waiting for authentication...");
-		const startTime = Date.now();
+			setAuth({
+				accessToken: tokens.accessToken,
+				refreshToken: tokens.refreshToken,
+				expiresAt: Date.now() + (tokens.expiresIn ?? 900) * 1000,
+				email: user?.email ?? email,
+				userId: user?.id ?? "",
+			});
 
-		while (Date.now() - startTime < MAGIC_LINK_TIMEOUT_MS) {
-			await this.sleep(MAGIC_LINK_POLL_INTERVAL_MS);
+			this.spinner.succeed("Authenticated!");
+			console.log("");
+			success(`Logged in as ${chalk.bold(user?.email ?? email)}`);
 
-			try {
-				const status = await this.api.get(
-					`/auth/magic-link/status?token=${token}`,
-				);
-				const st = status?.data?.status ?? status?.status;
-
-				if (st === "verified") {
-					// Token has been consumed — now exchange for auth tokens
-					// The verify endpoint was already called by the browser;
-					// we need to call it ourselves too to get the tokens for CLI
-					try {
-						const authResult = await this.api.post("/auth/magic-link/verify", {
-							token,
-						});
-						const result = authResult?.data ?? authResult;
-						const user = result?.user;
-						const tokens = result?.tokens;
-
-						if (tokens?.accessToken) {
-							setAuth({
-								accessToken: tokens.accessToken,
-								refreshToken: tokens.refreshToken,
-								expiresAt: Date.now() + (tokens.expiresIn ?? 900) * 1000,
-								email: user?.email ?? email,
-								userId: user?.id ?? "",
-							});
-
-							this.spinner.succeed("Authenticated!");
-							console.log("");
-							success(`Logged in as ${chalk.bold(user?.email ?? email)}`);
-
-							if (this.jsonOutput) {
-								this.outputJson({email: user?.email, userId: user?.id});
-							}
-							return;
-						}
-					} catch {
-						// Token already consumed by browser — that's expected.
-						// In this case, the CLI should have its own token.
-						// We'll try the password fallback or re-request.
-						this.spinner.fail(
-							"Magic link was verified in browser but could not retrieve tokens for CLI.",
-						);
-						info(
-							`Please run ${chalk.cyan("apipay login --email " + email + " --password <password>")} instead.`,
-						);
-						return;
-					}
-				}
-
-				if (st === "expired") {
-					this.spinner.fail("Magic link expired");
-					this.error("The magic link has expired. Please try again.", {
-						exit: 1,
-					});
-				}
-			} catch {
-				// Network error during poll — continue
+			if (this.jsonOutput) {
+				this.outputJson({email: user?.email, userId: user?.id});
 			}
+		} catch (error) {
+			this.spinner.fail("Magic-link login failed");
+			this.handleError(error);
 		}
-
-		this.spinner.fail("Authentication timed out");
-		this.error("Timed out waiting for authentication. Please try again.", {
-			exit: 1,
-		});
 	}
 
 	private async loginWithPassword(
