@@ -15,7 +15,11 @@ import {
 	success,
 	warn,
 } from "../lib/formatters.js";
-import {promptConfirm, promptEmail} from "../lib/prompts.js";
+import {
+	promptConfirm,
+	promptEmail,
+	promptMagicLinkToken,
+} from "../lib/prompts.js";
 
 export default class Login extends BaseCommand {
 	static override description = "Authenticate with ApiPay";
@@ -76,34 +80,24 @@ export default class Login extends BaseCommand {
 	private async loginWithMagicLink(email: string): Promise<void> {
 		this.spinner.start("Requesting magic link...");
 
-		let data: any;
 		try {
-			data = await this.api.post("/auth/magic-link/request", {
+			await this.api.post("/auth/magic-link/request", {
 				email,
-				client: "cli",
 			});
 		} catch (error) {
 			this.spinner.fail("Failed to request magic link");
 			this.handleError(error);
 		}
 
-		const token = data?.data?.token ?? data?.token;
-		if (!token) {
-			this.spinner.fail("CLI magic-link login is not available");
-			info(
-				"For security, the server no longer returns magic-link tokens to API clients.",
-			);
-			info(
-				`Use ${chalk.cyan("apipay login --email " + email + " --password <password>")} or sign in from the dashboard.`,
-			);
-			return;
-		}
-		this.spinner.text = "Completing magic-link login...";
+		this.spinner.succeed("Magic link sent!");
+		info("Check your email and paste the full magic link here. Do not open it first.");
+
+		const token = this.extractMagicLinkToken(await promptMagicLinkToken());
+		this.spinner.start("Completing magic-link login...");
 
 		try {
 			const authResult = await this.api.post("/auth/magic-link/verify", {
 				token,
-				client: "cli",
 			});
 			const result = authResult?.data ?? authResult;
 			const user = result?.user;
@@ -132,6 +126,16 @@ export default class Login extends BaseCommand {
 		} catch (error) {
 			this.spinner.fail("Magic-link login failed");
 			this.handleError(error);
+		}
+	}
+
+	private extractMagicLinkToken(value: string): string {
+		const trimmed = value.trim();
+		try {
+			const url = new URL(trimmed);
+			return url.searchParams.get("token") ?? trimmed;
+		} catch {
+			return trimmed;
 		}
 	}
 

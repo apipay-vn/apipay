@@ -1,6 +1,6 @@
 {
   "name": "apipay",
-  "version": "1.12.3",
+  "version": "1.12.4",
   "description": "ApiPay CLI — Set up and manage your payment gateway from the terminal",
   "author": "ApiPay",
   "license": "MIT",
