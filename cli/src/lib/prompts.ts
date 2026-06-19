@@ -38,13 +38,6 @@ export async function promptPassword(message = "Password:"): Promise<string> {
 	});
 }
 
-export async function promptMagicLinkToken(): Promise<string> {
-	return input({
-		message: "Paste magic link or token from email:",
-		validate: validateRequired("Magic link"),
-	});
-}
-
 export async function promptApiKeyName(): Promise<string> {
 	return input({
 		message: "API key name (for your reference):",

@@ -23,7 +23,7 @@ curl -fsSL https://apipay.vn/install | bash
 apipay setup
 
 # Or step-by-step:
-apipay login                  # Authenticate (paste emailed magic link or use email/password)
+apipay login                  # Authenticate (browser approval or email/password)
 apipay keys:create            # Generate your API key
 apipay banks:add              # Connect a bank account
 apipay webhooks:add           # Register a webhook for notifications
@@ -35,7 +35,7 @@ apipay webhooks:add           # Register a webhook for notifications
 
 | Command | Description |
 |---------|-------------|
-| `apipay login` | Sign in by pasting an emailed magic link or with email/password |
+| `apipay login` | Sign in by approving from an already logged-in browser or with email/password |
 | `apipay logout` | Sign out and clear stored credentials |
 | `apipay whoami` | Show current authenticated user |
 

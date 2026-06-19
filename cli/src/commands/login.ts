@@ -1,5 +1,6 @@
 import {Flags} from "@oclif/core";
 import chalk from "chalk";
+import open from "open";
 import {BaseCommand} from "../lib/base-command.js";
 import {
 	clearApiKey,
@@ -15,11 +16,7 @@ import {
 	success,
 	warn,
 } from "../lib/formatters.js";
-import {
-	promptConfirm,
-	promptEmail,
-	promptMagicLinkToken,
-} from "../lib/prompts.js";
+import {promptConfirm, promptEmail} from "../lib/prompts.js";
 
 export default class Login extends BaseCommand {
 	static override description = "Authenticate with ApiPay";
@@ -41,7 +38,7 @@ export default class Login extends BaseCommand {
 			description: "Password for email+password login (CI/scripting)",
 		}),
 		"no-browser": Flags.boolean({
-			description: "Accepted for compatibility; browser is not opened during CLI magic-link login",
+			description: "Print the browser approval URL instead of opening it automatically",
 			default: false,
 		}),
 	};
@@ -74,32 +71,50 @@ export default class Login extends BaseCommand {
 		}
 
 		// Magic link flow (default — best UX)
-		return this.loginWithMagicLink(email);
+		return this.loginWithBrowserApproval(email, flags["no-browser"]);
 	}
 
-	private async loginWithMagicLink(email: string): Promise<void> {
-		this.spinner.start("Requesting magic link...");
+	private async loginWithBrowserApproval(
+		email: string,
+		noBrowser: boolean,
+	): Promise<void> {
+		this.spinner.start("Starting browser approval...");
 
+		let request: any;
 		try {
-			await this.api.post("/auth/magic-link/request", {
+			request = await this.api.post("/auth/cli-login/request", {
 				email,
 			});
 		} catch (error) {
-			this.spinner.fail("Failed to request magic link");
+			this.spinner.fail("Failed to start browser approval");
 			this.handleError(error);
 		}
 
-		this.spinner.succeed("Magic link sent!");
-		info("Check your email and paste the full magic link here. Do not open it first.");
+		const approvalToken = request?.approvalToken;
+		const approvalUrl = request?.approvalUrl;
+		const expiresAt = request?.expiresAt ? new Date(request.expiresAt) : null;
 
-		const token = this.extractMagicLinkToken(await promptMagicLinkToken());
-		this.spinner.start("Completing magic-link login...");
+		if (!approvalToken || !approvalUrl || !expiresAt) {
+			this.spinner.fail("Login failed");
+			this.error("Unexpected response from server", {exit: 2});
+		}
+
+		this.spinner.succeed("Browser approval required");
+		info("Approve this terminal login from a browser already logged into the same ApiPay account.");
+		kvLine("Approval URL", approvalUrl);
+
+		if (!noBrowser) {
+			try {
+				await open(approvalUrl);
+			} catch {
+				warn("Could not open browser automatically. Open the approval URL manually.");
+			}
+		}
+
+		this.spinner.start("Waiting for browser approval...");
 
 		try {
-			const authResult = await this.api.post("/auth/magic-link/verify", {
-				token,
-			});
-			const result = authResult?.data ?? authResult;
+			const result = await this.pollCliLoginApproval(approvalToken, expiresAt);
 			const user = result?.user;
 			const tokens = result?.tokens;
 
@@ -124,19 +139,36 @@ export default class Login extends BaseCommand {
 				this.outputJson({email: user?.email, userId: user?.id});
 			}
 		} catch (error) {
-			this.spinner.fail("Magic-link login failed");
+			this.spinner.fail("Browser approval failed");
 			this.handleError(error);
 		}
 	}
 
-	private extractMagicLinkToken(value: string): string {
-		const trimmed = value.trim();
-		try {
-			const url = new URL(trimmed);
-			return url.searchParams.get("token") ?? trimmed;
-		} catch {
-			return trimmed;
+	private async pollCliLoginApproval(
+		token: string,
+		expiresAt: Date,
+	): Promise<any> {
+		while (Date.now() < expiresAt.getTime()) {
+			const result: any = await this.api.post("/auth/cli-login/exchange", {
+				token,
+			});
+
+			if (result?.status === "approved") {
+				return result;
+			}
+
+			if (result?.status === "expired") {
+				this.error("CLI login approval expired. Run `apipay login` again.", {
+					exit: 2,
+				});
+			}
+
+			await this.sleep(2000);
 		}
+
+		this.error("CLI login approval expired. Run `apipay login` again.", {
+			exit: 2,
+		});
 	}
 
 	private async loginWithPassword(
