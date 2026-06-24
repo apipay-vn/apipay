@@ -79,6 +79,18 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.12.2',
+    date: '2026-06-24',
+    features: [
+      'Added direct Telegram and Zalo support options in the Help page and application sidebar for seamless customer support access.',
+      'Introduced comprehensive bank branding across the dashboard — displaying clean, high-resolution bank logos and names in transaction lists, admin tables, and payment request overviews.',
+    ],
+    fixes: [],
+    improvements: [
+      'Refined the bank connection onboarding workflow with a cleaner layout and updated status styling for a faster bank linking experience.',
+    ],
+  },
+  {
     version: '1.12.1',
     date: '2026-06-16',
     features: [
@@ -139,9 +151,7 @@ export const enReleases: ReleaseNote[] = withAnchors([
       'Per-bank virtual account improvements — virtual account setup is now clearer for each supported bank, helping merchants configure payment receiving details with fewer manual checks.',
       'Create QR codes for each connected bank, making it easier to present the right payment QR for each receiving account.',
     ],
-    fixes: [
-      'Fixed an issue where some webhook deliveries could not be sent successfully.',
-    ],
+    fixes: ['Fixed an issue where some webhook deliveries could not be sent successfully.'],
     improvements: [
       'Improved connection guidance, status messaging, and setup reliability across supported banks.',
       'Refined bank-specific setup details so merchants can review requirements and complete configuration more confidently.',
@@ -408,6 +418,18 @@ export const enReleases: ReleaseNote[] = withAnchors([
 
 export const viReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.12.2',
+    date: '2026-06-24',
+    features: [
+      'Tích hợp kênh hỗ trợ trực tuyến qua Telegram và Zalo ngay tại trang Trợ giúp và thanh menu điều hướng, giúp khách hàng liên hệ nhanh chóng khi cần hỗ trợ.',
+      'Đồng bộ nhận diện thương hiệu ngân hàng trên toàn bộ trang quản trị — hiển thị logo vuông sắc nét kèm tên viết tắt ngân hàng trong danh sách giao dịch, bảng quản trị và chi tiết yêu cầu thanh toán.',
+    ],
+    fixes: [],
+    improvements: [
+      'Tối ưu hóa giao diện kết nối ngân hàng với bố cục tinh gọn và hiển thị trạng thái trực quan hơn, mang lại trải nghiệm liên kết tài khoản mượt mà.',
+    ],
+  },
+  {
     version: '1.12.1',
     date: '2026-06-16',
     features: [
@@ -468,9 +490,7 @@ export const viReleases: ReleaseNote[] = withAnchors([
       'Cải thiện tài khoản ảo theo từng ngân hàng — phần thiết lập tài khoản ảo nay rõ ràng hơn cho từng ngân hàng được hỗ trợ, giúp merchant cấu hình thông tin nhận thanh toán với ít bước kiểm tra thủ công hơn.',
       'Tạo mã QR cho từng ngân hàng đã kết nối, giúp hiển thị đúng mã QR thanh toán cho từng tài khoản nhận tiền.',
     ],
-    fixes: [
-      'Sửa lỗi một số webhook không gửi được thành công.',
-    ],
+    fixes: ['Sửa lỗi một số webhook không gửi được thành công.'],
     improvements: [
       'Cải thiện hướng dẫn kết nối, thông báo trạng thái và độ ổn định khi thiết lập trên các ngân hàng được hỗ trợ.',
       'Tinh chỉnh thông tin thiết lập theo từng ngân hàng để merchant dễ xem yêu cầu và hoàn tất cấu hình tự tin hơn.',
