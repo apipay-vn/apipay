@@ -46,11 +46,16 @@ export const viSidebarConfig: SidebarItem[] = [
     ],
   },
   {
-    label: 'Hỗ trợ',
+    label: 'Cộng đồng hỗ trợ',
     children: [
       {
         label: 'Cộng đồng Zalo',
         href: 'https://zalo.me/g/qlubbbpczn7dfd1punuw',
+        external: true,
+      },
+      {
+        label: 'Cộng đồng Telegram',
+        href: 'https://t.me/apipay_vn',
         external: true,
       },
     ],
@@ -96,11 +101,16 @@ export const enSidebarConfig: SidebarItem[] = [
     ],
   },
   {
-    label: 'Support',
+    label: 'Community Support',
     children: [
       {
         label: 'Zalo Community',
         href: 'https://zalo.me/g/qlubbbpczn7dfd1punuw',
+        external: true,
+      },
+      {
+        label: 'Telegram Community',
+        href: 'https://t.me/apipay_vn',
         external: true,
       },
     ],
