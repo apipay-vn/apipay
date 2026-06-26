@@ -112,6 +112,8 @@ Bạn sẽ nhận được:
 - `accessKey` - Định danh công khai
 - `secretKey` - Giữ bí mật!
 
+Khi gọi API, dùng header `Authorization: Bearer <Auth>`, trong đó `<Auth>` là chuỗi `base64(accessKey:secretKey)`. Xem [Xác thực API](/vi/api/authentication) để biết chi tiết.
+
 ### Thiết lập webhook (khuyến nghị)
 
 Webhook giúp hệ thống của bạn biết khi có thanh toán:
@@ -119,8 +121,7 @@ Webhook giúp hệ thống của bạn biết khi có thanh toán:
 1. Vào **Cài đặt → Webhooks**
 2. Nhấn **Thêm Webhook**
 3. Nhập URL endpoint của bạn
-4. Dùng loại webhook mặc định `ALL` để nhận thông báo thanh toán tiền vào
-5. Lưu và kiểm tra
+4. Lưu và kiểm tra
 
 ---
 

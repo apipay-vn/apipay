@@ -13,7 +13,7 @@ Bank accounts are the foundation of receiving payments on ApiPay. Each connected
 
 When a customer makes a payment to your linked bank account, ApiPay:
 
-1. **Detects** the incoming transfer via OpenBanking
+1. **Detects** the incoming transfer via Open Banking API
 2. **Matches** the transfer to the corresponding payment request
 3. **Notifies** you instantly via webhook
 
@@ -65,12 +65,6 @@ After connecting, a bank account has one of these statuses:
 - **Pending** — OTP verified but final confirmation in progress
 - **Activation Requested** — manual activation queued (Business/Household for MB/OCB/VIB and Business for BIDV/VietinBank)
 - **Inactive** — temporarily disabled; payments won't be routed here
-
-### VietQR (Sacombank, VPBank)
-
-Sacombank and VPBank payments use **VietQR**. ApiPay generates a VietQR for each payment request; customers scan and transfer with the embedded content code so ApiPay can match the transaction and fire the webhook in real time.
-
----
 
 ## Managing Multiple Banks
 

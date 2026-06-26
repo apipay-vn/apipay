@@ -13,7 +13,7 @@ Tài khoản ngân hàng là nơi khách chuyển tiền cho bạn. Khi kết n�
 
 Khi khách hàng chuyển tiền vào tài khoản ngân hàng đã liên kết, ApiPay sẽ:
 
-1. **Phát hiện** khoản chuyển vào qua OpenBanking
+1. **Phát hiện** khoản chuyển vào qua Open Banking API
 2. **Đối chiếu** khoản chuyển với yêu cầu thanh toán tương ứng
 3. **Thông báo** cho hệ thống của bạn qua webhook
 
@@ -65,12 +65,6 @@ Sau khi kết nối, tài khoản ngân hàng sẽ có một trong các trạng 
 - **Đang chờ** — OTP đã xác minh nhưng đang chờ xác nhận cuối cùng
 - **Yêu cầu kích hoạt** — đã gửi yêu cầu kích hoạt thủ công (Doanh nghiệp/Hộ kinh doanh của MB/OCB/VIB và Doanh nghiệp của BIDV/VietinBank)
 - **Không hoạt động** — tạm thời tắt; thanh toán sẽ không được chuyển đến đây
-
-### VietQR (Sacombank, VPBank)
-
-Sacombank và VPBank nhận thanh toán qua **VietQR**. ApiPay tạo VietQR cho mỗi payment request; khách quét và chuyển kèm mã nội dung để ApiPay đối chiếu giao dịch và gửi webhook gần như ngay lập tức.
-
----
 
 ## Quản lý nhiều ngân hàng
 

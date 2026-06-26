@@ -19,11 +19,10 @@ POST /v1/client/webhooks
 
 ### Request Body
 
-| Parameter      | Type   | Required  | Description                                                                              |
-| -------------- | ------ | --------- | ---------------------------------------------------------------------------------------- |
-| `webhookUrl`   | string | **✓ Yes** | HTTPS URL to receive webhook notifications                                               |
-| `bankPublicId` | string | **✓ Yes** | Public ID of the bank account                                                            |
-| `type`         | string | **✓ Yes** | Use `ALL` for new webhooks. `IN` and `OUT` are legacy values deprecated since June 2026. |
+| Parameter      | Type   | Required  | Description                               |
+| -------------- | ------ | --------- | ----------------------------------------- |
+| `webhookUrl`   | string | **✓ Yes** | HTTPS URL to receive webhook notifications |
+| `bankPublicId` | string | **✓ Yes** | Public ID of the bank account             |
 
 ### Response
 
@@ -34,7 +33,6 @@ POST /v1/client/webhooks
     "id": "wh_abc123",
     "bankPublicId": "bnk_abc123",
     "webhookUrl": "https://your-domain.com/webhooks/apipay",
-    "type": "ALL",
     "secret": "a1b2c3d4..."
   }
 }
@@ -47,7 +45,7 @@ Keep `secret`; it is used to verify `ApiPay-Signature`.
 | Endpoint                                             | Description                                   |
 | ---------------------------------------------------- | --------------------------------------------- |
 | `GET /v1/client/webhooks`                            | List registered webhooks (`page`, `limit`)    |
-| `PATCH /v1/client/webhooks/:id`                      | Update `webhookUrl` or `type`                 |
+| `PATCH /v1/client/webhooks/:id`                      | Update `webhookUrl`                           |
 | `PATCH /v1/client/webhooks/:id/toggle`               | Enable or disable a webhook                   |
 | `DELETE /v1/client/webhooks/:id`                     | Delete a webhook                              |
 | `GET /v1/client/webhooks/:id/history`                | View delivery history (`page`, `limit`)       |

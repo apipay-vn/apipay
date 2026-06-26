@@ -19,11 +19,10 @@ POST /v1/client/webhooks
 
 ### Request Body
 
-| Tham số        | Kiểu   | Bắt buộc | Mô tả                                                                                          |
-| -------------- | ------ | -------- | ---------------------------------------------------------------------------------------------- |
-| `webhookUrl`   | string | **✓ Có** | HTTPS URL để nhận webhook                                                                      |
-| `bankPublicId` | string | **✓ Có** | Public ID của tài khoản ngân hàng                                                              |
-| `type`         | string | **✓ Có** | Dùng `ALL` cho webhook mới. `IN` và `OUT` là giá trị cũ, đã ngừng khuyến nghị từ tháng 6/2026. |
+| Tham số        | Kiểu   | Bắt buộc | Mô tả                             |
+| -------------- | ------ | -------- | --------------------------------- |
+| `webhookUrl`   | string | **✓ Có** | HTTPS URL để nhận webhook         |
+| `bankPublicId` | string | **✓ Có** | Public ID của tài khoản ngân hàng |
 
 ### Response
 
@@ -34,7 +33,6 @@ POST /v1/client/webhooks
     "id": "wh_abc123",
     "bankPublicId": "bnk_abc123",
     "webhookUrl": "https://your-domain.com/webhooks/apipay",
-    "type": "ALL",
     "secret": "a1b2c3d4..."
   }
 }
@@ -47,7 +45,7 @@ Hãy lưu `secret`; khóa này dùng để kiểm tra `ApiPay-Signature`.
 | Endpoint                                             | Mô tả                                               |
 | ---------------------------------------------------- | --------------------------------------------------- |
 | `GET /v1/client/webhooks`                            | Danh sách webhook (`page`, `limit`)                 |
-| `PATCH /v1/client/webhooks/:id`                      | Cập nhật `webhookUrl` hoặc `type`                   |
+| `PATCH /v1/client/webhooks/:id`                      | Cập nhật `webhookUrl`                               |
 | `PATCH /v1/client/webhooks/:id/toggle`               | Bật hoặc tắt webhook                                |
 | `DELETE /v1/client/webhooks/:id`                     | Xóa webhook                                         |
 | `GET /v1/client/webhooks/:id/history`                | Xem lịch sử gửi (`page`, `limit`)                   |

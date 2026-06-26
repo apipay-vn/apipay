@@ -13,7 +13,6 @@ export const viSidebarConfig: SidebarItem[] = [
   {label: 'Hướng dẫn bắt đầu', href: '/vi/onboarding'},
   {label: 'Đăng ký & Thanh toán', href: '/vi/subscription'},
   {label: 'Quản lý ngân hàng', href: '/vi/banking'},
-  {label: 'Tiếp thị liên kết', href: '/vi/affiliates'},
   {
     label: 'Hướng dẫn Dashboard',
     href: '/vi/dashboard',
@@ -21,6 +20,7 @@ export const viSidebarConfig: SidebarItem[] = [
       {label: 'Kết nối ngân hàng', href: '/vi/connect-banks'},
       {label: 'Tên miền riêng', href: '/vi/custom-domains'},
       {label: 'Passkey', href: '/vi/passkeys'},
+      {label: 'Tiếp thị liên kết', href: '/vi/affiliates'},
       {label: 'Sandbox', href: '/vi/sandbox'},
       {label: 'Lịch sử gửi webhook', href: '/vi/api/webhooks#delivery-log'},
     ],
@@ -68,7 +68,6 @@ export const enSidebarConfig: SidebarItem[] = [
   {label: 'Onboarding', href: '/en/onboarding'},
   {label: 'Subscription & Billing', href: '/en/subscription'},
   {label: 'Bank Accounts', href: '/en/banking'},
-  {label: 'Affiliates', href: '/en/affiliates'},
   {
     label: 'Dashboard Guide',
     href: '/en/dashboard',
@@ -76,6 +75,7 @@ export const enSidebarConfig: SidebarItem[] = [
       {label: 'Connect Banks', href: '/en/connect-banks'},
       {label: 'Custom Domains', href: '/en/custom-domains'},
       {label: 'Passkeys', href: '/en/passkeys'},
+      {label: 'Affiliates', href: '/en/affiliates'},
       {label: 'Sandbox', href: '/en/sandbox'},
       {label: 'Webhook Delivery', href: '/en/api/webhooks#delivery-log'},
     ],
