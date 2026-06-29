@@ -79,6 +79,24 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.12.3',
+    date: '2026-06-29',
+    features: [
+      'Free 72-hour trial — eligible new customers can activate a free trial directly from the Pricing page to explore ApiPay before choosing a paid plan. Each account may use the trial once.',
+      'Trial terms acceptance — review and accept the trial policy before activation.',
+      'Trial bank connection scope — during the trial, connect one personal bank account from MB, BIDV, or VPBank.',
+    ],
+    fixes: [],
+    improvements: [
+      'Redesigned Pricing page with a dedicated trial option displayed alongside paid plans.',
+      'Dashboard alert and status badge when a bank needs to be reconnected after upgrading from trial — delete the bank and add it again to resume full use.',
+      'Banks requiring reconnection are excluded from payment requests, webhooks, and integration setup until refreshed.',
+      'Email notification when the free trial ends, with guidance on next steps.',
+      'Sidebar navigation label updated from "Plan & Billing" to "Pricing" for clearer access to plans and checkout.',
+      'Improved address validation when completing your billing profile before checkout or trial activation.',
+    ],
+  },
+  {
     version: '1.12.2',
     date: '2026-06-24',
     features: [
@@ -417,6 +435,24 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.12.3',
+    date: '2026-06-29',
+    features: [
+      'Dùng thử miễn phí 72 giờ — khách hàng mới đủ điều kiện có thể kích hoạt gói dùng thử trực tiếp từ trang Bảng giá để trải nghiệm ApiPay trước khi chọn gói trả phí. Mỗi tài khoản được dùng thử một lần.',
+      'Xác nhận điều khoản dùng thử — đọc và đồng ý với chính sách dùng thử trước khi kích hoạt.',
+      'Phạm vi kết nối ngân hàng khi dùng thử — trong thời gian dùng thử, kết nối một tài khoản cá nhân tại MB, BIDV hoặc VPBank.',
+    ],
+    fixes: [],
+    improvements: [
+      'Thiết kế lại trang Bảng giá với mục dùng thử riêng, hiển thị cùng các gói trả phí.',
+      'Cảnh báo trên dashboard và nhãn trạng thái khi ngân hàng cần kết nối lại sau khi nâng cấp từ gói dùng thử — xóa ngân hàng và thêm lại để sử dụng đầy đủ.',
+      'Ngân hàng cần kết nối lại sẽ không xuất hiện trong yêu cầu thanh toán, webhook và thiết lập tích hợp cho đến khi được kết nối lại.',
+      'Email thông báo khi gói dùng thử kết thúc, kèm hướng dẫn các bước tiếp theo.',
+      'Đổi tên mục điều hướng từ "Gói dịch vụ" thành "Bảng giá" để truy cập gói và thanh toán rõ ràng hơn.',
+      'Cải thiện kiểm tra địa chỉ khi hoàn tất hồ sơ thanh toán trước khi mua gói hoặc kích hoạt dùng thử.',
+    ],
+  },
   {
     version: '1.12.2',
     date: '2026-06-24',
