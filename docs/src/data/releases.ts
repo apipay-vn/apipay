@@ -79,6 +79,26 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.13.0',
+    date: '2026-07-10',
+    features: [
+      'Public system status page — check live availability of ApiPay services at any time, including the API, documentation, website, dashboard, payment page, and VietQR gateway.',
+      'Service reliability overview — review uptime for the last 1, 30, and 365 days, plus a 24-hour activity timeline for each service.',
+      'Maintenance calendar — see active and upcoming maintenance windows, with a published history of past maintenance events.',
+    ],
+    fixes: [],
+    improvements: [
+      'Status page is linked from the public website footer for quick access during support or integration planning.',
+      'Clearer virtual account guidance when a bank issues a virtual account number for receiving transfers and payment notifications.',
+      'More reliable webhook delivery with stronger protection against duplicate payment events for the same transaction.',
+      'Smoother free-trial bank connection experience with clearer next-step messaging when a bank needs attention.',
+      'Stronger account security with email verification during sign-up and account recovery flows.',
+      'Clearer bank-slot messaging when upgrading or changing plans, so teams know how many bank connections their plan supports.',
+      'Website contact, newsletter, and feedback forms hardened against automated abuse while staying simple for real customers.',
+      'Richer blog reading experience with full-size image viewing on article pages.',
+    ],
+  },
+  {
     version: '1.12.3',
     date: '2026-06-29',
     features: [
@@ -435,6 +455,26 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.13.0',
+    date: '2026-07-10',
+    features: [
+      'Trang trạng thái hệ thống công khai — xem tình trạng hoạt động realtime của các dịch vụ ApiPay bất cứ lúc nào, gồm API, tài liệu, website, dashboard, trang thanh toán và cổng VietQR.',
+      'Tổng quan độ ổn định dịch vụ — theo dõi uptime trong 1, 30 và 365 ngày gần nhất, kèm timeline hoạt động 24 giờ cho từng dịch vụ.',
+      'Lịch bảo trì — xem bảo trì đang diễn ra và sắp tới, cùng lịch sử các đợt bảo trì đã công bố.',
+    ],
+    fixes: [],
+    improvements: [
+      'Trang trạng thái được gắn trong footer website công khai, giúp truy cập nhanh khi cần hỗ trợ hoặc lập kế hoạch tích hợp.',
+      'Hướng dẫn tài khoản ảo (VA) rõ hơn khi ngân hàng cấp số VA để nhận chuyển khoản và thông báo thanh toán.',
+      'Gửi webhook ổn định hơn, giảm nguy cơ nhận trùng sự kiện thanh toán cho cùng một giao dịch.',
+      'Trải nghiệm kết nối ngân hàng trong gói dùng thử mượt hơn, với thông báo bước tiếp theo rõ ràng hơn khi ngân hàng cần xử lý.',
+      'Bảo mật tài khoản tốt hơn với xác minh email trong luồng đăng ký và khôi phục tài khoản.',
+      'Thông báo về số lượng ngân hàng được kết nối rõ hơn khi nâng cấp hoặc đổi gói, giúp đội ngũ biết gói của mình hỗ trợ bao nhiêu kết nối.',
+      'Biểu mẫu liên hệ, đăng ký nhận tin và góp ý trên website được bảo vệ tốt hơn trước spam tự động, vẫn dễ dùng cho khách hàng thật.',
+      'Trải nghiệm đọc blog tốt hơn với xem ảnh phóng to trên trang bài viết.',
+    ],
+  },
   {
     version: '1.12.3',
     date: '2026-06-29',
