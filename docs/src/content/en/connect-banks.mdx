@@ -37,7 +37,7 @@ Once linked, your bank account appears in the **Banks** section of the dashboard
 | **MB Bank**          |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward |
 | **BIDV**             |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward |
 | **OCB**              |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward |
-| **VietinBank (CTG)** |    No    |   Yes    |    Yes    | OpenBanking, Sync inward |
+| **VietinBank**      |    No    |   Yes    |    Yes    | OpenBanking, Sync inward |
 | **VIB**              |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward |
 | **Sacombank**        |   Yes    |    No    |    Yes    | OpenBanking, Sync inward |
 | **VPBank**           |   Yes    |    No    |    No     | OpenBanking, Sync inward |
@@ -56,8 +56,8 @@ Before linking a bank account, make sure you have:
 - For **MB Bank**, **VIB**, **Sacombank**, **VPBank**, **PGBank** Personal: your CCCD/ID card number (12 digits)
 - For Business or Household Business accounts: your company/household Tax Code (MST)
 - For **ACB Business**: an ACB OneBiz username
-- For **MB Bank**, **OCB**, **VIB** Business or Household, and **BIDV**/**VietinBank** Business: these connections are manually activated by ApiPay after submission
-- **PGBank**, **Co-opBank**: all account types are fully online, no manual activation required
+- **MB Bank**, **OCB**, **VIB** Business or Household, and **BIDV**/**VietinBank** Business: manual activation
+- **PGBank**, **Co-opBank**: fully online, no manual activation
 
 ---
 
@@ -90,7 +90,7 @@ Per-bank availability:
 - **VPBank** — Personal (Business, Household Business not supported)
 - **Sacombank** — Personal, Household Business (Business not supported)
 
-> **Manual activation notice.** If you choose Business or Household Business on **MB Bank**, **OCB**, or **VIB**, or Business on **BIDV** or **VietinBank**, the connection is submitted as an activation request. ApiPay enables the account after the API contract is signed; you'll see an **Activation Requested** status until then. Co-opBank (all account types) and PGBank are fully online with no manual activation.
+> **Manual activation.** MB/OCB/VIB Business or Household, and BIDV/VietinBank Business, use activation requests. You'll see **Activation Requested** until they complete. PGBank and Co-opBank are fully online.
 
 Click the card that matches your account type to continue.
 
@@ -207,7 +207,7 @@ For online connections, an **OTP (One-Time Password)** is sent automatically to 
 
 If the OTP code is incorrect, you'll see an error message. Re-enter the correct code and try again.
 
-> **Manual activation accounts skip OTP.** When the flow is manual (MB/OCB/VIB/VPB Business or Household, BIDV/VietinBank Business), you'll see an **Activation Requested** screen instead. ApiPay reviews the request, signs the API contract with you, and activates the connection. No OTP step is required at this stage.
+> **Manual activation accounts skip OTP.** Manual flows show **Activation Requested** instead of OTP.
 
 ---
 

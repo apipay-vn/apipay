@@ -29,7 +29,7 @@ This means you don't need to manually reconcile payments — everything is autom
 | **MB Bank**          | MBB  |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward |
 | **BIDV**             | BIDV |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward |
 | **OCB**              | OCB  |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward |
-| **VietinBank (CTG)** | ICB  |    No    |   Yes    |    Yes    | OpenBanking, Sync inward |
+| **VietinBank**      | ICB  |    No    |   Yes    |    Yes    | OpenBanking, Sync inward |
 | **VIB**              | VIB  |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward |
 | **Sacombank**        | STB  |   Yes    |    No    |    Yes    | OpenBanking, Sync inward |
 | **VPBank**           | VPB  |   Yes    |    No    |    No     | OpenBanking, Sync inward |
@@ -50,12 +50,12 @@ When connecting a bank, you'll choose between:
 Notes:
 
 - **Sacombank** does not support Business accounts; use Personal or Household Business.
-- **VietinBank** does not support Personal accounts; use Business or Household Business. Business connections require manual activation by ApiPay.
-- **VPBank** supports Personal accounts only. Business and Household Business connections are not currently available.
-- **BIDV** and **VietinBank** Business connections require manual activation by ApiPay; Household Business is treated as Personal-like online flow.
-- **MB Bank**, **OCB**, and **VIB** Business and Household Business connections require manual activation by ApiPay. Personal flows are fully online.
-- **PGBank** all account types (Personal, Business, Household Business) are fully online with no manual activation required.
-- **ACB** Business uses ACB OneBiz credentials and is fully online.
+- **VietinBank** does not support Personal accounts; use Business or Household Business. Business requires manual activation.
+- **VPBank** supports Personal accounts only.
+- **BIDV** and **VietinBank** Business require manual activation; Household Business uses the online flow.
+- **MB Bank**, **OCB**, and **VIB** Business and Household Business require manual activation. Personal is fully online.
+- **PGBank**: all account types are online, with no manual activation.
+- **ACB** Business uses ACB OneBiz and is fully online.
 
 ### Statuses
 
@@ -63,7 +63,7 @@ After connecting, a bank account has one of these statuses:
 
 - **Active** — fully operational, receiving payments
 - **Pending** — OTP verified but final confirmation in progress
-- **Activation Requested** — manual activation queued (Business/Household for MB/OCB/VIB and Business for BIDV/VietinBank)
+- **Activation Requested** — manual activation queued (MB/OCB/VIB Business/Household and BIDV/VietinBank Business)
 - **Inactive** — temporarily disabled; payments won't be routed here
 
 ## Managing Multiple Banks

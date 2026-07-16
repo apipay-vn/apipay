@@ -37,7 +37,7 @@ Sau khi kết nối thành công, tài khoản sẽ xuất hiện trong phần *
 | **MB Bank**          |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào |
 | **BIDV**             |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào |
 | **OCB**              |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào |
-| **VietinBank (CTG)** |  Không  |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào |
+| **VietinBank**      |  Không  |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào |
 | **VIB**              |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào |
 | **Sacombank**        |   Có    |    Không     |      Có       | OpenBanking, Đồng bộ tiền vào |
 | **VPBank**           |   Có    |    Không     |     Không     | OpenBanking, Đồng bộ tiền vào |
@@ -56,8 +56,8 @@ Bạn cần chuẩn bị:
 - Đối với **MB Bank**, **VIB**, **Sacombank**, **VPBank**, **PGBank** Cá nhân: Số CCCD (12 chữ số)
 - Đối với tài khoản Doanh nghiệp hoặc Hộ kinh doanh: Mã số thuế (MST) của công ty/hộ kinh doanh
 - Đối với **ACB Doanh nghiệp**: Tên đăng nhập ACB OneBiz
-- Đối với **MB Bank**, **OCB**, **VIB** Doanh nghiệp/Hộ kinh doanh và **BIDV**/**VietinBank** Doanh nghiệp: ApiPay sẽ kích hoạt thủ công sau khi nhận yêu cầu
-- **PGBank**, **Co-opBank**: tất cả loại tài khoản đều xử lý trực tuyến, không cần kích hoạt thủ công
+- **MB Bank**, **OCB**, **VIB** Doanh nghiệp/Hộ kinh doanh và **BIDV**/**VietinBank** Doanh nghiệp: kích hoạt thủ công
+- **PGBank**, **Co-opBank**: trực tuyến, không cần kích hoạt
 
 ---
 
@@ -90,7 +90,7 @@ Hỗ trợ theo từng ngân hàng:
 - **VPBank** — Cá nhân (chưa hỗ trợ Doanh nghiệp, Hộ kinh doanh)
 - **Sacombank** — Cá nhân, Hộ kinh doanh (chưa hỗ trợ Doanh nghiệp)
 
-> **Lưu ý kích hoạt thủ công.** Nếu chọn Doanh nghiệp hoặc Hộ kinh doanh trên **MB Bank**, **OCB**, **VIB**, hoặc Doanh nghiệp trên **BIDV**, **VietinBank**, yêu cầu sẽ được gửi để ApiPay kích hoạt thủ công. Trạng thái hiển thị **Yêu cầu kích hoạt** trong thời gian chờ. Co-opBank (tất cả loại tài khoản) và PGBank xử lý trực tuyến hoàn toàn, không cần kích hoạt thủ công.
+> **Kích hoạt thủ công.** MB/OCB/VIB Doanh nghiệp hoặc Hộ kinh doanh, và BIDV/VietinBank Doanh nghiệp, dùng yêu cầu kích hoạt. Trạng thái là **Yêu cầu kích hoạt**. PGBank và Co-opBank trực tuyến, không cần kích hoạt.
 
 Nhấn vào thẻ phù hợp với loại tài khoản của bạn để tiếp tục.
 
@@ -171,7 +171,7 @@ Không cần thêm trường nào ngoài các trường chung bên trên.
 | -------------------- | ----------------------------------------- |
 | **Mã số thuế (MST)** | Mã số thuế của công ty hoặc hộ kinh doanh |
 
-> **Lưu ý:** Tất cả loại tài khoản PGBank (Cá nhân, Doanh nghiệp, Hộ kinh doanh) đều xử lý trực tuyến, không cần kích hoạt thủ công.
+> **Lưu ý:** Tất cả loại tài khoản PGBank (Cá nhân, Doanh nghiệp, Hộ kinh doanh) đều trực tuyến, không cần kích hoạt thủ công.
 
 #### MB Bank / OCB / VIB — Doanh nghiệp hoặc Hộ kinh doanh
 
@@ -179,7 +179,7 @@ Không cần thêm trường nào ngoài các trường chung bên trên.
 | -------------------- | ----------------------------------------- |
 | **Mã số thuế (MST)** | Mã số thuế của công ty hoặc hộ kinh doanh |
 
-> **Kích hoạt thủ công:** MB Bank, OCB, VIB với tài khoản Doanh nghiệp và Hộ kinh doanh được gửi để ApiPay kích hoạt thủ công.
+> **Kích hoạt thủ công:** MB Bank, OCB, VIB Doanh nghiệp/Hộ kinh doanh dùng yêu cầu kích hoạt.
 
 #### BIDV / VietinBank — Doanh nghiệp
 
@@ -187,7 +187,7 @@ Không cần thêm trường nào ngoài các trường chung bên trên.
 | -------------------- | ---------------------- |
 | **Mã số thuế (MST)** | Mã số thuế của công ty |
 
-> **Kích hoạt thủ công:** BIDV và VietinBank Doanh nghiệp được gửi để ApiPay kích hoạt thủ công.
+> **Kích hoạt thủ công:** BIDV và VietinBank Doanh nghiệp dùng yêu cầu kích hoạt.
 
 Sau khi điền đầy đủ các trường:
 
@@ -207,7 +207,7 @@ Với các kết nối trực tuyến, ngân hàng sẽ gửi **OTP (Mật khẩ
 
 Nếu mã OTP không đúng, bạn sẽ thấy thông báo lỗi. Hãy nhập lại mã đúng và thử lại.
 
-> **Tài khoản kích hoạt thủ công bỏ qua OTP.** Với các luồng thủ công (MB/OCB/VIB Doanh nghiệp hoặc Hộ kinh doanh, BIDV/VietinBank Doanh nghiệp), bạn sẽ thấy màn hình **Yêu cầu kích hoạt** thay vì OTP. ApiPay xem xét yêu cầu và kích hoạt kết nối.
+> **Tài khoản kích hoạt thủ công bỏ qua OTP.** Luồng thủ công hiển thị **Yêu cầu kích hoạt** thay vì OTP.
 
 ---
 
