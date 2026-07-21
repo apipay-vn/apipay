@@ -79,6 +79,20 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.14.0',
+    date: '2026-07-21',
+    features: [
+      'Payment Speaker (Ting) — hear real-time voice announcements the moment a customer completes a payment. Stay on top of every transaction without watching the screen — ideal for busy store counters and shared workspaces.',
+      'Multi-language voice support — the Payment Speaker speaks Vietnamese with clear, natural-sounding voices optimized for payment amounts, bank names, and transaction content.',
+    ],
+    fixes: [],
+    improvements: [
+      'Smarter plan changes — when you switch plans mid-cycle, the remaining time on your current plan is credited toward your new plan, so you only pay for what you use.',
+      'Faster and more reliable transaction processing — payments and webhooks now run through a dedicated queue, improving delivery speed and reducing the chance of missed events during high-traffic periods.',
+      'More responsive webhook retries — failed webhook deliveries retry more quickly, helping your integrations stay in sync with less waiting.',
+    ],
+  },
+  {
     version: '1.13.0',
     date: '2026-07-10',
     features: [
@@ -455,6 +469,20 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.14.0',
+    date: '2026-07-21',
+    features: [
+      'Loa Thanh Toán (Ting) — nghe thông báo bằng giọng nói theo thời gian thực ngay khi khách hàng hoàn tất thanh toán. Nắm bắt mọi giao dịch mà không cần nhìn màn hình — lý tưởng cho quầy bán hàng và không gian làm việc chung.',
+      'Hỗ trợ giọng đọc đa dạng — Loa Thanh Toán phát âm tiếng Việt với các giọng đọc rõ ràng, tự nhiên, được tối ưu cho số tiền, tên ngân hàng và nội dung giao dịch.',
+    ],
+    fixes: [],
+    improvements: [
+      'Đổi gói thông minh hơn — khi đổi gói giữa chu kỳ, thời gian còn lại của gói hiện tại được tính vào gói mới, bạn chỉ trả tiền cho những gì đã sử dụng.',
+      'Xử lý giao dịch nhanh và ổn định hơn — thanh toán và webhook nay chạy qua hàng đợi riêng, tăng tốc độ gửi và giảm nguy cơ bỏ lỡ sự kiện trong thời điểm giao dịch cao.',
+      'Gửi lại webhook phản hồi nhanh hơn — các lần gửi webhook thất bại được thử lại nhanh chóng, giúp tích hợp của bạn luôn đồng bộ với ít thời gian chờ hơn.',
+    ],
+  },
   {
     version: '1.13.0',
     date: '2026-07-10',
