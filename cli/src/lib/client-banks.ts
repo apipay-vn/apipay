@@ -4,9 +4,9 @@ import {getApiBaseUrl} from "./config.js";
 function getClientBanksBaseUrl(): string {
 	const baseUrl = getApiBaseUrl().replace(/\/+$/, "");
 	if (/\/v[12]$/.test(baseUrl)) {
-		return baseUrl.replace(/\/v[12]$/, "/v2");
+		return baseUrl.replace(/\/v[12]$/, "/v1");
 	}
-	return `${baseUrl}/v2`;
+	return `${baseUrl}/v1`;
 }
 
 export function getClientBanksApi(): ApiClient {

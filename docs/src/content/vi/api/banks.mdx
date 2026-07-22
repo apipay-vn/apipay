@@ -10,8 +10,10 @@ Dùng API quản lý ngân hàng để lấy danh sách ngân hàng hỗ trợ, 
 Base route:
 
 ```bash
-/v2/client/banks
+/v1/client/banks
 ```
+
+`/v2/client/banks` vẫn là alias tương thích của cùng API Tingee.
 
 ## Ngân hàng hỗ trợ
 
@@ -29,12 +31,12 @@ Base route:
 | Shinhan    | `SHBVN`    | `970424` | cá nhân, doanh nghiệp                |
 | Co-opBank  | `COOPBANK` | `970446` | cá nhân, doanh nghiệp, hộ kinh doanh |
 
-Dùng `GET /v2/client/banks/available` để lấy danh sách ngân hàng hiện có trước khi hiển thị bộ chọn ngân hàng.
+Dùng `GET /v1/client/banks/available` để lấy danh sách ngân hàng hiện có trước khi hiển thị bộ chọn ngân hàng.
 
 ## 1. Lấy danh sách ngân hàng khả dụng
 
 ```bash
-GET /v2/client/banks/available
+GET /v1/client/banks/available
 ```
 
 ### Response
@@ -57,7 +59,7 @@ GET /v2/client/banks/available
 ## 2. Kết nối tài khoản ngân hàng
 
 ```bash
-POST /v2/client/banks
+POST /v1/client/banks
 ```
 
 ### Request body
@@ -153,7 +155,7 @@ ApiPay sẽ liên hệ chủ tài khoản để hoàn tất kích hoạt.
 ## 3. Xác nhận OTP
 
 ```bash
-POST /v2/client/banks/confirm-otp
+POST /v1/client/banks/confirm-otp
 ```
 
 ### Request body
@@ -178,7 +180,7 @@ POST /v2/client/banks/confirm-otp
 ## 4. Lấy danh sách tài khoản ngân hàng đã liên kết
 
 ```bash
-GET /v2/client/banks
+GET /v1/client/banks
 ```
 
 ### Response
@@ -214,7 +216,7 @@ GET /v2/client/banks
 ## 5. Lấy chi tiết tài khoản ngân hàng
 
 ```bash
-GET /v2/client/banks/:publicId
+GET /v1/client/banks/:publicId
 ```
 
 ### Response thành công
@@ -247,7 +249,7 @@ GET /v2/client/banks/:publicId
 ## 6. Lấy thống kê ngân hàng
 
 ```bash
-GET /v2/client/banks/summary
+GET /v1/client/banks/summary
 ```
 
 ### Response
@@ -264,7 +266,7 @@ GET /v2/client/banks/summary
 ## 7. Bật hoặc tắt tài khoản ngân hàng
 
 ```bash
-PATCH /v2/client/banks/:publicId/status
+PATCH /v1/client/banks/:publicId/status
 ```
 
 Endpoint chuyển trạng thái tài khoản giữa `ACTIVE` và `INACTIVE`.
@@ -284,7 +286,7 @@ Endpoint chuyển trạng thái tài khoản giữa `ACTIVE` và `INACTIVE`.
 ## 8. Ngắt kết nối tài khoản ngân hàng
 
 ```bash
-DELETE /v2/client/banks/:publicId
+DELETE /v1/client/banks/:publicId
 ```
 
 Tài khoản được ngắt kết nối ngay, trừ khi ngân hàng yêu cầu xác nhận OTP.
@@ -305,7 +307,7 @@ Không thể ngắt kết nối tài khoản đang chờ kích hoạt thủ côn
 ## 9. Xác nhận ngắt kết nối ngân hàng
 
 ```bash
-POST /v2/client/banks/:publicId/confirm-delete
+POST /v1/client/banks/:publicId/confirm-delete
 ```
 
 ### Request body

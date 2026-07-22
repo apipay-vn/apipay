@@ -10,8 +10,10 @@ Use the bank management API to discover supported banks, connect accounts, compl
 Base route:
 
 ```bash
-/v2/client/banks
+/v1/client/banks
 ```
+
+`/v2/client/banks` remains a compatibility alias of the same Tingee-backed API.
 
 ## Supported banks
 
@@ -29,12 +31,12 @@ Base route:
 | Shinhan    | `SHBVN`    | `970424` | personal, business                     |
 | Co-opBank  | `COOPBANK` | `970446` | personal, business, household business |
 
-Use `GET /v2/client/banks/available` to retrieve the live bank catalog before showing a bank picker.
+Use `GET /v1/client/banks/available` to retrieve the live bank catalog before showing a bank picker.
 
 ## 1. List available banks
 
 ```bash
-GET /v2/client/banks/available
+GET /v1/client/banks/available
 ```
 
 ### Response
@@ -57,7 +59,7 @@ GET /v2/client/banks/available
 ## 2. Connect a bank account
 
 ```bash
-POST /v2/client/banks
+POST /v1/client/banks
 ```
 
 ### Request body
@@ -153,7 +155,7 @@ ApiPay contacts the account owner to complete activation.
 ## 3. Confirm OTP
 
 ```bash
-POST /v2/client/banks/confirm-otp
+POST /v1/client/banks/confirm-otp
 ```
 
 ### Request body
@@ -178,7 +180,7 @@ POST /v2/client/banks/confirm-otp
 ## 4. List linked bank accounts
 
 ```bash
-GET /v2/client/banks
+GET /v1/client/banks
 ```
 
 ### Response
@@ -214,7 +216,7 @@ GET /v2/client/banks
 ## 5. Get a bank account
 
 ```bash
-GET /v2/client/banks/:publicId
+GET /v1/client/banks/:publicId
 ```
 
 ### Success response
@@ -247,7 +249,7 @@ GET /v2/client/banks/:publicId
 ## 6. Get bank summary
 
 ```bash
-GET /v2/client/banks/summary
+GET /v1/client/banks/summary
 ```
 
 ### Response
@@ -264,7 +266,7 @@ GET /v2/client/banks/summary
 ## 7. Toggle bank status
 
 ```bash
-PATCH /v2/client/banks/:publicId/status
+PATCH /v1/client/banks/:publicId/status
 ```
 
 The endpoint switches the linked account between `ACTIVE` and `INACTIVE`.
@@ -284,7 +286,7 @@ The endpoint switches the linked account between `ACTIVE` and `INACTIVE`.
 ## 8. Disconnect a bank account
 
 ```bash
-DELETE /v2/client/banks/:publicId
+DELETE /v1/client/banks/:publicId
 ```
 
 The account is disconnected immediately unless the bank requires OTP confirmation.
@@ -305,7 +307,7 @@ Accounts waiting for manual activation cannot be disconnected until ApiPay finis
 ## 9. Confirm bank disconnection
 
 ```bash
-POST /v2/client/banks/:publicId/confirm-delete
+POST /v1/client/banks/:publicId/confirm-delete
 ```
 
 ### Request body
