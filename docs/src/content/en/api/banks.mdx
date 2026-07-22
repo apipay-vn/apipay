@@ -86,8 +86,6 @@ POST /v2/client/banks
 | `mobile`        | string | Yes         | Phone number registered with the bank                                    |
 | `identity`      | string | Except ACB  | Citizen ID for personal accounts, or tax code for business account types |
 | `acbUserId`     | string | Conditional | ACB OneBiz username for ACB business and household business accounts     |
-| `merchantId`    | string | Conditional | Merchant identifier when required for the configured bank connection     |
-| `shopId`        | string | Conditional | Shop identifier when required for the configured bank connection         |
 
 Sacombank accepts `personal-account` and `business-household-account`.
 Shinhan accepts `personal-account` and `business-account`.
