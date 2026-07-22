@@ -70,7 +70,6 @@ Cấu hình webhook URL trong dashboard để nhận thông báo khi hệ thốn
 		"transactionId": "550e8400-e29b-41d4-a716-446655440000",
 		"referenceCode": "TX123456789",
 		"amount": 100000,
-		"type": "IN",
 		"content": "ORDER-12345",
 		"transactionDate": "2026-03-06T10:30:00Z",
 		"bankAccountPublicId": "bk_abcdef1234567890",
@@ -80,7 +79,7 @@ Cấu hình webhook URL trong dashboard để nhận thông báo khi hệ thốn
 }
 ```
 
-ApiPay gửi `transaction.in` khi phát hiện thanh toán tiền vào. `transaction.out` là hành vi legacy đã deprecated từ tháng 6/2026. Xem [Webhook](/vi/api/webhooks) để biết đầy đủ payload và cách kiểm tra chữ ký.
+ApiPay gửi `transaction.in` khi phát hiện thanh toán. Xem [Webhook](/vi/api/webhooks) để biết đầy đủ payload và cách kiểm tra chữ ký.
 
 ## Ví dụ Code
 

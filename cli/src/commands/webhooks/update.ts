@@ -2,10 +2,10 @@ import {Args} from "@oclif/core";
 import chalk from "chalk";
 import {ApiKeyCommand} from "../../lib/base-command.js";
 import {kvLine, success} from "../../lib/formatters.js";
-import {promptWebhookType, promptWebhookUrl} from "../../lib/prompts.js";
+import {promptOptionalWebhookUrl} from "../../lib/prompts.js";
 
 export default class WebhooksUpdate extends ApiKeyCommand {
-	static override description = "Update a webhook URL or transaction type";
+	static override description = "Update a webhook URL";
 
 	static override args = {
 		id: Args.string({description: "Webhook ID", required: true}),
@@ -19,15 +19,13 @@ export default class WebhooksUpdate extends ApiKeyCommand {
 		console.log(`\n  Updating webhook ${chalk.cyan(args.id.slice(0, 8))}...\n`);
 		console.log("  Leave blank to keep the current value.\n");
 
-		const webhookUrl = await promptWebhookUrl();
-		const type = await promptWebhookType();
+		const webhookUrl = await promptOptionalWebhookUrl();
 
 		this.spinner.start("Updating webhook...");
 
 		try {
 			const body: Record<string, string> = {};
 			if (webhookUrl) body.webhookUrl = webhookUrl;
-			if (type) body.type = type;
 
 			const data = await this.api.patch(
 				`/client/webhooks/${args.id}`,
@@ -38,7 +36,6 @@ export default class WebhooksUpdate extends ApiKeyCommand {
 
 			this.spinner.succeed("Webhook updated!");
 			kvLine("URL", webhook?.webhookUrl ?? webhookUrl);
-			kvLine("Type", webhook?.type ?? type);
 			console.log("");
 
 			success("Webhook configuration updated.");

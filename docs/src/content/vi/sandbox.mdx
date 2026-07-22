@@ -96,7 +96,6 @@ Payload sandbox giống production. Chỉ có hai điểm để nhận biết: `
     "transactionId": "clxyz...",
     "referenceCode": "SBX-1747123456789-A1B2C3D4",
     "amount": "50000",
-    "type": "IN",
     "content": "ORDER-12345",
     "transactionDate": "2026-05-14T10:30:00.000Z",
     "bankAccountPublicId": "bk_abcdef1234567890",
@@ -104,30 +103,6 @@ Payload sandbox giống production. Chỉ có hai điểm để nhận biết: `
     "rawTransactionDate": "2026-05-14 10:30:00",
     "vaNumber": "999988887777",
     "accountNumber": "0123456789"
-  }
-}
-```
-
-### transaction.out (sandbox legacy, đã deprecated)
-
-Sandbox `transaction.out` đã deprecated từ tháng 6/2026 vì ApiPay không hỗ trợ sự kiện tiền ra. Test mới nên dùng `transaction.in`.
-
-```json
-{
-  "event": "transaction.out",
-  "sandbox": true,
-  "data": {
-    "transactionId": "clxyz...",
-    "referenceCode": "SBX-1747123456789-E5F6G7H8",
-    "amount": "200000",
-    "type": "OUT",
-    "content": "Hoàn tiền ORDER-12345",
-    "transactionDate": "2026-05-14T10:31:00.000Z",
-    "bankAccountPublicId": "bk_abcdef1234567890",
-    "gateway": "VCB",
-    "rawTransactionDate": "2026-05-14 10:31:00",
-    "vaNumber": "999988887777",
-    "accountNumber": "0987654321"
   }
 }
 ```

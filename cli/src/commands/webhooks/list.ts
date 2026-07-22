@@ -30,11 +30,10 @@ export default class WebhooksList extends ApiKeyCommand {
 
 			console.log("");
 			const table = createTable(
-				["ID", "URL", "Type", "Status", "Bank"],
+				["ID", "URL", "Status", "Bank"],
 				webhooks.map((w: any) => [
 					w.id ? String(w.id) : "—",
 					w.webhookUrl ? maskLongString(w.webhookUrl) : "—",
-					w.type ?? "—",
 					statusBadge(w.isActive ? "ACTIVE" : "INACTIVE"),
 					w.bankAccount ? formatBankLabel(w.bankAccount) : (w.bankAccountId?.toString() ?? "—"),
 				]),

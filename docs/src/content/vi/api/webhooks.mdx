@@ -74,7 +74,6 @@ Mỗi bản ghi trong Lịch sử gửi bao gồm:
 - **Thời gian** — Thời điểm gửi webhook
 - **Endpoint** — URL webhook đã gửi đến
 - **Ngân hàng** — Tài khoản ngân hàng liên quan
-- **Hướng giao dịch** — `IN` hoặc `OUT`
 - **Trạng thái** — Thành công hoặc thất bại, kèm mã phản hồi HTTP
 - **Số lần thử lại** — Số lần hệ thống đã thử gửi lại
 - **Mã tham chiếu** — Mã giao dịch liên quan
@@ -102,7 +101,6 @@ GET /v1/client/webhooks/deliveries
 | `limit`         | number | Số bản ghi mỗi trang (mặc định: 20, tối đa: 100) |
 | `webhookId`     | string | Lọc theo ID webhook                              |
 | `bankAccountId` | number | Lọc theo tài khoản ngân hàng                     |
-| `direction`     | string | Đã ngừng hỗ trợ từ tháng 6/2026                  |
 | `status`        | string | `SUCCESS` hoặc `FAILED`                          |
 | `dateFrom`      | string | Từ ngày (YYYY-MM-DD)                             |
 | `dateTo`        | string | Đến ngày (YYYY-MM-DD)                            |
@@ -124,8 +122,7 @@ GET /v1/client/webhooks/deliveries
         "event": "transaction.in",
         "data": {
           "amount": 100000,
-          "referenceCode": "ORDER-12345",
-          "type": "IN"
+          "referenceCode": "ORDER-12345"
         }
       },
       "retryCount": 0,
@@ -141,7 +138,6 @@ GET /v1/client/webhooks/deliveries
       "transaction": {
         "id": "txn_abc456",
         "amount": 100000,
-        "type": "IN",
         "referenceCode": "ORDER-12345"
       }
     }
@@ -168,7 +164,6 @@ Khi có tiền vào tài khoản ngân hàng của bạn.
     "transactionId": "550e8400-e29b-41d4-a716-446655440000",
     "referenceCode": "TX123456789",
     "amount": 100000,
-    "type": "IN",
     "content": "ORDER-12345",
     "transactionDate": "2024-03-20T10:30:00.000Z",
     "bankAccountPublicId": "bk_abcdef1234567890",
@@ -180,44 +175,20 @@ Khi có tiền vào tài khoản ngân hàng của bạn.
 }
 ```
 
-### transaction.out (legacy, đã deprecated)
-
-`transaction.out` đã deprecated từ tháng 6/2026 vì ApiPay không hỗ trợ sự kiện tiền ra. Sự kiện này chỉ có thể xuất hiện trong dữ liệu lịch sử hoặc tích hợp cũ.
-
-```json
-{
-  "event": "transaction.out",
-  "data": {
-    "transactionId": "550e8400-e29b-41d4-a716-446655440000",
-    "referenceCode": "TX123456789",
-    "amount": 50000,
-    "type": "OUT",
-    "content": "Chuyen khoan tieu dung",
-    "transactionDate": "2024-03-20T10:30:00.000Z",
-    "bankAccountPublicId": "bk_abcdef1234567890",
-    "gateway": "VCB",
-    "rawTransactionDate": "2024-03-20 10:30:00",
-    "vaNumber": "999988887777",
-    "accountNumber": "0987654321"
-  }
-}
-```
-
 ### Trường dữ liệu
 
-| Trường                     | Kiểu   | Mô tả                                                                                                     |
-| -------------------------- | ------ | --------------------------------------------------------------------------------------------------------- |
-| `event`                    | string | Loại sự kiện. Tích hợp mới nên xử lý `transaction.in`; `transaction.out` là hành vi legacy đã deprecated. |
-| `data.transactionId`       | string | ID giao dịch nội bộ (UUID)                                                                                |
-| `data.referenceCode`       | string | Mã tham chiếu giao dịch ngân hàng                                                                         |
-| `data.amount`              | number | Số tiền giao dịch (VND)                                                                                   |
-| `data.type`                | string | Loại giao dịch. Sự kiện production mới dùng `IN`; `OUT` là hành vi legacy đã deprecated.                  |
-| `data.content`             | string | Nội dung giao dịch                                                                                        |
-| `data.transactionDate`     | string | Thời gian giao dịch (ISO 8601)                                                                            |
-| `data.bankAccountPublicId` | string | Public ID của tài khoản ngân hàng                                                                         |
-| `data.gateway`             | string | Mã ngân hàng (VD: ACB, MBB, BIDV, OCB, ICB, VIB, STB, VPB)                                                |
-| `data.rawTransactionDate`  | string | Ngày giao dịch gốc từ ngân hàng                                                                           |
-| `data.vaNumber`            | string | Số tài khoản ảo (tùy chọn)                                                                                |
+| Trường                     | Kiểu   | Mô tả                                                      |
+| -------------------------- | ------ | ---------------------------------------------------------- |
+| `event`                    | string | Tên sự kiện                                                |
+| `data.transactionId`       | string | ID giao dịch nội bộ (UUID)                                 |
+| `data.referenceCode`       | string | Mã tham chiếu giao dịch ngân hàng                          |
+| `data.amount`              | number | Số tiền giao dịch (VND)                                    |
+| `data.content`             | string | Nội dung giao dịch                                         |
+| `data.transactionDate`     | string | Thời gian giao dịch (ISO 8601)                             |
+| `data.bankAccountPublicId` | string | Public ID của tài khoản ngân hàng                          |
+| `data.gateway`             | string | Mã ngân hàng (VD: ACB, MBB, BIDV, OCB, ICB, VIB, STB, VPB) |
+| `data.rawTransactionDate`  | string | Ngày giao dịch gốc từ ngân hàng                            |
+| `data.vaNumber`            | string | Số tài khoản ảo (tùy chọn)                                 |
 | `data.accountNumber`       | string | Số tài khoản người gửi/nhận                                                                               |
 
 ## Xác thực webhook

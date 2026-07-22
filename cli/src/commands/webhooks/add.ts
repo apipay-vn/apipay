@@ -3,11 +3,7 @@ import {ApiKeyCommand} from "../../lib/base-command.js";
 import {fetchClientBanks} from "../../lib/client-banks.js";
 import {markStepComplete} from "../../lib/config.js";
 import {kvLine, success, warn} from "../../lib/formatters.js";
-import {
-	promptBankFromList,
-	promptWebhookType,
-	promptWebhookUrl,
-} from "../../lib/prompts.js";
+import {promptBankFromList, promptWebhookUrl} from "../../lib/prompts.js";
 
 export default class WebhooksAdd extends ApiKeyCommand {
 	static override description =
@@ -46,16 +42,13 @@ export default class WebhooksAdd extends ApiKeyCommand {
 		// Step 3: Webhook URL
 		const webhookUrl = await promptWebhookUrl();
 
-		// Step 4: Type
-		const type = await promptWebhookType();
-
-		// Step 5: Create
+		// Step 4: Create
 		this.spinner.start("Creating webhook...");
 
 		try {
 			const data = await this.api.post(
 				"/client/webhooks",
-				{webhookUrl, bankPublicId, type},
+				{webhookUrl, bankPublicId},
 				"apikey",
 			);
 
@@ -64,7 +57,6 @@ export default class WebhooksAdd extends ApiKeyCommand {
 
 			console.log("");
 			kvLine("Webhook URL", webhookUrl);
-			kvLine("Type", type);
 			kvLine("Bank", bankPublicId.slice(0, 8) + "...");
 			if (webhook?.secret) {
 				kvLine("HMAC Secret", chalk.yellow(webhook.secret));

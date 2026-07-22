@@ -154,12 +154,6 @@ export function getSupportedBank(value: string): SupportedBank | undefined {
 	return SUPPORTED_BANKS.find((bank) => bank.value === value);
 }
 
-export const WEBHOOK_TYPES = [
-	{value: "IN", name: "IN — Incoming transactions only"},
-	{value: "OUT", name: "OUT — Outgoing transactions only"},
-	{value: "ALL", name: "ALL — Both incoming and outgoing"},
-] as const;
-
 export const SETUP_STEPS = ["login", "api-key", "bank", "webhook"] as const;
 export type SetupStep = (typeof SETUP_STEPS)[number];
 

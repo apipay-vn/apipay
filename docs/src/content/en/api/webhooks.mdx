@@ -72,7 +72,6 @@ Each delivery record includes:
 - **Timestamp** — When the webhook was sent
 - **Endpoint** — URL the webhook was sent to
 - **Bank** — Associated bank account
-- **Direction** — IN or OUT
 - **Status** — Success/failure with HTTP response code
 - **Retry count** — Number of retry attempts made
 - **Reference** — Related transaction reference code
@@ -100,7 +99,6 @@ GET /v1/client/webhooks/deliveries
 | `limit`         | number | Items per page (default: 20, max: 100)                             |
 | `webhookId`     | string | Filter by webhook ID                                               |
 | `bankAccountId` | number | Filter by bank account                                             |
-| `direction`     | string | Deprecated since June 2026; accepted for compatibility and ignored |
 | `status`        | string | `SUCCESS` or `FAILED`                                              |
 | `dateFrom`      | string | Start date (YYYY-MM-DD)                                            |
 | `dateTo`        | string | End date (YYYY-MM-DD)                                              |
@@ -122,8 +120,7 @@ GET /v1/client/webhooks/deliveries
         "event": "transaction.in",
         "data": {
           "amount": 100000,
-          "referenceCode": "ORDER-12345",
-          "type": "IN"
+          "referenceCode": "ORDER-12345"
         }
       },
       "retryCount": 0,
@@ -139,7 +136,6 @@ GET /v1/client/webhooks/deliveries
       "transaction": {
         "id": "txn_abc456",
         "amount": 100000,
-        "type": "IN",
         "referenceCode": "ORDER-12345"
       }
     }
@@ -166,7 +162,6 @@ When money is received into your bank account.
     "transactionId": "550e8400-e29b-41d4-a716-446655440000",
     "referenceCode": "TX123456789",
     "amount": 100000,
-    "type": "IN",
     "content": "ORDER-12345",
     "transactionDate": "2024-03-20T10:30:00.000Z",
     "bankAccountPublicId": "bk_abcdef1234567890",
@@ -178,45 +173,21 @@ When money is received into your bank account.
 }
 ```
 
-### transaction.out (deprecated legacy)
-
-`transaction.out` is deprecated since June 2026 because ApiPay does not support outgoing transaction events. It may appear in historical data or legacy integrations only.
-
-```json
-{
-  "event": "transaction.out",
-  "data": {
-    "transactionId": "550e8400-e29b-41d4-a716-446655440000",
-    "referenceCode": "TX123456789",
-    "amount": 50000,
-    "type": "OUT",
-    "content": "Chuyen khoan tieu dung",
-    "transactionDate": "2024-03-20T10:30:00.000Z",
-    "bankAccountPublicId": "bk_abcdef1234567890",
-    "gateway": "VCB",
-    "rawTransactionDate": "2024-03-20 10:30:00",
-    "vaNumber": "999988887777",
-    "accountNumber": "0987654321"
-  }
-}
-```
-
 ### Data Fields
 
-| Field                      | Type   | Description                                                                                                   |
-| -------------------------- | ------ | ------------------------------------------------------------------------------------------------------------- |
-| `event`                    | string | Event type. New integrations should handle `transaction.in`; `transaction.out` is deprecated legacy behavior. |
-| `data.transactionId`       | string | Internal transaction ID (UUID)                                                                                |
-| `data.referenceCode`       | string | Bank transaction reference code                                                                               |
-| `data.amount`              | number | Transaction amount in VND                                                                                     |
-| `data.type`                | string | Transaction type. New production events use `IN`; `OUT` is deprecated legacy behavior.                        |
-| `data.content`             | string | Transaction content/memo                                                                                      |
-| `data.transactionDate`     | string | Transaction timestamp (ISO 8601)                                                                              |
-| `data.bankAccountPublicId` | string | Public ID of the bank account                                                                                 |
-| `data.gateway`             | string | Bank code (e.g., ACB, MBB, BIDV, OCB, ICB, VIB, STB, VPB)                                                     |
-| `data.rawTransactionDate`  | string | Original transaction date from bank                                                                           |
-| `data.vaNumber`            | string | Virtual account number (optional)                                                                             |
-| `data.accountNumber`       | string | Sender/receiver account number                                                                                |
+| Field                      | Type   | Description                                               |
+| -------------------------- | ------ | --------------------------------------------------------- |
+| `event`                    | string | Event name                                                |
+| `data.transactionId`       | string | Internal transaction ID (UUID)                            |
+| `data.referenceCode`       | string | Bank transaction reference code                           |
+| `data.amount`              | number | Transaction amount in VND                                 |
+| `data.content`             | string | Transaction content/memo                                  |
+| `data.transactionDate`     | string | Transaction timestamp (ISO 8601)                          |
+| `data.bankAccountPublicId` | string | Public ID of the bank account                             |
+| `data.gateway`             | string | Bank code (e.g., ACB, MBB, BIDV, OCB, ICB, VIB, STB, VPB) |
+| `data.rawTransactionDate`  | string | Original transaction date from bank                       |
+| `data.vaNumber`            | string | Virtual account number (optional)                         |
+| `data.accountNumber`       | string | Sender/receiver account number                            |
 
 ## Webhook Authentication
 

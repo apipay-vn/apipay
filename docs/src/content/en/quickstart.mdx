@@ -70,7 +70,6 @@ Configure a webhook URL in the dashboard to receive notifications when bank tran
 		"transactionId": "550e8400-e29b-41d4-a716-446655440000",
 		"referenceCode": "TX123456789",
 		"amount": 100000,
-		"type": "IN",
 		"content": "ORDER-12345",
 		"transactionDate": "2026-03-06T10:30:00Z",
 		"bankAccountPublicId": "bk_abcdef1234567890",
@@ -80,7 +79,7 @@ Configure a webhook URL in the dashboard to receive notifications when bank tran
 }
 ```
 
-ApiPay sends `transaction.in` when an incoming payment is detected. `transaction.out` is deprecated legacy behavior since June 2026. See [Webhooks](/en/api/webhooks) for the full payload and signature verification.
+ApiPay sends `transaction.in` when a payment is detected. See [Webhooks](/en/api/webhooks) for the full payload and signature verification.
 
 ## Code Examples
 

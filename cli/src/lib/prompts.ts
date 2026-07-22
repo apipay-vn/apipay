@@ -5,7 +5,6 @@ import {
 	type AccountType,
 	SUPPORTED_BANKS,
 	type SupportedBank,
-	WEBHOOK_TYPES,
 } from "./constants.js";
 import {
 	validateAccountName,
@@ -128,13 +127,10 @@ export async function promptWebhookUrl(): Promise<string> {
 	});
 }
 
-export async function promptWebhookType(): Promise<string> {
-	return select({
-		message: "Transaction type to listen for:",
-		choices: WEBHOOK_TYPES.map((t) => ({
-			value: t.value,
-			name: t.name,
-		})),
+export async function promptOptionalWebhookUrl(): Promise<string> {
+	return input({
+		message: "Webhook URL (HTTPS):",
+		validate: (value) => (value.trim() ? validateWebhookUrl(value) : true),
 	});
 }
 
