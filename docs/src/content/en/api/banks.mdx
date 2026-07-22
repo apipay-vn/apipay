@@ -84,7 +84,7 @@ POST /v2/client/banks
 | `accountNumber` | string | Yes         | Bank account number                                                      |
 | `accountName`   | string | Yes         | Account holder name in uppercase without accents                         |
 | `mobile`        | string | Yes         | Phone number registered with the bank                                    |
-| `identity`      | string | Except ACB  | Citizen ID for personal accounts, or tax code for business account types |
+| `identity`      | string | Yes         | Citizen ID for personal accounts, or tax code for business account types |
 | `acbUserId`     | string | Conditional | ACB OneBiz username for ACB business and household business accounts     |
 
 Sacombank accepts `personal-account` and `business-household-account`.
