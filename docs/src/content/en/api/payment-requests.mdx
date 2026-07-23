@@ -172,10 +172,44 @@ GET /v1/client/payment-requests
 | `page`          | number   | —        | Page number (default: `1`)                             |
 | `limit`         | number   | —        | Items per page (default: `20`, max: `100`)             |
 | `search`        | string   | —        | Search by public ID, content, title, or account number |
-| `status`        | string[] | —        | Filter by status. Can be passed multiple times         |
+| `status`        | string[] | —        | Filter by status: `ACTIVE`, `EXPIRED`, `COMPLETED`, `CANCELLED`. Can be passed multiple times |
 | `bankAccountId` | number   | —        | Filter by bank account ID                              |
 | `dateFrom`      | string   | —        | Filter by creation date from this ISO date             |
 | `dateTo`        | string   | —        | Filter by creation date through this ISO date          |
+
+### Status Filters
+
+The `status` query parameter accepts these values:
+
+| Status      | Description         |
+| ----------- | ------------------- |
+| `ACTIVE`    | Waiting for payment |
+| `COMPLETED` | Payment received    |
+| `EXPIRED`   | Expired             |
+| `CANCELLED` | Cancelled           |
+
+### Query Examples
+
+Get completed payment links:
+
+```bash
+curl -G https://app.apipay.vn/v1/client/payment-requests \
+  -H "Authorization: Bearer <Auth>" \
+  --data-urlencode "status=COMPLETED" \
+  --data-urlencode "page=1" \
+  --data-urlencode "limit=20"
+```
+
+Get active or expired payment links created in March 2026:
+
+```bash
+curl -G https://app.apipay.vn/v1/client/payment-requests \
+  -H "Authorization: Bearer <Auth>" \
+  --data-urlencode "status=ACTIVE" \
+  --data-urlencode "status=EXPIRED" \
+  --data-urlencode "dateFrom=2026-03-01" \
+  --data-urlencode "dateTo=2026-03-31"
+```
 
 ---
 

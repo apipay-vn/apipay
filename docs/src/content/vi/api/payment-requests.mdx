@@ -26,14 +26,14 @@ POST /v1/client/payment-requests
 
 ### Request Body
 
-| Tham số        | Kiểu   | Bắt buộc | Mô tả                                                                                                                                                                                                                        |
-| -------------- | ------ | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `bankPublicId` | string | **✓ Có** | Public ID của ngân hàng đã kết nối                                                                                                                                                                                           |
-| `amount`       | number | —        | Số tiền VND, dạng số nguyên, tối đa `300000000`. Để trống nếu cho phép khách tự nhập                                                                                                                                         |
-| `content`      | string | —        | Nội dung chuyển khoản (tối đa 140 ký tự)                                                                                                                                                                                     |
-| `title`        | string | —        | Tiêu đề hiển thị trên trang thanh toán                                                                                                                                                                                       |
-| `expiresAt`    | string | —        | Thời hạn (ISO 8601). Để trống nếu không giới hạn                                                                                                                                                                             |
-| `redirectUrl`  | string | —        | URL đưa khách về sau khi thanh toán. Khi hoàn tất, hệ thống chuyển đến URL này kèm payload đã ký (`?data=<base64>&signature=<hmac>`). Để trống để dùng URL mặc định của merchant                                            |
+| Tham số        | Kiểu   | Bắt buộc | Mô tả                                                                                                                                                                            |
+| -------------- | ------ | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `bankPublicId` | string | **✓ Có** | Public ID của ngân hàng đã kết nối                                                                                                                                               |
+| `amount`       | number | —        | Số tiền VND, dạng số nguyên, tối đa `300000000`. Để trống nếu cho phép khách tự nhập                                                                                             |
+| `content`      | string | —        | Nội dung chuyển khoản (tối đa 140 ký tự)                                                                                                                                         |
+| `title`        | string | —        | Tiêu đề hiển thị trên trang thanh toán                                                                                                                                           |
+| `expiresAt`    | string | —        | Thời hạn (ISO 8601). Để trống nếu không giới hạn                                                                                                                                 |
+| `redirectUrl`  | string | —        | URL đưa khách về sau khi thanh toán. Khi hoàn tất, hệ thống chuyển đến URL này kèm payload đã ký (`?data=<base64>&signature=<hmac>`). Để trống để dùng URL mặc định của merchant |
 
 ### Response
 
@@ -167,15 +167,49 @@ GET /v1/client/payment-requests
 
 ### Query Parameters
 
-| Tham số         | Kiểu     | Bắt buộc | Mô tả                                                   |
-| --------------- | -------- | -------- | ------------------------------------------------------- |
-| `page`          | number   | —        | Số trang (mặc định: `1`)                                |
-| `limit`         | number   | —        | Số item trên mỗi trang (mặc định: `20`, tối đa: `100`)  |
-| `search`        | string   | —        | Tìm theo public ID, nội dung, tiêu đề hoặc số tài khoản |
-| `status`        | string[] | —        | Lọc theo trạng thái. Có thể truyền nhiều lần            |
-| `bankAccountId` | number   | —        | Lọc theo ID tài khoản ngân hàng                         |
-| `dateFrom`      | string   | —        | Lọc theo ngày tạo từ ngày ISO này                       |
-| `dateTo`        | string   | —        | Lọc theo ngày tạo đến ngày ISO này                      |
+| Tham số         | Kiểu     | Bắt buộc | Mô tả                                                                                       |
+| --------------- | -------- | -------- | ------------------------------------------------------------------------------------------- |
+| `page`          | number   | —        | Số trang (mặc định: `1`)                                                                    |
+| `limit`         | number   | —        | Số item trên mỗi trang (mặc định: `20`, tối đa: `100`)                                      |
+| `search`        | string   | —        | Tìm theo public ID, nội dung, tiêu đề hoặc số tài khoản                                     |
+| `status`        | string[] | —        | Lọc theo trạng thái: `ACTIVE`, `EXPIRED`, `COMPLETED`, `CANCELLED`. Có thể truyền nhiều lần |
+| `bankAccountId` | number   | —        | Lọc theo ID tài khoản ngân hàng                                                             |
+| `dateFrom`      | string   | —        | Lọc theo ngày tạo từ ngày ISO này                                                           |
+| `dateTo`        | string   | —        | Lọc theo ngày tạo đến ngày ISO này                                                          |
+
+### Bộ lọc status
+
+Query parameter `status` nhận các giá trị sau:
+
+| Status      | Mô tả               |
+| ----------- | ------------------- |
+| `ACTIVE`    | Đang chờ thanh toán |
+| `COMPLETED` | Đã thanh toán       |
+| `EXPIRED`   | Đã hết hạn          |
+| `CANCELLED` | Đã hủy              |
+
+### Ví dụ query
+
+Lấy payment links đã thanh toán:
+
+```bash
+curl -G https://app.apipay.vn/v1/client/payment-requests \
+  -H "Authorization: Bearer <Auth>" \
+  --data-urlencode "status=COMPLETED" \
+  --data-urlencode "page=1" \
+  --data-urlencode "limit=20"
+```
+
+Lấy payment links đang hoạt động hoặc đã hết hạn được tạo trong tháng 3/2026:
+
+```bash
+curl -G https://app.apipay.vn/v1/client/payment-requests \
+  -H "Authorization: Bearer <Auth>" \
+  --data-urlencode "status=ACTIVE" \
+  --data-urlencode "status=EXPIRED" \
+  --data-urlencode "dateFrom=2026-03-01" \
+  --data-urlencode "dateTo=2026-03-31"
+```
 
 ---
 
@@ -313,43 +347,45 @@ Các giá trị `status` có thể: `success`, `cancel`, `expired`
 const crypto = require('crypto');
 
 function verifyRedirectPayload(query, redirectSecret) {
-  // Giải mã payload
-  const payloadJson = Buffer.from(query.data, 'base64url').toString('utf-8');
-  const payload = JSON.parse(payloadJson);
+// Giải mã payload
+const payloadJson = Buffer.from(query.data, 'base64url').toString('utf-8');
+const payload = JSON.parse(payloadJson);
 
-  // Tính signature mong đợi
-  const expectedSignature = crypto.createHmac('sha256', redirectSecret).update(payloadJson).digest('hex');
+// Tính signature mong đợi
+const expectedSignature = crypto.createHmac('sha256', redirectSecret).update(payloadJson).digest('hex');
 
-  // Sử dụng timing-safe comparison để chống timing attacks
-  const isValid = crypto.timingSafeEqual(Buffer.from(query.signature), Buffer.from(expectedSignature));
+// Sử dụng timing-safe comparison để chống timing attacks
+const isValid = crypto.timingSafeEqual(Buffer.from(query.signature), Buffer.from(expectedSignature));
 
-  if (!isValid) {
-    throw new Error('Invalid signature');
-  }
+if (!isValid) {
+throw new Error('Invalid signature');
+}
 
-  return payload;
+return payload;
 }
 
 // Express route handler
 app.get('/payment/result', (req, res) => {
-  const {data, signature} = req.query;
-  const redirectSecret = 'a1b2c3d4e5f6...'; // Từ payment request response
+const {data, signature} = req.query;
+const redirectSecret = 'a1b2c3d4e5f6...'; // Từ payment request response
 
-  try {
-    const payload = verifyRedirectPayload({data, signature}, redirectSecret);
-    console.log('Payment status:', payload.status);
-    console.log('Transaction ID:', payload.transactionId);
-    console.log('Amount:', payload.amount);
+try {
+const payload = verifyRedirectPayload({data, signature}, redirectSecret);
+console.log('Payment status:', payload.status);
+console.log('Transaction ID:', payload.transactionId);
+console.log('Amount:', payload.amount);
 
     if (payload.status === 'success') {
       // Xử lý thanh toán
       res.send('Thanh toán thành công!');
     }
-  } catch (error) {
-    res.status(400).send('Invalid redirect');
-  }
+
+} catch (error) {
+res.status(400).send('Invalid redirect');
+}
 });
-```
+
+````
 
 ```python
 import hmac
@@ -397,7 +433,7 @@ def handle_redirect(data: str, signature: str):
     except ValueError:
         from fastapi import HTTPException
         raise HTTPException(status_code=400, detail='Invalid redirect')
-```
+````
 
 ```php
 <?php
@@ -441,6 +477,7 @@ Route::get('/payment/result', function (Request $request) {
     }
 });
 ```
+
 </CodeTabs>
 
 ### Trường Response
