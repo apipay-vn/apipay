@@ -1,4 +1,5 @@
 import {useState} from "react";
+import {DOCS_PLANS} from "../data/plans";
 
 type Locale = "en" | "vi";
 
@@ -8,15 +9,6 @@ const terms = [
 	{months: 6, discount: 10},
 	{months: 12, discount: 15},
 ] as const;
-
-const plans = [
-	{name: "BASIC", price: 100000, banks: 1},
-	{name: "STARTER", price: 200000, banks: 3},
-	{name: "PRO", price: 400000, banks: 5},
-	{name: "TEAM", price: 700000, banks: 10},
-	{name: "BUSINESS", price: 1700000, banks: 25},
-	{name: "ENTERPRISE", price: 3200000, banks: 50},
-];
 
 function formatVnd(amount: number, locale: Locale) {
 	const formatted = new Intl.NumberFormat(locale === "vi" ? "vi-VN" : "en-US").format(amount);
@@ -72,7 +64,7 @@ export function PricingTabs({locale = "en"}: {locale?: Locale}) {
 						</tr>
 					</thead>
 					<tbody>
-						{plans.map(plan => {
+						{DOCS_PLANS.map(plan => {
 							const subtotal = plan.price * termMonths;
 							const discount = Math.round((subtotal * activeTerm.discount) / 100);
 							const total = subtotal - discount;

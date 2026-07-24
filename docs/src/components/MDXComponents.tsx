@@ -3,6 +3,7 @@ import React, {useCallback, useState, useEffect} from "react";
 import {codeToHtml} from "shiki";
 import {CodeTabs} from "./CodeTabs";
 import {PricingTabs} from "./PricingTabs";
+import {OnboardingPricingTable} from "./OnboardingPricingTable";
 
 /**
  * Creates a heading component with an anchor link.
@@ -238,6 +239,7 @@ export const mdxComponents = {
 	Callout,
 	CodeTabs,
 	PricingTabs,
+	OnboardingPricingTable,
 	hr: (props: any) => <hr {...props} className="my-8 border-border-light" />,
 	table: (props: any) => (
 		<div className="table-container">
