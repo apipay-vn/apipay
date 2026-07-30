@@ -110,7 +110,7 @@ GET /v1/client/metrics/hourly-transactions
 |---------|------|----------|--------|
 | `date` | string | — | Ngày dạng `YYYY-MM-DD`, hiểu theo múi giờ `Asia/Ho_Chi_Minh`. Mặc định là hôm nay tại Việt Nam. |
 | `status` | string[] | — | Lọc theo trạng thái giao dịch: `SUCCESS`, `FAILED`, `PENDING` |
-| `bankAccountId` | number[] | — | Lọc theo một hoặc nhiều ID tài khoản ngân hàng |
+| `bankPublicId` | string[] | — | Lọc theo một hoặc nhiều public ID tài khoản ngân hàng đã liên kết |
 
 ### Response
 
@@ -216,6 +216,8 @@ GET /v1/client/metrics/transactions
 | `dateFrom` | string | — | Ngày bắt đầu (ISO 8601) |
 | `dateTo` | string | — | Ngày kết thúc (ISO 8601) |
 | `search` | string | — | Tìm theo mã tham chiếu, nội dung, số tài khoản, tên ngân hàng, mã ngân hàng hoặc số VA |
+| `accountNumber` | string | — | Lọc theo số tài khoản hoặc số VA |
+| `bankPublicId` | string[] | — | Lọc theo một hoặc nhiều public ID tài khoản ngân hàng đã liên kết |
 | `page` | number | — | Số trang (mặc định: 1) |
 | `limit` | number | — | Số item trên mỗi trang (mặc định: 20, tối đa: 100) |
 | `sortBy` | string | — | Sắp xếp theo: `transactionDate`, `amount`, `createdAt` |

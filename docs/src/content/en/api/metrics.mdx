@@ -110,7 +110,7 @@ GET /v1/client/metrics/hourly-transactions
 |-----------|------|----------|-------------|
 | `date` | string | — | Date in `YYYY-MM-DD` format, interpreted in the `Asia/Ho_Chi_Minh` timezone. Defaults to today in Vietnam. |
 | `status` | string[] | — | Filter by transaction status: `SUCCESS`, `FAILED`, `PENDING` |
-| `bankAccountId` | number[] | — | Filter by one or more bank account IDs |
+| `bankPublicId` | string[] | — | Filter by one or more linked bank public IDs |
 
 ### Response
 
@@ -216,6 +216,8 @@ GET /v1/client/metrics/transactions
 | `dateFrom` | string | — | Start date (ISO 8601) |
 | `dateTo` | string | — | End date (ISO 8601) |
 | `search` | string | — | Search by reference code, content, account number, bank name, bank code, or VA number |
+| `accountNumber` | string | — | Filter by account number or VA number |
+| `bankPublicId` | string[] | — | Filter by one or more linked bank public IDs |
 | `page` | number | — | Page number (default: 1) |
 | `limit` | number | — | Items per page (default: 20, max: 100) |
 | `sortBy` | string | — | Sort field: `transactionDate`, `amount`, `createdAt` |
