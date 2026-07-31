@@ -262,7 +262,7 @@ export const enReleases: ReleaseNote[] = withAnchors([
     date: '2026-05-16',
     features: [
       'Passkey sign-in — register a passkey (Face ID, fingerprint, or device passkey) and sign in to the dashboard without typing your password. Each account can register one passkey, which can be renamed or deleted from Account Settings.',
-      'Term-based pricing — choose 1, 3, 6, or 12 months at checkout. Longer terms include automatic discounts: 3 months saves 5%, 6 months saves 10%, and 12 months saves 15%. Invoices and renewal flows now display the selected term and effective monthly price.',
+      'Term-based pricing — choose 1, 3, 6, or 12 months at checkout. Automatic discounts apply to 6-month terms at 5% and 12-month terms at 10%. Invoices and renewal flows now display the selected term and effective monthly price.',
     ],
     fixes: [],
     improvements: [
@@ -654,7 +654,7 @@ export const viReleases: ReleaseNote[] = withAnchors([
     date: '2026-05-16',
     features: [
       'Đăng nhập bằng passkey — đăng ký passkey (Face ID, vân tay hoặc passkey trên thiết bị) rồi đăng nhập dashboard mà không cần nhập mật khẩu. Mỗi tài khoản đăng ký được 1 passkey, có thể đổi tên hoặc xóa trong Cài đặt tài khoản.',
-      'Bảng giá theo kỳ hạn — chọn kỳ hạn 1, 3, 6 hoặc 12 tháng khi thanh toán. Kỳ hạn dài hơn được giảm giá tự động: 3 tháng giảm 5%, 6 tháng giảm 10%, 12 tháng giảm 15%. Hóa đơn và luồng gia hạn nay hiển thị kỳ hạn đã chọn và giá tương đương mỗi tháng.',
+      'Bảng giá theo kỳ hạn — chọn kỳ hạn 1, 3, 6 hoặc 12 tháng khi thanh toán. Giảm giá tự động áp dụng cho kỳ hạn 6 tháng ở mức 5% và 12 tháng ở mức 10%. Hóa đơn và luồng gia hạn nay hiển thị kỳ hạn đã chọn và giá tương đương mỗi tháng.',
     ],
     fixes: [],
     improvements: [

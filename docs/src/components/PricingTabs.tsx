@@ -5,9 +5,9 @@ type Locale = "en" | "vi";
 
 const terms = [
 	{months: 1, discount: 0},
-	{months: 3, discount: 5},
-	{months: 6, discount: 10},
-	{months: 12, discount: 15},
+	{months: 3, discount: 0},
+	{months: 6, discount: 5},
+	{months: 12, discount: 10},
 ] as const;
 
 function formatVnd(amount: number, locale: Locale) {
