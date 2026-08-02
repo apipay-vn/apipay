@@ -79,6 +79,27 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.15.0',
+    date: '2026-08-02',
+    features: [
+      'VAT on plans & invoices — VAT is now calculated and displayed during plan checkout, on invoices, and in the purchase confirmation. Invoices show the original amount with a strikethrough when VAT applies, and the tax note adapts based on your billing profile.',
+      'Support ticketing — submit support tickets directly from the dashboard, track their status, and reply to ongoing conversations. Accessible from the sidebar, Help page, and the floating help button.',
+      'Account deletion — delete your ApiPay account directly from Account Settings. The system validates eligibility and guides you through confirmation steps.',
+      'New plans: TITAN & INFINITY — two new top-tier plans for high-volume businesses. All existing plans (PRO, TEAM, BUSINESS, ELITE) have updated pricing. A promotional BASIC plan is also available for qualifying new customers.',
+      'Early plan renewal — renew your plan before the official renewal window. A dashboard banner clearly shows when early renewal is available.',
+    ],
+    fixes: [
+      'Clearer support reply notifications — ticket reply messages are now more direct in both English and Vietnamese.',
+    ],
+    improvements: [
+      'Smarter plan changes — credits now account for multiple invoices and prorated usage when switching plans, with a clear note about what happens to unused time when downgrading.',
+      'Dashboard typography refresh — switched from IBM Plex Mono to IBM Plex Sans for better readability. Space Grotesk is available as an optional heading font.',
+      'Clearer checkout — the purchase modal shows original pricing with strikethrough when discounts or VAT adjustments apply, and the tax note only appears when relevant.',
+      'Bank slot enforcement — paid plans now consistently enforce their bank connection limits, with clearer messaging when you reach your plan\'s cap.',
+      'More reliable webhook delivery — webhook payloads handle a wider range of data types, and notification previews are trimmed to a more readable length.',
+    ],
+  },
+  {
     version: '1.14.0',
     date: '2026-07-21',
     features: [
@@ -469,6 +490,27 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.15.0',
+    date: '2026-08-02',
+    features: [
+      'VAT trên gói dịch vụ & hóa đơn — VAT được tính và hiển thị khi thanh toán gói, trên hóa đơn và trong xác nhận mua. Hóa đơn hiển thị giá gốc kèm gạch ngang khi có VAT áp dụng, và ghi chú thuế thay đổi theo hồ sơ thanh toán của bạn.',
+      'Hệ thống phiếu hỗ trợ — gửi phiếu hỗ trợ trực tiếp từ dashboard, theo dõi trạng thái và trả lời các cuộc hội thoại đang diễn ra. Có thể truy cập từ thanh menu, trang Trợ giúp và nút hỗ trợ nổi.',
+      'Xóa tài khoản — xóa tài khoản ApiPay trực tiếp từ phần Cài đặt tài khoản. Hệ thống kiểm tra điều kiện và hướng dẫn bạn qua các bước xác nhận.',
+      'Gói mới: TITAN & INFINITY — hai gói cao cấp nhất dành cho doanh nghiệp có nhu cầu giao dịch lớn. Tất cả các gói hiện có (PRO, TEAM, BUSINESS, ELITE) đã được cập nhật giá mới. Gói BASIC khuyến mãi cũng có sẵn cho khách hàng mới đủ điều kiện.',
+      'Gia hạn sớm — gia hạn gói trước khi đến kỳ gia hạn chính thức. Banner trên dashboard hiển thị rõ ràng khi có thể gia hạn sớm.',
+    ],
+    fixes: [
+      'Thông báo trả lời hỗ trợ rõ ràng hơn — tin nhắn trả lời trong phiếu hỗ trợ nay trực tiếp và dễ hiểu hơn ở cả tiếng Anh và tiếng Việt.',
+    ],
+    improvements: [
+      'Đổi gói thông minh hơn — khoản tín dụng nay tính đến nhiều hóa đơn và mức sử dụng theo tỷ lệ khi đổi gói, kèm ghi chú rõ về điều gì xảy ra với thời gian chưa dùng khi hạ cấp gói.',
+      'Làm mới phông chữ dashboard — chuyển từ IBM Plex Mono sang IBM Plex Sans để dễ đọc hơn. Space Grotesk có sẵn làm phông chữ tiêu đề tùy chọn.',
+      'Thanh toán rõ ràng hơn — modal mua gói nay hiển thị giá gốc kèm gạch ngang khi có giảm giá hoặc VAT, và ghi chú thuế chỉ xuất hiện khi phù hợp.',
+      'Giới hạn kết nối ngân hàng — các gói trả phí nay áp dụng giới hạn kết nối ngân hàng nhất quán, với thông báo rõ ràng khi bạn đạt đến giới hạn của gói.',
+      'Gửi webhook ổn định hơn — payload webhook xử lý được nhiều kiểu dữ liệu hơn, và bản xem trước thông báo được rút gọn ở độ dài dễ đọc hơn.',
+    ],
+  },
   {
     version: '1.14.0',
     date: '2026-07-21',
