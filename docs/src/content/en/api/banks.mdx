@@ -197,6 +197,7 @@ GET /v1/client/banks
       "vaNumber": "DANH001",
       "status": "ACTIVE",
       "manualActivationPending": false,
+      "hasTransactions": false,
       "createdAt": "2026-04-25T10:00:00.000Z"
     }
   ]
@@ -210,6 +211,8 @@ GET /v1/client/banks
 - `PENDING`: waiting for OTP or manual activation
 
 `manualActivationPending` is `true` while ApiPay is processing a manual activation request.
+
+`hasTransactions` is `true` once the account has recorded at least one transaction. Banks with transactions cannot be deleted directly through the API; contact support@apipay.vn if you need to change your bank.
 
 ## 5. Get a bank account
 
@@ -230,7 +233,8 @@ GET /v1/client/banks/:publicId
     "accountName": "PHAM THANH DANH",
     "vaNumber": "DANH001",
     "status": "ACTIVE",
-    "manualActivationPending": false
+    "manualActivationPending": false,
+    "hasTransactions": false
   }
 }
 ```

@@ -197,6 +197,7 @@ GET /v1/client/banks
       "vaNumber": "DANH001",
       "status": "ACTIVE",
       "manualActivationPending": false,
+      "hasTransactions": false,
       "createdAt": "2026-04-25T10:00:00.000Z"
     }
   ]
@@ -210,6 +211,8 @@ GET /v1/client/banks
 - `PENDING`: đang chờ OTP hoặc kích hoạt thủ công
 
 `manualActivationPending` là `true` trong thời gian ApiPay xử lý yêu cầu kích hoạt thủ công.
+
+`hasTransactions` là `true` khi tài khoản đã phát sinh ít nhất một giao dịch. Ngân hàng đã phát sinh giao dịch không thể xóa trực tiếp qua API; liên hệ support@apipay.vn nếu bạn cần thay đổi ngân hàng.
 
 ## 5. Lấy chi tiết tài khoản ngân hàng
 
@@ -230,7 +233,8 @@ GET /v1/client/banks/:publicId
     "accountName": "PHAM THANH DANH",
     "vaNumber": "DANH001",
     "status": "ACTIVE",
-    "manualActivationPending": false
+    "manualActivationPending": false,
+    "hasTransactions": false
   }
 }
 ```
