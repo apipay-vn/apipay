@@ -79,6 +79,22 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.16.0',
+    date: '2026-08-09',
+    features: [
+      "Web push notifications — receive instant browser alerts for new payments, ticket replies, and account activity. No need to keep the dashboard open — notifications arrive in real time, even when you're on another tab.",
+      'Bank portfolio overview — a new dashboard section shows aggregated stats across all your linked banks, including reconciliation status and transaction summaries in one place.',
+      'Richer support ticket replies — replies in support tickets now support Markdown formatting, code snippets, and inline image previews for attached files. Communicating with our team is clearer than ever.',
+      'Trial shop insights — new trial accounts get monthly bank usage reports so you can evaluate the platform with full visibility into your test activity.',
+    ],
+    fixes: [],
+    improvements: [
+      'Faster dashboard — metrics and data tables are now paginated, keeping the dashboard snappy even with large volumes of transactions and bank accounts.',
+      'Smoother account deletion — the account closure process now validates linked banks and subscriptions more thoroughly, with clearer error messages when something needs your attention first.',
+      'Background sandbox processing — test transactions in the sandbox now run asynchronously with live status updates, making the testing experience feel more like production.',
+    ],
+  },
+  {
     version: '1.15.0',
     date: '2026-08-02',
     features: [
@@ -489,6 +505,22 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.16.0',
+    date: '2026-08-09',
+    features: [
+      'Thông báo đẩy qua trình duyệt — nhận cảnh báo tức thì qua trình duyệt cho khoản thanh toán mới, phản hồi phiếu hỗ trợ và hoạt động tài khoản. Không cần giữ dashboard luôn mở — thông báo đến theo thời gian thực, ngay cả khi bạn đang ở tab khác.',
+      'Tổng quan danh mục ngân hàng — một khu vực mới trên dashboard hiển thị số liệu tổng hợp từ tất cả ngân hàng đã liên kết, bao gồm trạng thái đối soát và tóm tắt giao dịch trong cùng một nơi.',
+      'Phản hồi phiếu hỗ trợ phong phú hơn — tin nhắn trả lời trong phiếu hỗ trợ nay hỗ trợ định dạng Markdown, đoạn mã code và xem trước ảnh trong nội dung đính kèm. Giao tiếp với đội ngũ chúng tôi rõ ràng hơn bao giờ hết.',
+      'Thống kê tài khoản dùng thử — tài khoản dùng thử mới nhận được báo cáo sử dụng ngân hàng hàng tháng, giúp bạn đánh giá nền tảng với cái nhìn đầy đủ về hoạt động thử nghiệm.',
+    ],
+    fixes: [],
+    improvements: [
+      'Dashboard nhanh hơn — số liệu và bảng dữ liệu nay được phân trang, giúp dashboard luôn mượt mà ngay cả với khối lượng giao dịch và tài khoản ngân hàng lớn.',
+      'Quy trình xóa tài khoản mượt mà hơn — quá trình đóng tài khoản nay kiểm tra kỹ hơn các ngân hàng liên kết và gói đăng ký, với thông báo lỗi rõ ràng hơn khi có việc cần bạn xử lý trước.',
+      'Xử lý sandbox nền — giao dịch thử nghiệm trong sandbox nay chạy bất đồng bộ với cập nhật trạng thái trực tiếp, mang lại trải nghiệm thử nghiệm giống với môi trường thực tế.',
+    ],
+  },
   {
     version: '1.15.0',
     date: '2026-08-02',
