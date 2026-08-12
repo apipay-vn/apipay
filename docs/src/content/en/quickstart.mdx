@@ -28,7 +28,7 @@ curl -X POST https://app.apipay.vn/v1/client/payment-requests \
   -H "Authorization: Bearer <Auth>" \
   -d '{
     "bankPublicId": "your-bank-public-id",
-    "amount": 100000,
+    "amount": "100000",
     "content": "ORDER-12345"
   }'
 ```
@@ -43,9 +43,11 @@ Response:
 		"qrUrl": "https://api.qrserver.com/...",
 		"bankCode": "MB",
 		"accountNumber": "0123456789",
-		"amount": 100000,
+		"amount": "100000",
 		"content": "ORDER-12345"
-	}
+	},
+	"statusCode": 200,
+	"timestamp": "2026-08-12T14:27:45.000Z"
 }
 ```
 
@@ -69,7 +71,7 @@ Configure a webhook URL in the dashboard to receive notifications when bank tran
 	"data": {
 		"transactionId": "550e8400-e29b-41d4-a716-446655440000",
 		"referenceCode": "TX123456789",
-		"amount": 100000,
+		"amount": "100000",
 		"content": "ORDER-12345",
 		"transactionDate": "2026-03-06T10:30:00Z",
 		"bankAccountPublicId": "bk_abcdef1234567890",

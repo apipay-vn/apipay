@@ -19,10 +19,10 @@ POST /v1/client/webhooks
 
 ### Request Body
 
-| Parameter      | Type   | Required  | Description                               |
-| -------------- | ------ | --------- | ----------------------------------------- |
+| Parameter      | Type   | Required  | Description                                |
+| -------------- | ------ | --------- | ------------------------------------------ |
 | `webhookUrl`   | string | **✓ Yes** | HTTPS URL to receive webhook notifications |
-| `bankPublicId` | string | **✓ Yes** | Public ID of the bank account             |
+| `bankPublicId` | string | **✓ Yes** | Public ID of the bank account              |
 
 ### Response
 
@@ -93,58 +93,62 @@ GET /v1/client/webhooks/deliveries
 
 **Query parameters:**
 
-| Parameter       | Type   | Description                                                        |
-| --------------- | ------ | ------------------------------------------------------------------ |
-| `page`          | number | Page number (default: 1)                                           |
-| `limit`         | number | Items per page (default: 20, max: 100)                             |
-| `webhookId`     | string | Filter by webhook ID                                               |
-| `bankAccountId` | number | Filter by bank account                                             |
-| `status`        | string | `SUCCESS` or `FAILED`                                              |
-| `dateFrom`      | string | Start date (YYYY-MM-DD)                                            |
-| `dateTo`        | string | End date (YYYY-MM-DD)                                              |
+| Parameter       | Type   | Description                            |
+| --------------- | ------ | -------------------------------------- |
+| `page`          | number | Page number (default: 1)               |
+| `limit`         | number | Items per page (default: 20, max: 100) |
+| `webhookId`     | string | Filter by webhook ID                   |
+| `bankAccountId` | number | Filter by bank account                 |
+| `status`        | string | `SUCCESS` or `FAILED`                  |
+| `dateFrom`      | string | Start date (YYYY-MM-DD)                |
+| `dateTo`        | string | End date (YYYY-MM-DD)                  |
 
 **Response:**
 
 ```json
 {
-  "status": true,
-  "data": [
-    {
-      "id": "del_abc123",
-      "clientWebhookId": "wh_xyz789",
-      "transactionId": "txn_abc456",
-      "status": "SUCCESS",
-      "responseCode": 200,
-      "responseBody": "{\"received\": true}",
-      "payload": {
-        "event": "transaction.in",
-        "data": {
-          "amount": 100000,
+  "data": {
+    "status": true,
+    "statusCode": 200,
+    "timestamp": "2026-08-12T14:27:45.000Z",
+    "data": [
+      {
+        "id": "del_abc123",
+        "clientWebhookId": "wh_xyz789",
+        "transactionId": "txn_abc456",
+        "status": "SUCCESS",
+        "responseCode": 200,
+        "responseBody": "{\"received\": true}",
+        "payload": {
+          "event": "transaction.in",
+          "data": {
+            "amount": "100000",
+            "referenceCode": "ORDER-12345"
+          }
+        },
+        "retryCount": 0,
+        "createdAt": "2026-05-17T10:30:00.000Z",
+        "clientWebhook": {
+          "id": "wh_xyz789",
+          "webhookUrl": "https://your-domain.com/webhooks/apipay",
+          "bankAccount": {
+            "bankShortName": "VCB",
+            "accountNumber": "1234567890"
+          }
+        },
+        "transaction": {
+          "id": "txn_abc456",
+          "amount": "100000",
           "referenceCode": "ORDER-12345"
         }
-      },
-      "retryCount": 0,
-      "createdAt": "2026-05-17T10:30:00.000Z",
-      "clientWebhook": {
-        "id": "wh_xyz789",
-        "webhookUrl": "https://your-domain.com/webhooks/apipay",
-        "bankAccount": {
-          "bankShortName": "VCB",
-          "accountNumber": "1234567890"
-        }
-      },
-      "transaction": {
-        "id": "txn_abc456",
-        "amount": 100000,
-        "referenceCode": "ORDER-12345"
       }
+    ],
+    "pagination": {
+      "page": 1,
+      "limit": 20,
+      "total": 150,
+      "totalPages": 8
     }
-  ],
-  "pagination": {
-    "page": 1,
-    "limit": 20,
-    "total": 150,
-    "totalPages": 8
   }
 }
 ```
@@ -161,7 +165,7 @@ When money is received into your bank account.
   "data": {
     "transactionId": "550e8400-e29b-41d4-a716-446655440000",
     "referenceCode": "TX123456789",
-    "amount": 100000,
+    "amount": "100000",
     "content": "ORDER-12345",
     "transactionDate": "2024-03-20T10:30:00.000Z",
     "bankAccountPublicId": "bk_abcdef1234567890",
@@ -180,7 +184,7 @@ When money is received into your bank account.
 | `event`                    | string | Event name                                                |
 | `data.transactionId`       | string | Internal transaction ID (UUID)                            |
 | `data.referenceCode`       | string | Bank transaction reference code                           |
-| `data.amount`              | number | Transaction amount in VND                                 |
+| `data.amount`              | string | Transaction amount in VND as decimal string               |
 | `data.content`             | string | Transaction content/memo                                  |
 | `data.transactionDate`     | string | Transaction timestamp (ISO 8601)                          |
 | `data.bankAccountPublicId` | string | Public ID of the bank account                             |

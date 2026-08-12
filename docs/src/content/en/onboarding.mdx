@@ -144,12 +144,12 @@ const response = await fetch('https://app.apipay.vn/v1/client/payment-requests',
   },
   body: JSON.stringify({
     bankPublicId: 'your-bank-id',
-    amount: 100000,
+    amount: '100000',
     content: 'ORDER-12345',
   }),
 });
 
-const {payUrl, qrUrl} = await response.json();
+const {data: {payUrl, qrUrl}} = await response.json();
 // Share payUrl or qrUrl with your customer
 ```
 

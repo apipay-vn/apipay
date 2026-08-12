@@ -109,44 +109,48 @@ GET /v1/client/webhooks/deliveries
 
 ```json
 {
-  "status": true,
-  "data": [
-    {
-      "id": "del_abc123",
-      "clientWebhookId": "wh_xyz789",
-      "transactionId": "txn_abc456",
-      "status": "SUCCESS",
-      "responseCode": 200,
-      "responseBody": "{\"received\": true}",
-      "payload": {
-        "event": "transaction.in",
-        "data": {
-          "amount": 100000,
+  "data": {
+    "status": true,
+    "statusCode": 200,
+    "timestamp": "2026-08-12T14:27:45.000Z",
+    "data": [
+      {
+        "id": "del_abc123",
+        "clientWebhookId": "wh_xyz789",
+        "transactionId": "txn_abc456",
+        "status": "SUCCESS",
+        "responseCode": 200,
+        "responseBody": "{\"received\": true}",
+        "payload": {
+          "event": "transaction.in",
+          "data": {
+            "amount": "100000",
+            "referenceCode": "ORDER-12345"
+          }
+        },
+        "retryCount": 0,
+        "createdAt": "2026-05-17T10:30:00.000Z",
+        "clientWebhook": {
+          "id": "wh_xyz789",
+          "webhookUrl": "https://your-domain.com/webhooks/apipay",
+          "bankAccount": {
+            "bankShortName": "VCB",
+            "accountNumber": "1234567890"
+          }
+        },
+        "transaction": {
+          "id": "txn_abc456",
+          "amount": "100000",
           "referenceCode": "ORDER-12345"
         }
-      },
-      "retryCount": 0,
-      "createdAt": "2026-05-17T10:30:00.000Z",
-      "clientWebhook": {
-        "id": "wh_xyz789",
-        "webhookUrl": "https://your-domain.com/webhooks/apipay",
-        "bankAccount": {
-          "bankShortName": "VCB",
-          "accountNumber": "1234567890"
-        }
-      },
-      "transaction": {
-        "id": "txn_abc456",
-        "amount": 100000,
-        "referenceCode": "ORDER-12345"
       }
+    ],
+    "pagination": {
+      "page": 1,
+      "limit": 20,
+      "total": 150,
+      "totalPages": 8
     }
-  ],
-  "pagination": {
-    "page": 1,
-    "limit": 20,
-    "total": 150,
-    "totalPages": 8
   }
 }
 ```
@@ -163,7 +167,7 @@ Khi có tiền vào tài khoản ngân hàng của bạn.
   "data": {
     "transactionId": "550e8400-e29b-41d4-a716-446655440000",
     "referenceCode": "TX123456789",
-    "amount": 100000,
+    "amount": "100000",
     "content": "ORDER-12345",
     "transactionDate": "2024-03-20T10:30:00.000Z",
     "bankAccountPublicId": "bk_abcdef1234567890",
@@ -182,14 +186,14 @@ Khi có tiền vào tài khoản ngân hàng của bạn.
 | `event`                    | string | Tên sự kiện                                                |
 | `data.transactionId`       | string | ID giao dịch nội bộ (UUID)                                 |
 | `data.referenceCode`       | string | Mã tham chiếu giao dịch ngân hàng                          |
-| `data.amount`              | number | Số tiền giao dịch (VND)                                    |
+| `data.amount`              | string | Số tiền giao dịch (VND) dưới dạng chuỗi                    |
 | `data.content`             | string | Nội dung giao dịch                                         |
 | `data.transactionDate`     | string | Thời gian giao dịch (ISO 8601)                             |
 | `data.bankAccountPublicId` | string | Public ID của tài khoản ngân hàng                          |
 | `data.gateway`             | string | Mã ngân hàng (VD: ACB, MBB, BIDV, OCB, ICB, VIB, STB, VPB) |
 | `data.rawTransactionDate`  | string | Ngày giao dịch gốc từ ngân hàng                            |
 | `data.vaNumber`            | string | Số tài khoản ảo (tùy chọn)                                 |
-| `data.accountNumber`       | string | Số tài khoản người gửi/nhận                                                                               |
+| `data.accountNumber`       | string | Số tài khoản người gửi/nhận                                |
 
 ## Xác thực webhook
 
