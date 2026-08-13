@@ -1,92 +1,64 @@
 ---
 title: Sandbox
-description: Simulate transactions and test your webhook integration without real money
+description: Test payments and webhooks with test API keys — no real money
 ---
 
 # Sandbox
 
-The sandbox lets you simulate bank transactions and fire real webhook deliveries to your endpoint — no real money, no waiting for an actual transfer. It's the fastest way to verify your integration is wired up correctly before going live.
+Sandbox Mode gives you a safe, separate environment to test your integration end to end before going live. You get test API keys, a fake bank account, and test payment requests — everything behaves like production, but no real money moves and your live data is never touched.
 
-> **Available on all paid plans.** You need an active subscription and at least one connected bank account to use the sandbox.
-
----
-
-## How It Works
-
-The sandbox mirrors the exact same webhook payload structure as production. When you trigger a sandbox run, ApiPay:
-
-1. Creates a synthetic transaction with a unique reference code (`SBX-{timestamp}-{hex}`)
-2. Builds the same `transaction.in` payload your live webhooks receive
-3. Delivers it **synchronously** to your webhook endpoint — no queue, immediate result
-4. Records the full delivery log including response code and body
-
-The payload includes `"sandbox": true` so you can distinguish test events from real ones in your handler.
+No paid plan needed — just a verified, active account.
 
 ---
 
-## Getting Started
+## Turn it on
 
-### From the Dashboard
+Go to **Sandbox** in the left sidebar and switch on **Sandbox Mode**.
 
-Go to **Sandbox** in the left sidebar. The page shows:
-
-- Your active bank accounts
-- Your active webhooks and which bank they're bound to
-- Recent sandbox runs
-
-### Prerequisites
-
-Before running a sandbox test, make sure you have:
-
-- At least one **active bank account** connected
-- At least one **active webhook** configured for that bank account
-
-If you don't have a webhook yet, head to **Settings → Webhooks** and create one first.
+While it's on, the dashboard shows sandbox data only. Your live keys and live data are never affected.
 
 ---
 
-## Running a Test
+## The test environment
 
-### Step 1 — Create a Payment Request
+Sandbox runs on its own resources, separate from production:
 
-Fill in the sandbox form:
-
-| Field            | Required | Description                                                                  |
-| ---------------- | -------- | ---------------------------------------------------------------------------- |
-| Bank account     | **Yes**  | Pick one of your active connected banks                                      |
-| Amount           | **Yes**  | Integer VND, between 1 and 300,000,000                                       |
-| Transfer content | No       | The memo/description, max 140 characters                                     |
-| Title            | No       | A label for this test run, max 200 characters                                |
-| Target webhook   | No       | Send to a specific webhook, or leave blank to broadcast to all matching ones |
-
-Click **Create** — this saves the payment request and creates a run in `CREATED` status. Nothing is delivered yet.
-
-### Step 2 — Trigger the Transaction
-
-Click **Trigger** on the run. ApiPay will:
-
-- Generate the synthetic transaction
-- Resolve the target webhooks (the one you selected, or all active webhooks on that bank)
-- Deliver the payload immediately
-- Show you the result inline
-
-### Step 3 — Inspect the Result
-
-Each run shows:
-
-- **Run status** — `SUCCESS`, `FAILED`, `PARTIAL`, or `NO_WEBHOOKS`
-- **Delivery log** — per-webhook result with HTTP response code and response body (truncated to 4 KB)
-- **Payload** — the exact JSON that was sent
-
-If a delivery failed, you can **Resend** it directly from the run detail view.
+- **Test API keys** — created under API Keys, starting with `ak_test_`
+- **A fake bank account** — created when you add a bank in sandbox
+- **Test payment requests** — public IDs start with `test_pr_`
+- **Sandbox webhooks and transactions** — separate from live ones
 
 ---
 
-## Webhook Payload
+## Test flow
 
-Sandbox payloads are identical to production, with two additions: `"sandbox": true` at the top level, and a `SBX-` prefixed reference code.
+1. Turn on **Sandbox Mode**.
+2. Create a test API key (starts with `ak_test_`).
+3. Register a sandbox webhook and create a test payment request.
+4. Simulate a transfer.
+5. Check the webhook delivery log to confirm the round trip.
+6. Clear history or reset sandbox anytime.
 
-### transaction.in (sandbox)
+---
+
+## Simulate a transfer
+
+Two ways:
+
+- **Transactions page** — use the sandbox transaction simulator to create a manual transaction.
+- **Payment page** — open a test payment request (`test_pr_`) and pay it with the test button.
+
+Either way, ApiPay sends the matching webhook to your sandbox webhooks.
+
+---
+
+## Check delivery
+
+Open the webhook delivery log. A successful delivery confirms the sandbox round trip — same payload and signature flow as production.
+
+### Sandbox payload
+
+Webhook payloads are identical to production, with one addition: `"sandbox": true` at the top level, so your handler can tell test events from real ones.
 
 ```json
 {
@@ -94,12 +66,12 @@ Sandbox payloads are identical to production, with two additions: `"sandbox": tr
   "sandbox": true,
   "data": {
     "transactionId": "clxyz...",
-    "referenceCode": "SBX-1747123456789-A1B2C3D4",
+    "referenceCode": "test_pr_...",
     "amount": "50000",
     "content": "ORDER-12345",
     "transactionDate": "2026-05-14T10:30:00.000Z",
     "bankAccountPublicId": "bk_abcdef1234567890",
-    "gateway": "VCB",
+    "gateway": "APIPAY",
     "rawTransactionDate": "2026-05-14 10:30:00",
     "vaNumber": "999988887777",
     "accountNumber": "0123456789"
@@ -131,49 +103,15 @@ app.post('/webhooks/apipay', (req, res) => {
 
 ---
 
-## Webhook Targeting
+## Clear history vs reset
 
-When creating a sandbox payment request, you can choose how webhooks are selected:
-
-**Broadcast mode** (default — leave webhook field empty)
-All active webhooks on the selected bank account will receive the delivery. Good for testing that your routing is correct.
-
-**Single mode** (select a specific webhook)
-Only the chosen webhook receives the delivery. Useful when you want to isolate a specific endpoint.
-
-You can also override the target at trigger time — the trigger endpoint accepts an optional `webhookId` that takes precedence over the one set at creation.
-
----
-
-## Run Statuses
-
-| Status        | Meaning                                                   |
-| ------------- | --------------------------------------------------------- |
-| `CREATED`     | Payment request saved, not yet triggered                  |
-| `DELIVERING`  | Trigger in progress                                       |
-| `SUCCESS`     | All webhook deliveries succeeded (HTTP 2xx)               |
-| `FAILED`      | All webhook deliveries failed                             |
-| `PARTIAL`     | Some deliveries succeeded, some failed                    |
-| `NO_WEBHOOKS` | No active matching webhooks found — nothing was delivered |
-
----
-
-## Resending a Delivery
-
-If a delivery failed (your server was down, returned a non-2xx, or timed out), you can resend it from the run detail view without re-triggering the whole run. The resend uses the same payload that was originally sent.
-
-Resend tracks a retry count per delivery. After 3 resends, `nextRetryAt` is cleared — you can still resend manually, but automatic scheduling stops.
-
----
-
-## Clearing History
-
-Use the **Clear History** button to wipe all sandbox runs for your account. This is a hard delete — runs, transactions, and delivery logs are all removed. Use it to keep your sandbox view clean between testing sessions.
+- **Clear history** — removes sandbox payment requests, transactions, and delivery logs. Your sandbox bank, webhooks, and API keys stay.
+- **Reset sandbox** — removes everything sandbox-side: API keys, bank, webhooks, and history. Sandbox mode stays on; the test bank is recreated when you use it again.
 
 ---
 
 ## Tips
 
-- Use [Webhook.site](https://webhook.site) or [ngrok](https://ngrok.com) to expose a local server for quick testing without deploying
-- Keep the transfer content to plain letters, numbers, and the characters `. , - +` — anything else will be stripped before saving
-- A payment request can only be triggered once; create a new one for each test run
+- Use [Webhook.site](https://webhook.site) or [ngrok](https://ngrok.com) to test against a local server without deploying
+- Sandbox uses the same API as production — just swap in your test API key
+- Test payment requests are marked with `test_pr_` so you can always tell them apart from live ones

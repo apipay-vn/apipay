@@ -1,92 +1,64 @@
 ---
 title: Sandbox
-description: Tạo giao dịch thử và kiểm tra webhook mà không cần dùng tiền thật
+description: Kiểm thử thanh toán và webhook với API key thử — không cần tiền thật
 ---
 
 # Sandbox
 
-Sandbox giúp bạn tạo giao dịch ngân hàng thử và gửi webhook thật đến endpoint của mình. Không cần tiền thật, cũng không phải chờ một lệnh chuyển khoản thật. Dùng sandbox để kiểm tra luồng tích hợp trước khi bật production.
+Sandbox Mode là môi trường thử nghiệm riêng biệt, an toàn để bạn kiểm tra toàn bộ luồng tích hợp trước khi chạy thật. Bạn có API key thử, tài khoản ngân hàng ảo và payment request thử — mọi thứ hoạt động giống production, nhưng không có tiền thật và dữ liệu live không bao giờ bị ảnh hưởng.
 
-> **Có trên tất cả gói trả phí.** Bạn cần một gói đang hoạt động và ít nhất một tài khoản ngân hàng đã kết nối.
-
----
-
-## Cách hoạt động
-
-Sandbox dùng cùng cấu trúc payload webhook như production. Khi bạn trigger một sandbox run, ApiPay sẽ:
-
-1. Tạo một giao dịch thử với mã tham chiếu riêng (`SBX-{timestamp}-{hex}`)
-2. Tạo payload `transaction.in` giống webhook thật
-3. Gửi **ngay** đến endpoint webhook của bạn, không đi qua hàng đợi
-4. Lưu log gửi, gồm mã phản hồi và nội dung phản hồi
-
-Payload có `"sandbox": true` để handler của bạn biết đây là sự kiện test.
+Không cần gói trả phí — chỉ cần tài khoản đã xác minh và đang hoạt động.
 
 ---
 
-## Bắt đầu
+## Bật Sandbox Mode
 
-### Từ Dashboard
+Vào **Sandbox** ở thanh bên trái và bật **Sandbox Mode**.
 
-Vào **Sandbox** ở thanh bên trái. Trang này hiển thị:
-
-- Tài khoản ngân hàng đang hoạt động
-- Webhook đang hoạt động và ngân hàng được gắn với từng webhook
-- Các sandbox run gần đây
-
-### Cần chuẩn bị
-
-Trước khi test, bạn cần có:
-
-- Ít nhất một **tài khoản ngân hàng đang hoạt động** đã kết nối
-- Ít nhất một **webhook đang hoạt động** cho tài khoản ngân hàng đó
-
-Nếu chưa có webhook, vào **Cài đặt → Webhooks** để tạo trước.
+Khi bật, dashboard chỉ hiển thị dữ liệu sandbox. API key và dữ liệu live của bạn không bao giờ bị ảnh hưởng.
 
 ---
 
-## Chạy test
+## Môi trường thử nghiệm
 
-### Bước 1 — Tạo Payment Request
+Sandbox dùng tài nguyên riêng, tách biệt hoàn toàn với production:
 
-Điền form sandbox:
-
-| Trường                | Bắt buộc | Mô tả                                                                    |
-| --------------------- | -------- | ------------------------------------------------------------------------ |
-| Tài khoản ngân hàng   | **Có**   | Chọn một ngân hàng đang hoạt động                                        |
-| Số tiền               | **Có**   | Số nguyên VND, từ 1 đến 300.000.000                                      |
-| Nội dung chuyển khoản | Không    | Nội dung hoặc ghi chú, tối đa 140 ký tự                                  |
-| Tiêu đề               | Không    | Tên gợi nhớ cho lần test, tối đa 200 ký tự                               |
-| Webhook đích          | Không    | Chọn một webhook cụ thể, hoặc để trống để gửi đến tất cả webhook phù hợp |
-
-Nhấn **Tạo**. Lúc này hệ thống chỉ lưu payment request và tạo một run có trạng thái `CREATED`. Webhook vẫn chưa gửi.
-
-### Bước 2 — Trigger giao dịch
-
-Nhấn **Trigger** trên run. ApiPay sẽ:
-
-- Tạo giao dịch thử
-- Tìm webhook đích: webhook bạn đã chọn, hoặc tất cả webhook đang hoạt động khớp với chiều giao dịch của ngân hàng đó
-- Gửi payload ngay
-- Hiển thị kết quả trên trang
-
-### Bước 3 — Xem kết quả
-
-Mỗi run hiển thị:
-
-- **Trạng thái run** — `SUCCESS`, `FAILED`, `PARTIAL`, hoặc `NO_WEBHOOKS`
-- **Log gửi** — kết quả của từng webhook, gồm mã phản hồi HTTP và nội dung phản hồi (giới hạn 4 KB)
-- **Payload** — JSON đã gửi
-
-Nếu một lần gửi bị lỗi, bạn có thể bấm **Gửi lại** ngay trong trang chi tiết run.
+- **API key thử** — tạo tại mục API Keys, bắt đầu bằng `ak_test_`
+- **Tài khoản ngân hàng ảo** — được tạo khi bạn thêm ngân hàng trong sandbox
+- **Payment request thử** — mã công khai bắt đầu bằng `test_pr_`
+- **Webhook và giao dịch sandbox** — tách biệt với bản live
 
 ---
 
-## Payload Webhook
+## Quy trình test
 
-Payload sandbox giống production. Chỉ có hai điểm để nhận biết: `"sandbox": true` ở cấp cao nhất, và mã tham chiếu bắt đầu bằng `SBX-`.
+1. Bật **Sandbox Mode**.
+2. Tạo API key thử (bắt đầu bằng `ak_test_`).
+3. Đăng ký webhook sandbox và tạo một payment request thử.
+4. Mô phỏng một giao dịch chuyển tiền.
+5. Kiểm tra log gửi webhook để xác nhận luồng hoạt động.
+6. Xóa lịch sử hoặc reset sandbox bất cứ lúc nào.
 
-### transaction.in (sandbox)
+---
+
+## Mô phỏng giao dịch
+
+Có hai cách:
+
+- **Trang Transactions** — dùng công cụ mô phỏng giao dịch sandbox để tạo giao dịch thủ công.
+- **Trang thanh toán** — mở một payment request thử (`test_pr_`) và thanh toán bằng nút test.
+
+Cả hai cách đều kích hoạt webhook tương ứng đến các webhook sandbox của bạn.
+
+---
+
+## Kiểm tra delivery
+
+Mở log gửi webhook. Một lần gửi thành công xác nhận luồng sandbox hoạt động đúng — payload và chữ ký giống hệt production.
+
+### Payload sandbox
+
+Payload webhook giống production, thêm một trường `"sandbox": true` ở cấp cao nhất để handler phân biệt sự kiện test với sự kiện thật.
 
 ```json
 {
@@ -94,12 +66,12 @@ Payload sandbox giống production. Chỉ có hai điểm để nhận biết: `
   "sandbox": true,
   "data": {
     "transactionId": "clxyz...",
-    "referenceCode": "SBX-1747123456789-A1B2C3D4",
+    "referenceCode": "test_pr_...",
     "amount": "50000",
     "content": "ORDER-12345",
     "transactionDate": "2026-05-14T10:30:00.000Z",
     "bankAccountPublicId": "bk_abcdef1234567890",
-    "gateway": "VCB",
+    "gateway": "APIPAY",
     "rawTransactionDate": "2026-05-14 10:30:00",
     "vaNumber": "999988887777",
     "accountNumber": "0123456789"
@@ -131,49 +103,15 @@ app.post('/webhooks/apipay', (req, res) => {
 
 ---
 
-## Chọn webhook đích
+## Xóa lịch sử và reset
 
-Khi tạo sandbox payment request, bạn có thể chọn cách ApiPay tìm webhook:
-
-**Chế độ broadcast** (mặc định, để trống trường webhook)
-Tất cả webhook đang hoạt động trên tài khoản ngân hàng đã chọn sẽ nhận delivery. Cách này phù hợp khi bạn muốn kiểm tra routing.
-
-**Chế độ đơn lẻ** (chọn một webhook cụ thể)
-Chỉ webhook được chọn nhận delivery. Dùng cách này khi bạn muốn kiểm tra riêng một endpoint.
-
-Bạn cũng có thể đổi webhook đích lúc trigger. Endpoint trigger nhận `webhookId` tùy chọn và sẽ ưu tiên giá trị này hơn webhook đã chọn lúc tạo.
-
----
-
-## Trạng thái run
-
-| Trạng thái    | Ý nghĩa                                                           |
-| ------------- | ----------------------------------------------------------------- |
-| `CREATED`     | Payment request đã lưu, chưa được trigger                         |
-| `DELIVERING`  | Đang trigger                                                      |
-| `SUCCESS`     | Tất cả webhook delivery thành công (HTTP 2xx)                     |
-| `FAILED`      | Tất cả webhook delivery thất bại                                  |
-| `PARTIAL`     | Một số thành công, một số thất bại                                |
-| `NO_WEBHOOKS` | Không tìm thấy webhook đang hoạt động phù hợp. Không có gì để gửi |
-
----
-
-## Gửi lại delivery
-
-Nếu một delivery thất bại vì server của bạn đang down, trả về non-2xx, hoặc timeout, bạn có thể gửi lại từ trang chi tiết run. Không cần trigger lại toàn bộ run. Lần gửi lại dùng đúng payload ban đầu.
-
-Mỗi delivery có số lần gửi lại riêng. Sau 3 lần, `nextRetryAt` sẽ được xóa. Bạn vẫn có thể gửi lại thủ công, nhưng lịch tự động sẽ dừng.
-
----
-
-## Xóa lịch sử
-
-Dùng nút **Xóa lịch sử** để xóa toàn bộ sandbox run của tài khoản. Đây là xóa cứng: run, giao dịch và log gửi đều bị xóa. Hữu ích khi bạn muốn dọn sạch dữ liệu giữa các buổi test.
+- **Xóa lịch sử** — xóa payment request, giao dịch và log gửi trong sandbox. Ngân hàng sandbox, webhook và API key vẫn giữ.
+- **Reset sandbox** — xóa toàn bộ tài nguyên sandbox: API key, ngân hàng, webhook và lịch sử. Sandbox Mode vẫn bật; ngân hàng ảo sẽ được tạo lại khi bạn dùng tiếp.
 
 ---
 
 ## Mẹo
 
-- Dùng [Webhook.site](https://webhook.site) hoặc [ngrok](https://ngrok.com) để test server local mà chưa cần deploy
-- Nội dung chuyển khoản chỉ nên dùng chữ, số và các ký tự `. , - +`. Ký tự khác sẽ bị xóa trước khi lưu
-- Mỗi payment request chỉ trigger được một lần. Tạo request mới cho mỗi lần test
+- Dùng [Webhook.site](https://webhook.site) hoặc [ngrok](https://ngrok.com) để test với server local mà chưa cần deploy
+- Sandbox dùng API giống hệt production — chỉ cần đổi sang API key thử
+- Payment request thử có mã `test_pr_` để bạn luôn phân biệt được với bản live
