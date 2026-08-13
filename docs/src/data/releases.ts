@@ -79,6 +79,18 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.17.0',
+    date: '2026-08-13',
+    features: [
+      'Sandbox Mode — a dedicated test environment to try ApiPay before going live. Test API keys, a fake bank account, and test payment requests let you run your full integration flow without real money or any impact on your live data.',
+    ],
+    fixes: [],
+    improvements: [
+      'Sandbox webhooks work like production — same payload structure plus a sandbox flag, so your handler can tell test events from real ones.',
+      'Cleanup controls — clear sandbox history or reset the sandbox environment anytime, without touching live data.',
+    ],
+  },
+  {
     version: '1.16.0',
     date: '2026-08-09',
     features: [
@@ -505,6 +517,18 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.17.0',
+    date: '2026-08-13',
+    features: [
+      'Sandbox Mode — môi trường thử nghiệm riêng biệt để dùng thử ApiPay trước khi chạy thật. API key thử, tài khoản ngân hàng ảo và payment request thử giúp bạn chạy toàn bộ luồng tích hợp mà không cần tiền thật và không ảnh hưởng dữ liệu live.',
+    ],
+    fixes: [],
+    improvements: [
+      'Webhook sandbox hoạt động như production — payload giống hệt, thêm cờ sandbox để handler phân biệt sự kiện test với sự kiện thật.',
+      'Công cụ dọn dẹp — xóa lịch sử sandbox hoặc reset toàn bộ môi trường sandbox bất cứ lúc nào, không ảnh hưởng dữ liệu live.',
+    ],
+  },
   {
     version: '1.16.0',
     date: '2026-08-09',
