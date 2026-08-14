@@ -79,6 +79,17 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.18.0',
+    date: '2026-08-14',
+    features: [
+      'Vietcombank (VCB) support — connect Vietcombank business and household business accounts for automated bank transfer payments, real-time transaction webhooks, and streamlined manual activation.',
+    ],
+    fixes: [],
+    improvements: [
+      'Bank selection UX — automatically defaults to the first supported account type when selecting banks with restricted account type availability.',
+    ],
+  },
+  {
     version: '1.17.0',
     date: '2026-08-13',
     features: [
@@ -517,6 +528,17 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.18.0',
+    date: '2026-08-14',
+    features: [
+      'Hỗ trợ ngân hàng Vietcombank (VCB) — liên kết tài khoản doanh nghiệp và hộ kinh doanh Vietcombank để nhận chuyển khoản tự động, webhook thời gian thực và quy trình kích hoạt thủ công nhanh chóng.',
+    ],
+    fixes: [],
+    improvements: [
+      'Trải nghiệm chọn ngân hàng — tự động chọn loại tài khoản hợp lệ đầu tiên khi người dùng chọn ngân hàng có danh sách loại tài khoản giới hạn.',
+    ],
+  },
   {
     version: '1.17.0',
     date: '2026-08-13',

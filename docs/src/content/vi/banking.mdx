@@ -34,6 +34,9 @@ Nhờ vậy, bạn không cần đối soát thủ công cho từng đơn hàng.
 | **Sacombank**        | STB  |   Có    |    Không     |      Có       | OpenBanking, Đồng bộ tiền vào, Tài khoản ảo (VA) |
 | **VPBank**           | VPB  |   Có    |    Không     |     Không     | OpenBanking, Đồng bộ tiền vào, Tài khoản ảo (VA) |
 | **PGBank**           | PGB  |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào, Tài khoản ngân hàng |
+| **Shinhan Bank**     | SHBVN|   Có    |      Có      |    Không      | OpenBanking, Đồng bộ tiền vào, Tài khoản ảo (VA) |
+| **Co-opBank**        | COOPBANK | Có   |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào, Tài khoản ảo (VA) |
+| **Vietcombank**      | VCB  |  Không  |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào, Tài khoản ngân hàng |
 
 ---
 
@@ -49,12 +52,14 @@ Khi kết nối ngân hàng, bạn sẽ chọn giữa:
 
 Lưu ý:
 
+- **Vietcombank** chỉ hỗ trợ tài khoản Doanh nghiệp và Hộ kinh doanh (không hỗ trợ Cá nhân); tất cả tài khoản Vietcombank cần kích hoạt thủ công.
 - **Sacombank** không hỗ trợ tài khoản Doanh nghiệp; dùng Cá nhân hoặc Hộ kinh doanh.
 - **VietinBank** giao dịch từ ngân hàng sẽ không có nội dung; liên hệ hỗ trợ để biết thêm chi tiết. Doanh nghiệp cần kích hoạt thủ công.
 - **VPBank** chỉ hỗ trợ tài khoản Cá nhân.
+- **Shinhan Bank** hỗ trợ Cá nhân (tự động) và Doanh nghiệp (kích hoạt thủ công).
 - **BIDV** và **VietinBank** Doanh nghiệp cần kích hoạt thủ công; Hộ kinh doanh chạy online.
 - **MB Bank**, **OCB**, **VIB** Doanh nghiệp/Hộ kinh doanh cần kích hoạt thủ công; Cá nhân chạy online.
-- **PGBank**: tất cả loại tài khoản đều online, không cần kích hoạt thủ công.
+- **PGBank** và **Co-opBank**: tất cả loại tài khoản đều online, không cần kích hoạt thủ công.
 - **ACB** Doanh nghiệp dùng ACB OneBiz và online.
 
 ### Trạng thái
@@ -63,7 +68,7 @@ Sau khi kết nối, tài khoản ngân hàng sẽ có một trong các trạng 
 
 - **Hoạt động** — đang nhận thanh toán bình thường
 - **Đang chờ** — OTP đã xác minh nhưng đang chờ xác nhận cuối cùng
-- **Yêu cầu kích hoạt** — chờ kích hoạt thủ công (MB/OCB/VIB Doanh nghiệp/Hộ kinh doanh và BIDV/VietinBank Doanh nghiệp)
+- **Yêu cầu kích hoạt** — chờ kích hoạt thủ công (MB/OCB/VIB Doanh nghiệp/Hộ kinh doanh, BIDV/VietinBank/Shinhan Doanh nghiệp, và Vietcombank Doanh nghiệp/Hộ kinh doanh)
 - **Không hoạt động** — tạm thời tắt; thanh toán sẽ không được chuyển đến đây
 
 ## Quản lý nhiều ngân hàng

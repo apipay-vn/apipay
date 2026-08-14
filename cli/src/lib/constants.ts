@@ -146,6 +146,31 @@ export const SUPPORTED_BANKS = [
 		] satisfies AccountType[],
 		requiresIdentity: true,
 	},
+	{
+		value: "COOPBANK",
+		shortName: "COOPBANK",
+		bankBin: "970446",
+		bankName: "Co-opBank",
+		name: "Co-opBank — Ngân hàng Hợp tác xã Việt Nam",
+		accountTypes: [
+			"personal-account",
+			"business-account",
+			"business-household-account",
+		] satisfies AccountType[],
+		requiresIdentity: true,
+	},
+	{
+		value: "VCB",
+		shortName: "VCB",
+		bankBin: "970436",
+		bankName: "Vietcombank",
+		name: "Vietcombank — Ngân hàng TMCP Ngoại thương Việt Nam",
+		accountTypes: [
+			"business-account",
+			"business-household-account",
+		] satisfies AccountType[],
+		requiresIdentity: true,
+	},
 ] as const;
 
 export type SupportedBank = (typeof SUPPORTED_BANKS)[number];

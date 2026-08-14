@@ -34,6 +34,9 @@ This means you don't need to manually reconcile payments — everything is autom
 | **Sacombank**        | STB  |   Yes    |    No    |    Yes    | OpenBanking, Sync inward, Virtual Account (VA) |
 | **VPBank**           | VPB  |   Yes    |    No    |    No     | OpenBanking, Sync inward, Virtual Account (VA) |
 | **PGBank**           | PGB  |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Bank account |
+| **Shinhan Bank**     | SHBVN|   Yes    |   Yes    |    No     | OpenBanking, Sync inward, Virtual Account (VA) |
+| **Co-opBank**        | COOPBANK | Yes  |   Yes    |    Yes    | OpenBanking, Sync inward, Virtual Account (VA) |
+| **Vietcombank**      | VCB  |    No    |   Yes    |    Yes    | OpenBanking, Sync inward, Bank account |
 
 ---
 
@@ -49,12 +52,14 @@ When connecting a bank, you'll choose between:
 
 Notes:
 
+- **Vietcombank** supports Business and Household Business accounts only; Personal accounts are not supported. All VCB connections require manual activation.
 - **Sacombank** does not support Business accounts; use Personal or Household Business.
 - **VietinBank** transactions have no transfer content; contact support for more details. Business requires manual activation.
 - **VPBank** supports Personal accounts only.
+- **Shinhan Bank** supports Personal (automatic) and Business (manual activation).
 - **BIDV** and **VietinBank** Business require manual activation; Household Business uses the online flow.
 - **MB Bank**, **OCB**, and **VIB** Business and Household Business require manual activation. Personal is fully online.
-- **PGBank**: all account types are online, with no manual activation.
+- **PGBank** and **Co-opBank**: all account types are online, with no manual activation.
 - **ACB** Business uses ACB OneBiz and is fully online.
 
 ### Statuses
@@ -63,7 +68,7 @@ After connecting, a bank account has one of these statuses:
 
 - **Active** — fully operational, receiving payments
 - **Pending** — OTP verified but final confirmation in progress
-- **Activation Requested** — manual activation queued (MB/OCB/VIB Business/Household and BIDV/VietinBank Business)
+- **Activation Requested** — manual activation queued (MB/OCB/VIB Business/Household, BIDV/VietinBank/Shinhan Business, and Vietcombank Business/Household)
 - **Inactive** — temporarily disabled; payments won't be routed here
 
 ## Managing Multiple Banks
