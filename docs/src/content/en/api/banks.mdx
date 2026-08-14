@@ -21,7 +21,7 @@ Base route:
 | MB Bank    | `MBB`      | `970422` | personal, business, household business |
 | BIDV       | `BIDV`     | `970418` | personal, business, household business |
 | OCB        | `OCB`      | `970448` | personal, business, household business |
-| VietinBank | `ICB`      | `970415` | business, household business           |
+| VietinBank | `ICB`      | `970415` | personal, business, household business |
 | VIB        | `VIB`      | `970441` | personal, business, household business |
 | Sacombank  | `STB`      | `970403` | personal, household business           |
 | VPBank     | `VPB`      | `970432` | personal                               |
@@ -89,8 +89,9 @@ POST /v1/client/banks
 
 Sacombank accepts `personal-account` and `business-household-account`.
 Shinhan accepts `personal-account` and `business-account`.
-VietinBank accepts `business-account` and `business-household-account` (personal accounts are not supported).
 VPBank accepts `personal-account` only (business and household business accounts are not supported).
+
+VietinBank transactions have no transfer content; contact support for more details.
 
 ### Response when OTP is required
 

@@ -21,7 +21,7 @@ Base route:
 | MB Bank    | `MBB`      | `970422` | cá nhân, doanh nghiệp, hộ kinh doanh |
 | BIDV       | `BIDV`     | `970418` | cá nhân, doanh nghiệp, hộ kinh doanh |
 | OCB        | `OCB`      | `970448` | cá nhân, doanh nghiệp, hộ kinh doanh |
-| VietinBank | `ICB`      | `970415` | doanh nghiệp, hộ kinh doanh          |
+| VietinBank | `ICB`      | `970415` | cá nhân, doanh nghiệp, hộ kinh doanh  |
 | VIB        | `VIB`      | `970441` | cá nhân, doanh nghiệp, hộ kinh doanh |
 | Sacombank  | `STB`      | `970403` | cá nhân, hộ kinh doanh               |
 | VPBank     | `VPB`      | `970432` | cá nhân                              |
@@ -89,8 +89,9 @@ POST /v1/client/banks
 
 Sacombank hỗ trợ `personal-account` và `business-household-account`.
 Shinhan hỗ trợ `personal-account` và `business-account`.
-VietinBank hỗ trợ `business-account` và `business-household-account` (tài khoản cá nhân không được hỗ trợ).
 VPBank chỉ hỗ trợ `personal-account` (tài khoản doanh nghiệp và hộ kinh doanh không được hỗ trợ).
+
+Giao dịch từ VietinBank sẽ không có nội dung. Liên hệ hỗ trợ để biết thêm chi tiết.
 
 ### Response khi cần OTP
 

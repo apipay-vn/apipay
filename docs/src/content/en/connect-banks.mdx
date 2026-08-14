@@ -37,7 +37,7 @@ Once linked, your bank account appears in the **Banks** section of the dashboard
 | **MB Bank**          |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Virtual Account (VA) |
 | **BIDV**             |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Virtual Account (VA) |
 | **OCB**              |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Virtual Account (VA) |
-| **VietinBank**      |    No    |   Yes    |    Yes    | OpenBanking, Sync inward, Bank account |
+| **VietinBank**      |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Bank account |
 | **VIB**              |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Virtual Account (VA) |
 | **Sacombank**        |   Yes    |    No    |    Yes    | OpenBanking, Sync inward, Virtual Account (VA) |
 | **VPBank**           |   Yes    |    No    |    No     | OpenBanking, Sync inward, Virtual Account (VA) |
@@ -85,10 +85,11 @@ Most banks support three account types. Pick the one that matches your account:
 
 Per-bank availability:
 
-- **ACB**, **MB Bank**, **BIDV**, **OCB**, **VIB**, **PGBank**, **Co-opBank** — Personal, Business, Household Business
-- **VietinBank** — Business, Household Business (Personal not supported)
+- **ACB**, **MB Bank**, **BIDV**, **OCB**, **VietinBank**, **VIB**, **PGBank**, **Co-opBank** — Personal, Business, Household Business
 - **VPBank** — Personal (Business, Household Business not supported)
 - **Sacombank** — Personal, Household Business (Business not supported)
+
+> **VietinBank note:** Transactions from VietinBank have no transfer content; contact support for more details.
 
 > **Manual activation.** MB/OCB/VIB Business or Household, and BIDV/VietinBank Business, use activation requests. You'll see **Activation Requested** until they complete. PGBank and Co-opBank are fully online.
 
@@ -188,6 +189,8 @@ No additional fields required beyond the base fields above.
 | **Tax Code (MST)** | Tax Identification Number of the company |
 
 > **Manual activation:** BIDV and VietinBank Business connections are submitted for manual activation. ApiPay enables the account after the API contract is signed.
+>
+> **VietinBank note:** Transactions from VietinBank have no transfer content; contact support for more details.
 
 After filling in all fields:
 
