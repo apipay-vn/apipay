@@ -45,8 +45,8 @@ export const searchItems: SearchItem[] = [
     section: 'Hướng dẫn',
   },
   {
-    title: 'Sandbox',
-    description: 'Kiểm thử thanh toán và webhook với API key thử — không cần tiền thật',
+    title: 'Sandbox & Live Test',
+    description: 'Kiểm thử thanh toán và webhook an toàn — không có giao dịch tiền thật',
     href: '/vi/sandbox',
     section: 'Hướng dẫn',
   },
@@ -143,8 +143,8 @@ export const searchItems: SearchItem[] = [
     section: 'Guides',
   },
   {
-    title: 'Sandbox',
-    description: 'Test payments and webhooks with test API keys — no real money',
+    title: 'Sandbox & Live Test',
+    description: 'Test payments and webhooks safely — no real money moves',
     href: '/en/sandbox',
     section: 'Guides',
   },
