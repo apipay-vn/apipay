@@ -94,6 +94,10 @@ ApiPay hỗ trợ các ngân hàng lớn tại Việt Nam:
 
 > **Quan trọng:** Tài khoản ngân hàng phải mang tên doanh nghiệp của bạn (hoặc tên đại diện hợp lệ).
 
+<Callout type="tip">
+**Tính năng miễn phí sẵn có:** Ngay sau khi tài khoản ngân hàng hoạt động, bạn có thể bật ngay tính năng **[Loa Thanh Toán](/vi/payment-speaker)** để biến điện thoại/máy tính bảng tại quầy thành loa đọc tiền về realtime mà không cần mua thiết bị riêng.
+</Callout>
+
 ---
 
 ## Bước 4: Thiết lập tích hợp
@@ -163,9 +167,10 @@ const {data: {payUrl, qrUrl}} = await response.json();
 ### Để bắt đầu suôn sẻ
 
 1. **Test với số tiền nhỏ** - Tạo vài thanh toán 1.000 VND để kiểm tra luồng.
-2. **Tạo webhook trước** - Tránh bỏ lỡ thông báo thanh toán.
-3. **Thiết lập redirect URL** - Đưa khách về website của bạn sau khi thanh toán.
-4. **Tùy chỉnh trang thanh toán** - Thêm tên và logo doanh nghiệp.
+2. **Bật Loa Thanh Toán tại quầy** - Mở link loa trên điện thoại/tablet quầy thu ngân để nghe thông báo tiền về tức thì.
+3. **Tạo webhook trước** - Tránh bỏ lỡ thông báo thanh toán.
+4. **Thiết lập redirect URL** - Đưa khách về website của bạn sau khi thanh toán.
+5. **Tùy chỉnh trang thanh toán** - Thêm tên và logo doanh nghiệp.
 
 ### Để vận hành lâu dài
 
@@ -178,6 +183,7 @@ const {data: {payUrl, qrUrl}} = await response.json();
 
 ## Bước tiếp theo
 
+- [Loa Thanh Toán](/vi/payment-speaker) - Nghe thông báo chuyển khoản realtime tại quầy thu ngân
 - [Đăng ký & Thanh toán](/vi/subscription) - Quản lý gói và dùng thử
 - [Quản lý Ngân hàng](/vi/banking) - Kết nối và quản lý ngân hàng
 - [API Reference](/vi/api/payment-requests) - Chi tiết tích hợp kỹ thuật

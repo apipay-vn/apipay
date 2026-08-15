@@ -19,6 +19,7 @@ export const viSidebarConfig: SidebarItem[] = [
     href: '/vi/dashboard',
     children: [
       {label: 'Kết nối ngân hàng', href: '/vi/connect-banks'},
+      {label: 'Loa thanh toán', href: '/vi/payment-speaker'},
       {label: 'Tên miền riêng', href: '/vi/custom-domains'},
       {label: 'Passkey', href: '/vi/passkeys'},
       {label: 'Tiếp thị liên kết', href: '/vi/affiliates'},
@@ -74,6 +75,7 @@ export const enSidebarConfig: SidebarItem[] = [
     href: '/en/dashboard',
     children: [
       {label: 'Connect Banks', href: '/en/connect-banks'},
+      {label: 'Payment Speaker', href: '/en/payment-speaker'},
       {label: 'Custom Domains', href: '/en/custom-domains'},
       {label: 'Passkeys', href: '/en/passkeys'},
       {label: 'Affiliates', href: '/en/affiliates'},

@@ -94,6 +94,10 @@ ApiPay supports the following major Vietnamese banks:
 
 > **Important:** The bank account must be in your business name (or a legitimate representative name).
 
+<Callout type="tip">
+**Free Instant Feature:** Once your bank account is active, you can immediately use **[Payment Speaker](/en/payment-speaker)** to turn any phone or tablet at your counter into a real-time voice alert speaker without buying separate hardware.
+</Callout>
+
 ---
 
 ## Step 4: Configure Your Integration
@@ -163,9 +167,10 @@ const {data: {payUrl, qrUrl}} = await response.json();
 ### For a Smooth Start
 
 1. **Test with small amounts** - Create a few test payments of 1,000 VND to verify your setup works
-2. **Configure webhook first** - This ensures you never miss a payment notification
-3. **Set up redirect URL** - Automatically redirect customers back to your site after payment
-4. **Customize payment page** - Add your business name and logo for a professional experience
+2. **Turn on Payment Speaker at checkout** - Open the speaker URL on a counter phone or tablet to hear payments immediately
+3. **Configure webhook first** - This ensures you never miss a payment notification
+4. **Set up redirect URL** - Automatically redirect customers back to your site after payment
+5. **Customize payment page** - Add your business name and logo for a professional experience
 
 ### For Long-Term Success
 
@@ -178,6 +183,7 @@ const {data: {payUrl, qrUrl}} = await response.json();
 
 ## Next Steps
 
+- [Payment Speaker](/en/payment-speaker) - Hear real-time voice alerts for incoming bank transfers
 - [Subscription Guide](/en/subscription) - Manage plans and trial
 - [Bank Account Management](/en/banking) - Advanced banking features
 - [API Reference](/en/api/payment-requests) - Technical integration details
