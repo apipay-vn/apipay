@@ -24,7 +24,7 @@ Base route:
 | VietinBank | `ICB`      | `970415` | personal, business, household business |
 | VIB        | `VIB`      | `970441` | personal, business, household business |
 | Sacombank  | `STB`      | `970403` | personal, household business           |
-| VPBank     | `VPB`      | `970432` | personal                               |
+| VPBank     | `VPB`      | `970432` | personal, business, household business |
 | PGBank     | `PGB`      | `970430` | personal, business, household business |
 | Shinhan    | `SHBVN`    | `970424` | personal, business                     |
 | Co-opBank  | `COOPBANK` | `970446` | personal, business, household business |
@@ -90,7 +90,6 @@ POST /v1/client/banks
 
 Sacombank accepts `personal-account` and `business-household-account`.
 Shinhan accepts `personal-account` and `business-account`.
-VPBank accepts `personal-account` only (business and household business accounts are not supported).
 
 VietinBank transactions have no transfer content; contact support for more details.
 
@@ -147,7 +146,7 @@ Submit the verification code to the confirm OTP endpoint.
 
 Manual activation applies to:
 
-- MB Bank, OCB, and VIB business or household business accounts
+- MB Bank, OCB, VIB, and VPBank business or household business accounts
 - BIDV, VietinBank, and Shinhan Bank business accounts
 - Vietcombank business and household business accounts
 

@@ -24,7 +24,7 @@ Base route:
 | VietinBank | `ICB`      | `970415` | cá nhân, doanh nghiệp, hộ kinh doanh  |
 | VIB        | `VIB`      | `970441` | cá nhân, doanh nghiệp, hộ kinh doanh |
 | Sacombank  | `STB`      | `970403` | cá nhân, hộ kinh doanh               |
-| VPBank     | `VPB`      | `970432` | cá nhân                              |
+| VPBank     | `VPB`      | `970432` | cá nhân, doanh nghiệp, hộ kinh doanh |
 | PGBank     | `PGB`      | `970430` | cá nhân, doanh nghiệp, hộ kinh doanh |
 | Shinhan    | `SHBVN`    | `970424` | cá nhân, doanh nghiệp                |
 | Co-opBank  | `COOPBANK` | `970446` | cá nhân, doanh nghiệp, hộ kinh doanh |
@@ -90,7 +90,6 @@ POST /v1/client/banks
 
 Sacombank hỗ trợ `personal-account` và `business-household-account`.
 Shinhan hỗ trợ `personal-account` và `business-account`.
-VPBank chỉ hỗ trợ `personal-account` (tài khoản doanh nghiệp và hộ kinh doanh không được hỗ trợ).
 
 Giao dịch từ VietinBank sẽ không có nội dung. Liên hệ hỗ trợ để biết thêm chi tiết.
 
@@ -147,7 +146,7 @@ Gửi mã xác thực đến endpoint xác nhận OTP.
 
 Kích hoạt thủ công áp dụng cho:
 
-- Tài khoản doanh nghiệp hoặc hộ kinh doanh của MB Bank, OCB, VIB
+- Tài khoản doanh nghiệp hoặc hộ kinh doanh của MB Bank, OCB, VIB, VPBank
 - Tài khoản doanh nghiệp của BIDV, VietinBank và Shinhan Bank
 - Tài khoản doanh nghiệp và hộ kinh doanh của Vietcombank
 

@@ -40,7 +40,7 @@ Once linked, your bank account appears in the **Banks** section of the dashboard
 | **VietinBank**      |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Bank account |
 | **VIB**              |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Virtual Account (VA) |
 | **Sacombank**        |   Yes    |    No    |    Yes    | OpenBanking, Sync inward, Virtual Account (VA) |
-| **VPBank**           |   Yes    |    No    |    No     | OpenBanking, Sync inward, Virtual Account (VA) |
+| **VPBank**           |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Virtual Account (VA) |
 | **PGBank**           |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Bank account |
 | **Shinhan Bank**     |   Yes    |   Yes    |    No     | OpenBanking, Sync inward, Virtual Account (VA) |
 | **Co-opBank**        |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Virtual Account (VA) |
@@ -59,7 +59,7 @@ Before linking a bank account, make sure you have:
 - For Business or Household Business accounts: your company/household Tax Code (MST) / CCCD
 - For **ACB Business**: an ACB OneBiz username
 - **Vietcombank**: supports Business and Household Business only (all manual activation)
-- **MB Bank**, **OCB**, **VIB** Business or Household, **BIDV**/**VietinBank**/**Shinhan Bank** Business, and **Vietcombank** Business/Household: manual activation
+- **MB Bank**, **OCB**, **VIB**, **VPBank** Business or Household, **BIDV**/**VietinBank**/**Shinhan Bank** Business, and **Vietcombank** Business/Household: manual activation
 - **PGBank**, **Co-opBank**: fully online, no manual activation
 
 ---
@@ -88,15 +88,14 @@ Most banks support three account types. Pick the one that matches your account:
 
 Per-bank availability:
 
-- **ACB**, **MB Bank**, **BIDV**, **OCB**, **VietinBank**, **VIB**, **PGBank**, **Co-opBank** — Personal, Business, Household Business
+- **ACB**, **MB Bank**, **BIDV**, **OCB**, **VietinBank**, **VIB**, **VPBank**, **PGBank**, **Co-opBank** — Personal, Business, Household Business
 - **Vietcombank** — Business, Household Business (Personal not supported)
 - **Shinhan Bank** — Personal, Business (Household Business not supported)
-- **VPBank** — Personal (Business, Household Business not supported)
 - **Sacombank** — Personal, Household Business (Business not supported)
 
 > **VietinBank note:** Transactions from VietinBank have no transfer content; contact support for more details.
 
-> **Manual activation.** MB/OCB/VIB Business or Household, BIDV/VietinBank/Shinhan Business, and Vietcombank Business/Household use activation requests. You'll see **Activation Requested** until they complete. PGBank and Co-opBank are fully online.
+> **Manual activation.** MB/OCB/VIB/VPBank Business or Household, BIDV/VietinBank/Shinhan Business, and Vietcombank Business/Household use activation requests. You'll see **Activation Requested** until they complete. PGBank and Co-opBank are fully online.
 
 Click the card that matches your account type to continue.
 
@@ -277,9 +276,9 @@ If you want to temporarily stop receiving payments on a specific bank:
 | OTP code incorrect                | Double-check that you're entering the code sent to your phone. Codes are 6 digits.                                                                                                    |
 | CCCD rejected                     | Make sure you enter exactly 12 digits without spaces or special characters.                                                                                                           |
 | Bank shows "Pending" status       | After linking, the bank should become Active within seconds. If it stays Pending, try refreshing the page.                                                                            |
-| Bank shows "Activation Requested" | This is expected for manual-activation flows (MB/OCB/VIB Business or Household, BIDV/VietinBank/Shinhan Business, Vietcombank Business/Household). ApiPay will contact you to complete activation. |
+| Bank shows "Activation Requested" | This is expected for manual-activation flows (MB/OCB/VIB/VPBank Business or Household, BIDV/VietinBank/Shinhan Business, Vietcombank Business/Household). ApiPay will contact you to complete activation. |
 | Account number already linked     | Each bank account can only be linked once. If you see this error, the account may already be connected to another ApiPay account.                                                     |
-| Account type not available        | Sacombank does not support Business accounts; Vietcombank does not support Personal accounts; VPBank supports Personal accounts only.                                                  |
+| Account type not available        | Sacombank does not support Business accounts; Vietcombank does not support Personal accounts.                                                                                           |
 
 ---
 

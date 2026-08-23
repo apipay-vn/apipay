@@ -79,6 +79,15 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.19.1',
+    date: '2026-08-23',
+    features: [
+      'VPBank (VPB) business and household business support — connect VPBank business and household business accounts for automated bank transfer payments, real-time transaction webhooks, and streamlined manual activation. Personal accounts remain available with the online flow.',
+    ],
+    fixes: [],
+    improvements: [],
+  },
+  {
     version: '1.19.0',
     date: '2026-08-23',
     features: [
@@ -542,6 +551,15 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.19.1',
+    date: '2026-08-23',
+    features: [
+      'Hỗ trợ tài khoản doanh nghiệp và hộ kinh doanh VPBank (VPB) — liên kết tài khoản DN và HKD VPBank để nhận chuyển khoản tự động, webhook thời gian thực và quy trình kích hoạt thủ công nhanh chóng. Tài khoản cá nhân vẫn kết nối trực tuyến như trước.',
+    ],
+    fixes: [],
+    improvements: [],
+  },
   {
     version: '1.19.0',
     date: '2026-08-23',
