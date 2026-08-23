@@ -79,6 +79,20 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.19.0',
+    date: '2026-08-23',
+    features: [
+      'Live Test — simulate a real payment through a connected bank account and your real webhook destination, without moving money. Verify the full flow — payload, signature, and delivery — before going live.',
+    ],
+    fixes: [],
+    improvements: [
+      'Transaction times in browser push notifications now display in Vietnam time (GMT+7).',
+      'More reliable bank payment processing — fewer missed transactions during service interruptions.',
+      'Payment Speaker (Ting) — smoother live voice announcements with more robust session history.',
+      'Clearer bank connection guidance — the connect form now explains when ApiPay issues a virtual account (VA) number and how transfers to that VA are matched automatically.',
+    ],
+  },
+  {
     version: '1.18.0',
     date: '2026-08-14',
     features: [
@@ -528,6 +542,20 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.19.0',
+    date: '2026-08-23',
+    features: [
+      'Live Test — mô phỏng giao dịch thật qua tài khoản ngân hàng đã kết nối và webhook thật của bạn, không cần tiền thật. Kiểm tra toàn bộ luồng — payload, chữ ký và quá trình gửi — trước khi chạy chính thức.',
+    ],
+    fixes: [],
+    improvements: [
+      'Thời gian giao dịch trong thông báo đẩy trình duyệt nay hiển thị theo giờ Việt Nam (GMT+7).',
+      'Xử lý thanh toán qua ngân hàng ổn định hơn — giảm nguy cơ bỏ lỡ giao dịch khi có gián đoạn dịch vụ.',
+      'Loa Thanh Toán (Ting) — thông báo giọng nói trực tiếp mượt mà hơn với lịch sử phiên đáng tin cậy hơn.',
+      'Hướng dẫn kết nối ngân hàng rõ ràng hơn — biểu mẫu kết nối nay giải thích khi nào ApiPay cấp số tài khoản ảo (VA) và cách chuyển khoản vào đúng số VA được đối soát tự động.',
+    ],
+  },
   {
     version: '1.18.0',
     date: '2026-08-14',
