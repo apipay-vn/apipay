@@ -23,6 +23,21 @@ base64(accessKey:secretKey)
 2. Go to **Integrations → API Keys**
 3. Copy your `accessKey` and `secretKey`
 
+## Test vs Live Keys
+
+ApiPay supports two types of API keys:
+
+| Key Type | Prefix | Purpose |
+|----------|--------|---------|
+| **Test** | `ak_test_*` | Sandbox mode — no real money, test webhooks |
+| **Live** | `ak_live_*` | Production — real transactions |
+
+The same API URL (`https://app.apipay.vn`) handles both. When you use a test key, the API automatically routes to sandbox mode.
+
+<Callout type="warning">
+Always test with `ak_test_*` keys first. Sandbox transactions are isolated from production data.
+</Callout>
+
 ## Examples
 
 <CodeTabs>

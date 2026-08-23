@@ -1,0 +1,626 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "ApiPay API",
+    "description": "Merchant-facing REST API for ApiPay — Vietnamese bank-transfer payment gateway.\n\nThis spec is **curated** (hand-maintained to match the public docs). Do not overwrite it from Nest Swagger.\n\n## Authentication\n\nAuthenticated `/v1/client/*` endpoints require:\n\n```\nAuthorization: Bearer base64(accessKey:secretKey)\n```\n\nKeys are created in the dashboard at **Integrations → API Keys**.\nTest keys start with `ak_test_`, live keys with `ak_live_`.\n\n## Sandbox\n\nThe same production URL serves both modes. A test key (`ak_test_*`) routes the request to sandbox.\nSimulate a sandbox payment with unauthenticated `POST /v1/payment-requests/{id}/pay` where `{id}` starts with `test_pr_`. No request body.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "ApiPay Support",
+      "url": "https://apipay.vn",
+      "email": "support@apipay.vn"
+    },
+    "license": {
+      "name": "Proprietary",
+      "url": "https://apipay.vn/terms"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://app.apipay.vn",
+      "description": "Production (also serves sandbox when using test keys)"
+    }
+  ],
+  "security": [{ "bearerAuth": [] }],
+  "tags": [
+    { "name": "Payment Requests", "description": "Create and manage payment links" },
+    { "name": "Webhooks", "description": "Register and inspect webhook deliveries" },
+    { "name": "Banks", "description": "List and manage connected bank accounts" },
+    { "name": "Metrics", "description": "Dashboard analytics and reporting" }
+  ],
+  "paths": {
+    "/v1/client/payment-requests": {
+      "post": {
+        "tags": ["Payment Requests"],
+        "summary": "Create payment link",
+        "description": "Create a payment link using a connected bank account. Use a test key to create a sandbox payment (`publicId` starts with `test_pr_`).",
+        "operationId": "createPaymentRequest",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["bankPublicId"],
+                "properties": {
+                  "bankPublicId": {
+                    "type": "string",
+                    "description": "Public ID of your connected bank"
+                  },
+                  "amount": {
+                    "type": "string",
+                    "description": "Amount in VND as an integer string (1–300000000). Omit to let the payer enter the amount."
+                  },
+                  "content": {
+                    "type": "string",
+                    "maxLength": 140,
+                    "description": "Transfer content / memo"
+                  },
+                  "title": {
+                    "type": "string",
+                    "maxLength": 200,
+                    "description": "Title displayed on the payment page"
+                  },
+                  "expiresAt": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Expiration time (ISO 8601). Omit for no expiry."
+                  },
+                  "redirectUrl": {
+                    "type": "string",
+                    "description": "HTTPS URL to redirect after payment completion"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Payment link created",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/PaymentRequestCreateResponse" }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Payment Requests"],
+        "summary": "List payment requests",
+        "operationId": "listPaymentRequests",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "page", "in": "query", "schema": { "type": "integer", "minimum": 1, "default": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "minimum": 1, "maximum": 100, "default": 20 } },
+          { "name": "search", "in": "query", "schema": { "type": "string" }, "description": "Search by public ID, content, title, or account number" },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": { "type": "array", "items": { "type": "string", "enum": ["ACTIVE", "EXPIRED", "COMPLETED", "CANCELLED"] } },
+            "style": "form",
+            "explode": true
+          },
+          { "name": "bankAccountId", "in": "query", "schema": { "type": "integer" } },
+          { "name": "dateFrom", "in": "query", "schema": { "type": "string", "format": "date" } },
+          { "name": "dateTo", "in": "query", "schema": { "type": "string", "format": "date" } }
+        ],
+        "responses": {
+          "200": { "description": "Paginated list of payment requests" }
+        }
+      }
+    },
+    "/v1/client/payment-requests/{cuid}": {
+      "delete": {
+        "tags": ["Payment Requests"],
+        "summary": "Cancel payment request",
+        "description": "Cancel an ACTIVE payment request. Status becomes CANCELLED.",
+        "operationId": "cancelPaymentRequest",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "cuid", "in": "path", "required": true, "schema": { "type": "string" }, "description": "Payment request public ID" }
+        ],
+        "responses": {
+          "200": { "description": "Payment request cancelled" }
+        }
+      }
+    },
+    "/v1/payment-requests/{id}": {
+      "get": {
+        "tags": ["Payment Requests"],
+        "summary": "Get payment request (public)",
+        "description": "Public pay-page endpoint. Returns QR URL and bank details. No API key required.",
+        "operationId": "getPaymentRequest",
+        "security": [],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" }, "description": "Payment request public ID" },
+          { "name": "merchantId", "in": "query", "schema": { "type": "string" }, "description": "Merchant ID when accessing via a custom domain" }
+        ],
+        "responses": {
+          "200": { "description": "Payment request details including qrUrl and payUrl" },
+          "404": { "description": "Payment request not found" }
+        }
+      }
+    },
+    "/v1/payment-requests/{id}/pay": {
+      "post": {
+        "tags": ["Payment Requests"],
+        "summary": "Simulate sandbox payment",
+        "description": "Marks a sandbox payment request as paid and fires sandbox webhooks. Unauthenticated. `{id}` must start with `test_pr_`. No request body. Live public IDs return 400.",
+        "operationId": "simulateSandboxPayment",
+        "security": [],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "pattern": "^test_pr_" },
+            "description": "Sandbox payment request public ID (`test_pr_*`)"
+          }
+        ],
+        "responses": {
+          "200": { "description": "Sandbox payment simulated" },
+          "400": { "description": "Not a sandbox payment request, or request is not ACTIVE" },
+          "404": { "description": "Sandbox payment request not found" }
+        }
+      }
+    },
+    "/v1/client/webhooks": {
+      "post": {
+        "tags": ["Webhooks"],
+        "summary": "Register webhook",
+        "operationId": "createWebhook",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["webhookUrl", "bankPublicId"],
+                "properties": {
+                  "webhookUrl": { "type": "string", "description": "HTTPS URL to receive webhook notifications" },
+                  "bankPublicId": { "type": "string", "description": "Public ID of the bank account" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Webhook registered (includes `secret` for ApiPay-Signature)" }
+        }
+      },
+      "get": {
+        "tags": ["Webhooks"],
+        "summary": "List webhooks",
+        "operationId": "listWebhooks",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "page", "in": "query", "schema": { "type": "integer", "minimum": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "minimum": 1, "maximum": 100 } }
+        ],
+        "responses": {
+          "200": { "description": "List of webhooks" }
+        }
+      }
+    },
+    "/v1/client/webhooks/{id}": {
+      "patch": {
+        "tags": ["Webhooks"],
+        "summary": "Update webhook",
+        "operationId": "updateWebhook",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "webhookUrl": { "type": "string", "description": "New HTTPS webhook URL" }
+                }
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Webhook updated" } }
+      },
+      "delete": {
+        "tags": ["Webhooks"],
+        "summary": "Delete webhook",
+        "operationId": "deleteWebhook",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Webhook deleted" } }
+      }
+    },
+    "/v1/client/webhooks/{id}/toggle": {
+      "patch": {
+        "tags": ["Webhooks"],
+        "summary": "Toggle webhook enabled/disabled",
+        "operationId": "toggleWebhook",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Webhook toggled" } }
+      }
+    },
+    "/v1/client/webhooks/{id}/history": {
+      "get": {
+        "tags": ["Webhooks"],
+        "summary": "Get webhook delivery history",
+        "operationId": "getWebhookHistory",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "page", "in": "query", "schema": { "type": "integer", "minimum": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "minimum": 1, "maximum": 50 } }
+        ],
+        "responses": { "200": { "description": "Delivery history for one webhook" } }
+      }
+    },
+    "/v1/client/webhooks/history/{historyId}/resend": {
+      "post": {
+        "tags": ["Webhooks"],
+        "summary": "Retry a failed webhook delivery",
+        "operationId": "resendWebhook",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "historyId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Delivery retried" } }
+      }
+    },
+    "/v1/client/webhooks/deliveries": {
+      "get": {
+        "tags": ["Webhooks"],
+        "summary": "List webhook deliveries",
+        "operationId": "listWebhookDeliveries",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "page", "in": "query", "schema": { "type": "integer" } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "maximum": 100 } },
+          { "name": "webhookId", "in": "query", "schema": { "type": "string" } },
+          { "name": "bankAccountId", "in": "query", "schema": { "type": "integer" } },
+          { "name": "status", "in": "query", "schema": { "type": "string", "enum": ["SUCCESS", "FAILED"] } },
+          { "name": "dateFrom", "in": "query", "schema": { "type": "string", "format": "date" } },
+          { "name": "dateTo", "in": "query", "schema": { "type": "string", "format": "date" } }
+        ],
+        "responses": { "200": { "description": "List of deliveries" } }
+      }
+    },
+    "/v1/client/banks": {
+      "get": {
+        "tags": ["Banks"],
+        "summary": "List connected bank accounts",
+        "operationId": "listBanks",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "page", "in": "query", "schema": { "type": "integer", "minimum": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "minimum": 1, "maximum": 50 } }
+        ],
+        "responses": { "200": { "description": "List of bank accounts (payload under `message`)" } }
+      },
+      "post": {
+        "tags": ["Banks"],
+        "summary": "Connect a bank account",
+        "operationId": "addBank",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["bankBin", "bankName", "accountType", "accountNumber", "accountName", "mobile"],
+                "properties": {
+                  "bankBin": { "type": "string", "example": "970422" },
+                  "bankName": { "type": "string", "example": "MB Bank" },
+                  "accountType": {
+                    "type": "string",
+                    "enum": ["personal-account", "business-account", "business-household-account"]
+                  },
+                  "accountNumber": { "type": "string" },
+                  "accountName": { "type": "string", "description": "Uppercase, no accents" },
+                  "mobile": { "type": "string" },
+                  "identity": { "type": "string", "description": "Citizen ID or tax code. Required except for ACB personal." },
+                  "acbUserId": { "type": "string", "description": "ACB OneBiz username for ACB business accounts" }
+                }
+              }
+            }
+          }
+        },
+        "responses": { "201": { "description": "Bank submitted. `OTP: 1` means confirm-otp is required." } }
+      }
+    },
+    "/v1/client/banks/available": {
+      "get": {
+        "tags": ["Banks"],
+        "summary": "List banks available to link",
+        "operationId": "listAvailableBanks",
+        "security": [{ "bearerAuth": [] }],
+        "responses": { "200": { "description": "Catalog of supported banks (BIN, name, short name)" } }
+      }
+    },
+    "/v1/client/banks/summary": {
+      "get": {
+        "tags": ["Banks"],
+        "summary": "Get bank account summary counts",
+        "operationId": "getBanksSummary",
+        "security": [{ "bearerAuth": [] }],
+        "responses": { "200": { "description": "Counts: total, active, inactive, pending" } }
+      }
+    },
+    "/v1/client/banks/confirm-otp": {
+      "post": {
+        "tags": ["Banks"],
+        "summary": "Confirm bank verification OTP",
+        "operationId": "confirmBankOtp",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["bankBin", "accountNumber"],
+                "properties": {
+                  "bankBin": { "type": "string" },
+                  "accountNumber": { "type": "string" },
+                  "otpNumber": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Bank verified" } }
+      }
+    },
+    "/v1/client/banks/{publicId}": {
+      "get": {
+        "tags": ["Banks"],
+        "summary": "Get a connected bank account",
+        "operationId": "getBank",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "publicId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "`status: true` with bank in `message`, or `status: false` if not found" }
+        }
+      },
+      "delete": {
+        "tags": ["Banks"],
+        "summary": "Disconnect a bank account",
+        "description": "May return `OTP: 1`, in which case call confirm-delete.",
+        "operationId": "deleteBank",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "publicId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Disconnected, or OTP required" } }
+      }
+    },
+    "/v1/client/banks/{publicId}/status": {
+      "patch": {
+        "tags": ["Banks"],
+        "summary": "Toggle bank ACTIVE/INACTIVE",
+        "operationId": "toggleBankStatus",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "publicId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "`newStatus` is 1 (active) or 0 (inactive)" } }
+      }
+    },
+    "/v1/client/banks/{publicId}/confirm-delete": {
+      "post": {
+        "tags": ["Banks"],
+        "summary": "Confirm bank disconnection OTP",
+        "operationId": "confirmBankDelete",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "publicId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": { "otp": { "type": "string" } }
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Bank disconnected" } }
+      }
+    },
+    "/v1/client/metrics/overview": {
+      "get": {
+        "tags": ["Metrics"],
+        "summary": "Get metrics overview",
+        "operationId": "getMetricsOverview",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "$ref": "#/components/parameters/MetricsPeriod" },
+          { "$ref": "#/components/parameters/DateFrom" },
+          { "$ref": "#/components/parameters/DateTo" },
+          { "$ref": "#/components/parameters/Search" }
+        ],
+        "responses": { "200": { "description": "Totals, averages, success rate, byBank" } }
+      }
+    },
+    "/v1/client/metrics/summary": {
+      "get": {
+        "tags": ["Metrics"],
+        "summary": "Get metrics summary",
+        "description": "Legacy summary endpoint. Prefer `/overview` for new integrations.",
+        "operationId": "getMetricsSummary",
+        "security": [{ "bearerAuth": [] }],
+        "responses": { "200": { "description": "Summary by bank" } }
+      }
+    },
+    "/v1/client/metrics/transactions": {
+      "get": {
+        "tags": ["Metrics"],
+        "summary": "List transactions",
+        "operationId": "listTransactions",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "$ref": "#/components/parameters/MetricsPeriod" },
+          { "$ref": "#/components/parameters/DateFrom" },
+          { "$ref": "#/components/parameters/DateTo" },
+          { "$ref": "#/components/parameters/Search" },
+          { "name": "accountNumber", "in": "query", "schema": { "type": "string" } },
+          {
+            "name": "bankPublicId",
+            "in": "query",
+            "schema": { "type": "array", "items": { "type": "string" } },
+            "style": "form",
+            "explode": true
+          },
+          { "name": "page", "in": "query", "schema": { "type": "integer", "minimum": 1, "default": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "minimum": 1, "maximum": 100, "default": 20 } },
+          { "name": "sortBy", "in": "query", "schema": { "type": "string", "enum": ["transactionDate", "amount", "createdAt"] } },
+          { "name": "sortOrder", "in": "query", "schema": { "type": "string", "enum": ["asc", "desc"] } }
+        ],
+        "responses": { "200": { "description": "Paginated transactions" } }
+      }
+    },
+    "/v1/client/metrics/time-series": {
+      "get": {
+        "tags": ["Metrics"],
+        "summary": "Get time series",
+        "operationId": "getTimeSeries",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "$ref": "#/components/parameters/MetricsPeriod" },
+          { "$ref": "#/components/parameters/DateFrom" },
+          { "$ref": "#/components/parameters/DateTo" },
+          { "name": "granularity", "in": "query", "schema": { "type": "string", "enum": ["daily", "weekly", "monthly"] } }
+        ],
+        "responses": { "200": { "description": "Time series points" } }
+      }
+    },
+    "/v1/client/metrics/hourly-transactions": {
+      "get": {
+        "tags": ["Metrics"],
+        "summary": "Get hourly transactions for a Vietnam date",
+        "operationId": "getHourlyTransactions",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "date", "in": "query", "schema": { "type": "string", "format": "date" }, "description": "YYYY-MM-DD in Asia/Ho_Chi_Minh. Defaults to today." },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": { "type": "array", "items": { "type": "string", "enum": ["SUCCESS", "FAILED", "PENDING"] } },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "bankPublicId",
+            "in": "query",
+            "schema": { "type": "array", "items": { "type": "string" } },
+            "style": "form",
+            "explode": true
+          }
+        ],
+        "responses": { "200": { "description": "24 hourly buckets" } }
+      }
+    },
+    "/v1/client/metrics/bank-distribution": {
+      "get": {
+        "tags": ["Metrics"],
+        "summary": "Get transaction distribution by bank",
+        "operationId": "getBankDistribution",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "$ref": "#/components/parameters/MetricsPeriod" },
+          { "$ref": "#/components/parameters/DateFrom" },
+          { "$ref": "#/components/parameters/DateTo" }
+        ],
+        "responses": { "200": { "description": "Per-bank totals" } }
+      }
+    },
+    "/v1/client/metrics/amount-histogram": {
+      "get": {
+        "tags": ["Metrics"],
+        "summary": "Get amount distribution histogram",
+        "operationId": "getAmountHistogram",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "$ref": "#/components/parameters/MetricsPeriod" },
+          { "$ref": "#/components/parameters/DateFrom" },
+          { "$ref": "#/components/parameters/DateTo" }
+        ],
+        "responses": { "200": { "description": "Amount range buckets" } }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "Custom",
+        "description": "Base64-encoded `accessKey:secretKey`.\n\nExample: `Authorization: Bearer YWtfdGVzdF9hYmMxMjM6c2VjcmV0X2RlZjQ1Ng==`"
+      }
+    },
+    "parameters": {
+      "MetricsPeriod": {
+        "name": "period",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "enum": ["today", "this_week", "last_week", "this_month", "last_month", "last_3_months", "last_6_months", "this_year", "custom"]
+        }
+      },
+      "DateFrom": {
+        "name": "dateFrom",
+        "in": "query",
+        "schema": { "type": "string", "format": "date-time" }
+      },
+      "DateTo": {
+        "name": "dateTo",
+        "in": "query",
+        "schema": { "type": "string", "format": "date-time" }
+      },
+      "Search": {
+        "name": "search",
+        "in": "query",
+        "schema": { "type": "string" }
+      }
+    },
+    "schemas": {
+      "PaymentRequestCreateResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "publicId": { "type": "string" },
+              "payUrl": { "type": "string" },
+              "qrUrl": { "type": "string" },
+              "bankCode": { "type": "string" },
+              "accountNumber": { "type": "string" },
+              "accountName": { "type": "string" },
+              "amount": { "type": "string" },
+              "content": { "type": "string" },
+              "expiresAt": { "type": "string", "format": "date-time" },
+              "createdAt": { "type": "string", "format": "date-time" },
+              "redirectSecret": { "type": "string" }
+            }
+          },
+          "statusCode": { "type": "integer" },
+          "timestamp": { "type": "string", "format": "date-time" }
+        }
+      }
+    }
+  }
+}

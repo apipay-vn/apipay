@@ -23,6 +23,21 @@ base64(accessKey:secretKey)
 2. Vào mục **Tích hợp → API Keys**
 3. Sao chép `accessKey` và `secretKey` của bạn
 
+## Key test và key live
+
+ApiPay hỗ trợ hai loại API key:
+
+| Loại key | Tiền tố | Mục đích |
+|----------|---------|----------|
+| **Test** | `ak_test_*` | Sandbox — không có tiền thật, webhook thử nghiệm |
+| **Live** | `ak_live_*` | Production — giao dịch thật |
+
+Cùng một URL API (`https://app.apipay.vn`) phục vụ cả hai. Khi dùng test key, API tự chuyển sang sandbox.
+
+<Callout type="warning">
+Luôn thử với key `ak_test_*` trước. Giao dịch sandbox tách biệt khỏi dữ liệu production.
+</Callout>
+
 ## Ví dụ
 
 <CodeTabs>

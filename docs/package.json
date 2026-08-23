@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --port 5503",
+    "prebuild": "node scripts/generate-llms.mjs",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "tsc": "tsc --noEmit"
@@ -12,6 +13,7 @@
   "dependencies": {
     "@mdx-js/react": "^3.1.0",
     "@mdx-js/rollup": "^3.1.0",
+    "@scalar/api-reference-react": "^0.9.65",
     "fuse.js": "^7.0.0",
     "gray-matter": "^4.0.3",
     "react": "^19.0.0",

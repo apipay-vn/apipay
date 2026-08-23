@@ -44,6 +44,7 @@ export const viSidebarConfig: SidebarItem[] = [
       {label: 'Webhooks', href: '/vi/api/webhooks'},
       {label: 'Ngân hàng', href: '/vi/api/banks'},
       {label: 'Metrics', href: '/vi/api/metrics'},
+      {label: 'Interactive Reference', href: '/vi/api-reference'},
     ],
   },
   {
@@ -100,6 +101,7 @@ export const enSidebarConfig: SidebarItem[] = [
       {label: 'Webhooks', href: '/en/api/webhooks'},
       {label: 'Banks', href: '/en/api/banks'},
       {label: 'Metrics', href: '/en/api/metrics'},
+      {label: 'Interactive Reference', href: '/en/api-reference'},
     ],
   },
   {

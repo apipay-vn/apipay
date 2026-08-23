@@ -259,6 +259,22 @@ DELETE /v1/client/payment-requests/:publicId
 
 ---
 
+## Simulate Sandbox Payment
+
+Mark a sandbox payment request as paid. Unauthenticated; `{publicId}` must start with `test_pr_`. No request body.
+
+```bash
+POST /v1/payment-requests/:publicId/pay
+```
+
+```bash
+curl -X POST https://app.apipay.vn/v1/payment-requests/test_pr_abc123/pay
+```
+
+Live public IDs (for example `APIPAYJSC...`) return 400. See [Sandbox & Live Test](/en/sandbox).
+
+---
+
 ## Signed Redirect URL Verification
 
 When you provide a `redirectUrl` when creating a payment request, after payment completion, customers will be redirected to your URL with a signed payload.

@@ -1,0 +1,4018 @@
+# ApiPay Documentation (Full Content)
+
+> ApiPay is a Vietnamese bank-transfer payment gateway API. This is the full documentation content for AI agents.
+
+---
+
+## Getting Started
+
+### Introduction
+
+Source: https://docs.apipay.vn/en/index
+
+# Welcome to ApiPay
+
+ApiPay is a payment gateway API that helps you easily create payment links via bank transfer in Vietnam.
+
+![ApiPay documentation overview](/apipay-docs.jpg)
+
+## Key Features
+
+- **Create payment links** via QR Code or bank transfer details
+- **Automatic confirmation** when payment is received
+- **Free Payment Speaker** - Real-time voice announcements for incoming bank transfers on any device
+- **Webhook notifications** - Receive real-time payment notifications
+- **Multiple banks** - Supports ACB, MB Bank, BIDV, OCB, VietinBank, VIB, Sacombank, VPBank, PGBank, Shinhan Bank, Co-opBank, and Vietcombank
+- **No transaction fees** - Zero fee per transaction
+
+## How It Works
+
+1. **Create payment link** via API or Dashboard
+2. **Send link to customer** - Customer scans QR or transfers
+3. **Automatic confirmation** - System detects payment automatically
+4. **Receive webhook & voice alerts** - Your backend receives webhook and counter speaker announces payment immediately
+
+## Getting Started
+
+- **New merchants?** Start with [Onboarding Guide](/en/onboarding) to set up your account and receive your first payment
+- **Already have an account?** Check [Quick Start](/en/quickstart) to start API integration in 5 minutes
+
+## Documentation Guides
+
+| Guide                                      | Description                             |
+| ------------------------------------------ | --------------------------------------- |
+| [Onboarding Guide](/en/onboarding)         | Complete merchant account setup process |
+| [Payment Speaker](/en/payment-speaker)     | Turn any phone or tablet into a real-time voice alert speaker |
+| [Subscription & Billing](/en/subscription) | Manage plans, billing, and the 72-hour free trial   |
+| [Bank Accounts](/en/banking)               | Connect and manage bank accounts        |
+
+### Quick Start
+
+Source: https://docs.apipay.vn/en/quickstart
+
+# Quick Start
+
+Quick guide to integrate ApiPay into your system.
+
+## Step 1: Get API Key
+
+Log in to [dashboard](https://my.apipay.vn) and create an API Key at **Integrations → API Keys**.
+
+You'll receive:
+
+- `accessKey` - Public key to identify your account
+- `secretKey` - Private key to sign requests
+
+> **Note:** `Authorization: Bearer ` with `` is your credentials encoded in `base64(accessKey:secretKey)`. See [Authentication](/en/api/authentication) for details.
+
+## Step 2: Create Payment Link
+
+Call the API to create a payment link:
+
+```bash
+curl -X POST https://app.apipay.vn/v1/client/payment-requests \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer " \
+  -d '{
+    "bankPublicId": "your-bank-public-id",
+    "amount": "100000",
+    "content": "ORDER-12345"
+  }'
+```
+
+Response:
+
+```json
+{
+	"data": {
+		"publicId": "APIPAYJSC69C3F00A3212",
+		"payUrl": "https://pay.apipay.vn/APIPAYJSC69C3F00A3212",
+		"qrUrl": "https://api.qrserver.com/...",
+		"bankCode": "MB",
+		"accountNumber": "0123456789",
+		"amount": "100000",
+		"content": "ORDER-12345"
+	},
+	"statusCode": 200,
+	"timestamp": "2026-08-12T14:27:45.000Z"
+}
+```
+
+## Step 3: Send to Customer
+
+Send `payUrl` to your customer via:
+
+- Email/SMS
+- Chat (Zalo, Facebook, Telegram)
+- Your website
+
+The customer will see a payment page with a QR Code to scan with their bank app.
+
+## Step 4: Receive Notifications
+
+Configure a webhook URL in the dashboard to receive notifications when bank transactions are detected:
+
+```json
+{
+	"event": "transaction.in",
+	"data": {
+		"transactionId": "550e8400-e29b-41d4-a716-446655440000",
+		"referenceCode": "TX123456789",
+		"amount": "100000",
+		"content": "ORDER-12345",
+		"transactionDate": "2026-03-06T10:30:00Z",
+		"bankAccountPublicId": "bk_abcdef1234567890",
+		"gateway": "VCB",
+		"accountNumber": "0123456789"
+	}
+}
+```
+
+ApiPay sends `transaction.in` when a payment is detected. See [Webhooks](/en/api/webhooks) for the full payload and signature verification.
+
+## Test Your Integration
+
+Use sandbox mode to test the full flow without real money.
+
+### 1. Use Test API Keys
+
+Create a test API key in the dashboard (starts with `ak_test_`). The same production URL automatically routes to sandbox mode when you use a test key.
+
+```bash
+# Encode your test credentials
+AUTH=$(echo -n "ak_test_abc123:secret_def456" | base64)
+```
+
+### 2. Create a Test Payment Request
+
+```bash
+curl -X POST https://app.apipay.vn/v1/client/payment-requests \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $AUTH" \
+  -d '{
+    "bankPublicId": "test_bk_abc123",
+    "amount": "50000",
+    "content": "TEST-ORDER-001"
+  }'
+```
+
+### 3. Simulate Payment
+
+Use the sandbox simulator to trigger a mock payment:
+
+```bash
+curl -X POST https://app.apipay.vn/v1/payment-requests/test_pr_abc123/pay
+```
+
+This endpoint is unauthenticated, takes no body, and only accepts sandbox public IDs (`test_pr_*`). Live IDs return 400.
+
+This triggers a webhook to your configured URL with `"sandbox": true` in the payload.
+
+### 4. Verify Webhook Signature
+
+```javascript
+const crypto = require('crypto');
+
+function verifyWebhook(payload, signature, secret) {
+  const expected = crypto
+    .createHmac('sha256', secret)
+    .update(payload)
+    .digest('hex');
+  return crypto.timingSafeEqual(
+    Buffer.from(signature, 'hex'),
+    Buffer.from(expected, 'hex')
+  );
+}
+
+// In your webhook handler:
+app.post('/webhooks/apipay', (req, res) => {
+  const signature = req.headers['apipay-signature'];
+  const isValid = verifyWebhook(JSON.stringify(req.body), signature, WEBHOOK_SECRET);
+
+  if (!isValid) return res.status(401).send('Invalid signature');
+
+  const {event, sandbox, data} = req.body;
+  if (sandbox) console.log('[test] Sandbox event:', event, data.referenceCode);
+
+  res.status(200).json({received: true});
+});
+```
+
+Sandbox webhooks include `"sandbox": true` in the payload. Always check this flag to avoid fulfilling test orders.
+
+See [Sandbox & Live Test](/en/sandbox) for more testing options.
+
+## Code Examples
+
+```javascript
+const axios = require("axios");
+
+const API_BASE = "https://app.apipay.vn";
+const ACCESS_KEY = "your_access_key";
+const SECRET_KEY = "your_secret_key";
+
+async function createPaymentLink(bankPublicId, amount, content) {
+	// Create base64 auth string
+	const auth = Buffer.from(`${ACCESS_KEY}:${SECRET_KEY}`).toString("base64");
+
+	const response = await axios.post(
+		`${API_BASE}/v1/client/payment-requests`,
+		{
+			bankPublicId,
+			amount,
+			content,
+		},
+		{
+			headers: {
+				Authorization: `Bearer ${auth}`,
+				"Content-Type": "application/json",
+			},
+		},
+	);
+	return response.data.data;
+}
+
+// Usage
+const payment = await createPaymentLink("bank-123", 100000, "ORDER-001");
+console.log("Payment URL:", payment.payUrl);
+```
+
+```python
+import requests
+import base64
+
+API_BASE = 'https://app.apipay.vn'
+ACCESS_KEY = 'your_access_key'
+SECRET_KEY = 'your_secret_key'
+
+def create_payment_link(bank_public_id: str, amount: int, content: str):
+    # Create base64 auth string
+    auth = base64.b64encode(f'{ACCESS_KEY}:{SECRET_KEY}'.encode()).decode()
+
+    response = requests.post(
+        f'{API_BASE}/v1/client/payment-requests',
+        json={
+            'bankPublicId': bank_public_id,
+            'amount': amount,
+            'content': content
+        },
+        headers={
+            'Authorization': f'Bearer {auth}',
+            'Content-Type': 'application/json'
+        }
+    )
+    return response.json()['data']
+
+# Usage
+payment = create_payment_link('bank-123', 100000, 'ORDER-001')
+print(f"Payment URL: {payment['payUrl']}")
+```
+
+```php
+<?php
+
+use Illuminate\Support\Facades\Http;
+
+$apiBase = 'https://app.apipay.vn';
+$accessKey = 'your_access_key';
+$secretKey = 'your_secret_key';
+
+function createPaymentLink(string $bankPublicId, int $amount, string $content): array
+{
+    global $apiBase, $accessKey, $secretKey;
+
+    // Create base64 auth string
+    $auth = base64_encode("{$accessKey}:{$secretKey}");
+
+    $response = Http::withHeaders([
+        'Authorization' => "Bearer {$auth}",
+        'Content-Type'  => 'application/json',
+    ])->post("{$apiBase}/v1/client/payment-requests", [
+        'bankPublicId' => $bankPublicId,
+        'amount'       => $amount,
+        'content'      => $content,
+    ]);
+
+    return $response->json('data');
+}
+
+// Usage
+$payment = createPaymentLink('bank-123', 100000, 'ORDER-001');
+echo 'Payment URL: ' . $payment['payUrl'];
+```
+
+## Next Steps
+
+- [API Reference](/en/api/payment-requests) - Full API endpoint details
+- [Webhooks](/en/api/webhooks) - Configure notifications
+- [Bank List](/en/api/banks) - Supported banks
+
+### Onboarding Guide
+
+Source: https://docs.apipay.vn/en/onboarding
+
+# Onboarding Guide
+
+Welcome to ApiPay! This guide will walk you through the complete process of setting up your account and start accepting payments.
+
+## Why ApiPay?
+
+ApiPay is a payment gateway that enables Vietnamese businesses to accept bank transfers through a simple API integration. No complex contracts, no hidden fees - just straightforward bank payment processing.
+
+## The Merchant Journey
+
+Here's what you'll accomplish:
+
+1. **Sign Up** - Create your merchant account
+2. **Choose a Plan** - Start with FREE TRIAL 72 Hours or pick a paid plan
+3. **Connect Banks** - Link your Vietnamese bank accounts
+4. **Configure Settings** - Set up webhooks and API keys
+5. **Start Accepting Payments** - Create your first payment request
+
+---
+
+## Step 1: Sign Up
+
+Visit [my.apipay.vn](https://my.apipay.vn) and click **Sign Up**.
+
+You can register using:
+
+- **Email & Password** - Traditional registration
+- **Magic Link** - Passwordless login via email
+
+### Best Practices for Registration
+
+- Use a **business email** - This establishes trust with your customers
+- Choose a **strong password** or enable 2FA after signup
+- Fill in your **business information** early - This appears on the payment page your customers see
+
+---
+
+## Step 2: Choose Your Plan
+
+ApiPay offers paid plans based on the number of bank accounts you need:
+
+Eligible new accounts can start with the 72-hour FREE TRIAL from Pricing.
+
+### How to Choose
+
+**Start small and scale up:**
+
+- New businesses: Start with FREE TRIAL 72 Hours, then BASIC or STARTER
+- Growing businesses: PRO offers the best value
+- High-volume businesses: TEAM or above
+
+You can upgrade anytime. Downgrading takes effect at the next billing cycle.
+
+> **Pro Tip:** Having multiple bank accounts helps distribute payment volume and reduces wait times during peak hours.
+
+---
+
+## Step 3: Connect Your Bank Accounts
+
+After subscribing, you'll connect your Vietnamese bank account(s). This is essential for receiving payments.
+
+### Supported Banks
+
+ApiPay supports the following major Vietnamese banks:
+
+- ACB
+- MB Bank
+- BIDV
+- OCB
+- VietinBank
+- VIB
+- Sacombank (STB)
+- VPBank (VPB)
+- PGBank (PGB)
+- Shinhan Bank (SHBVN)
+- Co-opBank (COOPBANK)
+- Vietcombank (VCB)
+
+### Connection Process
+
+1. Go to **Settings → Bank Accounts**
+2. Click **Add Bank Account**
+3. Select your bank from the list
+4. Enter your account number
+5. Verify with OTP sent to your registered phone
+6. Account becomes active after verification
+
+> **Important:** The bank account must be in your business name (or a legitimate representative name).
+
+**Free Instant Feature:** Once your bank account is active, you can immediately use **[Payment Speaker](/en/payment-speaker)** to turn any phone or tablet at your counter into a real-time voice alert speaker without buying separate hardware.
+
+---
+
+## Step 4: Configure Your Integration
+
+### Get API Keys
+
+1. Navigate to **Integrations → API Keys**
+2. Click **Create New Key**
+3. Name your key (e.g., "Production", "Development")
+4. Copy and store your keys securely
+
+You'll receive:
+
+- `accessKey` - Public identifier
+- `secretKey` - Keep this private!
+
+When calling the API, use `Authorization: Bearer `, where `` is `base64(accessKey:secretKey)`. See [Authentication](/en/api/authentication) for details.
+
+### Set Up Webhooks (Optional but Recommended)
+
+Webhooks notify your system when payments occur:
+
+1. Go to **Settings → Webhooks**
+2. Click **Add Webhook**
+3. Enter your endpoint URL
+4. Save and test with the test button
+
+---
+
+## Step 5: Create Your First Payment
+
+### Via Dashboard
+
+1. Go to **Payment Requests**
+2. Click **Create Payment Request**
+3. Select a connected bank account
+4. Enter the amount
+5. Add payment content/reference
+6. Click **Create**
+
+You'll receive a payment link to share with your customer.
+
+### Via API
+
+```javascript
+const response = await fetch('https://app.apipay.vn/v1/client/payment-requests', {
+  method: 'POST',
+  headers: {
+    Authorization: 'Bearer ',
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    bankPublicId: 'your-bank-id',
+    amount: '100000',
+    content: 'ORDER-12345',
+  }),
+});
+
+const {data: {payUrl, qrUrl}} = await response.json();
+// Share payUrl or qrUrl with your customer
+```
+
+---
+
+## Best Practices
+
+### For a Smooth Start
+
+1. **Test with small amounts** - Create a few test payments of 1,000 VND to verify your setup works
+2. **Turn on Payment Speaker at checkout** - Open the speaker URL on a counter phone or tablet to hear payments immediately
+3. **Configure webhook first** - This ensures you never miss a payment notification
+4. **Set up redirect URL** - Automatically redirect customers back to your site after payment
+5. **Customize payment page** - Add your business name and logo for a professional experience
+
+### For Long-Term Success
+
+1. **Use multiple bank accounts** - Distribute volume across banks reduces congestion
+2. **Monitor transaction analytics** - Use the dashboard to track payment patterns
+3. **Enable 2FA** - Protect your account with two-factor authentication
+4. **Keep API keys secure** - Rotate keys periodically and never expose them in client-side code
+
+---
+
+## Next Steps
+
+- [Payment Speaker](/en/payment-speaker) - Hear real-time voice alerts for incoming bank transfers
+- [Subscription Guide](/en/subscription) - Manage plans and trial
+- [Bank Account Management](/en/banking) - Advanced banking features
+- [API Reference](/en/api/payment-requests) - Technical integration details
+
+### Subscription & Billing
+
+Source: https://docs.apipay.vn/en/subscription
+
+# Subscription & Billing
+
+Learn how to manage your ApiPay subscription and pricing.
+
+---
+
+## Plan Overview
+
+ApiPay offers transparent pricing based on the number of bank accounts you need. Paid plans include unlimited transactions with no per-transaction fees. Choose a **billing term** of 1, 3, 6, or 12 months at checkout — 6-month and 12-month terms include automatic discounts.
+
+> **FREE TRIAL 72 Hours** — Eligible new accounts can activate it from Pricing before choosing a paid plan.
+
+### Term Discounts
+
+| Term | Discount | Example (PRO — 450,000 VND/month) |
+| ---- | -------- | ------------------------------------ |
+| 1 month | 0% | 450,000 VND |
+| 3 months | 0% | 1,350,000 VND (450,000 VND/month) |
+| 6 months | 5% | 2,565,000 VND (427,500 VND/month) |
+| 12 months | 10% | 4,860,000 VND (405,000 VND/month) |
+
+The **effective monthly price** is lower for discounted 6-month and 12-month terms. You'll see the subtotal, discount, and effective monthly price before confirming payment.
+
+### What's Included in Paid Plans
+
+- ✅ Unlimited transactions
+- ✅ All supported banks
+- ✅ Real-time payment notifications
+- ✅ QR code generation
+- ✅ Webhook integration
+- ✅ Customer payment page
+- ✅ Transaction analytics
+- ✅ Email support
+
+---
+
+## Choosing the Right Plan
+
+### Factors to Consider
+
+1. **Transaction Volume** - More bank accounts means more capacity
+2. **Business Growth** - Choose a plan that accommodates growth
+3. **Peak Hours** - Multiple banks help during high-traffic periods
+
+### Recommendations by Business Type
+
+| Business Type     | Recommended Plan | Reason                    |
+| ----------------- | ---------------- | ------------------------- |
+| Solo entrepreneur | BASIC            | Start simple              |
+| Small e-commerce  | STARTER          | Handle moderate volume    |
+| Growing SaaS      | PRO              | Balance cost and capacity |
+| Large marketplace | TEAM+            | High volume needs         |
+
+> **Pro Tip:** You can always upgrade anytime. Starting with a lower plan and upgrading as you grow is perfectly fine.
+
+---
+
+## Purchasing a Plan
+
+### Via Dashboard
+
+1. Log in to [my.apipay.vn](https://my.apipay.vn)
+2. Go to **Settings → Subscription**
+3. Browse available plans
+4. Click **Select Plan** on your choice
+5. Complete payment
+
+### Payment Methods
+
+Currently, you can purchase plans via:
+
+- **Bank transfer** - Use the generated payment request and invoice to transfer to ApiPay
+
+After payment is confirmed, your plan activates immediately.
+
+---
+
+## Managing Your Subscription
+
+### Viewing Current Plan
+
+1. Navigate to **Settings → Subscription**
+2. Your current plan details are displayed at the top:
+   - Plan name
+   - Price
+   - Bank account limit
+   - Renewal date
+
+### Upgrading Your Plan
+
+1. Go to **Settings → Subscription**
+2. Select your desired plan
+3. Complete payment
+4. Changes take effect immediately
+5. The selected term becomes your default renewal term
+
+### Downgrading Your Plan
+
+1. Go to **Settings → Subscription**
+2. Select a lower plan
+3. Confirm the change
+4. **Downgrade takes effect at the next billing cycle**
+5. Your current bank accounts above the new limit will need to be removed
+
+> **Warning:** Downgrading may result in losing access to features. Make sure to adjust your bank accounts accordingly.
+
+---
+
+## Billing Cycle
+
+- **Flexible terms** — Choose 1, 3, 6, or 12 months at checkout
+- **Term discounts** — 6 months saves 5%, and 12 months saves 10%
+- **Effective monthly price** — Shown at checkout so you can compare the real cost per month
+- **Invoices** — All invoices are available in **Settings → Invoices**, each showing the billing term
+- **No refunds** — No refunds are provided for used or partial billing periods
+
+### Renewal Process
+
+1. ApiPay creates a renewal invoice 5 days before expiry using your last paid term (so you keep your discount)
+2. You can pay the draft invoice or switch to another term before payment
+3. Your plan extends after ApiPay confirms the bank transfer
+4. After the grace period, unpaid renewal invoices are cancelled and access may be restricted
+
+---
+
+## Tips for Managing Costs
+
+### Optimize Your Plan
+
+1. **Start with BASIC** - Start lean before scaling up
+2. **Track usage** - Monitor your bank account usage in the dashboard
+3. **Upgrade strategically** - Upgrade only when you hit limits
+
+### Avoid Unexpected Charges
+
+1. **Set budget alerts** - Monitor your transaction patterns
+2. **Remove unused banks** - If a bank account is inactive, consider removing it
+3. **Review invoices** - Check monthly invoices for accuracy
+
+---
+
+## Need Help?
+
+- 📧 Email: support@apipay.vn
+- 💬 In-app chat (dashboard)
+- 📖 [API Documentation](/en/api/payment-requests)
+
+---
+
+## Next Steps
+
+- [Onboarding Guide](/en/onboarding) - Get started from scratch
+- [Bank Account Management](/en/banking) - Connect and manage banks
+
+---
+
+## Banking & Payments
+
+### Bank Account Management
+
+Source: https://docs.apipay.vn/en/banking
+
+# Bank Account Management
+
+Bank accounts are the foundation of receiving payments on ApiPay. Each connected bank account creates a payment channel that your customers can use to transfer money to you in real time.
+
+---
+
+## How It Works
+
+When a customer makes a payment to your linked bank account, ApiPay:
+
+1. **Detects** the incoming transfer via Open Banking API
+2. **Matches** the transfer to the corresponding payment request
+3. **Notifies** you instantly via webhook
+
+This means you don't need to manually reconcile payments — everything is automatic.
+
+---
+
+## Supported Banks
+
+| Bank                 | Code | Personal | Business | Household | Key Features             |
+| -------------------- | ---- | :------: | :------: | :-------: | ------------------------ |
+| **ACB**              | ACB  |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Bank account |
+| **MB Bank**          | MBB  |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Virtual Account (VA) |
+| **BIDV**             | BIDV |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Virtual Account (VA) |
+| **OCB**              | OCB  |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Virtual Account (VA) |
+| **VietinBank**      | ICB  |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Bank account |
+| **VIB**              | VIB  |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Virtual Account (VA) |
+| **Sacombank**        | STB  |   Yes    |    No    |    Yes    | OpenBanking, Sync inward, Virtual Account (VA) |
+| **VPBank**           | VPB  |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Virtual Account (VA) |
+| **PGBank**           | PGB  |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Bank account |
+| **Shinhan Bank**     | SHBVN|   Yes    |   Yes    |    No     | OpenBanking, Sync inward, Virtual Account (VA) |
+| **Co-opBank**        | COOPBANK | Yes  |   Yes    |    Yes    | OpenBanking, Sync inward, Virtual Account (VA) |
+| **Vietcombank**      | VCB  |    No    |   Yes    |    Yes    | OpenBanking, Sync inward, Bank account |
+
+---
+
+## Key Concepts
+
+### Account Types
+
+When connecting a bank, you'll choose between:
+
+- **Personal** — for individual bank accounts
+- **Business** — for company accounts
+- **Household Business** — for household business (hộ kinh doanh) accounts
+
+Notes:
+
+- **Vietcombank** supports Business and Household Business accounts only; Personal accounts are not supported. All VCB connections require manual activation.
+- **Sacombank** does not support Business accounts; use Personal or Household Business.
+- **VietinBank** transactions have no transfer content; contact support for more details. Business requires manual activation.
+- **VPBank** supports Personal (automatic) and Business/Household Business (manual activation).
+- **Shinhan Bank** supports Personal (automatic) and Business (manual activation).
+- **BIDV** and **VietinBank** Business require manual activation; Household Business uses the online flow.
+- **MB Bank**, **OCB**, and **VIB** Business and Household Business require manual activation. Personal is fully online.
+- **PGBank** and **Co-opBank**: all account types are online, with no manual activation.
+- **ACB** Business uses ACB OneBiz and is fully online.
+
+### Statuses
+
+After connecting, a bank account has one of these statuses:
+
+- **Active** — fully operational, receiving payments
+- **Pending** — OTP verified but final confirmation in progress
+- **Activation Requested** — manual activation queued (MB/OCB/VIB Business/Household, BIDV/VietinBank/Shinhan Business, and Vietcombank Business/Household)
+- **Inactive** — temporarily disabled; payments won't be routed here
+
+## Managing Multiple Banks
+
+### Why Connect More Than One?
+
+- **Multiple payment options** — Different banks suit different customer preferences
+- **Load distribution** — Spread transactions across accounts to avoid congestion
+- **Redundancy** — Backup accounts ensure continuous service if one bank has issues
+- **Transaction limits** — Some banks have daily transfer limits; additional accounts give you more capacity
+
+### Recommended Setup
+
+| Volume | Recommended             |
+| ------ | ----------------------- |
+| Low    | 1-2 banks               |
+| Medium | 3-5 banks               |
+| High   | Use all available slots |
+
+---
+
+## Dashboard Navigation
+
+In the ApiPay Dashboard, the **Banks** section is accessible from the sidebar:
+
+- **Banks** (`/banks`) — View all connected accounts, add new ones, view transactions per bank
+- Each bank row shows status, account type, and actions
+
+> For step-by-step instructions on connecting a bank, see the [Connect Banks guide](/en/connect-banks).
+
+---
+
+## Security Best Practices
+
+- **Use business accounts** — Keep payment accounts in your business name
+- **Limit access** — Only authorized team members should manage connected banks
+- **Monitor transactions** — Regularly review your transaction history for suspicious activity
+- **Enable 2FA** — Add an extra layer of security to your dashboard account
+
+---
+
+## Related Resources
+
+- [Connect Banks Guide](/en/connect-banks) — Step-by-step instructions for linking a bank account
+- [API Reference: Banks](/en/api/banks) — Manage banks programmatically via API
+- [Webhook Setup](/en/api/webhooks) — Receive real-time payment notifications
+
+### Sandbox & Live Test
+
+Source: https://docs.apipay.vn/en/sandbox
+
+# Sandbox & Live Test
+
+ApiPay gives you two isolated ways to test your integration before going live:
+
+- **Live Test** — fires a mock transaction against your **real bank** and **real webhook**. No money moves, and your production data stays untouched.
+- **Sandbox** — a fully separate environment with test API keys, a fake bank account, and test payment requests.
+
+Both use the same payload shape and `ApiPay-Signature` HMAC header as production.
+
+---
+
+## Live Test
+
+Live Test lets you verify your real webhook endpoint end to end without waiting for a real bank transfer. It creates a mock transaction, stores it separately from production data, and sends it to the webhook destinations on the selected bank.
+
+Live Test requires an active plan and at least one live bank account.
+
+### Run a Live Test
+
+1. Open **Sandbox** in the left sidebar and make sure the **Sandbox** toggle is **off** (Live Test is the default view).
+2. Select an active bank account.
+3. Enter an amount and an optional transfer content.
+4. Choose a webhook destination — **All active webhooks** on that bank, or one specific webhook.
+5. Click **Create and trigger**.
+
+ApiPay creates a mock transaction and calls the selected webhook URLs. The result card shows the payload and each delivery's response code and body.
+
+### Live Test payload
+
+Live Test payloads match production, with two additions: `"sandbox": true` and `"liveTest": true`. The reference code starts with `LVT-` so it can never be confused with a real transaction.
+
+```json
+{
+  "event": "transaction.in",
+  "sandbox": true,
+  "liveTest": true,
+  "data": {
+    "transactionId": "clxyz...",
+    "referenceCode": "LVT-1755298200000-A1B2C3D4",
+    "amount": "50000",
+    "type": "IN",
+    "content": "LIVETEST-ORDER-001",
+    "transactionDate": "2026-08-15T10:30:00.000Z",
+    "bankAccountPublicId": "bk_abcdef1234567890",
+    "gateway": "ACB",
+    "rawTransactionDate": "2026-08-15 10:30:00",
+    "vaNumber": null,
+    "accountNumber": "123456"
+  }
+}
+```
+
+### Detecting Live Test events
+
+Check for `liveTest: true` in your handler to skip production fulfillment logic:
+
+```javascript
+app.post('/webhooks/apipay', (req, res) => {
+  const {event, sandbox, liveTest, data} = req.body;
+
+  if (sandbox || liveTest) {
+    console.log('[test] received mock event:', event, data.referenceCode);
+    return res.status(200).json({received: true});
+  }
+
+  // real transaction handling
+  if (event === 'transaction.in') {
+    // fulfill order...
+  }
+
+  res.status(200).json({received: true});
+});
+```
+
+### Live Test history
+
+Live Test runs, mock transactions, and delivery logs are stored in their own tables, separate from production transactions and payment requests. You can clear your Live Test history at any time from the dashboard.
+
+---
+
+## Sandbox
+
+Sandbox Mode gives you a safe, separate environment to test your integration with test API keys, a fake bank account, and test payment requests. Everything behaves like production, but no real money moves and your live data is never touched.
+
+No paid plan needed — just a verified, active account.
+
+### Turn it on
+
+Go to **Sandbox** in the left sidebar and switch the toggle to **Sandbox**.
+
+While it's on, the dashboard shows sandbox data only. Your live keys and live data are never affected.
+
+### The test environment
+
+Sandbox runs on its own resources, separate from production:
+
+- **Test API keys** — created under API Keys, starting with `ak_test_`
+- **A fake bank account** — created when you add a bank in sandbox
+- **Test payment requests** — public IDs start with `test_pr_`
+- **Sandbox webhooks and transactions** — separate from live ones
+
+### Test flow
+
+1. Turn on **Sandbox Mode**.
+2. Create a test API key (starts with `ak_test_`).
+3. Register a sandbox webhook and create a test payment request.
+4. Simulate a transfer.
+5. Check the webhook delivery log to confirm the round trip.
+6. Clear history or reset sandbox anytime.
+
+### Simulate a transfer
+
+Two ways:
+
+- **Transactions page** — use the sandbox transaction simulator to create a manual transaction.
+- **Payment page** — open a test payment request (`test_pr_`) and pay it with the test button.
+
+Either way, ApiPay sends the matching webhook to your sandbox webhooks.
+
+### Check delivery
+
+Open the webhook delivery log. A successful delivery confirms the sandbox round trip — same payload and signature flow as production.
+
+#### Sandbox payload
+
+Webhook payloads are identical to production, with one addition: `"sandbox": true` at the top level, so your handler can tell test events from real ones.
+
+```json
+{
+  "event": "transaction.in",
+  "sandbox": true,
+  "data": {
+    "transactionId": "clxyz...",
+    "referenceCode": "test_pr_...",
+    "amount": "50000",
+    "content": "ORDER-12345",
+    "transactionDate": "2026-05-14T10:30:00.000Z",
+    "bankAccountPublicId": "bk_abcdef1234567890",
+    "gateway": "APIPAY",
+    "rawTransactionDate": "2026-05-14 10:30:00",
+    "vaNumber": "999988887777",
+    "accountNumber": "0123456789"
+  }
+}
+```
+
+### Clear history vs reset
+
+- **Clear history** — removes sandbox payment requests, transactions, and delivery logs. Your sandbox bank, webhooks, and API keys stay.
+- **Reset sandbox** — removes everything sandbox-side: API keys, bank, webhooks, and history. Sandbox mode stays on; the test bank is recreated when you use it again.
+
+---
+
+## Tips
+
+- Use [Webhook.site](https://webhook.site) or [ngrok](https://ngrok.com) to test against a local server without deploying
+- Sandbox uses the same API as production — just swap in your test API key
+- Test payment requests are marked with `test_pr_`, and Live Test reference codes start with `LVT-`, so you can always tell them apart from live ones
+
+### Dashboard Guide
+
+Source: https://docs.apipay.vn/en/dashboard
+
+# Dashboard Guide
+
+Your ApiPay dashboard is your command center for managing payments, bank accounts, and integrations. This guide covers all key features.
+
+---
+
+## Dashboard Overview
+
+When you log in, you'll see the main dashboard with:
+
+- **Sidebar Navigation** - Access all features
+- **Header** - Account info, notifications, settings
+- **Main Content Area** - Context-specific content
+
+### Key Sections
+
+| Section | Description |
+|---------|-------------|
+| Overview | Quick stats and recent activity |
+| Payment Requests | Create and manage payment links |
+| Transactions | View incoming payments |
+| Settings | Account, banks, webhooks, API keys |
+
+---
+
+## Navigation Guide
+
+### Sidebar Menu
+
+```
+📊 Overview
+   └─ Dashboard home with key metrics
+
+💳 Payment Requests
+   └─ Create and manage payment links
+
+📈 Transactions
+   └─ View payment history and details
+
+🔊 Integrations
+   ├─ Payment Speaker (Real-time voice payment alerts)
+   ├─ Custom Domains
+   ├─ Notification Channels
+   ├─ API Keys
+   └─ E-commerce Plugins (WooCommerce, WHMCS,...)
+
+⚙️ Settings
+   ├─ Account Profile
+   ├─ Bank Accounts
+   ├─ Payment Settings
+   ├─ Webhooks
+   ├─ Subscription
+   ├─ Appearance
+   └─ Security & Passkeys
+```
+
+---
+
+## Overview Page
+
+The overview page gives you a quick snapshot of your business:
+
+### Key Metrics
+
+1. **Total Revenue** - Sum of all successful payments
+2. **Transaction Count** - Number of successful transactions
+3. **This Month** - Revenue and count for current month
+4. **Average Transaction** - Average payment amount
+
+### Charts
+
+- **Transaction Timeline** - Visual representation of transactions over time
+- **Bank Distribution** - Which banks customers use most
+
+### Recent Activity
+
+- Latest transactions with status
+- Quick actions for common tasks
+
+---
+
+## Payment Requests
+
+Create and manage payment links for your customers.
+
+### Creating a Payment Request
+
+1. Click **Create Payment Request**
+2. Fill in the form:
+   - **Bank** - Select a connected bank account
+   - **Amount** - Payment amount in VND
+   - **Content** - Reference text (e.g., order number)
+   - **Title** - (Optional) Payment description
+   - **Redirect URL** - Where to send customer after payment
+3. Click **Create**
+
+### Payment Request Features
+
+- **QR Code** - Automatically generated for scanning
+- **Payment Link** - Shareable URL for customers
+- **Copy to Clipboard** - Quick copy functionality
+- **Share Options** - Share via email, chat, etc.
+
+### Managing Payment Requests
+
+- **View Details** - Click to see full details
+- **Cancel** - Cancel unused payment requests
+- **Status** - PENDING, COMPLETED, EXPIRED, CANCELLED
+
+---
+
+## Transactions
+
+View all incoming payments and their details.
+
+### Transaction List
+
+| Column | Description |
+|--------|-------------|
+| Date | When payment was received |
+| Reference | Payment content/reference |
+| Amount | Payment amount |
+| Bank | Which bank was used |
+| Status | Transaction status |
+
+### Filtering & Search
+
+- Filter by date range
+- Filter by status
+- Search by reference or amount
+
+### Transaction Details
+
+Click any transaction to see:
+- Full transaction ID
+- Bank account used
+- Payment timestamp
+- Associated payment request
+
+---
+
+## Integrations & Tools
+
+### Payment Speaker
+
+Turn any phone, tablet, or laptop into a real-time voice announcement speaker without buying expensive hardware:
+
+1. Go to **Integrations → Payment Speaker**
+2. Select the bank account to monitor and choose your preferred voice
+3. Click **Start session** and copy the session URL to open on your counter device
+
+See the full [Payment Speaker Guide](/en/payment-speaker) for details.
+
+### Custom Domains
+
+Branded payment domains (e.g., `pay.yourbrand.vn`) reinforce customer trust and brand credibility. See [Custom Domains Guide](/en/custom-domains).
+
+---
+
+## Settings
+
+### Account Profile
+
+Manage your personal and business information:
+
+- **Email** - Your login email
+- **Name** - Display name
+- **Business Name** - Appears on payment page
+- **Tax Code** - For invoicing
+- **Business Address** - Registered address
+
+### Bank Accounts
+
+- View connected banks
+- Add/remove bank accounts
+- Toggle account status
+
+See [Bank Account Management](/en/banking) for details.
+
+### Payment Settings
+
+- **Default Redirect URL** - Where customers go after payment
+- **Default Title** - Default description for payments
+
+### API Keys
+
+Create and manage API keys for integration:
+
+1. Click **Create New Key**
+2. Name your key
+3. Copy and store securely
+4. Use in API requests
+
+> **Important:** Store your secret key securely. It cannot be retrieved after creation.
+
+### Webhooks
+
+Configure webhook endpoints for real-time notifications:
+
+1. Add webhook URL
+2. Select event types
+3. Test the endpoint
+4. Monitor delivery history
+
+See [Webhook Documentation](/en/api/webhooks) for technical details.
+
+### Subscription
+
+View and manage your plan:
+
+- Current plan or FREE TRIAL status
+- Upgrade/downgrade options
+- Billing history
+- Renewal date
+
+See [Subscription Guide](/en/subscription) for plan and trial details.
+
+### Appearance
+
+Customize the payment page your customers see:
+
+- **Merchant Name** - Your business name
+- **Merchant Logo** - Upload your logo
+- **Theme** - Light/dark mode
+
+### Security
+
+Protect your account:
+
+- **Passkeys** — Register a passkey (Face ID, fingerprint, or device passkey) to sign in without a password. See [Passkeys](/en/passkeys) for details.
+- **Two-Factor Authentication (2FA)** — Enable TOTP-based 2FA
+- **Change Password** — Update your password
+- **Login History** — View recent logins
+
+---
+
+## Quick Actions
+
+### Common Tasks
+
+| Task | Where to Find |
+|------|---------------|
+| Create payment | Payment Requests → Create |
+| Open Payment Speaker | Integrations → Payment Speaker |
+| Check revenue | Overview |
+| Add bank | Settings → Bank Accounts |
+| Get API key | Integrations → API Keys |
+| Configure webhook | Settings → Webhooks |
+
+---
+
+## Keyboard Shortcuts
+
+- `Ctrl/Cmd + K` - Quick search
+- `Ctrl/Cmd + N` - New payment request
+
+---
+
+## Tips & Tricks
+
+### Efficient Workflow
+
+1. **Use quick search** - Find anything with Ctrl+K
+2. **Bookmark frequently used pages** - For quick access
+3. **Set up default payment settings** - Saves time on each request
+4. **Use Payment Speaker at checkout** - Hear payments instantly without switching screens
+
+### Staying Informed
+
+1. **Enable notifications** - Get alerts for important events
+2. **Check dashboard regularly** - Monitor transaction patterns
+3. **Review webhooks** - Ensure delivery is working
+
+---
+
+## Need Help?
+
+- 📧 Email: support@apipay.vn
+- 💬 In-app chat
+- 📖 [API Documentation](/en/api/payment-requests)
+
+---
+
+## Next Steps
+
+- [Onboarding Guide](/en/onboarding) - Complete setup process
+- [Payment Speaker](/en/payment-speaker) - Hear real-time payment alerts at your counter
+- [Subscription Guide](/en/subscription) - Manage plans and trial
+- [Bank Account Management](/en/banking) - Connect and manage banks
+
+### How to Connect Banks
+
+Source: https://docs.apipay.vn/en/connect-banks
+
+# How to Connect Banks
+
+Connect a Vietnamese bank account to your ApiPay dashboard to start receiving real-time bank transfer payments. Once linked, ApiPay automatically syncs incoming transactions and delivers payment notifications via webhook.
+
+<iframe
+  width="100%"
+  height="315"
+  src="https://www.youtube.com/embed/hstBeBMvwUM?si=LhJBZAJZheZORspg"
+  title="How to Connect Banks on ApiPay"
+  frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+  referrerpolicy="strict-origin-when-cross-origin"
+  allowfullscreen
+></iframe>
+
+---
+
+## Overview
+
+Linking a bank account on ApiPay is a 2-step process:
+
+1. **Select your bank** and account type (Personal or Business)
+2. **Enter your account details** and verify ownership via OTP
+
+Once linked, your bank account appears in the **Banks** section of the dashboard with a status of **Active**. You can then create payment requests and receive transfers within 1-2 seconds.
+
+**Supported banks:**
+
+| Bank                 | Personal | Business | Household | Features                 |
+| -------------------- | :------: | :------: | :-------: | ------------------------ |
+| **ACB**              |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Bank account |
+| **MB Bank**          |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Virtual Account (VA) |
+| **BIDV**             |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Virtual Account (VA) |
+| **OCB**              |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Virtual Account (VA) |
+| **VietinBank**      |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Bank account |
+| **VIB**              |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Virtual Account (VA) |
+| **Sacombank**        |   Yes    |    No    |    Yes    | OpenBanking, Sync inward, Virtual Account (VA) |
+| **VPBank**           |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Virtual Account (VA) |
+| **PGBank**           |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Bank account |
+| **Shinhan Bank**     |   Yes    |   Yes    |    No     | OpenBanking, Sync inward, Virtual Account (VA) |
+| **Co-opBank**        |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Virtual Account (VA) |
+| **Vietcombank**      |    No    |   Yes    |    Yes    | OpenBanking, Sync inward, Bank account |
+
+---
+
+## Prerequisites
+
+Before linking a bank account, make sure you have:
+
+- An ApiPay account
+- An active Vietnamese bank account from the supported list above
+- The phone number registered with your bank (for OTP verification)
+- For **MB Bank**, **VIB**, **Sacombank**, **VPBank**, **PGBank**, **Shinhan Bank** Personal: your CCCD/ID card number (12 digits)
+- For Business or Household Business accounts: your company/household Tax Code (MST) / CCCD
+- For **ACB Business**: an ACB OneBiz username
+- **Vietcombank**: supports Business and Household Business only (all manual activation)
+- **MB Bank**, **OCB**, **VIB**, **VPBank** Business or Household, **BIDV**/**VietinBank**/**Shinhan Bank** Business, and **Vietcombank** Business/Household: manual activation
+- **PGBank**, **Co-opBank**: fully online, no manual activation
+
+---
+
+## Step-by-Step Guide
+
+### Step 1: Select Your Bank
+
+1. Log in to the [ApiPay Dashboard](https://dashboard.apipay.vn)
+2. Navigate to **Banks** in the sidebar
+3. Click the **Add Bank** button in the top-right corner
+4. On the **Link Bank Account** page, you'll see a list of supported banks
+5. Find your bank in the table:
+   - Check the **Recommended** badge for the preferred options
+   - Look at **Account Types** — some banks support Personal, Business, or both
+   - Note the **Features** — each bank supports different capabilities
+6. Click **Connect** on your chosen bank
+
+### Step 2: Choose Account Type
+
+Most banks support three account types. Pick the one that matches your account:
+
+- **Personal** — for individual bank accounts
+- **Business** — for company bank accounts
+- **Household Business** — for household business (hộ kinh doanh) accounts
+
+Per-bank availability:
+
+- **ACB**, **MB Bank**, **BIDV**, **OCB**, **VietinBank**, **VIB**, **VPBank**, **PGBank**, **Co-opBank** — Personal, Business, Household Business
+- **Vietcombank** — Business, Household Business (Personal not supported)
+- **Shinhan Bank** — Personal, Business (Household Business not supported)
+- **Sacombank** — Personal, Household Business (Business not supported)
+
+> **VietinBank note:** Transactions from VietinBank have no transfer content; contact support for more details.
+
+> **Manual activation.** MB/OCB/VIB/VPBank Business or Household, BIDV/VietinBank/Shinhan Business, and Vietcombank Business/Household use activation requests. You'll see **Activation Requested** until they complete. PGBank and Co-opBank are fully online.
+
+Click the card that matches your account type to continue.
+
+### Step 3: Enter Account Information
+
+Fill in the required fields. The fields shown depend on which bank you selected.
+
+#### Fields for All Banks
+
+| Field              | Description                                                          |
+| ------------------ | -------------------------------------------------------------------- |
+| **Account Name**   | Your account holder name, written in CAPITAL LETTERS without accents |
+| **Account Number** | Your bank account number                                             |
+| **Phone Number**   | The phone number registered with your bank                           |
+
+#### ACB — Personal Account
+
+No additional fields required beyond the base fields above.
+
+#### ACB — Business Account
+
+| Additional Field        | Description                    |
+| ----------------------- | ------------------------------ |
+| **ACB OneBiz Username** | Your ACB OneBiz login username |
+
+#### MB Bank — Personal Account
+
+| Additional Field          | Description                                             |
+| ------------------------- | ------------------------------------------------------- |
+| **CCCD / ID Card Number** | Your 12-digit CCCD number (Citizen Identification Card) |
+
+#### MB Bank — Business Account
+
+| Additional Field   | Description                              |
+| ------------------ | ---------------------------------------- |
+| **Tax Code (MST)** | Your company's Tax Identification Number |
+
+#### BIDV — Personal Account
+
+| Additional Field          | Description                             |
+| ------------------------- | --------------------------------------- |
+| **CCCD / ID Card Number** | Your 12-digit CCCD number               |
+| **Account Email**         | Your email address registered with BIDV |
+
+#### OCB — Personal Account
+
+No additional fields required beyond the base fields above.
+
+#### VIB — Personal Account
+
+| Additional Field          | Description               |
+| ------------------------- | ------------------------- |
+| **CCCD / ID Card Number** | Your 12-digit CCCD number |
+
+#### Sacombank (STB) — Personal Account
+
+| Additional Field          | Description               |
+| ------------------------- | ------------------------- |
+| **CCCD / ID Card Number** | Your 12-digit CCCD number |
+
+#### Sacombank (STB) — Household Business Account
+
+| Additional Field   | Description                                         |
+| ------------------ | --------------------------------------------------- |
+| **Tax Code (MST)** | Tax Identification Number of the household business |
+
+> **Note for Sacombank:** Company (Business) accounts are not currently supported. Use Personal or Household Business.
+
+#### PGBank — Personal Account
+
+| Additional Field          | Description               |
+| ------------------------- | ------------------------- |
+| **CCCD / ID Card Number** | Your 12-digit CCCD number |
+
+#### PGBank — Business / Household Business Account
+
+| Additional Field   | Description                                                    |
+| ------------------ | -------------------------------------------------------------- |
+| **Tax Code (MST)** | Tax Identification Number of the company or household business |
+
+> **Note:** All PGBank account types (Personal, Business, Household Business) are processed fully online with no manual activation required.
+
+#### MB Bank / OCB / VIB — Business or Household Business
+
+| Additional Field   | Description                                                    |
+| ------------------ | -------------------------------------------------------------- |
+| **Tax Code (MST)** | Tax Identification Number of the company or household business |
+
+> **Manual activation:** Business and Household Business connections for MB Bank, OCB, and VIB are submitted for manual activation. ApiPay enables the account after the API contract is signed.
+
+#### BIDV / VietinBank / Shinhan Bank — Business Account
+
+| Additional Field   | Description                              |
+| ------------------ | ---------------------------------------- |
+| **Tax Code (MST)** | Tax Identification Number of the company |
+
+> **Manual activation:** BIDV, VietinBank, and Shinhan Bank Business connections are submitted for manual activation. ApiPay enables the account after the API contract is signed.
+>
+> **VietinBank note:** Transactions from VietinBank have no transfer content; contact support for more details.
+
+#### Vietcombank — Business or Household Business Account
+
+| Additional Field   | Description                                                    |
+| ------------------ | -------------------------------------------------------------- |
+| **Tax Code / CCCD**| Tax Identification Number or Citizen ID of the business/household |
+
+> **Manual activation:** All Vietcombank connections (Business and Household Business) are submitted for manual activation. Personal accounts are not supported. ApiPay enables the account after verification and API contract setup.
+
+After filling in all fields:
+
+1. Read the consent text about privacy policy and terms of use
+2. Check the **I agree** checkbox
+3. Click **Confirm** to proceed
+
+A confirmation modal will appear — review the details and click **Confirm** again.
+
+### Step 4: Verify with OTP (Online Flow)
+
+For online connections, an **OTP (One-Time Password)** is sent automatically to the phone number registered with your bank.
+
+1. Enter the 6-digit OTP code in the input field
+2. Click **Confirm**
+3. Once verified, your bank account is successfully linked
+
+If the OTP code is incorrect, you'll see an error message. Re-enter the correct code and try again.
+
+> **Manual activation accounts skip OTP.** Manual flows show **Activation Requested** instead of OTP.
+
+---
+
+## After Linking
+
+Once your bank is linked successfully:
+
+- The bank account appears in your **Banks** list with an **Active** status
+- You can view transaction history filtered by that bank
+- You can toggle the bank on/off using the status toggle
+- ApiPay automatically registers a webhook to receive real-time transaction notifications
+
+---
+
+## Managing Your Connected Banks
+
+### View Bank Details
+
+1. Go to **Banks** in the sidebar
+2. Click on any bank row to see full details:
+   - Account holder name
+   - Account number (partially masked)
+   - Bank name and logo
+   - Status (Active / Inactive)
+   - Transaction history
+
+### Toggle Bank Status
+
+If you want to temporarily stop receiving payments on a specific bank:
+
+1. Go to **Banks**
+2. Find the bank you want to toggle
+3. Click the **toggle switch** in the Actions column
+4. The status changes between **Active** and **Inactive**
+
+### Delete a Connected Bank
+
+1. Go to **Banks**
+2. Click the **...** (more) menu on the right side of the bank row
+3. Select **Delete Bank**
+4. Confirm with OTP (sent to your registered phone)
+5. The bank is removed from your account
+
+---
+
+## Troubleshooting
+
+| Issue                             | Solution                                                                                                                                                                              |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| OTP not received                  | Make sure the phone number you entered matches the number registered with your bank. Wait a moment and try again.                                                                     |
+| OTP code incorrect                | Double-check that you're entering the code sent to your phone. Codes are 6 digits.                                                                                                    |
+| CCCD rejected                     | Make sure you enter exactly 12 digits without spaces or special characters.                                                                                                           |
+| Bank shows "Pending" status       | After linking, the bank should become Active within seconds. If it stays Pending, try refreshing the page.                                                                            |
+| Bank shows "Activation Requested" | This is expected for manual-activation flows (MB/OCB/VIB/VPBank Business or Household, BIDV/VietinBank/Shinhan Business, Vietcombank Business/Household). ApiPay will contact you to complete activation. |
+| Account number already linked     | Each bank account can only be linked once. If you see this error, the account may already be connected to another ApiPay account.                                                     |
+| Account type not available        | Sacombank does not support Business accounts; Vietcombank does not support Personal accounts.                                                                                           |
+
+---
+
+## Video Tutorial
+
+Watch the complete step-by-step guide:
+
+<iframe
+  width="100%"
+  height="315"
+  src="https://www.youtube.com/embed/hstBeBMvwUM?si=LhJBZAJZheZORspg"
+  title="How to Connect Banks on ApiPay"
+  frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+  referrerpolicy="strict-origin-when-cross-origin"
+  allowfullscreen
+></iframe>
+
+---
+
+## Next Steps
+
+- [Create Your First Payment Request](/en/onboarding) — Start accepting payments with your connected bank
+- [Webhook Setup](/en/api/webhooks) — Get real-time notifications when you receive payments
+- [Custom Domains](/en/custom-domains) — Use your own domain for payment pages
+
+### Payment Speaker
+
+Source: https://docs.apipay.vn/en/payment-speaker
+
+# Payment Speaker
+
+**Payment Speaker** is a built-in, **100% free** feature in ApiPay that announces incoming bank transfers in real time using clear, natural voice audio.
+
+Instead of spending millions of VND on dedicated hardware payment speakers, you can simply use an existing phone, tablet, or computer at the checkout counter and open the speaker session in any web browser.
+
+---
+
+## Why use Payment Speaker?
+
+In busy retail, dining, and service environments, checking incoming bank transfers manually often causes friction:
+
+- **Rush hour bottleneck:** Cashiers and baristas are busy preparing orders and cannot constantly check banking apps or wait for SMS messages on the owner's phone.
+- **Counterfeit screenshot fraud:** Fraudsters can show fake transfer screenshots. Without real-time verification, stores risk product loss.
+- **Account security & privacy:** You don't need to install banking apps or share sensitive banking credentials with checkout staff.
+
+**The ApiPay solution:** When a transfer arrives, the speaker plays a friendly *"Ting"* chime followed by a clear voice announcement with the exact amount and receiving bank. Staff can hear the confirmation immediately and fulfill orders with confidence.
+
+---
+
+## Key Features
+
+| Feature | Practical Benefit |
+| :--- | :--- |
+| **100% Free** | Included with every active bank account on ApiPay — no hardware purchases or hidden fees. |
+| **Runs in Web Browser** | Works on any device with speakers and internet access (iPhone, Android, iPad, Android tablets, laptops, PCs). |
+| **Natural Regional Voices** | Multiple Vietnamese voice accents (Northern, Central, Southern, male and female) to suit your brand and region. |
+| **Multi-Session Support** | Run independent speaker sessions simultaneously for different bank accounts, counters, or branches. |
+| **Recent Transaction History** | Displays the last 10 transactions right on screen for instant visual cross-checking. |
+| **Integrated Receive QR Modal** | Cashiers can open the payment QR code on screen for customers to scan and pay on the spot. |
+
+---
+
+## Step-by-Step Setup
+
+Setting up Payment Speaker takes less than a minute:
+
+### Step 1: Open Payment Speaker in Dashboard
+
+1. Sign in to the [ApiPay Dashboard](https://my.apipay.vn).
+2. In the left sidebar, navigate to **Integrations** and select **Payment Speaker** (Loa thanh toán).
+
+### Step 2: Select Bank Account & Voice
+
+1. Under **Start new session**:
+   - **Bank Account:** Select the active bank account you want to monitor.
+   - **Voice:** Choose your preferred voice (e.g., *Ban Mai - Northern Female*, *Minh Quang - Southern Male*, *Gia Huy - Central Male*, etc.).
+2. Click **Start session**.
+
+Each bank account runs an independent speaker session. If you manage multiple bank accounts for different checkout counters, you can start a separate session for each account.
+
+### Step 3: Open Session URL on Counter Device
+
+1. Once started, a unique **Session URL** is generated (e.g., `https://pay.apipay.vn/ting/abc123xyz`).
+2. Click **Copy** to copy the URL or send it to the device at the checkout counter (phone, tablet, POS terminal, or PC).
+3. Open the URL in the device's web browser (Safari, Chrome, etc.).
+4. **Important:** Tap or click anywhere on the speaker page once to grant audio playback permission to the browser.
+
+---
+
+## Speaker Screen Experience
+
+The speaker interface is clean, intuitive, and designed specifically for busy cashier desks:
+
+1. **Live Connection Indicator:**
+   - Visual pulsing waves animate when incoming payments arrive or when voice audio is playing.
+   - Central **"Test Audio" / Replay** button: Tap anytime to test speaker volume or replay the last announcement.
+2. **Receive QR Code Modal:**
+   - Tap **View QR Code** in the top bar to display the bank QR code on screen.
+   - Turn the tablet toward customers so they can scan and transfer instantly.
+3. **Recent Transactions List (Last 10):**
+   - Displays time, amount, and bank for recent transfers.
+   - Staff can quickly verify past transactions without calling the manager.
+4. **Customization & Display:**
+   - Toggle between Light and Dark mode for optimal viewing day and night.
+   - Switch between Vietnamese and English interface language.
+
+---
+
+## Operational Tips for Store Owners
+
+### 1. Repurpose spare phones or desk tablets
+Mount an older smartphone or tablet at the cashier counter, keep it plugged into power, and leave the Payment Speaker tab open.
+
+### 2. Connect a small Bluetooth speaker
+In noisy environments (coffee grinders, background music, busy retail stores), pair the device with a small Bluetooth speaker placed near the cashier station for crystal-clear sound.
+
+### 3. Add to Home Screen (PWA experience)
+In Safari (iOS) or Chrome (Android), tap **Add to Home Screen**. The speaker URL will launch full-screen like a dedicated app with a single tap.
+
+### 4. Safe staff delegation
+The speaker URL only broadcasts audio and displays transaction history for the selected bank account. Counter staff cannot access the admin Dashboard or view sensitive financial settings.
+
+---
+
+## Managing Sessions in Dashboard
+
+- **View Active Sessions:** See all currently running sessions along with the connected bank and chosen voice.
+- **Stop a Session:** Click **Stop session** next to any bank account when a shift ends.
+- **Stop All Sessions:** Click **Stop all** to immediately close all active speaker sessions across all devices.
+
+---
+
+## Frequently Asked Questions (FAQ)
+
+### Is there any recurring subscription fee for Payment Speaker?
+No. Payment Speaker is completely free and included with your ApiPay account.
+
+### Do I need to buy dedicated speaker hardware?
+No. It runs entirely in your web browser on existing phones, tablets, laptops, or Android POS terminals.
+
+### Why do I need to tap the screen once when first opening the link?
+Modern web browsers (Chrome, Safari, Edge) require a single user gesture before allowing audio playback to prevent unsolicited background noise. After the first tap, all incoming transfer announcements will play automatically.
+
+### Can I open the same speaker link on multiple devices?
+Yes. You can open the same session URL on multiple devices across your store so staff in different areas can hear payments simultaneously.
+
+---
+
+## Next Steps
+
+- [Onboarding Guide](/en/onboarding) - Step-by-step account setup
+- [Bank Accounts](/en/banking) - Connect and manage bank accounts
+- [Dashboard Guide](/en/dashboard) - Explore all Dashboard features
+
+### Custom Domains
+
+Source: https://docs.apipay.vn/en/custom-domains
+
+# Custom Domains
+
+Use your own domain (e.g., `pay.yourdomain.com`) instead of ApiPay's default domain for your payment pages. This gives your customers a branded experience while you retain full control over your domain.
+
+<iframe width="100%" height="315" src="https://www.youtube.com/embed/VJzZ42J3OZY?si=LvdhsL7r_Gzf6UKG" title="Custom Domains Setup Tutorial" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+---
+
+## Overview
+
+When you create a payment request, ApiPay generates a payment page URL. By default, it uses ApiPay's domain. With Custom Domains, you can replace this with your own subdomain, providing a seamless and professional experience for your customers.
+
+**Key benefits:**
+- Branded payment URLs (`pay.yourdomain.com`) instead of default ApiPay URLs
+- Customers see your domain, increasing trust
+- Works alongside existing payment request features
+
+---
+
+## Prerequisites
+
+Before setting up a custom domain, make sure you have:
+
+- A subdomain you control (e.g., `pay.yourdomain.com`, `checkout.yourdomain.com`)
+- Access to your DNS provider (e.g., GoDaddy, Cloudflare, Namecheap)
+- An ApiPay account with at least one connected bank account
+
+---
+
+## Step-by-Step Setup
+
+### Step 1: Add your domain in the Dashboard
+
+1. Log in to the [ApiPay Dashboard](https://dashboard.apipay.vn)
+2. Navigate to **Integrations → Custom Domains**
+3. Enter your subdomain (e.g., `pay.yourdomain.com`) in the input field
+4. Click **Add**
+
+The system generates a unique verification token and saves your domain with a **Pending** status.
+
+### Step 2: Configure DNS Records
+
+You need to add two DNS records with your domain provider.
+
+#### DNS Record 1: TXT Record (Domain Verification)
+
+This proves to ApiPay that you own the domain.
+
+| Field | Value |
+|-------|-------|
+| Type | TXT |
+| Name / Host | `pay` (for `pay.yourdomain.com`) or `@` (for apex domain `yourdomain.com`) |
+| Value | `apipay-verification=` |
+
+To get the token:
+1. Go to **Integrations → Custom Domains** in the Dashboard
+2. Find your domain in the table
+3. Click the **...** menu on the right side of the row
+4. Click **Copy Token**
+
+Paste the full token (including `apipay-verification=`) as the TXT record value.
+
+#### DNS Record 2: A Record (Traffic Routing)
+
+This routes traffic from your domain to ApiPay's server.
+
+| Field | Value |
+|-------|-------|
+| Type | A |
+| Name / Host | `pay` (for subdomain) or `@` (for apex domain) |
+| Value | `` |
+
+Click **Copy IP** on the DNS instructions card in the Dashboard to copy the server IP.
+
+> **Important:** For apex domains (e.g., `yourdomain.com`), adding an A record may interfere with your email service (MX records). If you use this domain for email, we recommend using a subdomain instead (e.g., `pay.yourdomain.com`).
+
+### Step 3: Wait for DNS Propagation
+
+DNS changes typically take effect within a few minutes but can take up to 48 hours in rare cases. Most DNS providers propagate within 5–15 minutes.
+
+### Step 4: Verify your domain
+
+You have two options:
+
+**Option A — Manual Verification:**
+
+1. Go to **Integrations → Custom Domains** in the Dashboard
+2. Find your domain in the table (status should be **Pending**)
+3. Click the **...** menu on the right side of the row
+4. Click **Verify**
+
+ApiPay immediately checks your TXT DNS record. If the token is found, the domain status changes to **Verified**.
+
+**Option B — Automatic Verification:**
+
+ApiPay automatically checks TXT records for unverified domains every 15 minutes. If the record is found, the domain is verified automatically and you'll receive a success email.
+
+### Step 5: Use your custom domain
+
+Once your domain shows a green **Verified** badge in the Dashboard:
+
+1. Create a new payment request (or edit an existing one)
+2. In the payment request form, select your custom domain from the **Custom Domain** dropdown
+3. When you share the payment link with your customer, it will use your domain instead of ApiPay's default domain
+
+---
+
+## DNS Propagation & Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| Verification fails right after adding TXT record | Wait 5–15 minutes for DNS to propagate, then try again |
+| Manual Verify button isn't available | Make sure the domain status is still **Pending** and a token exists |
+| Auto-verify hasn't triggered after 15 minutes | Use the **Verify** button in the Dashboard for immediate verification |
+| Domain status changed to inactive | The domain was unverified for more than 24 hours. Delete it and re-add it following the steps above |
+| Apex domain breaks email delivery | Switch to a subdomain (e.g., `pay.yourdomain.com`) instead of using the apex domain |
+| TXT record not found | Double-check the record name and value. The token must match exactly, including `apipay-verification=` |
+
+---
+
+## Auto-Expiration
+
+Domains that remain unverified for more than **24 hours** are automatically marked as **inactive** by ApiPay. You will receive an email notification with instructions.
+
+To re-activate:
+1. Delete the inactive domain from the Dashboard
+2. Re-add it following the [Step-by-Step Setup](#step-by-step-setup) process above
+
+---
+
+## Video Tutorial
+
+Watch the complete step-by-step setup guide:
+
+<iframe width="100%" height="315" src="https://www.youtube.com/embed/VJzZ42J3OZY?si=LvdhsL7r_Gzf6UKG" title="Custom Domains Setup Tutorial" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+---
+
+## Next Steps
+
+- [Create Your First Payment Request](/en/onboarding) — Start accepting payments with your custom domain
+- [Webhook Setup](/en/api/webhooks) — Get real-time payment notifications
+
+### Passkeys
+
+Source: https://docs.apipay.vn/en/passkeys
+
+# Passkeys
+
+Passkeys let you sign in to ApiPay without typing a password. You simply confirm with the secure method already available on your device, such as Face ID, fingerprint, Windows Hello, or your screen lock.
+
+This makes sign-in faster and more convenient, while reducing the risk of exposed, forgotten, or reused passwords.
+
+## How passkeys work
+
+When you create a passkey, your device saves a secure sign-in method for your ApiPay account. Each time you sign in, ApiPay asks your device to confirm that it is really you.
+
+You do not need to enter a password, and ApiPay does not ask you to share biometric information. Face ID, fingerprint, or your screen lock is handled directly by your device.
+
+Because a passkey is tied to the real ApiPay website, it is much harder for someone to use it on a fake site. This makes passkeys well suited for accounts that protect payment information, transactions, and business data.
+
+---
+
+## Create a passkey
+
+Each ApiPay account can currently create **one passkey**.
+
+1. Sign in to [my.apipay.vn](https://my.apipay.vn)
+2. Go to **Settings → Account**
+3. In the **Passkeys** section, select **Add passkey**
+4. Confirm with Face ID, fingerprint, Windows Hello, or your device screen lock
+5. Complete the confirmation, and the passkey will be saved automatically
+
+The passkey is usually named after your device and browser, for example: "MacBook Pro Chrome Passkey". You can rename it later to make it easier to recognize.
+
+> **Note:** Passkeys require a supported browser and device. If the **Add passkey** button is disabled, please try again with another browser or device.
+
+---
+
+## Sign in with a passkey
+
+On the sign-in page:
+
+1. Select **Continue with passkey**
+2. Confirm on your device
+3. After a successful confirmation, you will be signed in without entering a password
+
+You can still sign in with your password, Google, or GitHub as usual. A passkey is an additional sign-in option, not a full replacement for your existing methods.
+
+---
+
+## Manage your passkey
+
+### Rename
+
+1. Go to **Settings → Account → Passkeys**
+2. Select the rename icon next to your passkey
+3. Enter a new name and select **Save name**
+
+### Delete
+
+1. Go to **Settings → Account → Passkeys**
+2. Select the delete icon next to your passkey
+3. Confirm the deletion
+
+> **Warning:** After deleting your passkey, you will need to sign in with your password or a connected Google/GitHub account. You can create a new passkey after signing in again.
+
+---
+
+## Supported devices and browsers
+
+Passkeys work on most modern devices and browsers:
+
+| Platform | Browser | Confirmation method |
+| -------- | ------- | ------------------- |
+| macOS | Chrome, Safari, Edge | Touch ID or Apple device confirmation |
+| Windows | Chrome, Edge | Windows Hello |
+| iOS | Safari, Chrome | Face ID or Touch ID |
+| Android | Chrome | Fingerprint or screen lock |
+
+If your browser does not support passkeys, the **Add passkey** button will be disabled and you will see a notice in Settings.
+
+---
+
+## Security benefits
+
+- **Lower phishing risk**: Passkeys only work with the real ApiPay website, helping reduce the risk of signing in on a fake site.
+- **No password to remember**: You do not need to create, store, or type a password each time you sign in.
+- **Protected by your personal device**: Someone else would need access to your device and pass its security confirmation before they could use your passkey.
+- **Backup sign-in remains available**: If you lose your device, you can sign in with your password or connected Google/GitHub account, then delete the old passkey and create a new one.
+
+> **Tip:** Keep at least one backup sign-in method, such as password, Google, or GitHub, so account access is not interrupted when you change or lose a device.
+
+---
+
+## FAQ
+
+### Can I create multiple passkeys?
+
+Currently, each ApiPay account can create **one passkey**. If you want to move to another device, delete the current passkey and create a new one.
+
+### What happens if I lose my device?
+
+You can still sign in with your password, Google, or GitHub. After signing in, delete the old passkey and create a new one on the device you are using.
+
+### Are passkeys the same as passwords?
+
+No. A passkey is a modern sign-in method that is confirmed directly on your device. You do not type a password, so it is harder to guess, expose, or enter on a fake website.
+
+### Do I still need 2FA when using a passkey?
+
+Passkeys and 2FA protect your account in different ways. ApiPay recommends keeping 2FA enabled, especially if your account still allows password sign-in.
+
+---
+
+## Next steps
+
+- [Dashboard Guide](/en/dashboard) — Learn about dashboard features
+- [Authentication API](/en/api/authentication) — Use API key authentication for integrations
+- [Subscription & Billing](/en/subscription) — Manage plans and trial
+
+### Affiliate Program
+
+Source: https://docs.apipay.vn/en/affiliates
+
+# Affiliate Program
+
+The affiliate program helps you share ApiPay with customers, partners, or your community. When someone signs up through your referral link and completes their first successful plan payment, commission is credited to your affiliate balance.
+
+This guide focuses on everyday use: finding your referral link, tracking results, and knowing when your balance is ready to withdraw.
+
+---
+
+## How it works
+
+1. Open your **referral link** in the dashboard.
+2. Share the link with someone who may want to use ApiPay.
+3. The referred customer signs up and completes their first plan payment.
+4. Commission is credited to your affiliate balance.
+
+You can track clicks, successful referrals, available balance, withdrawn amount, and commission history from the dashboard.
+
+---
+
+## Open your affiliate page
+
+1. Sign in to the [ApiPay Dashboard](https://my.apipay.vn).
+2. Open **Affiliates** from the sidebar.
+3. Review your referral link, referral code, and current stats.
+
+If you do not have any referrals yet, the commission history table will be empty. You can start by copying your link and sharing it with relevant customers or partners.
+
+---
+
+## Share your referral link
+
+On the **Affiliates** page, click **Copy** to copy your referral link.
+
+You can share it through:
+
+- Your website or landing page
+- Email introductions
+- Community posts
+- Zalo, Facebook, Telegram, or customer support messages
+
+Share the link in a clear context, for example when introducing a way to accept bank transfer payments in Vietnam.
+
+---
+
+## Change your referral code
+
+You can customize your referral code to make the link easier to remember.
+
+1. Click **Edit code**.
+2. Enter a new code with at least 3 characters.
+3. Click **Save**.
+4. Copy the updated link before sharing it.
+
+Choose a short, readable code tied to your brand or name. Avoid sensitive information such as phone numbers, identity numbers, or internal business data.
+
+---
+
+## Track commissions
+
+The affiliate page shows the key numbers:
+
+| Metric | Meaning |
+| ------ | ------- |
+| Clicks | Number of times your referral link was opened |
+| Successful referrals | Customers credited after their first plan payment |
+| Available balance | Commission currently available to request for withdrawal |
+| Withdrawn | Total commission already marked as withdrawn |
+
+The **Commission history** section shows the invoice, referred customer, plan, and commission amount.
+
+---
+
+## Commission rules
+
+- Current commission is **10% of the invoice value** for the referred customer's first successful plan payment.
+- Available balance is shown directly in the dashboard.
+- The current minimum withdrawal amount is **500,000 VND**.
+
+---
+
+## Tips
+
+- Share ApiPay with people who actually need bank transfer payments in Vietnam.
+- Use a memorable referral code so customers recognize you.
+- Check the dashboard regularly to follow new referrals.
+- Contact the ApiPay team if you need reconciliation or withdrawal support.
+
+---
+
+## Related docs
+
+- [Introduction](/en) — ApiPay overview
+- [Onboarding](/en/onboarding) — Set up your account and receive your first payment
+- [Subscription & Billing](/en/subscription) — Manage plans, billing, and trial
+
+---
+
+## Integrations
+
+### Web App
+
+Source: https://docs.apipay.vn/en/integrations/webapp
+
+# Web App
+
+Use the ApiPay client API from your own web app to create hosted payment requests, redirect customers to `payUrl`, and receive payment updates through redirects or webhooks.
+
+The examples below are SDK-style helpers you can copy into your server-side code. They do not require an installable ApiPay SDK package.
+
+Open **Integrations > API Keys** in the dashboard to create credentials for your custom web app.
+
+[Open API Keys in dashboard](https://my.apipay.vn/en/integrations/api-keys)
+
+## Before You Start
+
+- Create an API key in **Integrations > API Keys**.
+- Connect at least one active bank account in **Bank Accounts**.
+- Store your `accessKey`, `secretKey`, and default `bankPublicId` in environment variables.
+- Never call ApiPay with secret credentials from browser-only code.
+
+## Helper
+
+```javascript
+const API_BASE = "https://app.apipay.vn";
+
+function apipayAuth(accessKey, secretKey) {
+	const token = Buffer.from(`${accessKey}:${secretKey}`).toString("base64");
+	return `Bearer ${token}`;
+}
+
+async function createApiPayPayment({
+	accessKey,
+	secretKey,
+	bankPublicId,
+	amount,
+	content,
+	title,
+	redirectUrl,
+}) {
+	const response = await fetch(`${API_BASE}/v1/client/payment-requests`, {
+		method: "POST",
+		headers: {
+			Authorization: apipayAuth(accessKey, secretKey),
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({
+			bankPublicId,
+			amount,
+			content,
+			title,
+			redirectUrl,
+		}),
+	});
+
+	if (!response.ok) {
+		throw new Error(`ApiPay request failed: ${response.status}`);
+	}
+
+	const result = await response.json();
+	return result.data;
+}
+
+const payment = await createApiPayPayment({
+	accessKey: process.env.APIPAY_ACCESS_KEY,
+	secretKey: process.env.APIPAY_SECRET_KEY,
+	bankPublicId: process.env.APIPAY_BANK_PUBLIC_ID,
+	amount: "100000",
+	content: "ORDER-001",
+	title: "Payment for Order #001",
+	redirectUrl: "https://your-site.com/payment/result",
+});
+
+console.log(payment.payUrl);
+```
+
+```python
+import base64
+import os
+import requests
+
+API_BASE = "https://app.apipay.vn"
+
+def apipay_auth(access_key: str, secret_key: str) -> str:
+    token = base64.b64encode(f"{access_key}:{secret_key}".encode()).decode()
+    return f"Bearer {token}"
+
+def create_apipay_payment(
+    *,
+    access_key: str,
+    secret_key: str,
+    bank_public_id: str,
+    amount: str,
+    content: str,
+    title: str,
+    redirect_url: str,
+) -> dict:
+    response = requests.post(
+        f"{API_BASE}/v1/client/payment-requests",
+        json={
+            "bankPublicId": bank_public_id,
+            "amount": amount,
+            "content": content,
+            "title": title,
+            "redirectUrl": redirect_url,
+        },
+        headers={
+            "Authorization": apipay_auth(access_key, secret_key),
+            "Content-Type": "application/json",
+        },
+        timeout=15,
+    )
+    response.raise_for_status()
+    return response.json()["data"]
+
+payment = create_apipay_payment(
+    access_key=os.environ["APIPAY_ACCESS_KEY"],
+    secret_key=os.environ["APIPAY_SECRET_KEY"],
+    bank_public_id=os.environ["APIPAY_BANK_PUBLIC_ID"],
+    amount="100000",
+    content="ORDER-001",
+    title="Payment for Order #001",
+    redirect_url="https://your-site.com/payment/result",
+)
+
+print(payment["payUrl"])
+```
+
+```php
+<?php
+
+use Illuminate\Support\Facades\Http;
+
+$apiBase = 'https://app.apipay.vn';
+
+function apipayAuth(string $accessKey, string $secretKey): string
+{
+    $token = base64_encode("{$accessKey}:{$secretKey}");
+    return "Bearer {$token}";
+}
+
+function createApipayPayment(
+    string $accessKey,
+    string $secretKey,
+    string $bankPublicId,
+    string $amount,
+    string $content,
+    string $title,
+    string $redirectUrl,
+): array {
+    global $apiBase;
+
+    $response = Http::withHeaders([
+        'Authorization' => apipayAuth($accessKey, $secretKey),
+        'Content-Type'  => 'application/json',
+    ])->post("{$apiBase}/v1/client/payment-requests", [
+        'bankPublicId' => $bankPublicId,
+        'amount'       => $amount,
+        'content'      => $content,
+        'title'        => $title,
+        'redirectUrl'  => $redirectUrl,
+    ]);
+
+    if ($response->failed()) {
+        throw new \RuntimeException('ApiPay request failed: ' . $response->status());
+    }
+
+    return $response->json('data');
+}
+
+$payment = createApipayPayment(
+    accessKey: env('APIPAY_ACCESS_KEY'),
+    secretKey: env('APIPAY_SECRET_KEY'),
+    bankPublicId: env('APIPAY_BANK_PUBLIC_ID'),
+    amount: '100000',
+    content: 'ORDER-001',
+    title: 'Payment for Order #001',
+    redirectUrl: 'https://your-site.com/payment/result',
+);
+
+echo $payment['payUrl'];
+```
+
+Redirect the customer to `payUrl` after your order is created.
+
+## Handle Payment Result
+
+When you send `redirectUrl`, ApiPay redirects the customer back to your site after payment with signed query parameters. Store the `redirectSecret` from the payment request response with your order so your result page can verify the return payload.
+
+For server-to-server updates, register a webhook in **Integrations > Webhooks** and update your order status when your endpoint receives a matching payment event.
+
+## Production Checklist
+
+- Generate unique `content` values for each order.
+- Store the ApiPay payment request ID and `redirectSecret` with your order.
+- Verify signed redirect payloads before showing a paid state.
+- Process webhooks idempotently so duplicate deliveries do not double-update an order.
+- Return HTTP 200 from webhook routes quickly, then process heavier work asynchronously.
+
+### WooCommerce
+
+Source: https://docs.apipay.vn/en/integrations/woocommerce
+
+# WooCommerce
+
+The ApiPay WooCommerce plugin creates an ApiPay hosted payment request during checkout, redirects the customer to the payment page, then receives a signed callback after ApiPay matches the bank transfer.
+
+ApiPay supports VND orders only. Successful payments mark WooCommerce orders as `processing`.
+
+The plugin supports both WooCommerce checkout experiences:
+
+- Classic shortcode checkout: `[woocommerce_checkout]`
+- WooCommerce Checkout Block
+
+The downloaded ZIP includes the ApiPay logo used in WooCommerce payment settings and checkout.
+
+Open **Integrations > WooCommerce** in the dashboard to generate your prefilled plugin ZIP.
+
+[Open WooCommerce in dashboard](https://my.apipay.vn/en/integrations/woocommerce)
+
+## Install the ZIP
+
+1. In the ApiPay dashboard, open **Integrations > Web App > WooCommerce**.
+2. Select an active bank account.
+3. Optionally select a verified custom domain.
+4. Download `apipay-woocommerce.zip`.
+5. In WordPress, open **Plugins > Add New > Upload Plugin** and upload the ZIP.
+6. Activate **ApiPay for WooCommerce**.
+
+## Configure the Payment Method
+
+Open **WooCommerce > Settings > Payments > ApiPay**.
+
+The ZIP downloaded from ApiPay is prefilled with:
+
+- API URL
+- Partner Code
+- Access Key
+- Secret Key
+- Bank Account ID
+- Optional custom domain
+
+Review the values, enable the gateway, then save changes.
+
+ApiPay only appears at checkout when the store currency is `VND` and the payment method is enabled.
+
+## Test a Payment
+
+1. Create a WooCommerce order in VND.
+2. Choose **Bank transfer via ApiPay** at checkout.
+3. Confirm that checkout redirects to the ApiPay hosted payment page.
+4. Transfer the exact amount with the displayed content.
+5. After ApiPay receives the bank webhook, the WordPress callback marks the order as `processing`.
+
+## Callback Troubleshooting
+
+ApiPay sends callbacks to:
+
+```text
+https://your-wordpress-site.com/?wc-api=apipay_woocommerce
+```
+
+If an order does not update, check:
+
+- The WordPress site is publicly reachable over HTTPS.
+- The ApiPay access key and secret key match the active dashboard API key.
+- The order currency is VND.
+- ApiPay is enabled under **WooCommerce > Settings > Payments**.
+- Security plugins or firewalls are not blocking the `wc-api=apipay_woocommerce` endpoint.
+- The bank account selected in ApiPay is active.
+
+### Vibe Code
+
+Source: https://docs.apipay.vn/en/integrations/vibe-code
+
+# Vibe Code
+
+Vibe Code generates a ready-to-copy system prompt for AI coding assistants such as Claude Code, Cursor, and Antigravity. The prompt tells the assistant how to integrate ApiPay payment requests, redirects, and webhooks into your own codebase.
+
+Open **Integrations > Vibe Code** in the dashboard to generate a prompt with your selected bank account.
+
+[Open Vibe Code in dashboard](https://my.apipay.vn/en/integrations/vibe-code)
+
+## Before You Start
+
+- Create an API key in **Integrations > API Keys**.
+- Connect at least one active bank account in **Bank Accounts**.
+- Know where your app handles checkout, payment result pages, and webhook routes.
+
+## Generate the Prompt
+
+1. In the ApiPay dashboard, open **Integrations > Vibe Code**.
+2. Select the active bank account to use as the default for payment requests.
+3. Review the generated system prompt.
+4. Copy the prompt and paste it into your coding assistant.
+5. Provide your ApiPay `accessKey` and `secretKey` to your assistant as environment variables or local secrets.
+
+## What the Prompt Covers
+
+The generated prompt asks the assistant to:
+
+- Inspect your project structure and existing API patterns.
+- Add ApiPay authentication with base64 `accessKey:secretKey` credentials.
+- Create payment requests through the ApiPay client API.
+- Redirect customers to the returned `payUrl`.
+- Add webhook handling for payment notifications.
+- Keep credentials in environment variables instead of source code.
+
+## Implementation Checklist
+
+After your assistant makes changes, verify:
+
+- The checkout flow creates a payment request with the selected `bankPublicId`.
+- Customers are redirected to the ApiPay hosted payment page.
+- Your success or result page can handle the redirect from ApiPay.
+- Your webhook endpoint returns HTTP 200 quickly.
+- API credentials are stored in your deployment secrets.
+
+## Troubleshooting
+
+If the generated prompt is not available, check:
+
+- You have at least one active bank account.
+- You have created an API key.
+- The selected bank account still exists and is active.
+
+### WHMCS
+
+Source: https://docs.apipay.vn/en/integrations/whmcs
+
+# WHMCS
+
+The ApiPay WHMCS module lets customers pay WHMCS invoices by VND bank transfer through an ApiPay hosted payment page. The ZIP downloaded from the dashboard is prefilled with your ApiPay API credentials, selected bank account, and optional custom domain.
+
+Open **Integrations > WHMCS** in the dashboard to generate your prefilled module ZIP.
+
+[Open WHMCS in dashboard](https://my.apipay.vn/en/integrations/whmcs)
+
+## Before You Start
+
+- Create an API key in **Integrations > API Keys**.
+- Connect at least one active bank account in **Bank Accounts**.
+- Optional: verify a custom payment domain in **Dashboard Guide > Custom Domains**.
+- Make sure your WHMCS site can receive public HTTPS callbacks.
+
+## Download the Module
+
+1. In the ApiPay dashboard, open **Integrations > WHMCS**.
+2. Select the active bank account you want to use for invoice payments.
+3. Optionally select a verified custom domain for the hosted payment page.
+4. Download `apipay-whmcs.zip`.
+
+## Install in WHMCS
+
+1. Extract the ZIP into your WHMCS root folder.
+2. Confirm the files land under `modules/gateways/` and `modules/gateways/callback/`.
+3. Open **WHMCS Admin > System Settings > Payment Gateways**.
+4. Activate **ApiPay Gateway**.
+5. Review the prefilled API URL, Partner Code, Access Key, Secret Key, Bank Account ID, and optional custom domain.
+6. Save the gateway configuration.
+
+## Test a Payment
+
+1. Create a test invoice in VND.
+2. Choose **ApiPay** as the payment method.
+3. Confirm that WHMCS redirects the customer to the ApiPay hosted payment page.
+4. Transfer the exact amount with the displayed content.
+5. After ApiPay confirms the transfer, the invoice is marked paid in WHMCS.
+
+## Troubleshooting
+
+If the invoice does not update, check:
+
+- The WHMCS site is reachable over public HTTPS.
+- The ApiPay gateway is active in WHMCS.
+- The API key in WHMCS matches an active dashboard API key.
+- The selected bank account is active in ApiPay.
+- The invoice amount is in VND.
+- Firewall or security rules are not blocking WHMCS callback endpoints.
+- If you selected a custom domain, it is verified and active in ApiPay.
+
+### HostBill
+
+Source: https://docs.apipay.vn/en/integrations/hostbill
+
+# HostBill
+
+The ApiPay HostBill module lets customers pay HostBill invoices by VND bank transfer through an ApiPay hosted payment page. The ZIP downloaded from the dashboard is prefilled with your ApiPay API credentials, selected bank account, and optional custom domain.
+
+Open **Integrations > HostBill** in the dashboard to generate your prefilled module ZIP.
+
+[Open HostBill in dashboard](https://my.apipay.vn/en/integrations/hostbill)
+
+## Before You Start
+
+- Create an API key in **Integrations > API Keys**.
+- Connect at least one active bank account in **Bank Accounts**.
+- Optional: verify a custom payment domain in **Dashboard Guide > Custom Domains**.
+- Make sure your HostBill site can receive public HTTPS callbacks.
+
+## Download the Module
+
+1. In the ApiPay dashboard, open **Integrations > HostBill**.
+2. Select the active bank account you want to use for invoice payments.
+3. Optionally select a verified custom domain for the hosted payment page.
+4. Download `apipay-hostbill.zip`.
+
+## Install in HostBill
+
+1. Extract the ZIP into your HostBill root folder.
+2. Confirm `apipay.php` is available to HostBill as a payment gateway module.
+3. Open **HostBill Admin > Payment Gateways**.
+4. Activate **ApiPay Gateway**.
+5. Review the prefilled API URL, Partner Code, Access Key, Secret Key, Bank Account ID, and optional custom domain.
+6. Save the gateway configuration.
+
+## Test a Payment
+
+1. Create a test invoice in VND.
+2. Choose **ApiPay** as the payment method.
+3. Confirm that HostBill redirects the customer to the ApiPay hosted payment page.
+4. Transfer the exact amount with the displayed content.
+5. After ApiPay confirms the transfer, the invoice is marked paid in HostBill.
+
+## Troubleshooting
+
+If the invoice does not update, check:
+
+- The HostBill site is reachable over public HTTPS.
+- The ApiPay gateway is active in HostBill.
+- The API key in HostBill matches an active dashboard API key.
+- The selected bank account is active in ApiPay.
+- The invoice amount is in VND.
+- Firewall or security rules are not blocking HostBill callback endpoints.
+- If you selected a custom domain, it is verified and active in ApiPay.
+
+---
+
+## API Reference
+
+### Authentication
+
+Source: https://docs.apipay.vn/en/api/authentication
+
+# Authentication
+
+ApiPay uses API keys for authentication. All authenticated endpoints require an `Authorization` header.
+
+## Authorization Header
+
+Format: `Authorization: Bearer `
+
+Where `` is your credentials encoded in base64:
+
+```
+base64(accessKey:secretKey)
+```
+
+## Getting Your API Keys
+
+1. Log in to [dashboard](https://my.apipay.vn)
+2. Go to **Integrations → API Keys**
+3. Copy your `accessKey` and `secretKey`
+
+## Test vs Live Keys
+
+ApiPay supports two types of API keys:
+
+| Key Type | Prefix | Purpose |
+|----------|--------|---------|
+| **Test** | `ak_test_*` | Sandbox mode — no real money, test webhooks |
+| **Live** | `ak_live_*` | Production — real transactions |
+
+The same API URL (`https://app.apipay.vn`) handles both. When you use a test key, the API automatically routes to sandbox mode.
+
+Always test with `ak_test_*` keys first. Sandbox transactions are isolated from production data.
+
+## Examples
+
+```javascript
+const axios = require("axios");
+
+const ACCESS_KEY = "your_access_key";
+const SECRET_KEY = "your_secret_key";
+
+// Create base64 auth string
+const auth = Buffer.from(`${ACCESS_KEY}:${SECRET_KEY}`).toString("base64");
+
+const response = await axios.post(
+	"https://app.apipay.vn/v1/client/payment-requests",
+	{
+		bankPublicId: "bank_abc123",
+		amount: "100000",
+		content: "ORDER-001",
+	},
+	{
+		headers: {
+			Authorization: `Bearer ${auth}`,
+			"Content-Type": "application/json",
+		},
+	},
+);
+```
+
+```python
+import requests
+import base64
+
+ACCESS_KEY = 'your_access_key'
+SECRET_KEY = 'your_secret_key'
+
+# Create base64 auth string
+auth = base64.b64encode(f'{ACCESS_KEY}:{SECRET_KEY}'.encode()).decode()
+
+response = requests.post(
+    'https://app.apipay.vn/v1/client/payment-requests',
+    json={
+        'bankPublicId': 'bank_abc123',
+        'amount': '100000',
+        'content': 'ORDER-001'
+    },
+    headers={
+        'Authorization': f'Bearer {auth}',
+        'Content-Type': 'application/json'
+    }
+)
+```
+
+```php
+<?php
+
+use Illuminate\Support\Facades\Http;
+
+$accessKey = 'your_access_key';
+$secretKey = 'your_secret_key';
+
+// Create base64 auth string
+$auth = base64_encode("{$accessKey}:{$secretKey}");
+
+$response = Http::withHeaders([
+    'Authorization' => "Bearer {$auth}",
+    'Content-Type' => 'application/json',
+])->post('https://app.apipay.vn/v1/client/payment-requests', [
+    'bankPublicId' => 'bank_abc123',
+    'amount' => '100000',
+    'content' => 'ORDER-001',
+]);
+```
+
+```bash
+# Encode credentials: echo -n "accessKey:secretKey" | base64
+AUTH=$(echo -n "your_access_key:your_secret_key" | base64)
+
+curl -X POST https://app.apipay.vn/v1/client/payment-requests \
+  -H "Authorization: Bearer $AUTH" \
+  -H "Content-Type: application/json" \
+  -d '{"bankPublicId": "bank_abc123", "amount": "100000", "content": "ORDER-001"}'
+```
+
+### Payment Requests API
+
+Source: https://docs.apipay.vn/en/api/payment-requests
+
+# Payment Requests API
+
+API for creating and managing payment links.
+
+## Create Payment Link
+
+Create a payment link using your connected bank account.
+
+```bash
+POST /v1/client/payment-requests
+```
+
+### Headers
+
+| Header          | Description        |
+| --------------- | ------------------ |
+| `Authorization` | `Bearer `    |
+| `Content-Type`  | `application/json` |
+
+> **Note:** `` is your credentials encoded in base64. See [Authentication](/en/api/authentication) for details.
+
+### Request Body
+
+| Parameter      | Type   | Required  | Description                                                                                                                                                                                                                           |
+| -------------- | ------ | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `bankPublicId` | string | **✓ Yes** | Public ID of your connected bank                                                                                                                                                                                                      |
+| `amount`       | string | —         | Amount in VND (integer string or number, max `300000000`). Returned as string or `null`. Leave empty to allow customer input                                                                                                          |
+| `content`      | string | —         | Transfer content (max 140 characters)                                                                                                                                                                                                 |
+| `title`        | string | —         | Title displayed on payment page                                                                                                                                                                                                       |
+| `expiresAt`    | string | —         | Expiration time (ISO 8601). Leave empty for no limit                                                                                                                                                                                  |
+| `redirectUrl`  | string | —         | URL to redirect after payment completion. When payment completes, the system will redirect to this URL with a signed payload (`?data=<base64>&signature=<hmac>`) for verification. Leave empty to use merchant's default redirect URL |
+
+### Response
+
+```json
+{
+  "data": {
+    "publicId": "APIPAYJSC69C3F00A3212",
+    "payUrl": "https://pay.apipay.vn/APIPAYJSC69C3F00A3212",
+    "qrUrl": "https://api.qrserver.com/v1/create-qr-code?...",
+    "bankCode": "MB",
+    "accountNumber": "0123456789",
+    "accountName": "NGUYEN VAN A",
+    "amount": "100000",
+    "content": "ORDER-12345",
+    "expiresAt": "2026-12-31T23:59:59Z",
+    "createdAt": "2026-03-06T10:00:00Z",
+    "redirectSecret": "a1b2c3d4e5f6..."
+  },
+  "statusCode": 200,
+  "timestamp": "2026-08-12T14:27:45.000Z"
+}
+```
+
+### Example
+
+```bash
+curl -X POST https://app.apipay.vn/v1/client/payment-requests \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer " \
+  -d '{
+    "bankPublicId": "bank_abc123",
+    "amount": "500000",
+    "content": "ORDER-001",
+    "title": "Payment for Order #001",
+    "redirectUrl": "https://yoursite.com/payment/result"
+  }'
+```
+
+---
+
+## Get Payment Link Info
+
+Get details of a payment request (including QR code).
+
+```bash
+GET /v1/payment-requests/:publicId
+```
+
+### Response
+
+```json
+{
+  "data": {
+    "publicId": "APIPAYJSC69C3F00A3212",
+    "bankCode": "MB",
+    "accountNumber": "0123456789",
+    "accountName": "NGUYEN VAN A",
+    "amount": "100000",
+    "content": "ORDER-12345",
+    "title": "Payment for Order #123",
+    "status": "ACTIVE",
+    "qrUrl": "https://api.qrserver.com/...",
+    "expiresAt": "2026-12-31T23:59:59Z",
+    "createdAt": "2026-03-06T10:00:00Z",
+    "canChangeBank": true,
+    "bankChangedByCustomer": false,
+    "redirectUrl": "https://yoursite.com/payment/result",
+    "completedRedirectUrl": "https://yoursite.com/payment/result?data=eyJ...&signature=abc...",
+    "merchant": {
+      "name": "Store Name",
+      "logoUrl": "https://yoursite.com/logo.png",
+      "companyName": "Company ABC"
+    }
+  },
+  "statusCode": 200,
+  "timestamp": "2026-08-12T14:27:45.000Z"
+}
+```
+
+### Status
+
+| Status      | Description         |
+| ----------- | ------------------- |
+| `ACTIVE`    | Waiting for payment |
+| `COMPLETED` | Payment received    |
+| `EXPIRED`   | Expired             |
+| `CANCELLED` | Cancelled           |
+
+---
+
+## List Payment Links
+
+Get list of payment requests you've created. Endpoints payload lives under top-level `data`; list endpoints therefore have `data.data` for rows.
+
+```bash
+GET /v1/client/payment-requests
+```
+
+### Headers
+
+| Header          | Description     |
+| --------------- | --------------- |
+| `Authorization` | `Bearer ` |
+
+### Response
+
+```json
+{
+  "data": {
+    "status": true,
+    "data": [
+      {
+        "publicId": "APIPAYJSC69C3F00A3212",
+        "bankCode": "MB",
+        "accountNumber": "0123456789",
+        "accountName": "NGUYEN VAN A",
+        "amount": "100000",
+        "content": "ORDER-001",
+        "title": "Payment for Order #001",
+        "status": "COMPLETED",
+        "expiresAt": "2026-12-31T23:59:59Z",
+        "redirectUrl": "https://yoursite.com/payment/result",
+        "createdAt": "2026-03-06T10:00:00Z"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "limit": 20,
+      "total": 1,
+      "totalPages": 1
+    }
+  },
+  "statusCode": 200,
+  "timestamp": "2026-08-12T14:27:45.000Z"
+}
+```
+
+### Query Parameters
+
+| Parameter       | Type     | Required | Description                                            |
+| --------------- | -------- | -------- | ------------------------------------------------------ |
+| `page`          | number   | —        | Page number (default: `1`)                             |
+| `limit`         | number   | —        | Items per page (default: `20`, max: `100`)             |
+| `search`        | string   | —        | Search by public ID, content, title, or account number |
+| `status`        | string[] | —        | Filter by status: `ACTIVE`, `EXPIRED`, `COMPLETED`, `CANCELLED`. Can be passed multiple times |
+| `bankAccountId` | number   | —        | Filter by bank account ID                              |
+| `dateFrom`      | string   | —        | Filter by creation date from this ISO date             |
+| `dateTo`        | string   | —        | Filter by creation date through this ISO date          |
+
+### Status Filters
+
+The `status` query parameter accepts these values:
+
+| Status      | Description         |
+| ----------- | ------------------- |
+| `ACTIVE`    | Waiting for payment |
+| `COMPLETED` | Payment received    |
+| `EXPIRED`   | Expired             |
+| `CANCELLED` | Cancelled           |
+
+### Query Examples
+
+Get completed payment links:
+
+```bash
+curl -G https://app.apipay.vn/v1/client/payment-requests \
+  -H "Authorization: Bearer " \
+  --data-urlencode "status=COMPLETED" \
+  --data-urlencode "page=1" \
+  --data-urlencode "limit=20"
+```
+
+Get active or expired payment links created in March 2026:
+
+```bash
+curl -G https://app.apipay.vn/v1/client/payment-requests \
+  -H "Authorization: Bearer " \
+  --data-urlencode "status=ACTIVE" \
+  --data-urlencode "status=EXPIRED" \
+  --data-urlencode "dateFrom=2026-03-01" \
+  --data-urlencode "dateTo=2026-03-31"
+```
+
+---
+
+## Get QR Image
+
+Stream the ApiPay-branded QR PNG for a payment request.
+
+```bash
+GET /v1/payment-requests/:publicId/qr-image
+```
+
+Optional query parameter: `merchantId` when rendering from a custom domain.
+
+---
+
+## Cancel Payment Link
+
+Cancel an active payment request.
+
+```bash
+DELETE /v1/client/payment-requests/:publicId
+```
+
+### Response
+
+```json
+{
+  "data": {
+    "status": true,
+    "message": "Payment request cancelled"
+  },
+  "statusCode": 200,
+  "timestamp": "2026-08-12T14:27:45.000Z"
+}
+```
+
+### Note
+
+- Only payment requests with `ACTIVE` status can be cancelled
+- After cancellation, status will change to `CANCELLED`
+
+---
+
+## Simulate Sandbox Payment
+
+Mark a sandbox payment request as paid. Unauthenticated; `{publicId}` must start with `test_pr_`. No request body.
+
+```bash
+POST /v1/payment-requests/:publicId/pay
+```
+
+```bash
+curl -X POST https://app.apipay.vn/v1/payment-requests/test_pr_abc123/pay
+```
+
+Live public IDs (for example `APIPAYJSC...`) return 400. See [Sandbox & Live Test](/en/sandbox).
+
+---
+
+## Signed Redirect URL Verification
+
+When you provide a `redirectUrl` when creating a payment request, after payment completion, customers will be redirected to your URL with a signed payload.
+
+### Redirect Format
+
+After payment completes, customers are redirected to:
+
+```
+https://yoursite.com/payment/result?data=<base64>&signature=<hmac>
+```
+
+### Payload Structure
+
+The `data` parameter contains a base64-encoded JSON object:
+
+```json
+{
+  "status": "success",
+  "transactionId": "txn_abc123",
+  "amount": "100000",
+  "content": "ORDER-12345",
+  "timestamp": 1700000000
+}
+```
+
+Possible `status` values: `success`, `cancel`, `expired`
+
+### Verification Example
+
+```javascript
+// Node.js example
+const crypto = require('crypto');
+
+function verifyRedirectPayload(query, redirectSecret) {
+  // Decode the payload
+  const payloadJson = Buffer.from(query.data, 'base64url').toString('utf-8');
+  const payload = JSON.parse(payloadJson);
+
+  // Calculate expected signature
+  const expectedSignature = crypto.createHmac('sha256', redirectSecret).update(payloadJson).digest('hex');
+
+  // Use timing-safe comparison to prevent timing attacks
+  const isValid = crypto.timingSafeEqual(Buffer.from(query.signature), Buffer.from(expectedSignature));
+
+  if (!isValid) {
+    throw new Error('Invalid signature');
+  }
+
+  return payload;
+}
+
+// Express route handler
+app.get('/payment/result', (req, res) => {
+  const {data, signature} = req.query;
+  const redirectSecret = 'a1b2c3d4e5f6...'; // From payment request response
+
+  try {
+    const payload = verifyRedirectPayload({data, signature}, redirectSecret);
+    console.log('Payment status:', payload.status);
+    console.log('Transaction ID:', payload.transactionId);
+    console.log('Amount:', payload.amount);
+
+    if (payload.status === 'success') {
+      // Process the payment
+      res.send('Payment successful!');
+    }
+  } catch (error) {
+    res.status(400).send('Invalid redirect');
+  }
+});
+```
+
+```python
+import hmac
+import hashlib
+import base64
+import json
+
+def verify_redirect_payload(query: dict, redirect_secret: str) -> dict:
+    # Decode the base64url-encoded payload
+    # Add padding if needed for standard base64 decoding
+    data = query['data']
+    padding = 4 - len(data) % 4
+    if padding != 4:
+        data += '=' * padding
+    payload_json = base64.urlsafe_b64decode(data).decode('utf-8')
+    payload = json.loads(payload_json)
+
+    # Calculate expected signature
+    expected_signature = hmac.new(
+        redirect_secret.encode(),
+        payload_json.encode(),
+        hashlib.sha256
+    ).hexdigest()
+
+    # Use timing-safe comparison to prevent timing attacks
+    if not hmac.compare_digest(query['signature'], expected_signature):
+        raise ValueError('Invalid signature')
+
+    return payload
+
+# FastAPI route handler
+@app.get('/payment/result')
+def handle_redirect(data: str, signature: str):
+    redirect_secret = 'a1b2c3d4e5f6...'  # From payment request response
+
+    try:
+        payload = verify_redirect_payload({'data': data, 'signature': signature}, redirect_secret)
+        print(f"Payment status: {payload['status']}")
+        print(f"Transaction ID: {payload['transactionId']}")
+        print(f"Amount: {payload['amount']}")
+
+        if payload['status'] == 'success':
+            # Process the payment
+            return {'message': 'Payment successful'}
+    except ValueError:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=400, detail='Invalid redirect')
+```
+
+```php
+<?php
+
+use Illuminate\Http\Request;
+
+function verifyRedirectPayload(array $query, string $redirectSecret): array
+{
+    // Decode the base64url-encoded payload
+    $data = strtr($query['data'], '-_', '+/');
+    $payloadJson = base64_decode($data);
+    $payload = json_decode($payloadJson, true);
+
+    // Calculate expected signature
+    $expectedSignature = hash_hmac('sha256', $payloadJson, $redirectSecret);
+
+    // Use timing-safe comparison to prevent timing attacks
+    if (!hash_equals($query['signature'], $expectedSignature)) {
+        throw new \RuntimeException('Invalid signature');
+    }
+
+    return $payload;
+}
+
+// Laravel route handler
+Route::get('/payment/result', function (Request $request) {
+    $redirectSecret = 'a1b2c3d4e5f6...'; // From payment request response
+
+    try {
+        $payload = verifyRedirectPayload($request->query(), $redirectSecret);
+        \Log::info('Payment status: ' . $payload['status']);
+        \Log::info('Transaction ID: ' . $payload['transactionId']);
+        \Log::info('Amount: ' . $payload['amount']);
+
+        if ($payload['status'] === 'success') {
+            // Process the payment
+            return response('Payment successful!');
+        }
+    } catch (\RuntimeException $e) {
+        abort(400, 'Invalid redirect');
+    }
+});
+```
+
+### Response Fields
+
+When creating a payment request, you receive:
+
+| Field                  | Description                                                                         |
+| ---------------------- | ----------------------------------------------------------------------------------- |
+| `redirectSecret`       | Secret key (32 hex chars) to verify signed redirect payloads. **Keep this secret!** |
+| `completedRedirectUrl` | Full signed URL (available after payment completion) - for reference only           |
+
+### Security Notes
+
+- **Always verify the signature** before processing the payment
+- Use `timingSafeEqual` to prevent timing attacks
+- The `redirectSecret` is unique per payment request
+- Never expose `redirectSecret` in client-side code
+- Validate `status === 'success'` before fulfilling orders
+
+### Webhooks
+
+Source: https://docs.apipay.vn/en/api/webhooks
+
+# Webhooks
+
+Webhooks allow you to receive real-time notifications when payment events occur.
+
+> **Note for developers coming from other gateways:** ApiPay webhooks are equivalent to what many payment gateways call **IPN** (Instant Payment Notification). The flow is the same: register a URL, receive a signed `POST` when a transaction occurs, and return HTTP `200` to acknowledge.
+
+## Register Webhook
+
+Configure webhook URL in the dashboard at **Settings → Webhooks**, or create one with the API.
+
+```bash
+POST /v1/client/webhooks
+```
+
+### Request Body
+
+| Parameter      | Type   | Required  | Description                                |
+| -------------- | ------ | --------- | ------------------------------------------ |
+| `webhookUrl`   | string | **✓ Yes** | HTTPS URL to receive webhook notifications |
+| `bankPublicId` | string | **✓ Yes** | Public ID of the bank account              |
+
+### Response
+
+```json
+{
+  "data": {
+    "message": "Tạo webhook thành công",
+    "id": "wh_abc123",
+    "bankPublicId": "bnk_abc123",
+    "webhookUrl": "https://your-domain.com/webhooks/apipay",
+    "secret": "a1b2c3d4..."
+  }
+}
+```
+
+Keep `secret`; it is used to verify `ApiPay-Signature`.
+
+## Manage Webhooks
+
+| Endpoint                                             | Description                                   |
+| ---------------------------------------------------- | --------------------------------------------- |
+| `GET /v1/client/webhooks`                            | List registered webhooks (`page`, `limit`)    |
+| `PATCH /v1/client/webhooks/:id`                      | Update `webhookUrl`                           |
+| `PATCH /v1/client/webhooks/:id/toggle`               | Enable or disable a webhook                   |
+| `DELETE /v1/client/webhooks/:id`                     | Delete a webhook                              |
+| `GET /v1/client/webhooks/:id/history`                | View delivery history (`page`, `limit`)       |
+| `POST /v1/client/webhooks/history/:historyId/resend` | Retry a failed delivery                       |
+| `GET /v1/client/webhooks/deliveries`                 | View production delivery history with filters |
+
+## Delivery Log
+
+The Delivery Log shows every webhook sent in production. Access it via the **Delivery Log tab** on the **Settings → Webhooks** page in the dashboard.
+
+### Filters
+
+| Filter     | Description                 |
+| ---------- | --------------------------- |
+| Date range | Filter by delivery date     |
+| Bank       | Filter by bank account      |
+| Webhook    | Filter by specific endpoint |
+| Status     | `SUCCESS` or `FAILED`       |
+
+### Per-record details
+
+Each delivery record includes:
+
+- **Timestamp** — When the webhook was sent
+- **Endpoint** — URL the webhook was sent to
+- **Bank** — Associated bank account
+- **Status** — Success/failure with HTTP response code
+- **Retry count** — Number of retry attempts made
+- **Reference** — Related transaction reference code
+- **Amount** — Transaction amount
+
+Click a record to view full details: the **response body** from your server and the full **payload** that was sent.
+
+### Resend
+
+From the Delivery Log, you can resend a failed webhook immediately — no need to navigate away.
+
+### API
+
+Query delivery history via API:
+
+```bash
+GET /v1/client/webhooks/deliveries
+```
+
+**Query parameters:**
+
+| Parameter       | Type   | Description                            |
+| --------------- | ------ | -------------------------------------- |
+| `page`          | number | Page number (default: 1)               |
+| `limit`         | number | Items per page (default: 20, max: 100) |
+| `webhookId`     | string | Filter by webhook ID                   |
+| `bankAccountId` | number | Filter by bank account                 |
+| `status`        | string | `SUCCESS` or `FAILED`                  |
+| `dateFrom`      | string | Start date (YYYY-MM-DD)                |
+| `dateTo`        | string | End date (YYYY-MM-DD)                  |
+
+**Response:**
+
+```json
+{
+  "data": {
+    "status": true,
+    "statusCode": 200,
+    "timestamp": "2026-08-12T14:27:45.000Z",
+    "data": [
+      {
+        "id": "del_abc123",
+        "clientWebhookId": "wh_xyz789",
+        "transactionId": "txn_abc456",
+        "status": "SUCCESS",
+        "responseCode": 200,
+        "responseBody": "{\"received\": true}",
+        "payload": {
+          "event": "transaction.in",
+          "data": {
+            "amount": "100000",
+            "referenceCode": "ORDER-12345"
+          }
+        },
+        "retryCount": 0,
+        "createdAt": "2026-05-17T10:30:00.000Z",
+        "clientWebhook": {
+          "id": "wh_xyz789",
+          "webhookUrl": "https://your-domain.com/webhooks/apipay",
+          "bankAccount": {
+            "bankShortName": "VCB",
+            "accountNumber": "1234567890"
+          }
+        },
+        "transaction": {
+          "id": "txn_abc456",
+          "amount": "100000",
+          "referenceCode": "ORDER-12345"
+        }
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "limit": 20,
+      "total": 150,
+      "totalPages": 8
+    }
+  }
+}
+```
+
+## Events
+
+### transaction.in
+
+When money is received into your bank account.
+
+```json
+{
+  "event": "transaction.in",
+  "data": {
+    "transactionId": "550e8400-e29b-41d4-a716-446655440000",
+    "referenceCode": "TX123456789",
+    "amount": "100000",
+    "content": "ORDER-12345",
+    "transactionDate": "2024-03-20T10:30:00.000Z",
+    "bankAccountPublicId": "bk_abcdef1234567890",
+    "gateway": "VCB",
+    "rawTransactionDate": "2024-03-20 10:30:00",
+    "vaNumber": "999988887777",
+    "accountNumber": "0123456789"
+  }
+}
+```
+
+### Data Fields
+
+| Field                      | Type   | Description                                               |
+| -------------------------- | ------ | --------------------------------------------------------- |
+| `event`                    | string | Event name                                                |
+| `data.transactionId`       | string | Internal transaction ID (UUID)                            |
+| `data.referenceCode`       | string | Bank transaction reference code                           |
+| `data.amount`              | string | Transaction amount in VND as decimal string               |
+| `data.content`             | string | Transaction content/memo                                  |
+| `data.transactionDate`     | string | Transaction timestamp (ISO 8601)                          |
+| `data.bankAccountPublicId` | string | Public ID of the bank account                             |
+| `data.gateway`             | string | Bank code (e.g., ACB, MBB, BIDV, OCB, ICB, VIB, STB, VPB) |
+| `data.rawTransactionDate`  | string | Original transaction date from bank                       |
+| `data.vaNumber`            | string | Virtual account number (optional)                         |
+| `data.accountNumber`       | string | Sender/receiver account number                            |
+
+## Sandbox Webhooks
+
+When using test keys (`ak_test_*`), webhook payloads include a `sandbox` flag:
+
+```json
+{
+  "event": "transaction.in",
+  "sandbox": true,
+  "data": {
+    "transactionId": "550e8400-e29b-41d4-a716-446655440000",
+    "referenceCode": "TX123456789",
+    "amount": "50000",
+    "content": "TEST-ORDER-001",
+    "transactionDate": "2026-08-15T10:30:00.000Z",
+    "bankAccountPublicId": "test_bk_abc123",
+    "gateway": "MB",
+    "accountNumber": "0123456789"
+  }
+}
+```
+
+Always check the `sandbox` flag to avoid fulfilling test orders:
+
+```javascript
+app.post('/webhooks/apipay', (req, res) => {
+  const {event, sandbox, data} = req.body;
+
+  if (sandbox) {
+    console.log('[sandbox] Test event:', event, data.referenceCode);
+    return res.status(200).json({received: true});
+  }
+
+  // Real transaction handling
+  if (event === 'transaction.in') {
+    // Fulfill order...
+  }
+
+  res.status(200).json({received: true});
+});
+```
+
+See [Sandbox & Live Test](/en/sandbox) for more details.
+
+## Webhook Authentication
+
+All webhook requests include an `ApiPay-Signature` header for verification.
+
+```javascript
+const crypto = require("crypto");
+
+function verifyWebhookSignature(payload, signature, secretKey) {
+const expectedSignature = crypto
+.createHmac("sha256", secretKey)
+.update(payload)
+.digest("hex");
+
+    return crypto.timingSafeEqual(
+    	Buffer.from(signature),
+    	Buffer.from(expectedSignature),
+    );
+
+}
+
+// Usage in Express
+app.post("/webhook", (req, res) => {
+const signature = req.headers["apipay-signature"];
+const payload = JSON.stringify(req.body);
+
+    if (!verifyWebhookSignature(payload, signature, process.env.WEBHOOK_SECRET)) {
+    	return res.status(401).json({error: "Invalid signature"});
+    }
+
+    // Process webhook
+    const {event, data} = req.body;
+
+    if (event === "transaction.in") {
+    	console.log("Money received:", data.amount);
+    	console.log("Reference:", data.referenceCode);
+    	console.log("Content:", data.content);
+    	// Update order in your database
+    }
+
+    res.status(200).json({received: true});
+
+});
+
+````
+
+```python
+import hmac
+import hashlib
+
+def verify_webhook_signature(payload: str, signature: str, secret_key: str) -> bool:
+    expected_signature = hmac.new(
+        secret_key.encode(),
+        payload.encode(),
+        hashlib.sha256
+    ).hexdigest()
+
+    return hmac.compare_digest(signature, expected_signature)
+
+# Usage in Flask
+@app.route('/webhook', methods=['POST'])
+def handle_webhook():
+    signature = request.headers.get('ApiPay-Signature')
+    payload = request.get_data(as_text=True)
+
+    if not verify_webhook_signature(payload, signature, WEBHOOK_SECRET):
+        return {'error': 'Invalid signature'}, 401
+
+    data = request.get_json()
+    event = data.get('event')
+
+    if event == 'transaction.in':
+        print(f"Money received: {data['data']['amount']}")
+        print(f"Reference: {data['data']['referenceCode']}")
+        print(f"Content: {data['data']['content']}")
+        # Update order
+    return {'received': True}, 200
+````
+
+```php
+<?php
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+
+function verifyWebhookSignature(string $payload, string $signature, string $secretKey): bool
+{
+    $expectedSignature = hash_hmac('sha256', $payload, $secretKey);
+
+    return hash_equals($expectedSignature, $signature);
+}
+
+// Usage in Laravel route
+Route::post('/webhook', function (Request $request) {
+    $signature = $request->header('ApiPay-Signature');
+    $payload = $request->getContent();
+
+    if (!verifyWebhookSignature($payload, $signature, config('services.apipay.webhook_secret'))) {
+        return response()->json(['error' => 'Invalid signature'], 401);
+    }
+
+    $data = $request->json()->all();
+    $event = $data['event'] ?? null;
+
+    if ($event === 'transaction.in') {
+        logger('Money received: ' . $data['data']['amount']);
+        logger('Reference: ' . $data['data']['referenceCode']);
+        logger('Content: ' . $data['data']['content']);
+        // Update order in your database
+    }
+
+    return response()->json(['received' => true]);
+});
+```
+
+## Retry Policy
+
+- Attempt 0: Immediately
+
+If webhook delivery fails, the system will retry:
+
+- Attempt 1: After 5 seconds
+- Attempt 2: After 20 seconds
+- Attempt 3: After 1 minute
+
+After 3 failed retry attempts, the webhook will be disabled.
+
+## Testing Webhooks
+
+Use [Webhook.site](https://webhook.site) to test webhooks during development:
+
+1. Create a test URL at webhook.site
+2. Configure the webhook URL in the dashboard
+3. Create a payment and complete the transaction
+4. View the request on webhook.site
+
+## Best Practices
+
+1. **Always verify signature** before processing webhook
+2. **Respond quickly** - Return 200 immediately, process asynchronously
+3. **Idempotent** - Handle duplicate events without errors
+4. **Log events** - Keep logs for debugging if needed
+
+### Bank Management
+
+Source: https://docs.apipay.vn/en/api/banks
+
+# Bank Management
+
+Use the bank management API to discover supported banks, connect accounts, complete verification, and manage linked accounts.
+
+Base route:
+
+```bash
+/v1/client/banks
+```
+
+## Supported banks
+
+| Bank       | Short name | BIN      | Account types                          |
+| ---------- | ---------- | -------- | -------------------------------------- |
+| ACB        | `ACB`      | `970416` | personal, business, household business |
+| MB Bank    | `MBB`      | `970422` | personal, business, household business |
+| BIDV       | `BIDV`     | `970418` | personal, business, household business |
+| OCB        | `OCB`      | `970448` | personal, business, household business |
+| VietinBank | `ICB`      | `970415` | personal, business, household business |
+| VIB        | `VIB`      | `970441` | personal, business, household business |
+| Sacombank  | `STB`      | `970403` | personal, household business           |
+| VPBank     | `VPB`      | `970432` | personal, business, household business |
+| PGBank     | `PGB`      | `970430` | personal, business, household business |
+| Shinhan    | `SHBVN`    | `970424` | personal, business                     |
+| Co-opBank  | `COOPBANK` | `970446` | personal, business, household business |
+| Vietcombank| `VCB`      | `970436` | business, household business           |
+
+Use `GET /v1/client/banks/available` to retrieve the live bank catalog before showing a bank picker.
+
+## 1. List available banks
+
+```bash
+GET /v1/client/banks/available
+```
+
+### Response
+
+```json
+{
+  "status": true,
+  "message": [
+    {
+      "bankCode": "MBB",
+      "bankName": "MB Bank",
+      "bankBin": "970422",
+      "shortName": "MBB",
+      "logoUrl": "https://example.com/mbbank.png"
+    }
+  ]
+}
+```
+
+## 2. Connect a bank account
+
+```bash
+POST /v1/client/banks
+```
+
+### Request body
+
+```json
+{
+  "bankBin": "970422",
+  "bankName": "MB Bank",
+  "accountType": "personal-account",
+  "accountNumber": "24550721",
+  "accountName": "PHAM THANH DANH",
+  "mobile": "0858838502",
+  "identity": "012345678901"
+}
+```
+
+### Fields
+
+| Field           | Type   | Required    | Description                                                              |
+| --------------- | ------ | ----------- | ------------------------------------------------------------------------ |
+| `bankBin`       | string | Yes         | BIN returned by the available banks endpoint                             |
+| `bankName`      | string | Yes         | Bank display name                                                        |
+| `accountType`   | string | Yes         | `personal-account`, `business-account`, or `business-household-account`  |
+| `accountNumber` | string | Yes         | Bank account number                                                      |
+| `accountName`   | string | Yes         | Account holder name in uppercase without accents                         |
+| `mobile`        | string | Yes         | Phone number registered with the bank                                    |
+| `identity`      | string | Yes         | Citizen ID for personal accounts, or tax code for business account types |
+| `acbUserId`     | string | Conditional | ACB OneBiz username for ACB business and household business accounts     |
+
+Sacombank accepts `personal-account` and `business-household-account`.
+Shinhan accepts `personal-account` and `business-account`.
+
+VietinBank transactions have no transfer content; contact support for more details.
+
+### Response when OTP is required
+
+```json
+{
+  "status": true,
+  "OTP": 1,
+  "type": "openapi",
+  "message": "Vui lòng nhập mã OTP để hoàn tất liên kết tài khoản ngân hàng",
+  "bank": {
+    "publicId": "bnk_abc123",
+    "vaNumber": null,
+    "status": "PENDING"
+  }
+}
+```
+
+Submit the verification code to the confirm OTP endpoint.
+
+### Response when the account is active
+
+```json
+{
+  "status": true,
+  "OTP": 0,
+  "type": "openapi",
+  "message": "Liên kết tài khoản ngân hàng thành công",
+  "bank": {
+    "publicId": "bnk_abc123",
+    "vaNumber": "DANH001",
+    "status": "ACTIVE"
+  }
+}
+```
+
+### Response when manual activation is required
+
+```json
+{
+  "status": true,
+  "activationRequested": true,
+  "OTP": 0,
+  "type": "openapi",
+  "message": "Tài khoản đã được kết nối và đang chờ xác minh. Quá trình kích hoạt có thể mất đến 24 giờ.",
+  "bank": {
+    "publicId": "bnk_abc123",
+    "vaNumber": null,
+    "status": "PENDING"
+  }
+}
+```
+
+Manual activation applies to:
+
+- MB Bank, OCB, VIB, and VPBank business or household business accounts
+- BIDV, VietinBank, and Shinhan Bank business accounts
+- Vietcombank business and household business accounts
+
+ApiPay contacts the account owner to complete activation.
+
+## 3. Confirm OTP
+
+```bash
+POST /v1/client/banks/confirm-otp
+```
+
+### Request body
+
+```json
+{
+  "bankBin": "970422",
+  "accountNumber": "24550721",
+  "otpNumber": "123456"
+}
+```
+
+### Response
+
+```json
+{
+  "status": true,
+  "message": "Xác nhận ngân hàng thành công"
+}
+```
+
+## 4. List linked bank accounts
+
+```bash
+GET /v1/client/banks
+```
+
+### Response
+
+```json
+{
+  "status": true,
+  "message": [
+    {
+      "id": 12,
+      "publicId": "bnk_abc123",
+      "bankName": "MB Bank",
+      "bankShortName": "MBB",
+      "accountNumber": "24550721",
+      "accountName": "PHAM THANH DANH",
+      "vaNumber": "DANH001",
+      "status": "ACTIVE",
+      "manualActivationPending": false,
+      "hasTransactions": false,
+      "createdAt": "2026-04-25T10:00:00.000Z"
+    }
+  ]
+}
+```
+
+### Account statuses
+
+- `ACTIVE`: enabled and ready to use
+- `INACTIVE`: disabled
+- `PENDING`: waiting for OTP or manual activation
+
+`manualActivationPending` is `true` while ApiPay is processing a manual activation request.
+
+`hasTransactions` is `true` once the account has recorded at least one transaction. Banks with transactions cannot be deleted directly through the API; contact support@apipay.vn if you need to change your bank.
+
+## 5. Get a bank account
+
+```bash
+GET /v1/client/banks/:publicId
+```
+
+### Success response
+
+```json
+{
+  "status": true,
+  "message": {
+    "publicId": "bnk_abc123",
+    "bankName": "MB Bank",
+    "bankShortName": "MBB",
+    "accountNumber": "24550721",
+    "accountName": "PHAM THANH DANH",
+    "vaNumber": "DANH001",
+    "status": "ACTIVE",
+    "manualActivationPending": false,
+    "hasTransactions": false
+  }
+}
+```
+
+### Not found response
+
+```json
+{
+  "status": false,
+  "message": null
+}
+```
+
+## 6. Get bank summary
+
+```bash
+GET /v1/client/banks/summary
+```
+
+### Response
+
+```json
+{
+  "total": 3,
+  "active": 2,
+  "inactive": 1,
+  "pending": 0
+}
+```
+
+## 7. Toggle bank status
+
+```bash
+PATCH /v1/client/banks/:publicId/status
+```
+
+The endpoint switches the linked account between `ACTIVE` and `INACTIVE`.
+
+### Response
+
+```json
+{
+  "status": true,
+  "message": "Cập nhật trạng thái ngân hàng thành công",
+  "newStatus": 1
+}
+```
+
+`newStatus` is `1` for active and `0` for inactive. Accounts waiting for activation cannot be toggled.
+
+## 8. Disconnect a bank account
+
+```bash
+DELETE /v1/client/banks/:publicId
+```
+
+The account is disconnected immediately unless the bank requires OTP confirmation.
+
+### Response when OTP is required
+
+```json
+{
+  "status": true,
+  "OTP": 1,
+  "type": "openapi",
+  "message": "Vui lòng nhập mã OTP để xác nhận xóa ngân hàng"
+}
+```
+
+Accounts waiting for manual activation cannot be disconnected until ApiPay finishes processing the request.
+
+## 9. Confirm bank disconnection
+
+```bash
+POST /v1/client/banks/:publicId/confirm-delete
+```
+
+### Request body
+
+```json
+{
+  "otp": "123456"
+}
+```
+
+### Response
+
+```json
+{
+  "status": true,
+  "message": "Xóa tài khoản ngân hàng thành công"
+}
+```
+
+### Metrics API
+
+Source: https://docs.apipay.vn/en/api/metrics
+
+# Metrics API
+
+API for retrieving transaction metrics and analytics data.
+
+## Overview
+
+Get an overview of your transaction metrics including totals, counts, and averages.
+
+```bash
+GET /v1/client/metrics/overview
+```
+
+### Headers
+
+| Header | Description |
+|--------|-------------|
+| `Authorization` | `Bearer ` |
+
+### Query Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `period` | string | — | Time period: `today`, `this_week`, `last_week`, `this_month`, `last_month`, `last_3_months`, `last_6_months`, `this_year`, `custom` |
+| `dateFrom` | string | — | Start date (ISO 8601) |
+| `dateTo` | string | — | End date (ISO 8601) |
+| `search` | string | — | Search by reference code, content, account number, bank name, bank code, or VA number |
+
+### Response
+
+```json
+{
+  "data": {
+    "totalIn": 5000000,
+    "totalOut": 0,
+    "totalTransactions": 50,
+    "averageAmount": 115000,
+    "successRate": 90,
+    "byBank": [
+      {
+        "bankName": "MB",
+        "accountNumber": "0123456789",
+        "totalIn": 3000000,
+        "countIn": 30,
+        "totalOut": 0,
+        "countOut": 0
+      }
+    ]
+  }
+}
+```
+
+---
+
+## Time Series
+
+Get time series data for charts.
+
+```bash
+GET /v1/client/metrics/time-series
+```
+
+### Query Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `period` | string | — | Time period |
+| `dateFrom` | string | — | Start date (ISO 8601) |
+| `dateTo` | string | — | End date (ISO 8601) |
+| `granularity` | string | — | Data granularity: `daily`, `weekly`, `monthly` |
+
+### Response
+
+```json
+{
+  "data": [
+    {
+      "date": "2026-03-01",
+      "totalIn": 1000000,
+      "totalOut": 0,
+      "count": 10
+    },
+    {
+      "date": "2026-03-02",
+      "totalIn": 1500000,
+      "totalOut": 0,
+      "count": 15
+    }
+  ]
+}
+```
+
+---
+
+## Daily Transactions
+
+Get hourly transaction activity for a specific Vietnam date.
+
+```bash
+GET /v1/client/metrics/hourly-transactions
+```
+
+### Query Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `date` | string | — | Date in `YYYY-MM-DD` format, interpreted in the `Asia/Ho_Chi_Minh` timezone. Defaults to today in Vietnam. |
+| `status` | string[] | — | Filter by transaction status: `SUCCESS`, `FAILED`, `PENDING` |
+| `bankPublicId` | string[] | — | Filter by one or more linked bank public IDs |
+
+### Response
+
+```json
+{
+  "data": [
+    {
+      "hour": 0,
+      "label": "00:00",
+      "SUCCESS_amount": 2500000,
+      "SUCCESS_count": 5,
+      "FAILED_amount": 0,
+      "FAILED_count": 0,
+      "PENDING_amount": 100000,
+      "PENDING_count": 1,
+      "total_amount": 2600000,
+      "total_count": 6
+    },
+    {
+      "hour": 1,
+      "label": "01:00",
+      "SUCCESS_amount": 0,
+      "SUCCESS_count": 0,
+      "FAILED_amount": 0,
+      "FAILED_count": 0,
+      "PENDING_amount": 0,
+      "PENDING_count": 0,
+      "total_amount": 0,
+      "total_count": 0
+    }
+  ]
+}
+```
+
+---
+
+## Bank Distribution
+
+Get transaction distribution by bank.
+
+```bash
+GET /v1/client/metrics/bank-distribution
+```
+
+### Response
+
+```json
+{
+  "data": [
+    {
+      "bankCode": "MB",
+      "bankName": "MB Bank",
+      "accountNumber": "0123456789",
+      "accountName": "NGUYEN VAN A",
+      "totalIn": 2000000,
+      "totalOut": 0,
+      "transactionCount": 20
+    }
+  ]
+}
+```
+
+---
+
+## Amount Histogram
+
+Get amount distribution histogram.
+
+```bash
+GET /v1/client/metrics/amount-histogram
+```
+
+### Response
+
+```json
+{
+  "data": [
+    { "range": "0-100K", "countIn": 10, "countOut": 0 },
+    { "range": "100K-500K", "countIn": 25, "countOut": 0 },
+    { "range": "500K-1M", "countIn": 10, "countOut": 0 },
+    { "range": "1M-5M", "countIn": 5, "countOut": 0 },
+    { "range": "5M-10M", "countIn": 1, "countOut": 0 },
+    { "range": "10M+", "countIn": 0, "countOut": 0 }
+  ]
+}
+```
+
+---
+
+## Transactions List
+
+Get paginated list of transactions.
+
+```bash
+GET /v1/client/metrics/transactions
+```
+
+### Query Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `period` | string | — | Time period |
+| `dateFrom` | string | — | Start date (ISO 8601) |
+| `dateTo` | string | — | End date (ISO 8601) |
+| `search` | string | — | Search by reference code, content, account number, bank name, bank code, or VA number |
+| `accountNumber` | string | — | Filter by account number or VA number |
+| `bankPublicId` | string[] | — | Filter by one or more linked bank public IDs |
+| `page` | number | — | Page number (default: 1) |
+| `limit` | number | — | Items per page (default: 20, max: 100) |
+| `sortBy` | string | — | Sort field: `transactionDate`, `amount`, `createdAt` |
+| `sortOrder` | string | — | Sort order: `asc`, `desc` |
+
+### Response
+
+```json
+{
+  "data": {
+    "data": [
+      {
+        "id": "txn_abc123",
+        "amount": "100000",
+        "type": "IN",
+        "content": "ORDER-001",
+        "referenceCode": "TX123456789",
+        "transactionDate": "2026-03-06T10:05:00Z",
+        "status": "SUCCESS",
+        "createdAt": "2026-03-06T10:00:00Z",
+        "bankAccount": {
+          "bankShortName": "MB",
+          "bankName": "MB Bank",
+          "accountNumber": "0123456789",
+          "vaNumber": "VA123456789",
+          "accountName": "NGUYEN VAN A"
+        }
+      }
+    ],
+    "meta": {
+      "total": 50,
+      "page": 1,
+      "limit": 20,
+      "totalPages": 3
+    }
+  }
+}
+```
+

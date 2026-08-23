@@ -97,6 +97,8 @@ apipay/
 │   │   └── lib/            # API client, config, validators
 │   └── bin/                # Entry point
 │
+├── mcp/                    # ApiPay MCP Server - Model Context Protocol
+│
 └── docs/                   # Tài liệu hướng dẫn
     ├── src/
     │   ├── content/        # Nội dung docs (vi/, en/)

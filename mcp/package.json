@@ -1,0 +1,36 @@
+{
+  "name": "@apipay/mcp",
+  "version": "0.1.0",
+  "description": "Model Context Protocol (MCP) server for ApiPay",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "apipay-mcp": "dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "clean": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\"",
+    "build": "tsc -b",
+    "dev": "tsx src/index.ts",
+    "start": "node dist/index.js",
+    "test": "tsx --test 'src/*.test.ts' 'src/**/*.test.ts'",
+    "prepublishOnly": "npm run clean && npm run build"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.18.0",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.5",
+    "tsx": "^4.19.3",
+    "typescript": "^5.7.3"
+  }
+}

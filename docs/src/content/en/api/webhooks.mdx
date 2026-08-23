@@ -193,6 +193,49 @@ When money is received into your bank account.
 | `data.vaNumber`            | string | Virtual account number (optional)                         |
 | `data.accountNumber`       | string | Sender/receiver account number                            |
 
+## Sandbox Webhooks
+
+When using test keys (`ak_test_*`), webhook payloads include a `sandbox` flag:
+
+```json
+{
+  "event": "transaction.in",
+  "sandbox": true,
+  "data": {
+    "transactionId": "550e8400-e29b-41d4-a716-446655440000",
+    "referenceCode": "TX123456789",
+    "amount": "50000",
+    "content": "TEST-ORDER-001",
+    "transactionDate": "2026-08-15T10:30:00.000Z",
+    "bankAccountPublicId": "test_bk_abc123",
+    "gateway": "MB",
+    "accountNumber": "0123456789"
+  }
+}
+```
+
+Always check the `sandbox` flag to avoid fulfilling test orders:
+
+```javascript
+app.post('/webhooks/apipay', (req, res) => {
+  const {event, sandbox, data} = req.body;
+
+  if (sandbox) {
+    console.log('[sandbox] Test event:', event, data.referenceCode);
+    return res.status(200).json({received: true});
+  }
+
+  // Real transaction handling
+  if (event === 'transaction.in') {
+    // Fulfill order...
+  }
+
+  res.status(200).json({received: true});
+});
+```
+
+See [Sandbox & Live Test](/en/sandbox) for more details.
+
 ## Webhook Authentication
 
 All webhook requests include an `ApiPay-Signature` header for verification.

@@ -83,6 +83,80 @@ Configure a webhook URL in the dashboard to receive notifications when bank tran
 
 ApiPay sends `transaction.in` when a payment is detected. See [Webhooks](/en/api/webhooks) for the full payload and signature verification.
 
+## Test Your Integration
+
+Use sandbox mode to test the full flow without real money.
+
+### 1. Use Test API Keys
+
+Create a test API key in the dashboard (starts with `ak_test_`). The same production URL automatically routes to sandbox mode when you use a test key.
+
+```bash
+# Encode your test credentials
+AUTH=$(echo -n "ak_test_abc123:secret_def456" | base64)
+```
+
+### 2. Create a Test Payment Request
+
+```bash
+curl -X POST https://app.apipay.vn/v1/client/payment-requests \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $AUTH" \
+  -d '{
+    "bankPublicId": "test_bk_abc123",
+    "amount": "50000",
+    "content": "TEST-ORDER-001"
+  }'
+```
+
+### 3. Simulate Payment
+
+Use the sandbox simulator to trigger a mock payment:
+
+```bash
+curl -X POST https://app.apipay.vn/v1/payment-requests/test_pr_abc123/pay
+```
+
+This endpoint is unauthenticated, takes no body, and only accepts sandbox public IDs (`test_pr_*`). Live IDs return 400.
+
+This triggers a webhook to your configured URL with `"sandbox": true` in the payload.
+
+### 4. Verify Webhook Signature
+
+```javascript
+const crypto = require('crypto');
+
+function verifyWebhook(payload, signature, secret) {
+  const expected = crypto
+    .createHmac('sha256', secret)
+    .update(payload)
+    .digest('hex');
+  return crypto.timingSafeEqual(
+    Buffer.from(signature, 'hex'),
+    Buffer.from(expected, 'hex')
+  );
+}
+
+// In your webhook handler:
+app.post('/webhooks/apipay', (req, res) => {
+  const signature = req.headers['apipay-signature'];
+  const isValid = verifyWebhook(JSON.stringify(req.body), signature, WEBHOOK_SECRET);
+
+  if (!isValid) return res.status(401).send('Invalid signature');
+
+  const {event, sandbox, data} = req.body;
+  if (sandbox) console.log('[test] Sandbox event:', event, data.referenceCode);
+
+  res.status(200).json({received: true});
+});
+```
+
+<Callout type="info">
+Sandbox webhooks include `"sandbox": true` in the payload. Always check this flag to avoid fulfilling test orders.
+</Callout>
+
+See [Sandbox & Live Test](/en/sandbox) for more testing options.
+
 ## Code Examples
 
 <CodeTabs>

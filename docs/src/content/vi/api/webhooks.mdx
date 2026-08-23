@@ -195,6 +195,48 @@ Khi có tiền vào tài khoản ngân hàng của bạn.
 | `data.vaNumber`            | string | Số tài khoản ảo (tùy chọn)                                 |
 | `data.accountNumber`       | string | Số tài khoản người gửi/nhận                                |
 
+## Webhook sandbox
+
+Khi dùng test key (`ak_test_*`), payload webhook có thêm cờ `sandbox`:
+
+```json
+{
+  "event": "transaction.in",
+  "sandbox": true,
+  "data": {
+    "transactionId": "550e8400-e29b-41d4-a716-446655440000",
+    "referenceCode": "TX123456789",
+    "amount": "50000",
+    "content": "TEST-ORDER-001",
+    "transactionDate": "2026-08-15T10:30:00.000Z",
+    "bankAccountPublicId": "test_bk_abc123",
+    "gateway": "MB",
+    "accountNumber": "0123456789"
+  }
+}
+```
+
+Luôn kiểm tra cờ `sandbox` để không fulfill đơn thử nghiệm:
+
+```javascript
+app.post('/webhooks/apipay', (req, res) => {
+  const {event, sandbox, data} = req.body;
+
+  if (sandbox) {
+    console.log('[sandbox] Test event:', event, data.referenceCode);
+    return res.status(200).json({received: true});
+  }
+
+  if (event === 'transaction.in') {
+    // Xử lý giao dịch thật...
+  }
+
+  res.status(200).json({received: true});
+});
+```
+
+Xem [Sandbox & Live Test](/vi/sandbox) để biết thêm.
+
 ## Xác thực webhook
 
 Tất cả webhook requests đều có header `ApiPay-Signature` để bạn xác thực.

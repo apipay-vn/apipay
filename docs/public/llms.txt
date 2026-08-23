@@ -1,0 +1,42 @@
+# ApiPay Documentation
+
+> ApiPay is a Vietnamese bank-transfer payment gateway API. This documentation covers integration, API reference, and guides.
+
+## Getting Started
+
+- [Introduction](https://docs.apipay.vn/en/index): Integrate ApiPay into your system
+- [Quick Start](https://docs.apipay.vn/en/quickstart): Get started with ApiPay in 5 minutes
+- [Onboarding](https://docs.apipay.vn/en/onboarding): Complete guide to getting started with ApiPay
+- [Subscription & Billing](https://docs.apipay.vn/en/subscription): Manage your ApiPay subscription and billing
+
+## Banking & Payments
+
+- [Bank Accounts](https://docs.apipay.vn/en/banking): Connect and manage your Vietnamese bank accounts to receive payments via ApiPay
+- [Sandbox & Live Test](https://docs.apipay.vn/en/sandbox): Test payments and webhooks safely — no real money moves
+- [Dashboard Guide](https://docs.apipay.vn/en/dashboard): Navigate and use your ApiPay dashboard effectively
+- [Connect Banks](https://docs.apipay.vn/en/connect-banks): Link your Vietnamese bank account to start receiving payments via ApiPay
+- [Payment Speaker](https://docs.apipay.vn/en/payment-speaker): Turn any phone, tablet, or computer into a real-time bank transfer voice announcement speaker for free
+- [Custom Domains](https://docs.apipay.vn/en/custom-domains): Use your own domain for the ApiPay payment page
+- [Passkeys](https://docs.apipay.vn/en/passkeys): Sign in to ApiPay faster with Face ID, fingerprint, or a device passkey
+- [Affiliates](https://docs.apipay.vn/en/affiliates): Share ApiPay, track referrals, and manage commissions from the dashboard
+
+## Integrations
+
+- [Web App](https://docs.apipay.vn/en/integrations/webapp): Integrate ApiPay into a custom web app with SDK-style JavaScript and Python helpers.
+- [WooCommerce](https://docs.apipay.vn/en/integrations/woocommerce): Install and configure the ApiPay WooCommerce payment gateway.
+- [Vibe Code](https://docs.apipay.vn/en/integrations/vibe-code): Generate an ApiPay integration prompt for AI coding assistants.
+- [WHMCS](https://docs.apipay.vn/en/integrations/whmcs): Install and configure the ApiPay WHMCS payment gateway module.
+- [HostBill](https://docs.apipay.vn/en/integrations/hostbill): Install and configure the ApiPay HostBill payment gateway module.
+
+## API Reference
+
+- [Authentication](https://docs.apipay.vn/en/api/authentication): API authentication guide
+- [Payment Requests](https://docs.apipay.vn/en/api/payment-requests): API for creating and managing payment links
+- [Webhooks](https://docs.apipay.vn/en/api/webhooks): Receive real-time payment notifications
+- [Banks](https://docs.apipay.vn/en/api/banks): API for connecting and managing client bank accounts
+- [Metrics](https://docs.apipay.vn/en/api/metrics): API for retrieving transaction metrics and analytics
+
+## Interactive API Reference
+
+- [API Reference](https://docs.apipay.vn/en/api-reference): Interactive API documentation with try-it console
+

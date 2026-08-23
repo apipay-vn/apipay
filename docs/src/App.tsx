@@ -1,6 +1,7 @@
 import {Layout} from '@/components/Layout';
 import {mdxComponents} from '@/components/MDXComponents';
 import {PageNavigation} from '@/components/PageNavigation';
+import ApiReferencePage from '@/pages/ApiReferencePage';
 import {getLocaleFromCookie} from '@/lib/i18n';
 import {MDXProvider} from '@mdx-js/react';
 import {useEffect} from 'react';
@@ -146,6 +147,7 @@ export default function App() {
       <MDXProvider components={mdxComponents}>
         <Routes>
           <Route path="/" element={<RootRedirect />} />
+          <Route path="/:locale/api-reference" element={<ApiReferencePage />} />
           <Route element={<Layout routeMetadata={routeMetadata} />}>
             {allRoutes.map(({path, Component, frontmatter}) => (
               <Route

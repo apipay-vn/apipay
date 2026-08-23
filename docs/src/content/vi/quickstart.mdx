@@ -83,6 +83,47 @@ Cấu hình webhook URL trong dashboard để nhận thông báo khi hệ thốn
 
 ApiPay gửi `transaction.in` khi phát hiện thanh toán. Xem [Webhook](/vi/api/webhooks) để biết đầy đủ payload và cách kiểm tra chữ ký.
 
+## Kiểm thử tích hợp
+
+Dùng sandbox để chạy hết luồng mà không cần tiền thật.
+
+### 1. Dùng test API key
+
+Tạo test key trong dashboard (bắt đầu bằng `ak_test_`). Cùng URL production tự chuyển sang sandbox khi bạn dùng test key.
+
+```bash
+AUTH=$(echo -n "ak_test_abc123:secret_def456" | base64)
+```
+
+### 2. Tạo payment request thử nghiệm
+
+```bash
+curl -X POST https://app.apipay.vn/v1/client/payment-requests \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $AUTH" \
+  -d '{
+    "bankPublicId": "test_bk_abc123",
+    "amount": "50000",
+    "content": "TEST-ORDER-001"
+  }'
+```
+
+### 3. Giả lập thanh toán
+
+Endpoint này không cần auth, không có body, và chỉ nhận public ID sandbox (`test_pr_*`). ID live sẽ trả 400.
+
+```bash
+curl -X POST https://app.apipay.vn/v1/payment-requests/test_pr_abc123/pay
+```
+
+Webhook tới URL đã cấu hình sẽ có `"sandbox": true`.
+
+<Callout type="info">
+Webhook sandbox có `"sandbox": true`. Luôn kiểm tra cờ này để không fulfill đơn thử nghiệm.
+</Callout>
+
+Xem [Sandbox & Live Test](/vi/sandbox) để biết thêm tùy chọn kiểm thử.
+
 ## Ví dụ Code
 
 <CodeTabs>

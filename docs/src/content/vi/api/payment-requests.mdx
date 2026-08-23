@@ -323,6 +323,22 @@ DELETE /v1/client/payment-requests/:publicId
 
 ---
 
+## Giả lập thanh toán sandbox
+
+Đánh dấu payment request sandbox là đã thanh toán. Không cần auth; `{publicId}` phải bắt đầu bằng `test_pr_`. Không có request body.
+
+```bash
+POST /v1/payment-requests/:publicId/pay
+```
+
+```bash
+curl -X POST https://app.apipay.vn/v1/payment-requests/test_pr_abc123/pay
+```
+
+Public ID live (ví dụ `APIPAYJSC...`) trả 400. Xem [Sandbox & Live Test](/vi/sandbox).
+
+---
+
 ## Xác minh signed redirect URL
 
 Khi tạo payment request có `redirectUrl`, sau khi thanh toán xong, khách sẽ được chuyển về URL của bạn kèm payload đã ký.
