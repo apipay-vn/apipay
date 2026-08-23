@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "ApiPay API",
-    "description": "Merchant-facing REST API for ApiPay — Vietnamese bank-transfer payment gateway.\n\nThis spec is **curated** (hand-maintained to match the public docs). Do not overwrite it from Nest Swagger.\n\n## Authentication\n\nAuthenticated `/v1/client/*` endpoints require:\n\n```\nAuthorization: Bearer base64(accessKey:secretKey)\n```\n\nKeys are created in the dashboard at **Integrations → API Keys**.\nTest keys start with `ak_test_`, live keys with `ak_live_`.\n\n## Sandbox\n\nThe same production URL serves both modes. A test key (`ak_test_*`) routes the request to sandbox.\nSimulate a sandbox payment with unauthenticated `POST /v1/payment-requests/{id}/pay` where `{id}` starts with `test_pr_`. No request body.",
+    "description": "Merchant-facing REST API for ApiPay — Vietnamese bank-transfer payment gateway.\n\n## Authentication\n\nAuthenticated `/v1/client/*` endpoints require:\n\n```\nAuthorization: Bearer base64(accessKey:secretKey)\n```\n\nKeys are created in the dashboard at **Integrations → API Keys**.\nTest keys start with `ak_test_`, live keys with `ak_live_`.\n\n## Sandbox\n\nThe same production URL serves both modes. A test key (`ak_test_*`) routes the request to sandbox.\nSimulate a sandbox payment with unauthenticated `POST /v1/payment-requests/{id}/pay` where `{id}` starts with `test_pr_`. No request body.",
     "version": "1.0.0",
     "contact": {
       "name": "ApiPay Support",
