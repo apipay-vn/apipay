@@ -11,6 +11,7 @@ import {
   createStructuredData,
 } from '@/lib/seo';
 import {Navbar} from './Navbar';
+import {PromoBanner} from './PromoBanner';
 import {SearchDialog} from './SearchDialog';
 import {Sidebar} from './Sidebar';
 import {TableOfContents} from './TableOfContents';
@@ -65,6 +66,7 @@ function upsertStructuredData(scriptId: string, payload: unknown) {
 export function Layout({routeMetadata}: LayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [bannerVisible, setBannerVisible] = useState(true);
   const {pathname} = useLocation();
 
   const toggleSidebar = useCallback(() => setSidebarOpen(s => !s), []);
@@ -113,7 +115,8 @@ export function Layout({routeMetadata}: LayoutProps) {
   }, [pathname, routeMetadata]);
 
   return (
-    <div className="layout">
+    <div className={`layout ${bannerVisible ? 'banner-visible' : ''}`}>
+      <PromoBanner visible={bannerVisible} onClose={() => setBannerVisible(false)} />
       <Navbar onMenuToggle={toggleSidebar} onSearchOpen={() => setSearchOpen(true)} />
       <Sidebar isOpen={sidebarOpen} onClose={closeSidebar} />
 
