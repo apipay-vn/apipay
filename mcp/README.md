@@ -318,56 +318,56 @@ Follow the Windsurf MCP configuration guide and add the server to `.windsurf/mcp
 
 ## Available Tools
 
-The server registers 15 tools with the `apipay_` prefix:
+The server registers 15 tools. MCP clients automatically prefix tool names with the server key `apipay` (e.g. `apipay_list_banks` in OpenCode, `mcp__apipay__list_banks` in Claude Code).
 
 ### Connection & Verification
-- `apipay_self_test`: Validates API key configuration and returns connection status, key prefix, and bank summary counts.
+- `self_test`: Validates API key configuration and returns connection status, key prefix, and bank summary counts.
 
 ### Banks
-- `apipay_list_banks`: Lists connected bank accounts for this merchant (returns `bankPublicId` values needed to create payments and webhooks).
+- `list_banks`: Lists connected bank accounts for this merchant (returns `bankPublicId` values needed to create payments and webhooks).
 
 ### Payment Requests
-- `apipay_create_payment`: Creates a payment link (requires `bankPublicId`; optional `amount`, `content`, `title`, `expiresAt`, `redirectUrl`).
-- `apipay_list_payments`: Lists payment requests with optional filtering by status, search term, or date range.
-- `apipay_cancel_payment`: **(Destructive)** Cancels an `ACTIVE` payment request.
-- `apipay_simulate_payment`: Simulates payment for sandbox requests (publicId must start with `test_pr_`; triggers sandbox webhooks).
+- `create_payment`: Creates a payment link (requires `bankPublicId`; optional `amount`, `content`, `title`, `expiresAt`, `redirectUrl`).
+- `list_payments`: Lists payment requests with optional filtering by status, search term, or date range.
+- `cancel_payment`: **(Destructive)** Cancels an `ACTIVE` payment request.
+- `simulate_payment`: Simulates payment for sandbox requests (publicId must start with `test_pr_`; triggers sandbox webhooks).
 
 ### Webhooks
-- `apipay_list_webhooks`: Lists registered webhook endpoints.
-- `apipay_create_webhook`: Registers a webhook URL for a connected bank account.
-- `apipay_update_webhook`: Updates destination URL for a webhook.
-- `apipay_toggle_webhook`: Toggles a webhook between active and inactive.
-- `apipay_remove_webhook`: **(Destructive)** Permanently deletes a webhook.
-- `apipay_list_webhook_deliveries`: Lists webhook delivery attempts and status logs.
-- `apipay_resend_webhook`: Retries a failed webhook delivery (fires a real HTTP request to destination).
+- `list_webhooks`: Lists registered webhook endpoints.
+- `create_webhook`: Registers a webhook URL for a connected bank account.
+- `update_webhook`: Updates destination URL for a webhook.
+- `toggle_webhook`: Toggles a webhook between active and inactive.
+- `remove_webhook`: **(Destructive)** Permanently deletes a webhook.
+- `list_webhook_deliveries`: Lists webhook delivery attempts and status logs.
+- `resend_webhook`: Retries a failed webhook delivery (fires a real HTTP request to destination).
 
 ### Metrics & Transactions
-- `apipay_get_overview`: Returns transaction totals, averages, success rates, and bank volume distribution.
-- `apipay_list_transactions`: Lists recent bank transactions with pagination, date, bank, and search filters.
+- `get_overview`: Returns transaction totals, averages, success rates, and bank volume distribution.
+- `list_transactions`: Lists recent bank transactions with pagination, date, bank, and search filters.
 
 ---
 
 ## Typical Sandbox Workflow
 
 1. **Verify Connection**:
-   Call `apipay_self_test` to confirm the API key is active.
+   Call `self_test` to confirm the API key is active.
 2. **Find Connected Bank**:
-   Call `apipay_list_banks` to get a `bankPublicId`.
+   Call `list_banks` to get a `bankPublicId`.
 3. **Create Payment Request**:
-   Call `apipay_create_payment` with `bankPublicId` and `amount` (e.g. `"50000"`). A `publicId` starting with `test_pr_...` is returned.
+   Call `create_payment` with `bankPublicId` and `amount` (e.g. `"50000"`). A `publicId` starting with `test_pr_...` is returned.
 4. **Simulate Customer Payment**:
-   Call `apipay_simulate_payment` with `publicId: "test_pr_..."` to test the settlement and webhook flow.
+   Call `simulate_payment` with `publicId: "test_pr_..."` to test the settlement and webhook flow.
 5. **Check History & Deliveries**:
-   Call `apipay_list_webhook_deliveries` and `apipay_list_transactions` to verify the transaction was recorded.
+   Call `list_webhook_deliveries` and `list_transactions` to verify the transaction was recorded.
 
 ---
 
 ## Destructive Tools Notice
 
 The following operations permanently change state or remove resources:
-- `apipay_cancel_payment`: Cancels an active payment link.
-- `apipay_remove_webhook`: Deletes a registered webhook URL.
-- `apipay_resend_webhook`: Dispatches an outbound HTTP request to the merchant webhook URL.
+- `cancel_payment`: Cancels an active payment link.
+- `remove_webhook`: Deletes a registered webhook URL.
+- `resend_webhook`: Dispatches an outbound HTTP request to the merchant webhook URL.
 
 ---
 

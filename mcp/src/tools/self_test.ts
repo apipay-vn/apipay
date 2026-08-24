@@ -3,7 +3,7 @@ import { ApiClient, ApiError } from "../client.js";
 
 export function registerSelfTestTools(server: McpServer, client: ApiClient): void {
   server.registerTool(
-    "apipay_self_test",
+    "self_test",
     {
       description:
         "Verify ApiPay connection and API key configuration. Returns connection status, key prefix, and bank summary counts.",

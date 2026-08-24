@@ -16,7 +16,7 @@ const PERIOD_ENUM = [
 
 export function registerMetricsTools(server: McpServer, client: ApiClient): void {
   server.registerTool(
-    "apipay_get_overview",
+    "get_overview",
     {
       description:
         "Get transaction metrics overview (totals, averages, success rates, volume by bank).",
@@ -60,7 +60,7 @@ export function registerMetricsTools(server: McpServer, client: ApiClient): void
   );
 
   server.registerTool(
-    "apipay_list_transactions",
+    "list_transactions",
     {
       description:
         "List recent bank transactions with filtering by date, bank, account, or search keyword.",

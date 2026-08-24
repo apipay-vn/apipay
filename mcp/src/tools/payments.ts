@@ -4,7 +4,7 @@ import { ApiClient, ApiError } from "../client.js";
 
 export function registerPaymentsTools(server: McpServer, client: ApiClient): void {
   server.registerTool(
-    "apipay_create_payment",
+    "create_payment",
     {
       description:
         "Create a payment link (payment request). Call list_banks first if bankPublicId is unknown.",
@@ -69,7 +69,7 @@ export function registerPaymentsTools(server: McpServer, client: ApiClient): voi
   );
 
   server.registerTool(
-    "apipay_list_payments",
+    "list_payments",
     {
       description:
         "List payment requests with optional filtering by status, date range, or search keyword.",
@@ -136,7 +136,7 @@ export function registerPaymentsTools(server: McpServer, client: ApiClient): voi
   );
 
   server.registerTool(
-    "apipay_cancel_payment",
+    "cancel_payment",
     {
       description:
         "Cancel an ACTIVE payment request (destructive, only ACTIVE requests can be cancelled).",
@@ -166,7 +166,7 @@ export function registerPaymentsTools(server: McpServer, client: ApiClient): voi
   );
 
   server.registerTool(
-    "apipay_simulate_payment",
+    "simulate_payment",
     {
       description:
         "Simulate a payment for sandbox testing (sandbox only; publicId must start with test_pr_; creates webhook with sandbox: true).",

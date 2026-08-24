@@ -4,7 +4,7 @@ import { ApiClient, ApiError } from "../client.js";
 
 export function registerWebhooksTools(server: McpServer, client: ApiClient): void {
   server.registerTool(
-    "apipay_list_webhooks",
+    "list_webhooks",
     {
       description: "List registered webhook endpoints.",
       inputSchema: {
@@ -47,7 +47,7 @@ export function registerWebhooksTools(server: McpServer, client: ApiClient): voi
   );
 
   server.registerTool(
-    "apipay_create_webhook",
+    "create_webhook",
     {
       description:
         "Register a new webhook endpoint for transaction notifications on a connected bank account.",
@@ -83,7 +83,7 @@ export function registerWebhooksTools(server: McpServer, client: ApiClient): voi
   );
 
   server.registerTool(
-    "apipay_update_webhook",
+    "update_webhook",
     {
       description: "Update the destination URL of an existing webhook.",
       inputSchema: {
@@ -113,7 +113,7 @@ export function registerWebhooksTools(server: McpServer, client: ApiClient): voi
   );
 
   server.registerTool(
-    "apipay_toggle_webhook",
+    "toggle_webhook",
     {
       description: "Toggle a webhook between active and inactive states.",
       inputSchema: {
@@ -140,7 +140,7 @@ export function registerWebhooksTools(server: McpServer, client: ApiClient): voi
   );
 
   server.registerTool(
-    "apipay_remove_webhook",
+    "remove_webhook",
     {
       description: "Permanently delete a registered webhook (destructive).",
       inputSchema: {
@@ -167,7 +167,7 @@ export function registerWebhooksTools(server: McpServer, client: ApiClient): voi
   );
 
   server.registerTool(
-    "apipay_list_webhook_deliveries",
+    "list_webhook_deliveries",
     {
       description: "List webhook delivery logs and attempt statuses.",
       inputSchema: {
@@ -230,7 +230,7 @@ export function registerWebhooksTools(server: McpServer, client: ApiClient): voi
   );
 
   server.registerTool(
-    "apipay_resend_webhook",
+    "resend_webhook",
     {
       description:
         "Resend a failed webhook delivery (fires a real HTTP request to the merchant URL).",

@@ -4,7 +4,7 @@ import { ApiClient, ApiError } from "../client.js";
 
 export function registerBanksTools(server: McpServer, client: ApiClient): void {
   server.registerTool(
-    "apipay_list_banks",
+    "list_banks",
     {
       description:
         "List connected bank accounts for this merchant. Call this to find bankPublicId before creating payments or webhooks.",

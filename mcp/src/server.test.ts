@@ -5,21 +5,21 @@ import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import { createServer } from "./server.js";
 
 const EXPECTED_TOOLS = [
-  "apipay_self_test",
-  "apipay_list_banks",
-  "apipay_create_payment",
-  "apipay_list_payments",
-  "apipay_cancel_payment",
-  "apipay_simulate_payment",
-  "apipay_list_webhooks",
-  "apipay_create_webhook",
-  "apipay_update_webhook",
-  "apipay_toggle_webhook",
-  "apipay_remove_webhook",
-  "apipay_list_webhook_deliveries",
-  "apipay_resend_webhook",
-  "apipay_get_overview",
-  "apipay_list_transactions",
+  "self_test",
+  "list_banks",
+  "create_payment",
+  "list_payments",
+  "cancel_payment",
+  "simulate_payment",
+  "list_webhooks",
+  "create_webhook",
+  "update_webhook",
+  "toggle_webhook",
+  "remove_webhook",
+  "list_webhook_deliveries",
+  "resend_webhook",
+  "get_overview",
+  "list_transactions",
 ];
 
 test("server registers exactly the 15 expected tools", async () => {
@@ -67,7 +67,7 @@ test("authenticated tools fail fast when credentials are missing", async () => {
 
     const started = Date.now();
     const result = await client.callTool({
-      name: "apipay_list_banks",
+      name: "list_banks",
       arguments: {},
     });
 
@@ -81,7 +81,7 @@ test("authenticated tools fail fast when credentials are missing", async () => {
   }
 });
 
-test("apipay_self_test returns isError and mentions environment variables when credentials are missing", async () => {
+test("self_test returns isError and mentions environment variables when credentials are missing", async () => {
   const server = createServer({
     accessKey: undefined,
     secretKey: undefined,
@@ -96,7 +96,7 @@ test("apipay_self_test returns isError and mentions environment variables when c
   ]);
 
   const result = await client.callTool({
-    name: "apipay_self_test",
+    name: "self_test",
     arguments: {},
   });
 
@@ -107,7 +107,7 @@ test("apipay_self_test returns isError and mentions environment variables when c
   assert.match(text, /config\.json/);
 });
 
-test("apipay_self_test succeeds when credentials are valid", async () => {
+test("self_test succeeds when credentials are valid", async () => {
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async () =>
     new Response(
@@ -138,7 +138,7 @@ test("apipay_self_test succeeds when credentials are valid", async () => {
     ]);
 
     const result = await client.callTool({
-      name: "apipay_self_test",
+      name: "self_test",
       arguments: {},
     });
 

@@ -32,7 +32,7 @@ test("simulate_payment returns isError and does not invoke fetch for non-test_pr
     ]);
 
     const result = await client.callTool({
-      name: "apipay_simulate_payment",
+      name: "simulate_payment",
       arguments: {
         publicId: "APIPAYJSCAF9H23M74K",
       },
@@ -85,7 +85,7 @@ test("simulate_payment makes POST with no auth header and no body for test_pr_ I
     ]);
 
     const result = await client.callTool({
-      name: "apipay_simulate_payment",
+      name: "simulate_payment",
       arguments: {
         publicId: "test_pr_abc123",
       },
@@ -132,7 +132,7 @@ test("create_payment sends amount as a string when given a number", async () => 
     ]);
 
     const result = await client.callTool({
-      name: "apipay_create_payment",
+      name: "create_payment",
       arguments: {
         bankPublicId: "bank_abc",
         amount: 50000,
