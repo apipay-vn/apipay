@@ -1,8 +1,8 @@
-# @apipay/mcp
+# @apipay.vn/mcp
 
 Model Context Protocol (MCP) server for [ApiPay](https://apipay.vn) — bank-transfer payment gateway in Vietnam.
 
-This server exposes tools for AI assistants (Claude Desktop, Cursor, Command Code, Codex) over stdio to create sandbox payments, list bank accounts and transactions, manage webhooks, and query transaction metrics.
+This server exposes tools for AI assistants (Claude, Cursor, Codex, Command Code, Grok Build, Gemini, Copilot, OpenCode, and more) over stdio to create sandbox payments, list bank accounts and transactions, manage webhooks, and query transaction metrics.
 
 ---
 
@@ -33,7 +33,35 @@ Configuration is loaded in the following priority:
 
 ## Client Setup
 
-### Claude Desktop
+All examples use the same stdio server: `npx -y @apipay.vn/mcp`, with `APIPAY_ACCESS_KEY` and `APIPAY_SECRET_KEY` passed as environment variables.
+
+<details>
+  <summary>Amp</summary>
+
+Use the Amp CLI:
+
+```bash
+amp mcp add apipay -- npx -y @apipay.vn/mcp
+```
+
+</details>
+
+<details>
+  <summary>Claude Code</summary>
+
+Use the Claude Code CLI to add the ApiPay MCP server:
+
+```bash
+claude mcp add apipay --scope user \
+  --env APIPAY_ACCESS_KEY=ak_test_your_access_key \
+  --env APIPAY_SECRET_KEY=your_secret_key \
+  -- npx -y @apipay.vn/mcp
+```
+
+</details>
+
+<details>
+  <summary>Claude Desktop</summary>
 
 Add to `claude_desktop_config.json` (macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`):
 
@@ -42,7 +70,7 @@ Add to `claude_desktop_config.json` (macOS: `~/Library/Application Support/Claud
   "mcpServers": {
     "apipay": {
       "command": "npx",
-      "args": ["-y", "@apipay/mcp"],
+      "args": ["-y", "@apipay.vn/mcp"],
       "env": {
         "APIPAY_ACCESS_KEY": "ak_test_your_access_key",
         "APIPAY_SECRET_KEY": "your_secret_key"
@@ -52,25 +80,19 @@ Add to `claude_desktop_config.json` (macOS: `~/Library/Application Support/Claud
 }
 ```
 
-### Cursor
+</details>
 
-In Cursor Settings → Features → MCP:
+<details>
+  <summary>Cline</summary>
 
-- **Name**: `apipay`
-- **Type**: `stdio`
-- **Command**: `npx -y @apipay/mcp`
-- **Environment Variables**:
-  - `APIPAY_ACCESS_KEY`: `ak_test_your_access_key`
-  - `APIPAY_SECRET_KEY`: `your_secret_key`
-
-Or in `.cursor/mcp.json`:
+Add to `cline_mcp_settings.json`:
 
 ```json
 {
   "mcpServers": {
     "apipay": {
       "command": "npx",
-      "args": ["-y", "@apipay/mcp"],
+      "args": ["-y", "@apipay.vn/mcp"],
       "env": {
         "APIPAY_ACCESS_KEY": "ak_test_your_access_key",
         "APIPAY_SECRET_KEY": "your_secret_key"
@@ -80,32 +102,217 @@ Or in `.cursor/mcp.json`:
 }
 ```
 
-### Command Code
+</details>
 
-Using the CLI:
+<details>
+  <summary>Codex</summary>
+
+Use the Codex CLI:
 
 ```bash
-grok mcp add apipay -e APIPAY_ACCESS_KEY=ak_test_your_access_key -e APIPAY_SECRET_KEY=your_secret_key -- npx -y @apipay/mcp
+codex mcp add apipay \
+  --env APIPAY_ACCESS_KEY=ak_test_your_access_key \
+  --env APIPAY_SECRET_KEY=your_secret_key \
+  -- npx -y @apipay.vn/mcp
 ```
 
-Or configure via JSON settings:
+</details>
+
+<details>
+  <summary>Command Code</summary>
+
+Command Code uses the `cmd` CLI. Use the `--env` flag to pass the API keys:
+
+```bash
+cmd mcp add --transport stdio \
+  --env APIPAY_ACCESS_KEY=ak_test_your_access_key \
+  --env APIPAY_SECRET_KEY=your_secret_key \
+  apipay -- npx -y @apipay.vn/mcp
+```
+
+</details>
+
+<details>
+  <summary>Copilot CLI</summary>
+
+Use the Copilot CLI (`--env` is repeatable):
+
+```bash
+copilot mcp add apipay \
+  --env APIPAY_ACCESS_KEY=ak_test_your_access_key \
+  --env APIPAY_SECRET_KEY=your_secret_key \
+  -- npx -y @apipay.vn/mcp
+```
+
+</details>
+
+<details>
+  <summary>Copilot / VS Code</summary>
+
+Add to `.vscode/mcp.json`:
 
 ```json
 {
-  "mcp": {
-    "servers": {
-      "apipay": {
-        "command": "npx",
-        "args": ["-y", "@apipay/mcp"],
-        "env": {
-          "APIPAY_ACCESS_KEY": "ak_test_your_access_key",
-          "APIPAY_SECRET_KEY": "your_secret_key"
-        }
+  "servers": {
+    "apipay": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@apipay.vn/mcp"],
+      "env": {
+        "APIPAY_ACCESS_KEY": "ak_test_your_access_key",
+        "APIPAY_SECRET_KEY": "your_secret_key"
       }
     }
   }
 }
 ```
+
+</details>
+
+<details>
+  <summary>Cursor</summary>
+
+In Cursor Settings → Features → MCP, or in `.cursor/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "apipay": {
+      "command": "npx",
+      "args": ["-y", "@apipay.vn/mcp"],
+      "env": {
+        "APIPAY_ACCESS_KEY": "ak_test_your_access_key",
+        "APIPAY_SECRET_KEY": "your_secret_key"
+      }
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+  <summary>Devin CLI</summary>
+
+```bash
+devin mcp add apipay -- npx -y @apipay.vn/mcp
+```
+
+</details>
+
+<details>
+  <summary>Factory CLI</summary>
+
+```bash
+droid mcp add apipay "npx -y @apipay.vn/mcp"
+```
+
+</details>
+
+<details>
+  <summary>Gemini CLI</summary>
+
+Project-wide:
+
+```bash
+gemini mcp add apipay \
+  -e APIPAY_ACCESS_KEY=ak_test_your_access_key \
+  -e APIPAY_SECRET_KEY=your_secret_key \
+  -- npx -y @apipay.vn/mcp
+```
+
+Globally (user scope):
+
+```bash
+gemini mcp add -s user apipay \
+  -e APIPAY_ACCESS_KEY=ak_test_your_access_key \
+  -e APIPAY_SECRET_KEY=your_secret_key \
+  -- npx -y @apipay.vn/mcp
+```
+
+</details>
+
+<details>
+  <summary>Grok Build</summary>
+
+Grok Build uses the `grok` CLI. Use the `-e` flag to pass the API keys:
+
+```bash
+grok mcp add apipay \
+  -e APIPAY_ACCESS_KEY=ak_test_your_access_key \
+  -e APIPAY_SECRET_KEY=your_secret_key \
+  -- npx -y @apipay.vn/mcp
+```
+
+</details>
+
+<details>
+  <summary>JetBrains AI Assistant</summary>
+
+Go to `Settings | Tools | AI Assistant | Model Context Protocol (MCP)` → `Add`, using the standard config above (server name `apipay`, command `npx -y @apipay.vn/mcp`, env vars `APIPAY_ACCESS_KEY` / `APIPAY_SECRET_KEY`).
+
+</details>
+
+<details>
+  <summary>OpenCode</summary>
+
+Add to `opencode.json` (project) or `~/.config/opencode/opencode.json` (global):
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "apipay": {
+      "type": "local",
+      "command": ["npx", "-y", "@apipay.vn/mcp"],
+      "environment": {
+        "APIPAY_ACCESS_KEY": "ak_test_your_access_key",
+        "APIPAY_SECRET_KEY": "your_secret_key"
+      }
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+  <summary>Qoder CLI</summary>
+
+```bash
+qodercli mcp add apipay -- npx -y @apipay.vn/mcp
+```
+
+</details>
+
+<details>
+  <summary>Warp</summary>
+
+Go to `Settings | AI | Manage MCP Servers` → `+ Add`, using the standard config above (server name `apipay`, command `npx -y @apipay.vn/mcp`, env vars `APIPAY_ACCESS_KEY` / `APIPAY_SECRET_KEY`).
+
+</details>
+
+<details>
+  <summary>Windsurf</summary>
+
+Follow the Windsurf MCP configuration guide and add the server to `.windsurf/mcp_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "apipay": {
+      "command": "npx",
+      "args": ["-y", "@apipay.vn/mcp"],
+      "env": {
+        "APIPAY_ACCESS_KEY": "ak_test_your_access_key",
+        "APIPAY_SECRET_KEY": "your_secret_key"
+      }
+    }
+  }
+}
+```
+
+</details>
 
 ---
 
