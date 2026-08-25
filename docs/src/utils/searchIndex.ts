@@ -75,6 +75,12 @@ export const searchItems: SearchItem[] = [
     section: 'Tích hợp',
   },
   {
+    title: 'MCP Server',
+    description: 'Kết nối ApiPay với AI assistant qua @apipay.vn/mcp',
+    href: '/vi/integrations/mcp',
+    section: 'Tích hợp',
+  },
+  {
     title: 'Web App',
     description: 'Tích hợp ApiPay vào web app với helper JavaScript và Python',
     href: '/vi/integrations/webapp',
@@ -170,6 +176,12 @@ export const searchItems: SearchItem[] = [
     title: 'Vibe Code',
     description: 'Generate an ApiPay integration prompt for AI coding assistants',
     href: '/en/integrations/vibe-code',
+    section: 'Integrations',
+  },
+  {
+    title: 'MCP Server',
+    description: 'Connect ApiPay to AI assistants with the @apipay.vn/mcp server',
+    href: '/en/integrations/mcp',
     section: 'Integrations',
   },
   {

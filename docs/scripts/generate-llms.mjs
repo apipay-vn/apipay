@@ -47,6 +47,7 @@ const SIDEBAR_SECTIONS = [
       {file: 'integrations/webapp.mdx', label: 'Web App'},
       {file: 'integrations/woocommerce.mdx', label: 'WooCommerce'},
       {file: 'integrations/vibe-code.mdx', label: 'Vibe Code'},
+      {file: 'integrations/mcp.mdx', label: 'MCP Server'},
       {file: 'integrations/whmcs.mdx', label: 'WHMCS'},
       {file: 'integrations/hostbill.mdx', label: 'HostBill'},
     ],

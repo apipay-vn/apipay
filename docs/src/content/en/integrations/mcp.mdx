@@ -1,0 +1,372 @@
+---
+title: MCP Server
+description: Connect ApiPay to AI assistants with the @apipay.vn/mcp Model Context Protocol server.
+---
+
+# MCP Server
+
+`@apipay.vn/mcp` is a Model Context Protocol (MCP) server for ApiPay. It exposes tools over stdio so AI assistants (Claude, Cursor, Codex, Command Code, Grok Build, Gemini, Copilot, OpenCode, and others) can create sandbox payments, list bank accounts and transactions, manage webhooks, and query metrics.
+
+<Callout type="tip">
+Open **Integrations > MCP Server** in the dashboard for copy-paste client configs with your API keys.
+
+[Open MCP Server in dashboard](https://my.apipay.vn/en/integrations/mcp)
+</Callout>
+
+## Prerequisites
+
+- Node.js `>=18.0.0`
+- An ApiPay account with API keys from the [ApiPay Dashboard](https://my.apipay.vn) (`ak_test_...` for sandbox or `ak_live_...` for production)
+
+## Authentication & Configuration
+
+The MCP server authenticates requests with Base64-encoded `accessKey:secretKey` (`Authorization: Bearer <base64>`).
+
+Configuration is loaded in this order:
+
+1. **Environment variables**
+   - `APIPAY_ACCESS_KEY` — merchant access key (`ak_test_...` or `ak_live_...`)
+   - `APIPAY_SECRET_KEY` — merchant secret key
+   - `APIPAY_API_URL` — optional base API URL (defaults to `https://app.apipay.vn/v1`)
+2. **CLI configuration fallback** — if environment variables are missing, the server reads `~/.config/apipay/config.json` (the file managed by `apipay login` or `apipay keys:create`).
+
+<Callout type="info">
+The server starts even if credentials are not set. Individual tools return an error asking you to set credentials if they are called while unauthenticated.
+</Callout>
+
+## Client Setup
+
+All examples use the same stdio server: `npx -y @apipay.vn/mcp`, with `APIPAY_ACCESS_KEY` and `APIPAY_SECRET_KEY` passed as environment variables. Use test keys (`ak_test_...`) in sandbox mode.
+
+<details>
+<summary>Amp</summary>
+
+Use the Amp CLI:
+
+```bash
+amp mcp add apipay -- npx -y @apipay.vn/mcp
+```
+
+</details>
+
+<details>
+<summary>Claude Code</summary>
+
+Use the Claude Code CLI to add the ApiPay MCP server:
+
+```bash
+claude mcp add apipay --scope user \
+  --env APIPAY_ACCESS_KEY=ak_test_your_access_key \
+  --env APIPAY_SECRET_KEY=your_secret_key \
+  -- npx -y @apipay.vn/mcp
+```
+
+</details>
+
+<details>
+<summary>Claude Desktop</summary>
+
+Add to `claude_desktop_config.json` (macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`):
+
+```json
+{
+  "mcpServers": {
+    "apipay": {
+      "command": "npx",
+      "args": ["-y", "@apipay.vn/mcp"],
+      "env": {
+        "APIPAY_ACCESS_KEY": "ak_test_your_access_key",
+        "APIPAY_SECRET_KEY": "your_secret_key"
+      }
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+<summary>Cline</summary>
+
+Add to `cline_mcp_settings.json`:
+
+```json
+{
+  "mcpServers": {
+    "apipay": {
+      "command": "npx",
+      "args": ["-y", "@apipay.vn/mcp"],
+      "env": {
+        "APIPAY_ACCESS_KEY": "ak_test_your_access_key",
+        "APIPAY_SECRET_KEY": "your_secret_key"
+      }
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+<summary>Codex</summary>
+
+Use the Codex CLI:
+
+```bash
+codex mcp add apipay \
+  --env APIPAY_ACCESS_KEY=ak_test_your_access_key \
+  --env APIPAY_SECRET_KEY=your_secret_key \
+  -- npx -y @apipay.vn/mcp
+```
+
+</details>
+
+<details>
+<summary>Command Code</summary>
+
+Command Code uses the `cmd` CLI. Use the `--env` flag to pass the API keys:
+
+```bash
+cmd mcp add --transport stdio \
+  --env APIPAY_ACCESS_KEY=ak_test_your_access_key \
+  --env APIPAY_SECRET_KEY=your_secret_key \
+  apipay -- npx -y @apipay.vn/mcp
+```
+
+</details>
+
+<details>
+<summary>Copilot CLI</summary>
+
+Use the Copilot CLI (`--env` is repeatable):
+
+```bash
+copilot mcp add apipay \
+  --env APIPAY_ACCESS_KEY=ak_test_your_access_key \
+  --env APIPAY_SECRET_KEY=your_secret_key \
+  -- npx -y @apipay.vn/mcp
+```
+
+</details>
+
+<details>
+<summary>Copilot / VS Code</summary>
+
+Add to `.vscode/mcp.json`:
+
+```json
+{
+  "servers": {
+    "apipay": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@apipay.vn/mcp"],
+      "env": {
+        "APIPAY_ACCESS_KEY": "ak_test_your_access_key",
+        "APIPAY_SECRET_KEY": "your_secret_key"
+      }
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+<summary>Cursor</summary>
+
+In Cursor Settings → Features → MCP, or in `.cursor/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "apipay": {
+      "command": "npx",
+      "args": ["-y", "@apipay.vn/mcp"],
+      "env": {
+        "APIPAY_ACCESS_KEY": "ak_test_your_access_key",
+        "APIPAY_SECRET_KEY": "your_secret_key"
+      }
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+<summary>Devin CLI</summary>
+
+```bash
+devin mcp add apipay -- npx -y @apipay.vn/mcp
+```
+
+</details>
+
+<details>
+<summary>Factory CLI</summary>
+
+```bash
+droid mcp add apipay "npx -y @apipay.vn/mcp"
+```
+
+</details>
+
+<details>
+<summary>Gemini CLI</summary>
+
+Project-wide:
+
+```bash
+gemini mcp add apipay \
+  -e APIPAY_ACCESS_KEY=ak_test_your_access_key \
+  -e APIPAY_SECRET_KEY=your_secret_key \
+  -- npx -y @apipay.vn/mcp
+```
+
+Globally (user scope):
+
+```bash
+gemini mcp add -s user apipay \
+  -e APIPAY_ACCESS_KEY=ak_test_your_access_key \
+  -e APIPAY_SECRET_KEY=your_secret_key \
+  -- npx -y @apipay.vn/mcp
+```
+
+</details>
+
+<details>
+<summary>Grok Build</summary>
+
+Grok Build uses the `grok` CLI. Use the `-e` flag to pass the API keys:
+
+```bash
+grok mcp add apipay \
+  -e APIPAY_ACCESS_KEY=ak_test_your_access_key \
+  -e APIPAY_SECRET_KEY=your_secret_key \
+  -- npx -y @apipay.vn/mcp
+```
+
+</details>
+
+<details>
+<summary>JetBrains AI Assistant</summary>
+
+Go to `Settings | Tools | AI Assistant | Model Context Protocol (MCP)` → `Add`, using the standard config above (server name `apipay`, command `npx -y @apipay.vn/mcp`, env vars `APIPAY_ACCESS_KEY` / `APIPAY_SECRET_KEY`).
+
+</details>
+
+<details>
+<summary>OpenCode</summary>
+
+Add to `opencode.json` (project) or `~/.config/opencode/opencode.json` (global):
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "apipay": {
+      "type": "local",
+      "command": ["npx", "-y", "@apipay.vn/mcp"],
+      "environment": {
+        "APIPAY_ACCESS_KEY": "ak_test_your_access_key",
+        "APIPAY_SECRET_KEY": "your_secret_key"
+      }
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+<summary>Qoder CLI</summary>
+
+```bash
+qodercli mcp add apipay -- npx -y @apipay.vn/mcp
+```
+
+</details>
+
+<details>
+<summary>Warp</summary>
+
+Go to `Settings | AI | Manage MCP Servers` → `+ Add`, using the standard config above (server name `apipay`, command `npx -y @apipay.vn/mcp`, env vars `APIPAY_ACCESS_KEY` / `APIPAY_SECRET_KEY`).
+
+</details>
+
+<details>
+<summary>Windsurf</summary>
+
+Follow the Windsurf MCP configuration guide and add the server to `.windsurf/mcp_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "apipay": {
+      "command": "npx",
+      "args": ["-y", "@apipay.vn/mcp"],
+      "env": {
+        "APIPAY_ACCESS_KEY": "ak_test_your_access_key",
+        "APIPAY_SECRET_KEY": "your_secret_key"
+      }
+    }
+  }
+}
+```
+
+</details>
+
+## Available Tools
+
+The server registers 15 tools. MCP clients automatically prefix tool names with the server key `apipay` (for example `apipay_list_banks` in OpenCode, `mcp__apipay__list_banks` in Claude Code).
+
+### Connection & Verification
+
+- `self_test` — Validates API key configuration and returns connection status, key prefix, and bank summary counts.
+
+### Banks
+
+- `list_banks` — Lists connected bank accounts for this merchant (returns `bankPublicId` values needed to create payments and webhooks).
+
+### Payment Requests
+
+- `create_payment` — Creates a payment link (requires `bankPublicId`; optional `amount`, `content`, `title`, `expiresAt`, `redirectUrl`).
+- `list_payments` — Lists payment requests with optional filtering by status, search term, or date range.
+- `cancel_payment` — **(Destructive)** Cancels an `ACTIVE` payment request.
+- `simulate_payment` — Simulates payment for sandbox requests (`publicId` must start with `test_pr_`; triggers sandbox webhooks).
+
+### Webhooks
+
+- `list_webhooks` — Lists registered webhook endpoints.
+- `create_webhook` — Registers a webhook URL for a connected bank account.
+- `update_webhook` — Updates the destination URL for a webhook.
+- `toggle_webhook` — Toggles a webhook between active and inactive.
+- `remove_webhook` — **(Destructive)** Permanently deletes a webhook.
+- `list_webhook_deliveries` — Lists webhook delivery attempts and status logs.
+- `resend_webhook` — Retries a failed webhook delivery (fires a real HTTP request to the destination).
+
+### Metrics & Transactions
+
+- `get_overview` — Returns transaction totals, averages, success rates, and bank volume distribution.
+- `list_transactions` — Lists recent bank transactions with pagination, date, bank, and search filters.
+
+## Typical Sandbox Workflow
+
+1. **Verify connection** — Call `self_test` to confirm the API key is active.
+2. **Find a connected bank** — Call `list_banks` to get a `bankPublicId`.
+3. **Create a payment request** — Call `create_payment` with `bankPublicId` and `amount` (for example `"50000"`). A `publicId` starting with `test_pr_...` is returned.
+4. **Simulate customer payment** — Call `simulate_payment` with `publicId: "test_pr_..."` to test settlement and webhook delivery.
+5. **Check history** — Call `list_webhook_deliveries` and `list_transactions` to verify the transaction was recorded.
+
+See [Sandbox & Live Test](/en/sandbox) for more on sandbox keys and simulated payments.
+
+## Destructive Tools
+
+<Callout type="danger">
+These operations permanently change state or send a real outbound request. Agents should confirm before running them:
+
+- `cancel_payment` — Cancels an active payment link.
+- `remove_webhook` — Deletes a registered webhook URL.
+- `resend_webhook` — Dispatches an HTTP request to the merchant webhook URL.
+</Callout>

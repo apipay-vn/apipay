@@ -25,6 +25,7 @@
 - [Web App](https://docs.apipay.vn/en/integrations/webapp): Integrate ApiPay into a custom web app with SDK-style JavaScript and Python helpers.
 - [WooCommerce](https://docs.apipay.vn/en/integrations/woocommerce): Install and configure the ApiPay WooCommerce payment gateway.
 - [Vibe Code](https://docs.apipay.vn/en/integrations/vibe-code): Generate an ApiPay integration prompt for AI coding assistants.
+- [MCP Server](https://docs.apipay.vn/en/integrations/mcp): Connect ApiPay to AI assistants with the @apipay.vn/mcp Model Context Protocol server.
 - [WHMCS](https://docs.apipay.vn/en/integrations/whmcs): Install and configure the ApiPay WHMCS payment gateway module.
 - [HostBill](https://docs.apipay.vn/en/integrations/hostbill): Install and configure the ApiPay HostBill payment gateway module.
 

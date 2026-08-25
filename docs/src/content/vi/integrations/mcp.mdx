@@ -1,0 +1,372 @@
+---
+title: MCP Server
+description: Kết nối ApiPay với AI assistant qua server Model Context Protocol @apipay.vn/mcp.
+---
+
+# MCP Server
+
+`@apipay.vn/mcp` là server Model Context Protocol (MCP) cho ApiPay. Server chạy qua stdio và cung cấp công cụ để AI assistant (Claude, Cursor, Codex, Command Code, Grok Build, Gemini, Copilot, OpenCode, và các client khác) tạo thanh toán sandbox, liệt kê tài khoản ngân hàng và giao dịch, quản lý webhook, và truy vấn số liệu.
+
+<Callout type="tip">
+Mở **Tích hợp > MCP Server** trong dashboard để sao chép cấu hình client kèm API key của bạn.
+
+[Mở MCP Server trong dashboard](https://my.apipay.vn/vi/integrations/mcp)
+</Callout>
+
+## Yêu cầu
+
+- Node.js `>=18.0.0`
+- Tài khoản ApiPay với API key từ [ApiPay Dashboard](https://my.apipay.vn) (`ak_test_...` cho sandbox hoặc `ak_live_...` cho production)
+
+## Xác thực & cấu hình
+
+MCP server xác thực request bằng `accessKey:secretKey` được mã hóa Base64 (`Authorization: Bearer <base64>`).
+
+Cấu hình được nạp theo thứ tự:
+
+1. **Biến môi trường**
+   - `APIPAY_ACCESS_KEY` — access key merchant (`ak_test_...` hoặc `ak_live_...`)
+   - `APIPAY_SECRET_KEY` — secret key merchant
+   - `APIPAY_API_URL` — URL API gốc (tuỳ chọn, mặc định `https://app.apipay.vn/v1`)
+2. **Cấu hình CLI** — nếu thiếu biến môi trường, server đọc `~/.config/apipay/config.json` (file do `apipay login` hoặc `apipay keys:create` quản lý).
+
+<Callout type="info">
+Server vẫn khởi động khi chưa có credentials. Các tool sẽ trả lỗi yêu cầu thiết lập credentials nếu được gọi khi chưa xác thực.
+</Callout>
+
+## Cấu hình theo client
+
+Mọi ví dụ dùng cùng một stdio server: `npx -y @apipay.vn/mcp`, với `APIPAY_ACCESS_KEY` và `APIPAY_SECRET_KEY` truyền qua biến môi trường. Ở chế độ sandbox hãy dùng key thử nghiệm (`ak_test_...`).
+
+<details>
+<summary>Amp</summary>
+
+Dùng Amp CLI:
+
+```bash
+amp mcp add apipay -- npx -y @apipay.vn/mcp
+```
+
+</details>
+
+<details>
+<summary>Claude Code</summary>
+
+Dùng Claude Code CLI để thêm MCP server ApiPay:
+
+```bash
+claude mcp add apipay --scope user \
+  --env APIPAY_ACCESS_KEY=ak_test_your_access_key \
+  --env APIPAY_SECRET_KEY=your_secret_key \
+  -- npx -y @apipay.vn/mcp
+```
+
+</details>
+
+<details>
+<summary>Claude Desktop</summary>
+
+Thêm vào `claude_desktop_config.json` (macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`):
+
+```json
+{
+  "mcpServers": {
+    "apipay": {
+      "command": "npx",
+      "args": ["-y", "@apipay.vn/mcp"],
+      "env": {
+        "APIPAY_ACCESS_KEY": "ak_test_your_access_key",
+        "APIPAY_SECRET_KEY": "your_secret_key"
+      }
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+<summary>Cline</summary>
+
+Thêm vào `cline_mcp_settings.json`:
+
+```json
+{
+  "mcpServers": {
+    "apipay": {
+      "command": "npx",
+      "args": ["-y", "@apipay.vn/mcp"],
+      "env": {
+        "APIPAY_ACCESS_KEY": "ak_test_your_access_key",
+        "APIPAY_SECRET_KEY": "your_secret_key"
+      }
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+<summary>Codex</summary>
+
+Dùng Codex CLI:
+
+```bash
+codex mcp add apipay \
+  --env APIPAY_ACCESS_KEY=ak_test_your_access_key \
+  --env APIPAY_SECRET_KEY=your_secret_key \
+  -- npx -y @apipay.vn/mcp
+```
+
+</details>
+
+<details>
+<summary>Command Code</summary>
+
+Command Code dùng CLI `cmd`. Dùng cờ `--env` để truyền API key:
+
+```bash
+cmd mcp add --transport stdio \
+  --env APIPAY_ACCESS_KEY=ak_test_your_access_key \
+  --env APIPAY_SECRET_KEY=your_secret_key \
+  apipay -- npx -y @apipay.vn/mcp
+```
+
+</details>
+
+<details>
+<summary>Copilot CLI</summary>
+
+Dùng Copilot CLI (`--env` có thể lặp lại):
+
+```bash
+copilot mcp add apipay \
+  --env APIPAY_ACCESS_KEY=ak_test_your_access_key \
+  --env APIPAY_SECRET_KEY=your_secret_key \
+  -- npx -y @apipay.vn/mcp
+```
+
+</details>
+
+<details>
+<summary>Copilot / VS Code</summary>
+
+Thêm vào `.vscode/mcp.json`:
+
+```json
+{
+  "servers": {
+    "apipay": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@apipay.vn/mcp"],
+      "env": {
+        "APIPAY_ACCESS_KEY": "ak_test_your_access_key",
+        "APIPAY_SECRET_KEY": "your_secret_key"
+      }
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+<summary>Cursor</summary>
+
+Trong Cursor Settings → Features → MCP, hoặc file `.cursor/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "apipay": {
+      "command": "npx",
+      "args": ["-y", "@apipay.vn/mcp"],
+      "env": {
+        "APIPAY_ACCESS_KEY": "ak_test_your_access_key",
+        "APIPAY_SECRET_KEY": "your_secret_key"
+      }
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+<summary>Devin CLI</summary>
+
+```bash
+devin mcp add apipay -- npx -y @apipay.vn/mcp
+```
+
+</details>
+
+<details>
+<summary>Factory CLI</summary>
+
+```bash
+droid mcp add apipay "npx -y @apipay.vn/mcp"
+```
+
+</details>
+
+<details>
+<summary>Gemini CLI</summary>
+
+Theo dự án:
+
+```bash
+gemini mcp add apipay \
+  -e APIPAY_ACCESS_KEY=ak_test_your_access_key \
+  -e APIPAY_SECRET_KEY=your_secret_key \
+  -- npx -y @apipay.vn/mcp
+```
+
+Toàn cục (user scope):
+
+```bash
+gemini mcp add -s user apipay \
+  -e APIPAY_ACCESS_KEY=ak_test_your_access_key \
+  -e APIPAY_SECRET_KEY=your_secret_key \
+  -- npx -y @apipay.vn/mcp
+```
+
+</details>
+
+<details>
+<summary>Grok Build</summary>
+
+Grok Build dùng CLI `grok`. Dùng cờ `-e` để truyền API key:
+
+```bash
+grok mcp add apipay \
+  -e APIPAY_ACCESS_KEY=ak_test_your_access_key \
+  -e APIPAY_SECRET_KEY=your_secret_key \
+  -- npx -y @apipay.vn/mcp
+```
+
+</details>
+
+<details>
+<summary>JetBrains AI Assistant</summary>
+
+Vào `Settings | Tools | AI Assistant | Model Context Protocol (MCP)` → `Add`, dùng cấu hình chuẩn ở trên (tên server `apipay`, lệnh `npx -y @apipay.vn/mcp`, biến môi trường `APIPAY_ACCESS_KEY` / `APIPAY_SECRET_KEY`).
+
+</details>
+
+<details>
+<summary>OpenCode</summary>
+
+Thêm vào `opencode.json` (dự án) hoặc `~/.config/opencode/opencode.json` (toàn cục):
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "apipay": {
+      "type": "local",
+      "command": ["npx", "-y", "@apipay.vn/mcp"],
+      "environment": {
+        "APIPAY_ACCESS_KEY": "ak_test_your_access_key",
+        "APIPAY_SECRET_KEY": "your_secret_key"
+      }
+    }
+  }
+}
+```
+
+</details>
+
+<details>
+<summary>Qoder CLI</summary>
+
+```bash
+qodercli mcp add apipay -- npx -y @apipay.vn/mcp
+```
+
+</details>
+
+<details>
+<summary>Warp</summary>
+
+Vào `Settings | AI | Manage MCP Servers` → `+ Add`, dùng cấu hình chuẩn ở trên (tên server `apipay`, lệnh `npx -y @apipay.vn/mcp`, biến môi trường `APIPAY_ACCESS_KEY` / `APIPAY_SECRET_KEY`).
+
+</details>
+
+<details>
+<summary>Windsurf</summary>
+
+Theo hướng dẫn MCP của Windsurf và thêm server vào `.windsurf/mcp_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "apipay": {
+      "command": "npx",
+      "args": ["-y", "@apipay.vn/mcp"],
+      "env": {
+        "APIPAY_ACCESS_KEY": "ak_test_your_access_key",
+        "APIPAY_SECRET_KEY": "your_secret_key"
+      }
+    }
+  }
+}
+```
+
+</details>
+
+## Công cụ có sẵn
+
+Server đăng ký 15 tool. MCP client tự thêm tiền tố tên server `apipay` (ví dụ `apipay_list_banks` trong OpenCode, `mcp__apipay__list_banks` trong Claude Code).
+
+### Kết nối & kiểm tra
+
+- `self_test` — Xác thực cấu hình API key, trả về trạng thái kết nối, tiền tố key, và tổng quan tài khoản ngân hàng.
+
+### Ngân hàng
+
+- `list_banks` — Liệt kê tài khoản ngân hàng đã kết nối (trả về `bankPublicId` cần thiết để tạo payment và webhook).
+
+### Payment request
+
+- `create_payment` — Tạo link thanh toán (cần `bankPublicId`; tuỳ chọn `amount`, `content`, `title`, `expiresAt`, `redirectUrl`).
+- `list_payments` — Liệt kê payment request với bộ lọc trạng thái, từ khóa, hoặc khoảng thời gian.
+- `cancel_payment` — **(Rủi ro)** Hủy một payment request đang `ACTIVE`.
+- `simulate_payment` — Mô phỏng thanh toán sandbox (`publicId` phải bắt đầu bằng `test_pr_`; kích hoạt webhook thử nghiệm).
+
+### Webhook
+
+- `list_webhooks` — Liệt kê các webhook đang đăng ký.
+- `create_webhook` — Đăng ký URL webhook cho một tài khoản ngân hàng đã kết nối.
+- `update_webhook` — Cập nhật URL đích của webhook.
+- `toggle_webhook` — Bật/tắt hoạt động của webhook.
+- `remove_webhook` — **(Rủi ro)** Xóa vĩnh viễn một webhook.
+- `list_webhook_deliveries` — Liệt kê các lần giao webhook và nhật ký trạng thái.
+- `resend_webhook` — Gửi lại một webhook thất bại (tạo HTTP request thật tới đích).
+
+### Số liệu & giao dịch
+
+- `get_overview` — Trả về tổng giao dịch, trung bình, tỷ lệ thành công, và phân bố khối lượng theo ngân hàng.
+- `list_transactions` — Liệt kê giao dịch ngân hàng gần nhất với phân trang và bộ lọc ngày, ngân hàng, từ khóa.
+
+## Quy trình sandbox điển hình
+
+1. **Kiểm tra kết nối** — Gọi `self_test` để xác nhận API key đang hoạt động.
+2. **Tìm ngân hàng đã kết nối** — Gọi `list_banks` để lấy `bankPublicId`.
+3. **Tạo payment request** — Gọi `create_payment` với `bankPublicId` và `amount` (ví dụ `"50000"`). Response trả về `publicId` bắt đầu bằng `test_pr_...`.
+4. **Mô phỏng thanh toán** — Gọi `simulate_payment` với `publicId: "test_pr_..."` để kiểm tra settlement và webhook.
+5. **Kiểm tra lịch sử** — Gọi `list_webhook_deliveries` và `list_transactions` để xác nhận giao dịch đã được ghi nhận.
+
+Xem [Sandbox & Live Test](/vi/sandbox) để biết thêm về key sandbox và thanh toán mô phỏng.
+
+## Công cụ rủi ro
+
+<Callout type="danger">
+Các thao tác sau thay đổi trạng thái vĩnh viễn hoặc gửi request thật ra ngoài. Agent cần xác nhận trước khi chạy:
+
+- `cancel_payment` — Hủy một payment link đang hoạt động.
+- `remove_webhook` — Xóa URL webhook đã đăng ký.
+- `resend_webhook` — Gửi HTTP request tới URL webhook của merchant.
+</Callout>
