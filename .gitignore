@@ -6,6 +6,8 @@
 # Dependencies
 # ============================================
 node_modules/
+.firebase/
+firebase-debug.log
 .pnp
 .pnp.js
 .yarn/install-state.gz

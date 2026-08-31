@@ -1,0 +1,17 @@
+{
+  "projects": {
+    "default": "apipayvn"
+  },
+  "targets": {
+    "apipayvn": {
+      "hosting": {
+        "qr": [
+          "apipay-qr"
+        ],
+        "docs": [
+          "apipay-docs"
+        ]
+      }
+    }
+  }
+}
