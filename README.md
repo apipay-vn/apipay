@@ -99,11 +99,26 @@ apipay/
 │
 ├── mcp/                    # ApiPay MCP Server - Model Context Protocol
 │
-└── docs/                   # Tài liệu hướng dẫn
+├── docs/                   # Tài liệu hướng dẫn
+│   ├── src/
+│   │   ├── content/        # Nội dung docs (vi/, en/)
+│   │   └── components/     # React components
+│   └── dist/               # Built static files
+│
+└── qr/                     # ApiPay QR - Trình tạo mã VietQR (Vite + React)
     ├── src/
-    │   ├── content/        # Nội dung docs (vi/, en/)
-    │   └── components/     # React components
-    └── dist/               # Built static files
+    │   ├── components/     # UI tạo và hiển thị QR
+    │   └── lib/            # Danh sách ngân hàng, tiện ích
+    └── public/banks/       # Logo ngân hàng
+```
+
+### Chạy QR generator
+
+```bash
+cd qr
+cp .env.example .env      # VITE_API_URL=https://app.apipay.vn
+npm install
+npm run dev               # http://localhost:5505
 ```
 
 ## Tài liệu chi tiết
