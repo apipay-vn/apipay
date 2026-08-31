@@ -1,0 +1,48 @@
+name: Deploy QR
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'qr/**'
+      - 'firebase.json'
+      - '.firebaserc'
+      - '.github/workflows/deploy-qr.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-qr
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: qr/package-lock.json
+
+      - name: Install
+        working-directory: qr
+        run: npm ci
+
+      - name: Build
+        working-directory: qr
+        env:
+          VITE_API_URL: ${{ vars.VITE_API_URL }}
+        run: npm run build
+
+      - name: Deploy to Firebase Hosting
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_APIPAYVN }}
+          projectId: apipayvn
+          target: qr
+          channelId: live
