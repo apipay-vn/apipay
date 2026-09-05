@@ -1,6 +1,6 @@
 {
   "name": "@apipay.vn/mcp",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Model Context Protocol (MCP) server for ApiPay",
   "license": "MIT",
   "type": "module",

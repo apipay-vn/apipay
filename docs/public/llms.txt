@@ -16,6 +16,7 @@
 - [Dashboard Guide](https://docs.apipay.vn/en/dashboard): Navigate and use your ApiPay dashboard effectively
 - [Connect Banks](https://docs.apipay.vn/en/connect-banks): Link your Vietnamese bank account to start receiving payments via ApiPay
 - [Payment Speaker](https://docs.apipay.vn/en/payment-speaker): Turn any phone, tablet, or computer into a real-time bank transfer voice announcement speaker for free
+- [Commerce](https://docs.apipay.vn/en/commerce): Create products and prices, then open a payment link from a price.
 - [Custom Domains](https://docs.apipay.vn/en/custom-domains): Use your own domain for the ApiPay payment page
 - [Passkeys](https://docs.apipay.vn/en/passkeys): Sign in to ApiPay faster with Face ID, fingerprint, or a device passkey
 - [Affiliates](https://docs.apipay.vn/en/affiliates): Share ApiPay, track referrals, and manage commissions from the dashboard
@@ -33,6 +34,7 @@
 
 - [Authentication](https://docs.apipay.vn/en/api/authentication): API authentication guide
 - [Payment Requests](https://docs.apipay.vn/en/api/payment-requests): API for creating and managing payment links
+- [Commerce](https://docs.apipay.vn/en/api/commerce): Create products and prices, then check out with a price id
 - [Webhooks](https://docs.apipay.vn/en/api/webhooks): Receive real-time payment notifications
 - [Banks](https://docs.apipay.vn/en/api/banks): API for connecting and managing client bank accounts
 - [Metrics](https://docs.apipay.vn/en/api/metrics): API for retrieving transaction metrics and analytics

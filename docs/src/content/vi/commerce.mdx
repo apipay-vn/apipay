@@ -1,0 +1,63 @@
+---
+title: Commerce
+description: Tạo sản phẩm và mức giá, rồi mở link thanh toán từ mức giá đó.
+---
+
+# Commerce
+
+Commerce là nơi bạn quản lý sản phẩm và mức giá. Tạo link thanh toán từ một mức giá để khách mua cùng mặt hàng đều chuyển đúng số tiền.
+
+Bạn làm việc này trên dashboard (**Commerce**) hoặc qua [Commerce API](/vi/api/commerce). Tạo link thanh toán vẫn dùng [Payment Requests API](/vi/api/payment-requests) — gửi `priceId` thay vì tự nhập số tiền.
+
+<Callout type="tip">
+Mở **Commerce** trong dashboard để tạo sản phẩm, thêm mức giá và thử một link thanh toán.
+
+[Mở Commerce trong dashboard](https://my.apipay.vn/vi/commerce)
+</Callout>
+
+## Cách hoạt động
+
+1. **Tạo sản phẩm** — mặt hàng bạn bán (ví dụ “Gói Pro”).
+2. **Thêm mức giá** — số tiền VND. Một sản phẩm có thể có nhiều mức giá (giá ra mắt, giá hiện tại, theo năm, …).
+3. **Tạo link thanh toán** từ mức giá đó.
+4. **Khách thanh toán** — quét QR hoặc chuyển khoản như bình thường.
+5. **Bạn nhận webhook** giống mọi thanh toán khác.
+
+```
+Sản phẩm  →  Mức giá  →  Link thanh toán  →  Khách trả  →  Webhook
+```
+
+## Lookup key
+
+Lookup key là mã bạn tự đặt, ví dụ `pro-monthly`. Dùng để tìm lại mức giá:
+
+```bash
+GET /v1/client/commerce/prices?lookupKey=pro-monthly
+```
+
+Khi tạo payment, gửi `priceId` (id của mức giá), không gửi lookup key. Tìm mức giá trước, lấy `id`, rồi mới tạo link.
+
+## Tên nội bộ
+
+Tên nội bộ (nickname) chỉ hiện với bạn trên dashboard. Khách không thấy trường này.
+
+## Giá mặc định
+
+Mỗi sản phẩm có một **giá mặc định**. Dashboard dùng giá này khi bạn bấm **Tạo thanh toán**. Khi gọi API, gửi `priceId` của mức giá bạn muốn thu — API không tự lấy giá mặc định.
+
+- Mức giá đầu tiên được gán làm mặc định.
+- Thêm mức giá mới không đổi giá mặc định, trừ khi bạn chọn lại.
+
+## Số tiền không đổi
+
+Khi đã tạo mức giá, số tiền bị khóa. Muốn đổi giá thì tạo mức giá mới và lưu trữ mức cũ.
+
+Link thanh toán đã tạo giữ đúng số tiền lúc tạo. Sửa sản phẩm hay mức giá sau đó không làm đổi các link đang mở.
+
+## Thử ngay
+
+1. Mở **Commerce** và tạo sản phẩm (có thể thêm mức giá đầu ngay trong form).
+2. Trên trang sản phẩm, bấm **Tạo thanh toán** — hoặc thêm mức giá trước nếu bạn bỏ qua bước đó.
+3. Mở trang thanh toán. Ở sandbox, mô phỏng thanh toán để kiểm tra webhook.
+
+Cần chi tiết HTTP? Xem [Commerce API](/vi/api/commerce) hoặc thử gọi API trong [Interactive Reference](/vi/api-reference).

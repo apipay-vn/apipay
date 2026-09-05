@@ -148,3 +148,90 @@ test("create_payment sends amount as a string when given a number", async () => 
     globalThis.fetch = originalFetch;
   }
 });
+
+test("create_payment sends priceId and omits amount", async () => {
+  let capturedBody: string | undefined;
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (_url, init) => {
+    capturedBody = init?.body as string | undefined;
+    return new Response(JSON.stringify({ data: { publicId: "test_pr_abc" } }), {
+      status: 200,
+    });
+  };
+
+  try {
+    const server = new McpServer({ name: "test-server", version: "0.1.0" });
+    const apiClient = new ApiClient({
+      baseUrl: "https://app.apipay.vn/v1",
+      accessKey: "ak_test_123",
+      secretKey: "sec_test_456",
+    });
+    registerPaymentsTools(server, apiClient);
+
+    const client = new Client({ name: "test-client", version: "0.1.0" });
+    const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
+
+    await Promise.all([
+      server.connect(serverTransport),
+      client.connect(clientTransport),
+    ]);
+
+    const result = await client.callTool({
+      name: "create_payment",
+      arguments: {
+        bankPublicId: "bank_abc",
+        priceId: "price_pro_monthly",
+      },
+    });
+
+    assert.equal(result.isError, undefined);
+    assert.deepEqual(JSON.parse(capturedBody ?? "{}"), {
+      bankPublicId: "bank_abc",
+      priceId: "price_pro_monthly",
+    });
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test("create_payment returns isError and does not invoke fetch when amount and priceId are both set", async () => {
+  let fetchCalled = false;
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async () => {
+    fetchCalled = true;
+    return new Response("{}", { status: 200 });
+  };
+
+  try {
+    const server = new McpServer({ name: "test-server", version: "0.1.0" });
+    const apiClient = new ApiClient({
+      baseUrl: "https://app.apipay.vn/v1",
+      accessKey: "ak_test_123",
+      secretKey: "sec_test_456",
+    });
+    registerPaymentsTools(server, apiClient);
+
+    const client = new Client({ name: "test-client", version: "0.1.0" });
+    const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
+
+    await Promise.all([
+      server.connect(serverTransport),
+      client.connect(clientTransport),
+    ]);
+
+    const result = await client.callTool({
+      name: "create_payment",
+      arguments: {
+        bankPublicId: "bank_abc",
+        amount: "50000",
+        priceId: "price_pro_monthly",
+      },
+    });
+
+    assert.equal(fetchCalled, false);
+    assert.equal(result.isError, true);
+    assert.match((result.content as any)[0].text, /mutually exclusive/i);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});

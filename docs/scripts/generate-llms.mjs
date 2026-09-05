@@ -36,6 +36,7 @@ const SIDEBAR_SECTIONS = [
       {file: 'dashboard.mdx', label: 'Dashboard Guide'},
       {file: 'connect-banks.mdx', label: 'Connect Banks'},
       {file: 'payment-speaker.mdx', label: 'Payment Speaker'},
+      {file: 'commerce.mdx', label: 'Commerce'},
       {file: 'custom-domains.mdx', label: 'Custom Domains'},
       {file: 'passkeys.mdx', label: 'Passkeys'},
       {file: 'affiliates.mdx', label: 'Affiliates'},
@@ -57,6 +58,7 @@ const SIDEBAR_SECTIONS = [
     items: [
       {file: 'api/authentication.mdx', label: 'Authentication'},
       {file: 'api/payment-requests.mdx', label: 'Payment Requests'},
+      {file: 'api/commerce.mdx', label: 'Commerce'},
       {file: 'api/webhooks.mdx', label: 'Webhooks'},
       {file: 'api/banks.mdx', label: 'Banks'},
       {file: 'api/metrics.mdx', label: 'Metrics'},

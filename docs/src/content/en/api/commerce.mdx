@@ -1,0 +1,203 @@
+---
+title: Commerce API
+description: Create products and prices, then check out with a price id
+---
+
+# Commerce API
+
+Commerce API for products and prices. Authenticate like every other `/v1/client/*` endpoint. See [Authentication](/en/api/authentication).
+
+After you have a price, create a payment link with `priceId` on [Payment Requests](/en/api/payment-requests). You can try these calls in the [Interactive Reference](/en/api-reference).
+
+<Callout type="info">
+Send `priceId` **or** `amount` when creating a payment — not both. The amount is copied onto the link once. Editing a product or price later does not change links already created.
+</Callout>
+
+## Endpoints
+
+All paths are under `/v1/client/commerce`.
+
+| Method | Path | Description |
+| ------ | ---- | ----------- |
+| `POST` | `/products` | Create a product. Optional `defaultPriceData` creates the first price and makes it the default |
+| `GET` | `/products` | List products (`active`, `page`, `limit`) |
+| `GET` | `/products/:id` | Get a product with its prices |
+| `PATCH` | `/products/:id` | Update name, description, archive/restore, or default price |
+| `POST` | `/prices` | Create a price. First price on a product with no default becomes the default |
+| `GET` | `/prices` | List prices (`productId`, `lookupKey`, `active`, `page`, `limit`) |
+| `GET` | `/prices/:id` | Get a price |
+| `PATCH` | `/prices/:id` | Update `active`, `nickname`, `lookupKey`. Not `unitAmount` |
+
+---
+
+## Create a product
+
+```bash
+POST /v1/client/commerce/products
+```
+
+### Request body
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `name` | string | **Yes** | Product name (max 200) |
+| `description` | string | — | Optional description (max 2000) |
+| `defaultPriceData` | object | — | Create the first price and make it the default |
+| `defaultPriceData.unitAmount` | string | **Yes** if `defaultPriceData` is sent | Amount in VND (integer string, 1–300000000) |
+| `defaultPriceData.lookupKey` | string | — | Stable key you keep in your app, e.g. `pro-monthly` |
+| `defaultPriceData.nickname` | string | — | Internal label only |
+
+### Example
+
+```bash
+curl -X POST https://app.apipay.vn/v1/client/commerce/products \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <Auth>" \
+  -d '{
+    "name": "Pro plan",
+    "description": "Monthly access",
+    "defaultPriceData": {
+      "unitAmount": "99000",
+      "lookupKey": "pro-monthly",
+      "nickname": "Launch price"
+    }
+  }'
+```
+
+### Response
+
+```json
+{
+  "data": {
+    "status": true,
+    "data": {
+      "id": "cml8x1abc0000prod0000000",
+      "name": "Pro plan",
+      "description": "Monthly access",
+      "active": true,
+      "defaultPriceId": "cml8x1abc0000price0000000",
+      "defaultPrice": {
+        "id": "cml8x1abc0000price0000000",
+        "productId": "cml8x1abc0000prod0000000",
+        "unitAmount": "99000",
+        "currency": "VND",
+        "lookupKey": "pro-monthly",
+        "nickname": "Launch price",
+        "active": true
+      },
+      "activePriceCount": 1,
+      "prices": [
+        {
+          "id": "cml8x1abc0000price0000000",
+          "productId": "cml8x1abc0000prod0000000",
+          "unitAmount": "99000",
+          "currency": "VND",
+          "lookupKey": "pro-monthly",
+          "nickname": "Launch price",
+          "active": true
+        }
+      ]
+    }
+  },
+  "statusCode": 200,
+  "timestamp": "2026-09-04T10:00:00.000Z"
+}
+```
+
+List and get endpoints wrap rows the same way: payload under `data`, list rows under `data.data`, pagination under `data.pagination`.
+
+---
+
+## Create a price
+
+```bash
+POST /v1/client/commerce/prices
+```
+
+Amounts cannot be edited later. To change what you charge, create a new price and archive the old one.
+
+### Request body
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `productId` | string | **Yes** | Product this price belongs to |
+| `unitAmount` | string | **Yes** | Amount in VND (integer string, 1–300000000) |
+| `lookupKey` | string | — | Stable key unique per account. Use `GET /prices?lookupKey=` to find this price later |
+| `nickname` | string | — | Internal label only |
+| `transferLookupKey` | boolean | — | If `true`, move `lookupKey` off the price that currently holds it instead of failing |
+
+### Example
+
+```bash
+curl -X POST https://app.apipay.vn/v1/client/commerce/prices \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <Auth>" \
+  -d '{
+    "productId": "cml8x1abc0000prod0000000",
+    "unitAmount": "199000",
+    "lookupKey": "pro-yearly",
+    "nickname": "Yearly"
+  }'
+```
+
+If the product has no default price yet, this price becomes the default.
+
+---
+
+## Find a price by lookup key
+
+```bash
+curl "https://app.apipay.vn/v1/client/commerce/prices?lookupKey=pro-monthly" \
+  -H "Authorization: Bearer <Auth>"
+```
+
+Use the returned `id` as `priceId` when creating a payment.
+
+---
+
+## Update a product
+
+```bash
+PATCH /v1/client/commerce/products/:id
+```
+
+| Parameter | Type | Description |
+| --------- | ---- | ----------- |
+| `name` | string | Product name |
+| `description` | string \| null | Send `null` to clear |
+| `active` | boolean | `false` archives, `true` restores |
+| `defaultPriceId` | string \| null | Must be an active price of this product. Send `null` to clear |
+
+---
+
+## Update a price
+
+```bash
+PATCH /v1/client/commerce/prices/:id
+```
+
+| Parameter | Type | Description |
+| --------- | ---- | ----------- |
+| `active` | boolean | `false` archives, `true` restores |
+| `nickname` | string \| null | Send `null` to clear |
+| `lookupKey` | string \| null | Send `null` to clear |
+| `transferLookupKey` | boolean | Move `lookupKey` from the price that currently holds it |
+
+`unitAmount` is not accepted. Archived prices cannot be used to create new payment links. Links created earlier still point at the price they used (`commercePriceId` on the payment request).
+
+---
+
+## Create a payment from a price
+
+```bash
+curl -X POST https://app.apipay.vn/v1/client/payment-requests \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <Auth>" \
+  -d '{
+    "bankPublicId": "bank_abc123",
+    "priceId": "cml8x1abc0000price0000000",
+    "content": "ORDER-001"
+  }'
+```
+
+The payment amount becomes the price `unitAmount`. If you omit `title`, the product name is used. See [Payment Requests](/en/api/payment-requests) for the full response and [Webhooks](/en/api/webhooks) for what arrives after the customer pays.

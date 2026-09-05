@@ -45,6 +45,7 @@ ApiPay is a payment gateway API that helps you easily create payment links via b
 | [Payment Speaker](/en/payment-speaker)     | Turn any phone or tablet into a real-time voice alert speaker |
 | [Subscription & Billing](/en/subscription) | Manage plans, billing, and the 72-hour free trial   |
 | [Bank Accounts](/en/banking)               | Connect and manage bank accounts        |
+| [Commerce](/en/commerce)                   | Products and prices, then a payment link |
 
 ### Quick Start
 
@@ -107,6 +108,8 @@ Send `payUrl` to your customer via:
 - Your website
 
 The customer will see a payment page with a QR Code to scan with their bank app.
+
+To reuse the same amount across many links, create a product and price in [Commerce](/en/commerce) and pass `priceId` instead of `amount`.
 
 ## Step 4: Receive Notifications
 
@@ -1049,6 +1052,18 @@ Create and manage payment links for your customers.
 
 ---
 
+## Commerce
+
+Products and prices you sell, then a payment link from a price.
+
+1. Open **Commerce** in the sidebar.
+2. Create a product. You can add the first price in the same form.
+3. On the product page, click **Create payment** to open a link at that amount.
+
+The default price is used when you click **Create payment**. Amounts on a price do not change — create a new price to charge a different amount. Details: [Commerce](/en/commerce).
+
+---
+
 ## Transactions
 
 View all incoming payments and their details.
@@ -1662,6 +1677,67 @@ Yes. You can open the same session URL on multiple devices across your store so 
 - [Onboarding Guide](/en/onboarding) - Step-by-step account setup
 - [Bank Accounts](/en/banking) - Connect and manage bank accounts
 - [Dashboard Guide](/en/dashboard) - Explore all Dashboard features
+
+### Commerce
+
+Source: https://docs.apipay.vn/en/commerce
+
+# Commerce
+
+Commerce is where you keep the products you sell and the prices on those products. Create a payment link from a price so every customer for that item pays the same amount.
+
+You can do this in the dashboard under **Commerce**, or through the [Commerce API](/en/api/commerce). Creating a payment link still uses the [Payment Requests API](/en/api/payment-requests) — send `priceId` instead of typing the amount.
+
+Open **Commerce** in the dashboard to create a product, add a price, and try a payment link.
+
+[Open Commerce in dashboard](https://my.apipay.vn/en/commerce)
+
+## How it works
+
+1. **Create a product** — the item you sell (for example “Pro plan”).
+2. **Add a price** — the amount in VND. You can add more than one price on the same product (launch price, current price, yearly, …).
+3. **Create a payment link** from that price.
+4. **Customer pays** — they scan the QR or transfer as usual.
+5. **You get the same webhook** as any other payment.
+
+```
+Product  →  Price  →  Payment link  →  Customer pays  →  Webhook
+```
+
+## Lookup key
+
+A lookup key is a stable name you keep in your app, such as `pro-monthly`. Use it to find the price later:
+
+```bash
+GET /v1/client/commerce/prices?lookupKey=pro-monthly
+```
+
+Checkout still sends the price id (`priceId`), not the lookup key. Look the price up first, then create the payment link.
+
+## Nickname
+
+The nickname (internal name) is only for you in the dashboard. Customers never see it.
+
+## Default price
+
+Each product has one **default price**. The dashboard uses it when you click **Create payment**. When you call the API, send the `priceId` you want to charge — the API does not pick the default for you.
+
+- The first price you add becomes the default.
+- Adding another price does not change the default unless you set it.
+
+## Amounts do not change
+
+Once a price exists, its amount is fixed. To change what you charge, create a new price and archive the old one.
+
+Payment links already created keep the amount they were created with. Editing a product or price later does not change links that are already open.
+
+## Try it
+
+1. Open **Commerce** and create a product (you can add the first price in the same form).
+2. On the product page, click **Create payment** — or add a price first if you skipped it.
+3. Open the payment page. In sandbox, simulate the payment to confirm the webhook.
+
+Need the HTTP details? See the [Commerce API](/en/api/commerce) or try the calls in the [Interactive Reference](/en/api-reference).
 
 ### Custom Domains
 
@@ -2363,7 +2439,7 @@ Source: https://docs.apipay.vn/en/integrations/mcp
 
 # MCP Server
 
-`@apipay.vn/mcp` is a Model Context Protocol (MCP) server for ApiPay. It exposes tools over stdio so AI assistants (Claude, Cursor, Codex, Command Code, Grok Build, Gemini, Copilot, OpenCode, and others) can create sandbox payments, list bank accounts and transactions, manage webhooks, and query metrics.
+`@apipay.vn/mcp` is a Model Context Protocol (MCP) server for ApiPay. It exposes tools over stdio so AI assistants (Claude, Cursor, Codex, Command Code, Grok Build, Gemini, Copilot, OpenCode, and others) can create sandbox payments, manage Commerce products and prices, list bank accounts and transactions, manage webhooks, and query metrics.
 
 Open **Integrations > MCP Server** in the dashboard for copy-paste client configs with your API keys.
 
@@ -2673,7 +2749,7 @@ Follow the Windsurf MCP configuration guide and add the server to `.windsurf/mcp
 
 ## Available Tools
 
-The server registers 15 tools. MCP clients automatically prefix tool names with the server key `apipay` (for example `apipay_list_banks` in OpenCode, `mcp__apipay__list_banks` in Claude Code).
+The server registers 23 tools. MCP clients automatically prefix tool names with the server key `apipay` (for example `apipay_list_banks` in OpenCode, `mcp__apipay__list_banks` in Claude Code).
 
 ### Connection & Verification
 
@@ -2685,10 +2761,21 @@ The server registers 15 tools. MCP clients automatically prefix tool names with 
 
 ### Payment Requests
 
-- `create_payment` — Creates a payment link (requires `bankPublicId`; optional `amount`, `content`, `title`, `expiresAt`, `redirectUrl`).
+- `create_payment` — Creates a payment link (requires `bankPublicId`; optional `amount` **or** `priceId`, plus `content`, `title`, `expiresAt`, `redirectUrl`). Resolve a lookup key with `list_prices` first, then pass `priceId`.
 - `list_payments` — Lists payment requests with optional filtering by status, search term, or date range.
 - `cancel_payment` — **(Destructive)** Cancels an `ACTIVE` payment request.
 - `simulate_payment` — Simulates payment for sandbox requests (`publicId` must start with `test_pr_`; triggers sandbox webhooks).
+
+### Commerce
+
+- `list_products` — Lists Commerce products.
+- `get_product` — Gets a product with its prices.
+- `create_product` — Creates a product. Optional `defaultPriceData` creates the first price and makes it the default.
+- `update_product` — Updates name, description, archive/restore, or default price.
+- `list_prices` — Lists prices. Filter by `productId` or `lookupKey` to resolve a price id.
+- `get_price` — Gets a price by id.
+- `create_price` — Creates a price. Amounts cannot be edited later.
+- `update_price` — Updates nickname, lookup key, or archive/restore. Does not change `unitAmount`.
 
 ### Webhooks
 
@@ -2709,9 +2796,10 @@ The server registers 15 tools. MCP clients automatically prefix tool names with 
 
 1. **Verify connection** — Call `self_test` to confirm the API key is active.
 2. **Find a connected bank** — Call `list_banks` to get a `bankPublicId`.
-3. **Create a payment request** — Call `create_payment` with `bankPublicId` and `amount` (for example `"50000"`). A `publicId` starting with `test_pr_...` is returned.
-4. **Simulate customer payment** — Call `simulate_payment` with `publicId: "test_pr_..."` to test settlement and webhook delivery.
-5. **Check history** — Call `list_webhook_deliveries` and `list_transactions` to verify the transaction was recorded.
+3. **Create a product and price** (optional) — Call `create_product` with `defaultPriceData`, or `list_prices` with a `lookupKey` you already stored.
+4. **Create a payment request** — Call `create_payment` with `bankPublicId` and either `amount` (for example `"50000"`) or `priceId`. A `publicId` starting with `test_pr_...` is returned.
+5. **Simulate customer payment** — Call `simulate_payment` with `publicId: "test_pr_..."` to test settlement and webhook delivery.
+6. **Check history** — Call `list_webhook_deliveries` and `list_transactions` to verify the transaction was recorded.
 
 See [Sandbox & Live Test](/en/sandbox) for more on sandbox keys and simulated payments.
 
@@ -2986,7 +3074,8 @@ POST /v1/client/payment-requests
 | Parameter      | Type   | Required  | Description                                                                                                                                                                                                                           |
 | -------------- | ------ | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `bankPublicId` | string | **✓ Yes** | Public ID of your connected bank                                                                                                                                                                                                      |
-| `amount`       | string | —         | Amount in VND (integer string or number, max `300000000`). Returned as string or `null`. Leave empty to allow customer input                                                                                                          |
+| `amount`       | string | —         | Amount in VND (integer string or number, max `300000000`). Returned as string or `null`. Leave empty to allow customer input. Do not send together with `priceId`                                                                     |
+| `priceId`      | string | —         | Commerce price id. Copies that price amount onto this link once. Editing a product or price later does not change this request. Do not send together with `amount`. See [Commerce API](/en/api/commerce)                             |
 | `content`      | string | —         | Transfer content (max 140 characters)                                                                                                                                                                                                 |
 | `title`        | string | —         | Title displayed on payment page                                                                                                                                                                                                       |
 | `expiresAt`    | string | —         | Expiration time (ISO 8601). Leave empty for no limit                                                                                                                                                                                  |
@@ -3026,6 +3115,19 @@ curl -X POST https://app.apipay.vn/v1/client/payment-requests \
     "content": "ORDER-001",
     "title": "Payment for Order #001",
     "redirectUrl": "https://yoursite.com/payment/result"
+  }'
+```
+
+Create from a Commerce price (amount comes from the price; do not also send `amount`):
+
+```bash
+curl -X POST https://app.apipay.vn/v1/client/payment-requests \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer " \
+  -d '{
+    "bankPublicId": "bank_abc123",
+    "priceId": "cml8x1abc0000price0000000",
+    "content": "ORDER-001"
   }'
 ```
 
@@ -3113,6 +3215,7 @@ GET /v1/client/payment-requests
         "status": "COMPLETED",
         "expiresAt": "2026-12-31T23:59:59Z",
         "redirectUrl": "https://yoursite.com/payment/result",
+        "commercePriceId": "cml8x1abc0000price0000000",
         "createdAt": "2026-03-06T10:00:00Z"
       }
     ],
@@ -3412,6 +3515,207 @@ When creating a payment request, you receive:
 - The `redirectSecret` is unique per payment request
 - Never expose `redirectSecret` in client-side code
 - Validate `status === 'success'` before fulfilling orders
+
+### Commerce API
+
+Source: https://docs.apipay.vn/en/api/commerce
+
+# Commerce API
+
+Commerce API for products and prices. Authenticate like every other `/v1/client/*` endpoint. See [Authentication](/en/api/authentication).
+
+After you have a price, create a payment link with `priceId` on [Payment Requests](/en/api/payment-requests). You can try these calls in the [Interactive Reference](/en/api-reference).
+
+Send `priceId` **or** `amount` when creating a payment — not both. The amount is copied onto the link once. Editing a product or price later does not change links already created.
+
+## Endpoints
+
+All paths are under `/v1/client/commerce`.
+
+| Method | Path | Description |
+| ------ | ---- | ----------- |
+| `POST` | `/products` | Create a product. Optional `defaultPriceData` creates the first price and makes it the default |
+| `GET` | `/products` | List products (`active`, `page`, `limit`) |
+| `GET` | `/products/:id` | Get a product with its prices |
+| `PATCH` | `/products/:id` | Update name, description, archive/restore, or default price |
+| `POST` | `/prices` | Create a price. First price on a product with no default becomes the default |
+| `GET` | `/prices` | List prices (`productId`, `lookupKey`, `active`, `page`, `limit`) |
+| `GET` | `/prices/:id` | Get a price |
+| `PATCH` | `/prices/:id` | Update `active`, `nickname`, `lookupKey`. Not `unitAmount` |
+
+---
+
+## Create a product
+
+```bash
+POST /v1/client/commerce/products
+```
+
+### Request body
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `name` | string | **Yes** | Product name (max 200) |
+| `description` | string | — | Optional description (max 2000) |
+| `defaultPriceData` | object | — | Create the first price and make it the default |
+| `defaultPriceData.unitAmount` | string | **Yes** if `defaultPriceData` is sent | Amount in VND (integer string, 1–300000000) |
+| `defaultPriceData.lookupKey` | string | — | Stable key you keep in your app, e.g. `pro-monthly` |
+| `defaultPriceData.nickname` | string | — | Internal label only |
+
+### Example
+
+```bash
+curl -X POST https://app.apipay.vn/v1/client/commerce/products \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer " \
+  -d '{
+    "name": "Pro plan",
+    "description": "Monthly access",
+    "defaultPriceData": {
+      "unitAmount": "99000",
+      "lookupKey": "pro-monthly",
+      "nickname": "Launch price"
+    }
+  }'
+```
+
+### Response
+
+```json
+{
+  "data": {
+    "status": true,
+    "data": {
+      "id": "cml8x1abc0000prod0000000",
+      "name": "Pro plan",
+      "description": "Monthly access",
+      "active": true,
+      "defaultPriceId": "cml8x1abc0000price0000000",
+      "defaultPrice": {
+        "id": "cml8x1abc0000price0000000",
+        "productId": "cml8x1abc0000prod0000000",
+        "unitAmount": "99000",
+        "currency": "VND",
+        "lookupKey": "pro-monthly",
+        "nickname": "Launch price",
+        "active": true
+      },
+      "activePriceCount": 1,
+      "prices": [
+        {
+          "id": "cml8x1abc0000price0000000",
+          "productId": "cml8x1abc0000prod0000000",
+          "unitAmount": "99000",
+          "currency": "VND",
+          "lookupKey": "pro-monthly",
+          "nickname": "Launch price",
+          "active": true
+        }
+      ]
+    }
+  },
+  "statusCode": 200,
+  "timestamp": "2026-09-04T10:00:00.000Z"
+}
+```
+
+List and get endpoints wrap rows the same way: payload under `data`, list rows under `data.data`, pagination under `data.pagination`.
+
+---
+
+## Create a price
+
+```bash
+POST /v1/client/commerce/prices
+```
+
+Amounts cannot be edited later. To change what you charge, create a new price and archive the old one.
+
+### Request body
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `productId` | string | **Yes** | Product this price belongs to |
+| `unitAmount` | string | **Yes** | Amount in VND (integer string, 1–300000000) |
+| `lookupKey` | string | — | Stable key unique per account. Use `GET /prices?lookupKey=` to find this price later |
+| `nickname` | string | — | Internal label only |
+| `transferLookupKey` | boolean | — | If `true`, move `lookupKey` off the price that currently holds it instead of failing |
+
+### Example
+
+```bash
+curl -X POST https://app.apipay.vn/v1/client/commerce/prices \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer " \
+  -d '{
+    "productId": "cml8x1abc0000prod0000000",
+    "unitAmount": "199000",
+    "lookupKey": "pro-yearly",
+    "nickname": "Yearly"
+  }'
+```
+
+If the product has no default price yet, this price becomes the default.
+
+---
+
+## Find a price by lookup key
+
+```bash
+curl "https://app.apipay.vn/v1/client/commerce/prices?lookupKey=pro-monthly" \
+  -H "Authorization: Bearer "
+```
+
+Use the returned `id` as `priceId` when creating a payment.
+
+---
+
+## Update a product
+
+```bash
+PATCH /v1/client/commerce/products/:id
+```
+
+| Parameter | Type | Description |
+| --------- | ---- | ----------- |
+| `name` | string | Product name |
+| `description` | string \| null | Send `null` to clear |
+| `active` | boolean | `false` archives, `true` restores |
+| `defaultPriceId` | string \| null | Must be an active price of this product. Send `null` to clear |
+
+---
+
+## Update a price
+
+```bash
+PATCH /v1/client/commerce/prices/:id
+```
+
+| Parameter | Type | Description |
+| --------- | ---- | ----------- |
+| `active` | boolean | `false` archives, `true` restores |
+| `nickname` | string \| null | Send `null` to clear |
+| `lookupKey` | string \| null | Send `null` to clear |
+| `transferLookupKey` | boolean | Move `lookupKey` from the price that currently holds it |
+
+`unitAmount` is not accepted. Archived prices cannot be used to create new payment links. Links created earlier still point at the price they used (`commercePriceId` on the payment request).
+
+---
+
+## Create a payment from a price
+
+```bash
+curl -X POST https://app.apipay.vn/v1/client/payment-requests \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer " \
+  -d '{
+    "bankPublicId": "bank_abc123",
+    "priceId": "cml8x1abc0000price0000000",
+    "content": "ORDER-001"
+  }'
+```
+
+The payment amount becomes the price `unitAmount`. If you omit `title`, the product name is used. See [Payment Requests](/en/api/payment-requests) for the full response and [Webhooks](/en/api/webhooks) for what arrives after the customer pays.
 
 ### Webhooks
 

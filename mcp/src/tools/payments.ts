@@ -7,7 +7,7 @@ export function registerPaymentsTools(server: McpServer, client: ApiClient): voi
     "create_payment",
     {
       description:
-        "Create a payment link (payment request). Call list_banks first if bankPublicId is unknown.",
+        "Create a payment link (payment request). Call list_banks first if bankPublicId is unknown. Send amount or priceId, not both.",
       inputSchema: {
         bankPublicId: z
           .string()
@@ -18,7 +18,13 @@ export function registerPaymentsTools(server: McpServer, client: ApiClient): voi
           .union([z.string(), z.number()])
           .optional()
           .describe(
-            "Amount in VND as an integer or integer string (1–300000000). Omit to let the payer enter the amount.",
+            "Amount in VND as an integer or integer string (1–300000000). Omit to let the payer enter the amount. Do not send together with priceId.",
+          ),
+        priceId: z
+          .string()
+          .optional()
+          .describe(
+            "Commerce price id. Copies the price amount onto this payment link. Do not send together with amount. Resolve lookup keys with list_prices first.",
           ),
         content: z
           .string()
@@ -41,11 +47,24 @@ export function registerPaymentsTools(server: McpServer, client: ApiClient): voi
       },
     },
     async (args) => {
+      if (args.amount !== undefined && args.priceId !== undefined) {
+        return {
+          content: [
+            {
+              type: "text",
+              text: "amount and priceId are mutually exclusive — send one or the other",
+            },
+          ],
+          isError: true,
+        };
+      }
+
       try {
         const body: Record<string, any> = {
           bankPublicId: args.bankPublicId,
         };
         if (args.amount !== undefined) body.amount = String(args.amount);
+        if (args.priceId !== undefined) body.priceId = args.priceId;
         if (args.content !== undefined) body.content = args.content;
         if (args.title !== undefined) body.title = args.title;
         if (args.expiresAt !== undefined) body.expiresAt = args.expiresAt;

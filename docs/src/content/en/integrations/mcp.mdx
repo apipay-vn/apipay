@@ -5,7 +5,7 @@ description: Connect ApiPay to AI assistants with the @apipay.vn/mcp Model Conte
 
 # MCP Server
 
-`@apipay.vn/mcp` is a Model Context Protocol (MCP) server for ApiPay. It exposes tools over stdio so AI assistants (Claude, Cursor, Codex, Command Code, Grok Build, Gemini, Copilot, OpenCode, and others) can create sandbox payments, list bank accounts and transactions, manage webhooks, and query metrics.
+`@apipay.vn/mcp` is a Model Context Protocol (MCP) server for ApiPay. It exposes tools over stdio so AI assistants (Claude, Cursor, Codex, Command Code, Grok Build, Gemini, Copilot, OpenCode, and others) can create sandbox payments, manage Commerce products and prices, list bank accounts and transactions, manage webhooks, and query metrics.
 
 <Callout type="tip">
 Open **Integrations > MCP Server** in the dashboard for copy-paste client configs with your API keys.
@@ -319,7 +319,7 @@ Follow the Windsurf MCP configuration guide and add the server to `.windsurf/mcp
 
 ## Available Tools
 
-The server registers 15 tools. MCP clients automatically prefix tool names with the server key `apipay` (for example `apipay_list_banks` in OpenCode, `mcp__apipay__list_banks` in Claude Code).
+The server registers 23 tools. MCP clients automatically prefix tool names with the server key `apipay` (for example `apipay_list_banks` in OpenCode, `mcp__apipay__list_banks` in Claude Code).
 
 ### Connection & Verification
 
@@ -331,10 +331,21 @@ The server registers 15 tools. MCP clients automatically prefix tool names with 
 
 ### Payment Requests
 
-- `create_payment` — Creates a payment link (requires `bankPublicId`; optional `amount`, `content`, `title`, `expiresAt`, `redirectUrl`).
+- `create_payment` — Creates a payment link (requires `bankPublicId`; optional `amount` **or** `priceId`, plus `content`, `title`, `expiresAt`, `redirectUrl`). Resolve a lookup key with `list_prices` first, then pass `priceId`.
 - `list_payments` — Lists payment requests with optional filtering by status, search term, or date range.
 - `cancel_payment` — **(Destructive)** Cancels an `ACTIVE` payment request.
 - `simulate_payment` — Simulates payment for sandbox requests (`publicId` must start with `test_pr_`; triggers sandbox webhooks).
+
+### Commerce
+
+- `list_products` — Lists Commerce products.
+- `get_product` — Gets a product with its prices.
+- `create_product` — Creates a product. Optional `defaultPriceData` creates the first price and makes it the default.
+- `update_product` — Updates name, description, archive/restore, or default price.
+- `list_prices` — Lists prices. Filter by `productId` or `lookupKey` to resolve a price id.
+- `get_price` — Gets a price by id.
+- `create_price` — Creates a price. Amounts cannot be edited later.
+- `update_price` — Updates nickname, lookup key, or archive/restore. Does not change `unitAmount`.
 
 ### Webhooks
 
@@ -355,9 +366,10 @@ The server registers 15 tools. MCP clients automatically prefix tool names with 
 
 1. **Verify connection** — Call `self_test` to confirm the API key is active.
 2. **Find a connected bank** — Call `list_banks` to get a `bankPublicId`.
-3. **Create a payment request** — Call `create_payment` with `bankPublicId` and `amount` (for example `"50000"`). A `publicId` starting with `test_pr_...` is returned.
-4. **Simulate customer payment** — Call `simulate_payment` with `publicId: "test_pr_..."` to test settlement and webhook delivery.
-5. **Check history** — Call `list_webhook_deliveries` and `list_transactions` to verify the transaction was recorded.
+3. **Create a product and price** (optional) — Call `create_product` with `defaultPriceData`, or `list_prices` with a `lookupKey` you already stored.
+4. **Create a payment request** — Call `create_payment` with `bankPublicId` and either `amount` (for example `"50000"`) or `priceId`. A `publicId` starting with `test_pr_...` is returned.
+5. **Simulate customer payment** — Call `simulate_payment` with `publicId: "test_pr_..."` to test settlement and webhook delivery.
+6. **Check history** — Call `list_webhook_deliveries` and `list_transactions` to verify the transaction was recorded.
 
 See [Sandbox & Live Test](/en/sandbox) for more on sandbox keys and simulated payments.
 

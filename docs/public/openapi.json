@@ -23,6 +23,7 @@
   "security": [{"bearerAuth": []}],
   "tags": [
     {"name": "Payment Requests", "description": "Create and manage payment links"},
+    {"name": "Commerce", "description": "Commerce products and prices. Checkout with priceId on payment requests."},
     {"name": "Webhooks", "description": "Register and inspect webhook deliveries"},
     {"name": "Banks", "description": "List and manage connected bank accounts"},
     {"name": "Metrics", "description": "Dashboard analytics and reporting"}
@@ -32,7 +33,7 @@
       "post": {
         "tags": ["Payment Requests"],
         "summary": "Create payment link",
-        "description": "Create a payment link using a connected bank account. Use a test key to create a sandbox payment (`publicId` starts with `test_pr_`).",
+        "description": "Create a payment link using a connected bank account. Use a test key to create a sandbox payment (`publicId` starts with `test_pr_`). Send `amount` or `priceId`, not both. A `priceId` copies the price amount onto this link once.",
         "operationId": "createPaymentRequest",
         "security": [{"bearerAuth": []}],
         "requestBody": {
@@ -49,7 +50,11 @@
                   },
                   "amount": {
                     "type": "string",
-                    "description": "Amount in VND as an integer string (1–300000000). Omit to let the payer enter the amount."
+                    "description": "Amount in VND as an integer string (1–300000000). Omit to let the payer enter the amount. Do not send together with priceId."
+                  },
+                  "priceId": {
+                    "type": "string",
+                    "description": "Commerce price id. Copies that price amount onto this link. Do not send together with amount. Resolve lookup keys with GET /v1/client/commerce/prices?lookupKey=."
                   },
                   "content": {
                     "type": "string",
@@ -189,6 +194,166 @@
           "400": {"description": "Not a sandbox payment request, or request is not ACTIVE"},
           "404": {"description": "Sandbox payment request not found"}
         }
+      }
+    },
+    "/v1/client/commerce/products": {
+      "post": {
+        "tags": ["Commerce"],
+        "summary": "Create a product",
+        "description": "Optionally creates the first price with `defaultPriceData` and makes it the product default.",
+        "operationId": "createProduct",
+        "security": [{"bearerAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/CreateProductRequest"}
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Product created",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/ProductResponse"}
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Commerce"],
+        "summary": "List products",
+        "operationId": "listProducts",
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {"name": "active", "in": "query", "schema": {"type": "boolean"}, "description": "Filter by archived/restored"},
+          {"name": "page", "in": "query", "schema": {"type": "integer", "minimum": 1}},
+          {"name": "limit", "in": "query", "schema": {"type": "integer", "minimum": 1, "maximum": 100}}
+        ],
+        "responses": {"200": {"description": "Paginated list of products"}}
+      }
+    },
+    "/v1/client/commerce/products/{id}": {
+      "get": {
+        "tags": ["Commerce"],
+        "summary": "Get a product with its prices",
+        "operationId": "getProduct",
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {"name": "id", "in": "path", "required": true, "schema": {"type": "string"}, "description": "Product id"}
+        ],
+        "responses": {
+          "200": {
+            "description": "Product with prices",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/ProductResponse"}
+              }
+            }
+          },
+          "404": {"description": "Product not found"}
+        }
+      },
+      "patch": {
+        "tags": ["Commerce"],
+        "summary": "Update a product",
+        "description": "Editing a product or price never changes amounts on payment requests already created.",
+        "operationId": "updateProduct",
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {"name": "id", "in": "path", "required": true, "schema": {"type": "string"}, "description": "Product id"}
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/UpdateProductRequest"}
+            }
+          }
+        },
+        "responses": {"200": {"description": "Product updated"}}
+      }
+    },
+    "/v1/client/commerce/prices": {
+      "post": {
+        "tags": ["Commerce"],
+        "summary": "Create a price",
+        "description": "Amounts are immutable — to change a price, create a new one and archive the old. The first price on a product with no default becomes the default.",
+        "operationId": "createPrice",
+        "security": [{"bearerAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/CreatePriceRequest"}
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Price created",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/PriceResponse"}
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Commerce"],
+        "summary": "List prices",
+        "operationId": "listPrices",
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {"name": "productId", "in": "query", "schema": {"type": "string"}},
+          {"name": "lookupKey", "in": "query", "schema": {"type": "string"}, "description": "Stable key you keep in your app, e.g. pro-monthly"},
+          {"name": "active", "in": "query", "schema": {"type": "boolean"}},
+          {"name": "page", "in": "query", "schema": {"type": "integer", "minimum": 1}},
+          {"name": "limit", "in": "query", "schema": {"type": "integer", "minimum": 1, "maximum": 100}}
+        ],
+        "responses": {"200": {"description": "Paginated list of prices"}}
+      }
+    },
+    "/v1/client/commerce/prices/{id}": {
+      "get": {
+        "tags": ["Commerce"],
+        "summary": "Get a price",
+        "operationId": "getPrice",
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {"name": "id", "in": "path", "required": true, "schema": {"type": "string"}, "description": "Price id"}
+        ],
+        "responses": {
+          "200": {
+            "description": "Price",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/PriceResponse"}
+              }
+            }
+          },
+          "404": {"description": "Price not found"}
+        }
+      },
+      "patch": {
+        "tags": ["Commerce"],
+        "summary": "Update a price",
+        "description": "Only `active`, `nickname` and `lookupKey` may change; `unitAmount` is immutable.",
+        "operationId": "updatePrice",
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {"name": "id", "in": "path", "required": true, "schema": {"type": "string"}, "description": "Price id"}
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/UpdatePriceRequest"}
+            }
+          }
+        },
+        "responses": {"200": {"description": "Price updated"}}
       }
     },
     "/v1/client/webhooks": {
@@ -629,6 +794,134 @@
       }
     },
     "schemas": {
+      "CreatePriceData": {
+        "type": "object",
+        "required": ["unitAmount"],
+        "properties": {
+          "unitAmount": {
+            "type": "string",
+            "description": "Amount in VND as an integer string (1–300000000)"
+          },
+          "lookupKey": {
+            "type": "string",
+            "maxLength": 200,
+            "description": "Stable key you keep in your app, e.g. pro-monthly"
+          },
+          "nickname": {
+            "type": "string",
+            "maxLength": 200,
+            "description": "Internal label only; customers never see it"
+          }
+        }
+      },
+      "CreateProductRequest": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": {"type": "string", "maxLength": 200, "description": "Product name"},
+          "description": {"type": "string", "maxLength": 2000},
+          "defaultPriceData": {
+            "$ref": "#/components/schemas/CreatePriceData",
+            "description": "Create the first price and make it the product default"
+          }
+        }
+      },
+      "UpdateProductRequest": {
+        "type": "object",
+        "properties": {
+          "name": {"type": "string", "maxLength": 200},
+          "description": {"type": "string", "nullable": true, "maxLength": 2000},
+          "active": {"type": "boolean", "description": "Archive (false) or restore (true)"},
+          "defaultPriceId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Must be an active price of this product. Send null to clear."
+          }
+        }
+      },
+      "CreatePriceRequest": {
+        "type": "object",
+        "required": ["productId", "unitAmount"],
+        "properties": {
+          "productId": {"type": "string", "description": "Product this price belongs to"},
+          "unitAmount": {
+            "type": "string",
+            "description": "Amount in VND as an integer string (1–300000000). Immutable after creation."
+          },
+          "lookupKey": {"type": "string", "maxLength": 200},
+          "nickname": {"type": "string", "maxLength": 200},
+          "transferLookupKey": {
+            "type": "boolean",
+            "description": "Move lookupKey off the price that currently holds it instead of failing"
+          }
+        }
+      },
+      "UpdatePriceRequest": {
+        "type": "object",
+        "properties": {
+          "active": {"type": "boolean", "description": "Archive (false) or restore (true)"},
+          "nickname": {"type": "string", "nullable": true, "maxLength": 200},
+          "lookupKey": {"type": "string", "nullable": true, "maxLength": 200},
+          "transferLookupKey": {"type": "boolean"}
+        }
+      },
+      "Price": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "string"},
+          "productId": {"type": "string"},
+          "unitAmount": {"type": "string"},
+          "currency": {"type": "string", "example": "VND"},
+          "lookupKey": {"type": "string", "nullable": true},
+          "nickname": {"type": "string", "nullable": true},
+          "active": {"type": "boolean"},
+          "createdAt": {"type": "string", "format": "date-time"},
+          "updatedAt": {"type": "string", "format": "date-time"}
+        }
+      },
+      "Product": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "string"},
+          "name": {"type": "string"},
+          "description": {"type": "string", "nullable": true},
+          "active": {"type": "boolean"},
+          "defaultPriceId": {"type": "string", "nullable": true},
+          "defaultPrice": {"$ref": "#/components/schemas/Price", "nullable": true},
+          "activePriceCount": {"type": "integer"},
+          "prices": {"type": "array", "items": {"$ref": "#/components/schemas/Price"}},
+          "createdAt": {"type": "string", "format": "date-time"},
+          "updatedAt": {"type": "string", "format": "date-time"}
+        }
+      },
+      "ProductResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "status": {"type": "boolean"},
+              "data": {"$ref": "#/components/schemas/Product"}
+            }
+          },
+          "statusCode": {"type": "integer"},
+          "timestamp": {"type": "string", "format": "date-time"}
+        }
+      },
+      "PriceResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "status": {"type": "boolean"},
+              "data": {"$ref": "#/components/schemas/Price"}
+            }
+          },
+          "statusCode": {"type": "integer"},
+          "timestamp": {"type": "string", "format": "date-time"}
+        }
+      },
       "PaymentRequestCreateResponse": {
         "type": "object",
         "properties": {

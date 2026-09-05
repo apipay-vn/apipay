@@ -87,9 +87,21 @@ export const searchItems: SearchItem[] = [
     section: 'Tích hợp',
   },
   {
+    title: 'Commerce',
+    description: 'Sản phẩm, mức giá và link thanh toán từ Commerce',
+    href: '/vi/commerce',
+    section: 'Hướng dẫn',
+  },
+  {
     title: 'Payment Requests API',
     description: 'API tạo và quản lý liên kết thanh toán',
     href: '/vi/api/payment-requests',
+    section: 'API Reference',
+  },
+  {
+    title: 'Commerce API',
+    description: 'API tạo sản phẩm, mức giá và checkout bằng priceId',
+    href: '/vi/api/commerce',
     section: 'API Reference',
   },
   {
@@ -191,9 +203,21 @@ export const searchItems: SearchItem[] = [
     section: 'Integrations',
   },
   {
+    title: 'Commerce',
+    description: 'Products, prices, and payment links from Commerce',
+    href: '/en/commerce',
+    section: 'Guides',
+  },
+  {
     title: 'Payment Requests API',
     description: 'API for creating and managing payment links',
     href: '/en/api/payment-requests',
+    section: 'API Reference',
+  },
+  {
+    title: 'Commerce API',
+    description: 'API for products, prices, and checkout with priceId',
+    href: '/en/api/commerce',
     section: 'API Reference',
   },
   {

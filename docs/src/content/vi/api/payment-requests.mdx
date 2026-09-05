@@ -29,7 +29,8 @@ POST /v1/client/payment-requests
 | Tham số        | Kiểu   | Bắt buộc | Mô tả                                                                                                                                                                            |
 | -------------- | ------ | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `bankPublicId` | string | **✓ Có** | Public ID của ngân hàng đã kết nối                                                                                                                                               |
-| `amount`       | string | —        | Số tiền VND (chuỗi số nguyên hoặc số, tối đa `300000000`). Trả về dưới dạng chuỗi hoặc `null`. Để trống nếu cho phép khách tự nhập                                                |
+| `amount`       | string | —        | Số tiền VND (chuỗi số nguyên hoặc số, tối đa `300000000`). Trả về dưới dạng chuỗi hoặc `null`. Để trống nếu cho phép khách tự nhập. Không gửi cùng `priceId`                    |
+| `priceId`      | string | —        | Id mức giá Commerce. Số tiền của mức giá được ghi vào link này một lần. Sửa sản phẩm hoặc mức giá sau đó không đổi request này. Không gửi cùng `amount`. Xem [Commerce API](/vi/api/commerce) |
 | `content`      | string | —        | Nội dung chuyển khoản (tối đa 140 ký tự)                                                                                                                                         |
 | `title`        | string | —        | Tiêu đề hiển thị trên trang thanh toán                                                                                                                                           |
 | `expiresAt`    | string | —        | Thời hạn (ISO 8601). Để trống nếu không giới hạn                                                                                                                                 |
@@ -69,6 +70,19 @@ curl -X POST https://app.apipay.vn/v1/client/payment-requests \
     "content": "THANHTOAN-001",
     "title": "DON HANG 12345",
     "redirectUrl": "https://yoursite.com/payment/result"
+  }'
+```
+
+Tạo từ mức giá Commerce (số tiền lấy từ giá; không gửi thêm `amount`):
+
+```bash
+curl -X POST https://app.apipay.vn/v1/client/payment-requests \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <Auth>" \
+  -d '{
+    "bankPublicId": "bank_abc123",
+    "priceId": "cml8x1abc0000price0000000",
+    "content": "THANHTOAN-001"
   }'
 ```
 
@@ -156,6 +170,7 @@ GET /v1/client/payment-requests
         "status": "COMPLETED",
         "expiresAt": "2026-12-31T23:59:59Z",
         "redirectUrl": "https://yoursite.com/payment/result",
+        "commercePriceId": "cml8x1abc0000price0000000",
         "createdAt": "2026-03-06T10:00:00Z"
       }
     ],

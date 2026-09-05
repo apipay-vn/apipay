@@ -1,0 +1,203 @@
+---
+title: Commerce API
+description: Tạo sản phẩm và mức giá, rồi checkout bằng price id
+---
+
+# Commerce API
+
+API Commerce để tạo sản phẩm và mức giá. Xác thực giống mọi endpoint `/v1/client/*`. Xem [Xác thực](/vi/api/authentication).
+
+Khi đã có mức giá, tạo link thanh toán bằng `priceId` trên [Payment Requests](/vi/api/payment-requests). Có thể thử các lệnh này trong [Interactive Reference](/vi/api-reference).
+
+<Callout type="info">
+Khi tạo payment, gửi `priceId` **hoặc** `amount` — không gửi cả hai. Số tiền được ghi vào link một lần. Sửa sản phẩm hoặc mức giá sau đó không làm đổi các link đã tạo.
+</Callout>
+
+## Endpoint
+
+Mọi path nằm dưới `/v1/client/commerce`.
+
+| Method | Path | Mô tả |
+| ------ | ---- | ----- |
+| `POST` | `/products` | Tạo sản phẩm. `defaultPriceData` tùy chọn tạo mức giá đầu và đặt làm mặc định |
+| `GET` | `/products` | Danh sách sản phẩm (`active`, `page`, `limit`) |
+| `GET` | `/products/:id` | Lấy sản phẩm kèm các mức giá |
+| `PATCH` | `/products/:id` | Cập nhật tên, mô tả, lưu trữ/khôi phục, hoặc giá mặc định |
+| `POST` | `/prices` | Tạo mức giá. Mức giá đầu trên sản phẩm chưa có mặc định sẽ thành mặc định |
+| `GET` | `/prices` | Danh sách mức giá (`productId`, `lookupKey`, `active`, `page`, `limit`) |
+| `GET` | `/prices/:id` | Lấy một mức giá |
+| `PATCH` | `/prices/:id` | Cập nhật `active`, `nickname`, `lookupKey`. Không đổi `unitAmount` |
+
+---
+
+## Tạo sản phẩm
+
+```bash
+POST /v1/client/commerce/products
+```
+
+### Request body
+
+| Tham số | Kiểu | Bắt buộc | Mô tả |
+| ------- | ---- | -------- | ----- |
+| `name` | string | **Có** | Tên sản phẩm (tối đa 200) |
+| `description` | string | — | Mô tả tùy chọn (tối đa 2000) |
+| `defaultPriceData` | object | — | Tạo mức giá đầu và đặt làm mặc định |
+| `defaultPriceData.unitAmount` | string | **Có** nếu gửi `defaultPriceData` | Số tiền VND (chuỗi số nguyên, 1–300000000) |
+| `defaultPriceData.lookupKey` | string | — | Mã ổn định bạn giữ trong app, ví dụ `pro-monthly` |
+| `defaultPriceData.nickname` | string | — | Tên nội bộ, khách không thấy |
+
+### Ví dụ
+
+```bash
+curl -X POST https://app.apipay.vn/v1/client/commerce/products \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <Auth>" \
+  -d '{
+    "name": "Goi Pro",
+    "description": "Truy cap hang thang",
+    "defaultPriceData": {
+      "unitAmount": "99000",
+      "lookupKey": "pro-monthly",
+      "nickname": "Gia ra mat"
+    }
+  }'
+```
+
+### Response
+
+```json
+{
+  "data": {
+    "status": true,
+    "data": {
+      "id": "cml8x1abc0000prod0000000",
+      "name": "Goi Pro",
+      "description": "Truy cap hang thang",
+      "active": true,
+      "defaultPriceId": "cml8x1abc0000price0000000",
+      "defaultPrice": {
+        "id": "cml8x1abc0000price0000000",
+        "productId": "cml8x1abc0000prod0000000",
+        "unitAmount": "99000",
+        "currency": "VND",
+        "lookupKey": "pro-monthly",
+        "nickname": "Gia ra mat",
+        "active": true
+      },
+      "activePriceCount": 1,
+      "prices": [
+        {
+          "id": "cml8x1abc0000price0000000",
+          "productId": "cml8x1abc0000prod0000000",
+          "unitAmount": "99000",
+          "currency": "VND",
+          "lookupKey": "pro-monthly",
+          "nickname": "Gia ra mat",
+          "active": true
+        }
+      ]
+    }
+  },
+  "statusCode": 200,
+  "timestamp": "2026-09-04T10:00:00.000Z"
+}
+```
+
+Response nằm trong `data`. Danh sách nằm trong `data.data`, phân trang trong `data.pagination`.
+
+---
+
+## Tạo mức giá
+
+```bash
+POST /v1/client/commerce/prices
+```
+
+Số tiền không sửa được sau khi tạo. Muốn đổi giá thì tạo mức giá mới và lưu trữ mức cũ.
+
+### Request body
+
+| Tham số | Kiểu | Bắt buộc | Mô tả |
+| ------- | ---- | -------- | ----- |
+| `productId` | string | **Có** | Sản phẩm chứa mức giá này |
+| `unitAmount` | string | **Có** | Số tiền VND (chuỗi số nguyên, 1–300000000) |
+| `lookupKey` | string | — | Mã ổn định, duy nhất trên tài khoản. Tra sau bằng `GET /prices?lookupKey=` |
+| `nickname` | string | — | Tên nội bộ |
+| `transferLookupKey` | boolean | — | Nếu `true`, chuyển `lookupKey` khỏi mức giá đang giữ mã đó thay vì báo lỗi |
+
+### Ví dụ
+
+```bash
+curl -X POST https://app.apipay.vn/v1/client/commerce/prices \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <Auth>" \
+  -d '{
+    "productId": "cml8x1abc0000prod0000000",
+    "unitAmount": "199000",
+    "lookupKey": "pro-yearly",
+    "nickname": "Theo nam"
+  }'
+```
+
+Nếu sản phẩm chưa có giá mặc định, mức giá này trở thành mặc định.
+
+---
+
+## Tìm mức giá theo lookup key
+
+```bash
+curl "https://app.apipay.vn/v1/client/commerce/prices?lookupKey=pro-monthly" \
+  -H "Authorization: Bearer <Auth>"
+```
+
+Lấy `id` trả về làm `priceId` khi tạo thanh toán.
+
+---
+
+## Cập nhật sản phẩm
+
+```bash
+PATCH /v1/client/commerce/products/:id
+```
+
+| Tham số | Kiểu | Mô tả |
+| ------- | ---- | ----- |
+| `name` | string | Tên sản phẩm |
+| `description` | string \| null | Gửi `null` để xóa |
+| `active` | boolean | `false` lưu trữ, `true` khôi phục |
+| `defaultPriceId` | string \| null | Phải là mức giá đang hoạt động của sản phẩm này. Gửi `null` để xóa |
+
+---
+
+## Cập nhật mức giá
+
+```bash
+PATCH /v1/client/commerce/prices/:id
+```
+
+| Tham số | Kiểu | Mô tả |
+| ------- | ---- | ----- |
+| `active` | boolean | `false` lưu trữ, `true` khôi phục |
+| `nickname` | string \| null | Gửi `null` để xóa |
+| `lookupKey` | string \| null | Gửi `null` để xóa |
+| `transferLookupKey` | boolean | Chuyển `lookupKey` từ mức giá đang giữ mã đó |
+
+Không nhận `unitAmount`. Mức giá đã lưu trữ không dùng để tạo link mới. Link tạo trước đó vẫn giữ mức giá lúc tạo (`commercePriceId` trên payment request).
+
+---
+
+## Tạo thanh toán từ mức giá
+
+```bash
+curl -X POST https://app.apipay.vn/v1/client/payment-requests \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <Auth>" \
+  -d '{
+    "bankPublicId": "bank_abc123",
+    "priceId": "cml8x1abc0000price0000000",
+    "content": "DONHANG-001"
+  }'
+```
+
+Số tiền thanh toán lấy từ `unitAmount` của mức giá. Nếu bỏ `title`, hệ thống dùng tên sản phẩm. Xem [Payment Requests](/vi/api/payment-requests) cho response đầy đủ và [Webhook](/vi/api/webhooks) cho payload khi khách trả.

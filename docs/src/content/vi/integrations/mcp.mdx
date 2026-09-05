@@ -5,7 +5,7 @@ description: Kết nối ApiPay với AI assistant qua server Model Context Prot
 
 # MCP Server
 
-`@apipay.vn/mcp` là server Model Context Protocol (MCP) cho ApiPay. Server chạy qua stdio và cung cấp công cụ để AI assistant (Claude, Cursor, Codex, Command Code, Grok Build, Gemini, Copilot, OpenCode, và các client khác) tạo thanh toán sandbox, liệt kê tài khoản ngân hàng và giao dịch, quản lý webhook, và truy vấn số liệu.
+`@apipay.vn/mcp` là server Model Context Protocol (MCP) cho ApiPay. Server chạy qua stdio và cung cấp công cụ để AI assistant (Claude, Cursor, Codex, Command Code, Grok Build, Gemini, Copilot, OpenCode, và các client khác) tạo thanh toán sandbox, quản lý sản phẩm và mức giá, liệt kê tài khoản ngân hàng và giao dịch, quản lý webhook, và truy vấn số liệu.
 
 <Callout type="tip">
 Mở **Tích hợp > MCP Server** trong dashboard để sao chép cấu hình client kèm API key của bạn.
@@ -319,7 +319,7 @@ Theo hướng dẫn MCP của Windsurf và thêm server vào `.windsurf/mcp_conf
 
 ## Công cụ có sẵn
 
-Server đăng ký 15 tool. MCP client tự thêm tiền tố tên server `apipay` (ví dụ `apipay_list_banks` trong OpenCode, `mcp__apipay__list_banks` trong Claude Code).
+Server đăng ký 23 tool. MCP client tự thêm tiền tố tên server `apipay` (ví dụ `apipay_list_banks` trong OpenCode, `mcp__apipay__list_banks` trong Claude Code).
 
 ### Kết nối & kiểm tra
 
@@ -331,10 +331,21 @@ Server đăng ký 15 tool. MCP client tự thêm tiền tố tên server `apipay
 
 ### Payment request
 
-- `create_payment` — Tạo link thanh toán (cần `bankPublicId`; tuỳ chọn `amount`, `content`, `title`, `expiresAt`, `redirectUrl`).
+- `create_payment` — Tạo link thanh toán (cần `bankPublicId`; tuỳ chọn `amount` **hoặc** `priceId`, cùng `content`, `title`, `expiresAt`, `redirectUrl`). Tra lookup key bằng `list_prices` rồi gửi `priceId`.
 - `list_payments` — Liệt kê payment request với bộ lọc trạng thái, từ khóa, hoặc khoảng thời gian.
 - `cancel_payment` — **(Rủi ro)** Hủy một payment request đang `ACTIVE`.
 - `simulate_payment` — Mô phỏng thanh toán sandbox (`publicId` phải bắt đầu bằng `test_pr_`; kích hoạt webhook thử nghiệm).
+
+### Commerce
+
+- `list_products` — Liệt kê sản phẩm Commerce.
+- `get_product` — Lấy một sản phẩm kèm các mức giá.
+- `create_product` — Tạo sản phẩm. `defaultPriceData` tùy chọn tạo mức giá đầu và đặt làm mặc định.
+- `update_product` — Cập nhật tên, mô tả, lưu trữ/khôi phục, hoặc giá mặc định.
+- `list_prices` — Liệt kê mức giá. Lọc `productId` hoặc `lookupKey` để lấy price id.
+- `get_price` — Lấy một mức giá theo id.
+- `create_price` — Tạo mức giá. Số tiền không sửa được sau khi tạo.
+- `update_price` — Cập nhật tên nội bộ, lookup key, hoặc lưu trữ/khôi phục. Không đổi `unitAmount`.
 
 ### Webhook
 
@@ -355,9 +366,10 @@ Server đăng ký 15 tool. MCP client tự thêm tiền tố tên server `apipay
 
 1. **Kiểm tra kết nối** — Gọi `self_test` để xác nhận API key đang hoạt động.
 2. **Tìm ngân hàng đã kết nối** — Gọi `list_banks` để lấy `bankPublicId`.
-3. **Tạo payment request** — Gọi `create_payment` với `bankPublicId` và `amount` (ví dụ `"50000"`). Response trả về `publicId` bắt đầu bằng `test_pr_...`.
-4. **Mô phỏng thanh toán** — Gọi `simulate_payment` với `publicId: "test_pr_..."` để kiểm tra settlement và webhook.
-5. **Kiểm tra lịch sử** — Gọi `list_webhook_deliveries` và `list_transactions` để xác nhận giao dịch đã được ghi nhận.
+3. **Tạo sản phẩm và mức giá** (tuỳ chọn) — Gọi `create_product` với `defaultPriceData`, hoặc `list_prices` với `lookupKey` đã lưu.
+4. **Tạo payment request** — Gọi `create_payment` với `bankPublicId` và `amount` (ví dụ `"50000"`) hoặc `priceId`. Response trả về `publicId` bắt đầu bằng `test_pr_...`.
+5. **Mô phỏng thanh toán** — Gọi `simulate_payment` với `publicId: "test_pr_..."` để kiểm tra settlement và webhook.
+6. **Kiểm tra lịch sử** — Gọi `list_webhook_deliveries` và `list_transactions` để xác nhận giao dịch đã được ghi nhận.
 
 Xem [Sandbox & Live Test](/vi/sandbox) để biết thêm về key sandbox và thanh toán mô phỏng.
 

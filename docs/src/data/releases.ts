@@ -79,6 +79,18 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.20.0',
+    date: '2026-09-04',
+    features: [
+      'Commerce — create products and prices in the dashboard or API, then open a payment link from a price. The amount is copied onto that link once, so later product or price edits never change a link a customer already has.',
+      'MCP Commerce tools — list, create, and update products and prices from your AI assistant, and create a payment from a price id.',
+    ],
+    fixes: [],
+    improvements: [
+      'You can now send a follow-up on an open support ticket without waiting for it to close.',
+    ],
+  },
+  {
     version: '1.19.1',
     date: '2026-08-23',
     features: [
@@ -551,6 +563,18 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.20.0',
+    date: '2026-09-04',
+    features: [
+      'Commerce — tạo sản phẩm và mức giá trên dashboard hoặc API, rồi mở link thanh toán từ mức giá. Số tiền được ghi vào link một lần, nên sửa sản phẩm hoặc mức giá sau đó không đổi link khách đang mở.',
+      'MCP Commerce — liệt kê, tạo và cập nhật sản phẩm, mức giá từ AI assistant, và tạo thanh toán từ price id.',
+    ],
+    fixes: [],
+    improvements: [
+      'Bạn có thể gửi tin tiếp theo trên ticket hỗ trợ đang mở, không cần đợi ticket đóng.',
+    ],
+  },
   {
     version: '1.19.1',
     date: '2026-08-23',
