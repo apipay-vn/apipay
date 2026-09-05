@@ -27,6 +27,10 @@ Mọi path nằm dưới `/v1/client/commerce`.
 | `GET` | `/prices` | Danh sách mức giá (`productId`, `lookupKey`, `active`, `page`, `limit`) |
 | `GET` | `/prices/:id` | Lấy một mức giá |
 | `PATCH` | `/prices/:id` | Cập nhật `active`, `nickname`, `lookupKey`. Không đổi `unitAmount` |
+| `GET` | `/invoices` | Danh sách hóa đơn bán hàng (`search`, `page`, `limit`) |
+| `GET` | `/invoices/:id` | Chi tiết hóa đơn bán hàng kèm line items |
+| `GET` | `/invoices/:id/pdf` | Tải file PDF hóa đơn / biên lai bán hàng |
+| `PATCH` | `/invoices/:id` | Cập nhật thông tin người mua (`buyerName`, `buyerEmail`, `buyerTaxCode`, `buyerAddress`) |
 
 ---
 
@@ -200,4 +204,81 @@ curl -X POST https://app.apipay.vn/v1/client/payment-requests \
   }'
 ```
 
-Số tiền thanh toán lấy từ `unitAmount` của mức giá. Nếu bỏ `title`, hệ thống dùng tên sản phẩm. Xem [Payment Requests](/vi/api/payment-requests) cho response đầy đủ và [Webhook](/vi/api/webhooks) cho payload khi khách trả.
+Số tiền thanh toán lấy từ `unitAmount` của mức giá. Nếu bỏ `title`, hệ thống dùng tên sản phẩm. Bạn cũng có thể truyền thông tin khách hàng `customer` tùy chọn để tự động điền vào hóa đơn bán hàng:
+
+```bash
+curl -X POST https://app.apipay.vn/v1/client/payment-requests \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <Auth>" \
+  -d '{
+    "bankPublicId": "bank_abc123",
+    "priceId": "cml8x1abc0000price0000000",
+    "content": "DONHANG-001",
+    "customer": {
+      "name": "Nguyen Van A",
+      "email": "customer@example.com",
+      "taxCode": "0101234567",
+      "address": "123 Le Loi, Ben Nghe, Q.1, TP.HCM"
+    }
+  }'
+```
+
+Xem [Payment Requests](/vi/api/payment-requests) cho response đầy đủ và [Webhook](/vi/api/webhooks) cho payload khi khách trả.
+
+---
+
+## Hóa đơn bán hàng (Receipts)
+
+Khi một yêu cầu thanh toán (chế độ Live) gắn với `commercePriceId` hoàn thành thanh toán, hệ thống tự động tạo một hóa đơn bán hàng (`CommerceInvoice`) đã thanh toán với định dạng số `CINV-YYYYMM-XXXX`.
+
+<Callout type="warning">
+**Lưu ý**: Hóa đơn bán hàng Commerce là biên lai ghi nhận thanh toán thương mại của người bán cấp cho khách hàng. Đây **không phải hóa đơn GTGT** (*"Đây không phải hóa đơn GTGT / This is not an official VAT invoice"*).
+</Callout>
+
+### Danh sách hóa đơn
+
+```bash
+GET /v1/client/commerce/invoices?search=CINV-202609&page=1&limit=20
+```
+
+| Query parameter | Kiểu | Mô tả |
+| --------------- | ---- | ----- |
+| `search` | string | Tìm kiếm theo số hóa đơn, tên người mua, email, hoặc tên sản phẩm |
+| `page` | number | Trang (mặc định: 1) |
+| `limit` | number | Số lượng mỗi trang (mặc định: 20, tối đa: 100) |
+
+### Chi tiết hóa đơn
+
+```bash
+GET /v1/client/commerce/invoices/:id
+```
+
+Trả về thông tin chi tiết hóa đơn gồm bên bán, bên mua, tổng tiền và các dòng sản phẩm/dịch vụ (`lineItems`).
+
+### Tải file PDF hóa đơn
+
+```bash
+GET /v1/client/commerce/invoices/:id/pdf
+```
+
+Trả về file nhị phân `application/pdf`, tên file tải về gợi ý `apipay-cinv-{invoiceNumber}.pdf`.
+
+### Cập nhật thông tin người mua
+
+```bash
+PATCH /v1/client/commerce/invoices/:id
+```
+
+Cập nhật thông tin người mua trên hóa đơn đã phát hành:
+
+```bash
+curl -X PATCH https://app.apipay.vn/v1/client/commerce/invoices/cml8x1abc0000inv0000000 \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <Auth>" \
+  -d '{
+    "buyerName": "Nguyen Van A",
+    "buyerEmail": "buyer@example.com",
+    "buyerTaxCode": "0101234567",
+    "buyerAddress": "123 Le Loi, Q.1, TP.HCM"
+  }'
+```

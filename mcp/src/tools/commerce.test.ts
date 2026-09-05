@@ -113,3 +113,45 @@ test("update_price patches active and does not send unitAmount", async () => {
     assert.deepEqual(JSON.parse(capturedBody), { active: false });
   });
 });
+
+test("list_commerce_invoices sends search and pagination params", async () => {
+  let capturedUrl = "";
+  await withCommerceClient(async (url) => {
+    capturedUrl = url.toString();
+    return new Response(JSON.stringify({ data: [], pagination: { page: 1, limit: 10, total: 0 } }), { status: 200 });
+  }, async (client) => {
+    const result = await client.callTool({
+      name: "list_commerce_invoices",
+      arguments: {
+        search: "CINV-202609",
+        page: 2,
+        limit: 10,
+      },
+    });
+
+    assert.equal(result.isError, undefined);
+    const parsed = new URL(capturedUrl);
+    assert.equal(parsed.pathname, "/v1/client/commerce/invoices");
+    assert.equal(parsed.searchParams.get("search"), "CINV-202609");
+    assert.equal(parsed.searchParams.get("page"), "2");
+    assert.equal(parsed.searchParams.get("limit"), "10");
+  });
+});
+
+test("get_commerce_invoice calls endpoint with id", async () => {
+  let capturedUrl = "";
+  await withCommerceClient(async (url) => {
+    capturedUrl = url.toString();
+    return new Response(JSON.stringify({ data: { id: "cinv_123", invoiceNumber: "CINV-202609-0001" } }), { status: 200 });
+  }, async (client) => {
+    const result = await client.callTool({
+      name: "get_commerce_invoice",
+      arguments: {
+        id: "cinv_123",
+      },
+    });
+
+    assert.equal(result.isError, undefined);
+    assert.equal(new URL(capturedUrl).pathname, "/v1/client/commerce/invoices/cinv_123");
+  });
+});

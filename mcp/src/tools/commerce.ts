@@ -317,4 +317,60 @@ export function registerCommerceTools(server: McpServer, client: ApiClient): voi
       }
     },
   );
+
+  server.registerTool(
+    "list_commerce_invoices",
+    {
+      description:
+        "List Commerce invoices (paid sales receipts for products sold). Filter by search term across invoice number, buyer, or product name.",
+      inputSchema: {
+        search: z
+          .string()
+          .optional()
+          .describe("Search term across invoice number, buyer name, buyer email, or product name"),
+        page: z
+          .number()
+          .int()
+          .min(1)
+          .optional()
+          .describe("Page number for pagination (starts at 1)"),
+        limit: z
+          .number()
+          .int()
+          .min(1)
+          .max(100)
+          .optional()
+          .describe("Number of items per page (max 100)"),
+      },
+    },
+    async (args) => {
+      try {
+        const query: Record<string, unknown> = {};
+        if (args.search !== undefined) query.search = args.search;
+        if (args.page !== undefined) query.page = args.page;
+        if (args.limit !== undefined) query.limit = args.limit;
+        return ok(await client.get("/client/commerce/invoices", { query }));
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
+
+  server.registerTool(
+    "get_commerce_invoice",
+    {
+      description:
+        "Get a Commerce invoice by id, including seller info, buyer info, totals, and line items.",
+      inputSchema: {
+        id: z.string().describe("Commerce invoice id"),
+      },
+    },
+    async ({ id }) => {
+      try {
+        return ok(await client.get(`/client/commerce/invoices/${id}`));
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
 }

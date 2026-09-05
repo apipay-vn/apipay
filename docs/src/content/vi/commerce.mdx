@@ -54,10 +54,20 @@ Khi đã tạo mức giá, số tiền bị khóa. Muốn đổi giá thì tạo
 
 Link thanh toán đã tạo giữ đúng số tiền lúc tạo. Sửa sản phẩm hay mức giá sau đó không làm đổi các link đang mở.
 
+## Hóa đơn bán hàng (Receipts)
+
+Khi một yêu cầu thanh toán (chế độ Live) gắn với `priceId` được thanh toán thành công, ApiPay tự động tạo một hóa đơn bán hàng (`CommerceInvoice`) với số hóa đơn có định dạng `CINV-YYYYMM-XXXX`.
+
+- **Thông tin bên bán**: Thể hiện tên doanh nghiệp và thông tin liên hệ của bạn.
+- **Thông tin bên mua**: Tự động điền từ thông tin `customer` khi tạo link thanh toán, hoặc chỉnh sửa trực tiếp trong dashboard.
+- **Tải file PDF**: Tải file hóa đơn / biên lai PDF (`apipay-cinv-*.pdf`) trực tiếp từ dashboard hoặc API để gửi cho khách hàng.
+- **Lưu ý pháp lý**: Hóa đơn bán hàng xác nhận thanh toán thương mại cho sản phẩm / dịch vụ. Đây không phải hóa đơn điện tử GTGT theo Nghị định 123/2020/NĐ-CP (*"Đây không phải hóa đơn GTGT / This is not an official VAT invoice"*).
+
 ## Thử ngay
 
 1. Mở **Commerce** và tạo sản phẩm (có thể thêm mức giá đầu ngay trong form).
 2. Trên trang sản phẩm, bấm **Tạo thanh toán** — hoặc thêm mức giá trước nếu bạn bỏ qua bước đó.
 3. Mở trang thanh toán. Ở sandbox, mô phỏng thanh toán để kiểm tra webhook.
+4. Trên giao dịch thực tế, xem và tải hóa đơn tự động tại tab **Hóa đơn bán hàng**.
 
 Cần chi tiết HTTP? Xem [Commerce API](/vi/api/commerce) hoặc thử gọi API trong [Interactive Reference](/vi/api-reference).

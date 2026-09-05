@@ -44,6 +44,15 @@ export function registerPaymentsTools(server: McpServer, client: ApiClient): voi
           .string()
           .optional()
           .describe("HTTPS URL to redirect after payment completion"),
+        customer: z
+          .object({
+            name: z.string().max(200).optional().describe("Customer / buyer name"),
+            email: z.string().email().optional().describe("Customer / buyer email"),
+            taxCode: z.string().max(50).optional().describe("Customer tax code"),
+            address: z.string().max(500).optional().describe("Customer address"),
+          })
+          .optional()
+          .describe("Optional customer details for invoice / receipt generation"),
       },
     },
     async (args) => {
@@ -69,6 +78,7 @@ export function registerPaymentsTools(server: McpServer, client: ApiClient): voi
         if (args.title !== undefined) body.title = args.title;
         if (args.expiresAt !== undefined) body.expiresAt = args.expiresAt;
         if (args.redirectUrl !== undefined) body.redirectUrl = args.redirectUrl;
+        if (args.customer !== undefined) body.customer = args.customer;
 
         const data = await client.post("/client/payment-requests", body);
         return {

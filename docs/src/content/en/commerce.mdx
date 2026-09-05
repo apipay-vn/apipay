@@ -54,10 +54,20 @@ Once a price exists, its amount is fixed. To change what you charge, create a ne
 
 Payment links already created keep the amount they were created with. Editing a product or price later does not change links that are already open.
 
+## Sales Invoices (Receipts)
+
+When a live payment request created with a `priceId` is completed, ApiPay automatically generates a sales invoice (`CommerceInvoice`) with invoice number sequence `CINV-YYYYMM-XXXX`.
+
+- **Seller info**: Shows your merchant business name and contact details.
+- **Buyer info**: Pre-filled from the optional `customer` object passed when creating the payment request, or editable in the dashboard.
+- **PDF download**: Download formatted PDF receipts (`apipay-cinv-*.pdf`) directly from the dashboard or API to send to your customers.
+- **Disclaimer**: These receipts confirm commercial payment for products and services. They do not replace official VAT e-invoices (Hóa đơn GTGT) under Decree 123/2020/NĐ-CP (*"Đây không phải hóa đơn GTGT / This is not an official VAT invoice"*).
+
 ## Try it
 
 1. Open **Commerce** and create a product (you can add the first price in the same form).
 2. On the product page, click **Create payment** — or add a price first if you skipped it.
 3. Open the payment page. In sandbox, simulate the payment to confirm the webhook.
+4. On live payments, view and download the auto-generated receipt in the **Invoices** tab.
 
 Need the HTTP details? See the [Commerce API](/en/api/commerce) or try the calls in the [Interactive Reference](/en/api-reference).

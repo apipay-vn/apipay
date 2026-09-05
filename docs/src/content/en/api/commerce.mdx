@@ -27,6 +27,10 @@ All paths are under `/v1/client/commerce`.
 | `GET` | `/prices` | List prices (`productId`, `lookupKey`, `active`, `page`, `limit`) |
 | `GET` | `/prices/:id` | Get a price |
 | `PATCH` | `/prices/:id` | Update `active`, `nickname`, `lookupKey`. Not `unitAmount` |
+| `GET` | `/invoices` | List commerce invoices (`search`, `page`, `limit`) |
+| `GET` | `/invoices/:id` | Get commerce invoice details with line items |
+| `GET` | `/invoices/:id/pdf` | Download commerce invoice PDF receipt |
+| `PATCH` | `/invoices/:id` | Update invoice buyer details (`buyerName`, `buyerEmail`, `buyerTaxCode`, `buyerAddress`) |
 
 ---
 
@@ -200,4 +204,81 @@ curl -X POST https://app.apipay.vn/v1/client/payment-requests \
   }'
 ```
 
-The payment amount becomes the price `unitAmount`. If you omit `title`, the product name is used. See [Payment Requests](/en/api/payment-requests) for the full response and [Webhooks](/en/api/webhooks) for what arrives after the customer pays.
+The payment amount becomes the price `unitAmount`. If you omit `title`, the product name is used. You can also pass optional `customer` details to pre-populate the invoice buyer information:
+
+```bash
+curl -X POST https://app.apipay.vn/v1/client/payment-requests \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <Auth>" \
+  -d '{
+    "bankPublicId": "bank_abc123",
+    "priceId": "cml8x1abc0000price0000000",
+    "content": "ORDER-001",
+    "customer": {
+      "name": "Nguyen Van A",
+      "email": "customer@example.com",
+      "taxCode": "0101234567",
+      "address": "123 Le Loi, Ben Nghe, Dist 1, HCMC"
+    }
+  }'
+```
+
+See [Payment Requests](/en/api/payment-requests) for the full response and [Webhooks](/en/api/webhooks) for what arrives after the customer pays.
+
+---
+
+## Commerce Invoices (Receipts)
+
+When a live payment request with a `commercePriceId` completes, a paid `CommerceInvoice` is automatically created with an invoice number format of `CINV-YYYYMM-XXXX`.
+
+<Callout type="warning">
+**Notice**: Commerce invoices are commercial sales receipts issued by the merchant to confirm payment. They are **not official VAT invoices** (*"Đây không phải hóa đơn GTGT / This is not an official VAT invoice"*).
+</Callout>
+
+### List commerce invoices
+
+```bash
+GET /v1/client/commerce/invoices?search=CINV-202609&page=1&limit=20
+```
+
+| Query parameter | Type | Description |
+| --------------- | ---- | ----------- |
+| `search` | string | Filter by invoice number, buyer name, buyer email, or product name |
+| `page` | number | Page number (default: 1) |
+| `limit` | number | Items per page (default: 20, max: 100) |
+
+### Get invoice details
+
+```bash
+GET /v1/client/commerce/invoices/:id
+```
+
+Returns the invoice details including seller details, buyer details, totals, and line items.
+
+### Download invoice PDF
+
+```bash
+GET /v1/client/commerce/invoices/:id/pdf
+```
+
+Returns the binary `application/pdf` stream for the receipt, suggested filename `apipay-cinv-{invoiceNumber}.pdf`.
+
+### Update invoice buyer details
+
+```bash
+PATCH /v1/client/commerce/invoices/:id
+```
+
+Update buyer information on an existing invoice if customer details were missing or need correction:
+
+```bash
+curl -X PATCH https://app.apipay.vn/v1/client/commerce/invoices/cml8x1abc0000inv0000000 \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <Auth>" \
+  -d '{
+    "buyerName": "Nguyen Van A",
+    "buyerEmail": "buyer@example.com",
+    "buyerTaxCode": "0101234567",
+    "buyerAddress": "123 Le Loi, Dist 1, HCMC"
+  }'
+```
