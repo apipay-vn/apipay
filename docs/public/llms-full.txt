@@ -43,7 +43,7 @@ ApiPay is a payment gateway API that helps you easily create payment links via b
 | ------------------------------------------ | --------------------------------------- |
 | [Onboarding Guide](/en/onboarding)         | Complete merchant account setup process |
 | [Payment Speaker](/en/payment-speaker)     | Turn any phone or tablet into a real-time voice alert speaker |
-| [Subscription & Billing](/en/subscription) | Manage plans, billing, and the 72-hour free trial   |
+| [Subscription & Billing](/en/subscription) | Manage plans and billing   |
 | [Bank Accounts](/en/banking)               | Connect and manage bank accounts        |
 | [Commerce](/en/commerce)                   | Products, prices, reusable payment links, and receipts |
 
@@ -327,7 +327,7 @@ ApiPay is a payment gateway that enables Vietnamese businesses to accept bank tr
 Here's what you'll accomplish:
 
 1. **Sign Up** - Create your merchant account
-2. **Choose a Plan** - Start with FREE TRIAL 72 Hours or pick a paid plan
+2. **Choose a Plan** - Pick a paid plan
 3. **Connect Banks** - Link your Vietnamese bank accounts
 4. **Configure Settings** - Set up webhooks and API keys
 5. **Start Accepting Payments** - Create your first payment request
@@ -355,13 +355,11 @@ You can register using:
 
 ApiPay offers paid plans based on the number of bank accounts you need:
 
-Eligible new accounts can start with the 72-hour FREE TRIAL from Pricing.
-
 ### How to Choose
 
 **Start small and scale up:**
 
-- New businesses: Start with FREE TRIAL 72 Hours, then BASIC or STARTER
+- New businesses: Start with BASIC or STARTER
 - Growing businesses: PRO offers the best value
 - High-volume businesses: TEAM or above
 
@@ -491,7 +489,7 @@ const {data: {payUrl, qrUrl}} = await response.json();
 ## Next Steps
 
 - [Payment Speaker](/en/payment-speaker) - Hear real-time voice alerts for incoming bank transfers
-- [Subscription Guide](/en/subscription) - Manage plans and trial
+- [Subscription Guide](/en/subscription) - Manage plans and billing
 - [Bank Account Management](/en/banking) - Advanced banking features
 - [API Reference](/en/api/payment-requests) - Technical integration details
 
@@ -508,8 +506,6 @@ Learn how to manage your ApiPay subscription and pricing.
 ## Plan Overview
 
 ApiPay offers transparent pricing based on the number of bank accounts you need. Paid plans include unlimited transactions with no per-transaction fees. Choose a **billing term** of 1, 3, 6, or 12 months at checkout — 6-month and 12-month terms include automatic discounts.
-
-> **FREE TRIAL 72 Hours** — Eligible new accounts can activate it from Pricing before choosing a paid plan.
 
 ### Term Discounts
 
@@ -1167,12 +1163,12 @@ See [Webhook Documentation](/en/api/webhooks) for technical details.
 
 View and manage your plan:
 
-- Current plan or FREE TRIAL status
+- Current plan status
 - Upgrade/downgrade options
 - Billing history
 - Renewal date
 
-See [Subscription Guide](/en/subscription) for plan and trial details.
+See [Subscription Guide](/en/subscription) for plan and billing details.
 
 ### Appearance
 
@@ -1244,7 +1240,7 @@ Protect your account:
 
 - [Onboarding Guide](/en/onboarding) - Complete setup process
 - [Payment Speaker](/en/payment-speaker) - Hear real-time payment alerts at your counter
-- [Subscription Guide](/en/subscription) - Manage plans and trial
+- [Subscription Guide](/en/subscription) - Manage plans and billing
 - [Bank Account Management](/en/banking) - Connect and manage banks
 
 ### How to Connect Banks
@@ -2033,7 +2029,7 @@ Passkeys and 2FA protect your account in different ways. ApiPay recommends keepi
 
 - [Dashboard Guide](/en/dashboard) — Learn about dashboard features
 - [Authentication API](/en/api/authentication) — Use API key authentication for integrations
-- [Subscription & Billing](/en/subscription) — Manage plans and trial
+- [Subscription & Billing](/en/subscription) — Manage plans and billing
 
 ### Affiliate Program
 
@@ -2132,7 +2128,7 @@ The **Commission history** section shows the invoice, referred customer, plan, a
 
 - [Introduction](/en) — ApiPay overview
 - [Onboarding](/en/onboarding) — Set up your account and receive your first payment
-- [Subscription & Billing](/en/subscription) — Manage plans, billing, and trial
+- [Subscription & Billing](/en/subscription) — Manage plans and billing
 
 ---
 

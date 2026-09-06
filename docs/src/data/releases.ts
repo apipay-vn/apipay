@@ -79,6 +79,15 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.22.0',
+    date: '2026-09-06',
+    features: [],
+    fixes: [],
+    improvements: [
+      'The 72-hour free trial is discontinued. New accounts choose a paid plan from Pricing. Existing trial accounts are reset to no plan.',
+    ],
+  },
+  {
     version: '1.21.0',
     date: '2026-09-06',
     features: [
@@ -576,6 +585,15 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.22.0',
+    date: '2026-09-06',
+    features: [],
+    fixes: [],
+    improvements: [
+      'Gói dùng thử 72 giờ đã ngừng. Tài khoản mới chọn gói trả phí tại Bảng giá. Tài khoản đang dùng thử được chuyển về trạng thái chưa có gói.',
+    ],
+  },
   {
     version: '1.21.0',
     date: '2026-09-06',
