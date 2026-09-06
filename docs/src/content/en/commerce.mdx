@@ -1,6 +1,6 @@
 ---
 title: Commerce
-description: Create products and prices, then open a payment link from a price.
+description: Create a product, copy a reusable payment link, collect buyer details, and email a receipt.
 ---
 
 # Commerce
@@ -19,13 +19,15 @@ Open **Commerce** in the dashboard to create a product, add a price, and try a p
 
 1. **Create a product** — the item you sell (for example “Pro plan”).
 2. **Add a price** — the amount in VND. You can add more than one price on the same product (launch price, current price, yearly, …).
-3. **Create a payment link** from that price.
+3. **Share the payment link** on that price — one URL, many customers. Each visitor types their name and email, then scans a new QR.
 4. **Customer pays** — they scan the QR or transfer as usual.
-5. **You get the same webhook** as any other payment.
+5. **You get the same webhook** as any other payment. The buyer receives the receipt PDF by email.
 
 ```
-Product  →  Price  →  Payment link  →  Customer pays  →  Webhook
+Product  →  Price  →  Reusable link  →  Buyer details  →  QR  →  Pay  →  Receipt email + webhook
 ```
+
+You can still create a **one-time** payment request from a price (dashboard **Create one-time payment**, or `POST /v1/client/payment-requests` with `priceId`) when you already know the buyer.
 
 ## Lookup key
 
@@ -35,7 +37,7 @@ A lookup key is a stable name you keep in your app, such as `pro-monthly`. Use i
 GET /v1/client/commerce/prices?lookupKey=pro-monthly
 ```
 
-Checkout still sends the price id (`priceId`), not the lookup key. Look the price up first, then create the payment link.
+Checkout still sends the price id (`priceId`), not the lookup key, when you create a one-time payment request. The reusable payment link uses `paymentLinkUrl` / `publicId` on the price.
 
 ## Nickname
 
@@ -52,22 +54,37 @@ Each product has one **default price**. The dashboard uses it when you click **C
 
 Once a price exists, its amount is fixed. To change what you charge, create a new price and archive the old one.
 
-Payment links already created keep the amount they were created with. Editing a product or price later does not change links that are already open.
+One-time payment requests already created keep the amount they were created with. Editing a product or price later does not change those requests. The reusable payment link always uses the current price amount for **new** visitors. Archive the price to pause the reusable link.
 
 ## Sales Invoices (Receipts)
 
 When a live payment request created with a `priceId` is completed, ApiPay automatically generates a sales invoice (`CommerceInvoice`) with invoice number sequence `CINV-YYYYMM-XXXX`.
 
 - **Seller info**: Shows your merchant business name and contact details.
-- **Buyer info**: Pre-filled from the optional `customer` object passed when creating the payment request, or editable in the dashboard.
-- **PDF download**: Download formatted PDF receipts (`apipay-cinv-*.pdf`) directly from the dashboard or API to send to your customers.
+- **Buyer info**: Collected on the payment page (name + email required; tax code and address optional), or pre-filled from the optional `customer` object on a one-time payment request. Editable later in the dashboard.
+- **PDF download**: Download formatted PDF receipts (`apipay-cinv-*.pdf`) from the dashboard or API. After a live commerce payment, the PDF is also emailed to the buyer.
 - **Disclaimer**: These receipts confirm commercial payment for products and services. They do not replace official VAT e-invoices (Hóa đơn GTGT) under Decree 123/2020/NĐ-CP (*"Đây không phải hóa đơn GTGT / This is not an official VAT invoice"*).
+
+## Product image
+
+Upload PNG, JPEG, or WebP (max 3 MB) on create or on the product page. It shows on checkout; the customer can tap to view larger. Removing the image does not delete the product.
+
+## Transfer memo
+
+When a customer opens a Commerce link and you did not send `content`, ApiPay puts a unique transfer memo (the payment-request public id suffix) on the QR. Two buyers of the same amount are not mixed up, except on banks that do not return transfer content (for example VietinBank).
+
+## Not in Commerce
+
+- Cart / quantity
+- Customer CRM
+- Automatic monthly debit
+- Official VAT e-invoices (hóa đơn GTGT / HDDT)
 
 ## Try it
 
-1. Open **Commerce** and create a product (you can add the first price in the same form).
-2. On the product page, click **Create payment** — or add a price first if you skipped it.
-3. Open the payment page. In sandbox, simulate the payment to confirm the webhook.
-4. On live payments, view and download the auto-generated receipt in the **Invoices** tab.
+1. Open **Commerce** and create a product (you can add the first price and image in the same form).
+2. On the product page, click **Copy payment link** — or add a price first if you skipped it.
+3. Open the link, enter buyer name and email, then pay. In sandbox, create a one-time payment from the price and simulate it.
+4. On live payments, the buyer gets the receipt by email. You can also view it in the **Invoices** tab.
 
 Need the HTTP details? See the [Commerce API](/en/api/commerce) or try the calls in the [Interactive Reference](/en/api-reference).

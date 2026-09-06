@@ -1,6 +1,6 @@
 ---
 title: Commerce
-description: Tạo sản phẩm và mức giá, rồi mở link thanh toán từ mức giá đó.
+description: Tạo sản phẩm, sao chép link thanh toán dùng lại, thu thông tin người mua, gửi biên lai.
 ---
 
 # Commerce
@@ -19,13 +19,15 @@ Mở **Commerce** trong dashboard để tạo sản phẩm, thêm mức giá và
 
 1. **Tạo sản phẩm** — mặt hàng bạn bán (ví dụ “Gói Pro”).
 2. **Thêm mức giá** — số tiền VND. Một sản phẩm có thể có nhiều mức giá (giá ra mắt, giá hiện tại, theo năm, …).
-3. **Tạo link thanh toán** từ mức giá đó.
+3. **Chia sẻ link thanh toán** của mức giá — một URL, nhiều khách. Mỗi người mở link nhập họ tên và email, rồi quét QR mới.
 4. **Khách thanh toán** — quét QR hoặc chuyển khoản như bình thường.
-5. **Bạn nhận webhook** giống mọi thanh toán khác.
+5. **Bạn nhận webhook** giống mọi thanh toán khác. Khách nhận PDF biên lai qua email.
 
 ```
-Sản phẩm  →  Mức giá  →  Link thanh toán  →  Khách trả  →  Webhook
+Sản phẩm  →  Mức giá  →  Link dùng lại  →  Thông tin người mua  →  QR  →  Thanh toán  →  Email biên lai + webhook
 ```
+
+Bạn vẫn có thể tạo thanh toán **một lần** từ mức giá (dashboard **Tạo thanh toán một lần**, hoặc `POST /v1/client/payment-requests` với `priceId`) khi đã biết người mua.
 
 ## Lookup key
 
@@ -35,7 +37,7 @@ Lookup key là mã bạn tự đặt, ví dụ `pro-monthly`. Dùng để tìm l
 GET /v1/client/commerce/prices?lookupKey=pro-monthly
 ```
 
-Khi tạo payment, gửi `priceId` (id của mức giá), không gửi lookup key. Tìm mức giá trước, lấy `id`, rồi mới tạo link.
+Khi tạo thanh toán một lần, gửi `priceId` (id của mức giá), không gửi lookup key. Link thanh toán dùng lại dùng `paymentLinkUrl` / `publicId` trên mức giá.
 
 ## Tên nội bộ
 
@@ -43,7 +45,7 @@ Tên nội bộ (nickname) chỉ hiện với bạn trên dashboard. Khách khô
 
 ## Giá mặc định
 
-Mỗi sản phẩm có một **giá mặc định**. Dashboard dùng giá này khi bạn bấm **Tạo thanh toán**. Khi gọi API, gửi `priceId` của mức giá bạn muốn thu — API không tự lấy giá mặc định.
+Mỗi sản phẩm có một **giá mặc định**. Dashboard dùng giá này khi bạn bấm **Sao chép link thanh toán**. Khi gọi API tạo thanh toán một lần, gửi `priceId` của mức giá bạn muốn thu — API không tự lấy giá mặc định.
 
 - Mức giá đầu tiên được gán làm mặc định.
 - Thêm mức giá mới không đổi giá mặc định, trừ khi bạn chọn lại.
@@ -52,22 +54,37 @@ Mỗi sản phẩm có một **giá mặc định**. Dashboard dùng giá này k
 
 Khi đã tạo mức giá, số tiền bị khóa. Muốn đổi giá thì tạo mức giá mới và lưu trữ mức cũ.
 
-Link thanh toán đã tạo giữ đúng số tiền lúc tạo. Sửa sản phẩm hay mức giá sau đó không làm đổi các link đang mở.
+Yêu cầu thanh toán một lần đã tạo giữ đúng số tiền lúc tạo. Sửa sản phẩm hay mức giá sau đó không làm đổi các yêu cầu đó. Link dùng lại luôn lấy số tiền hiện tại của mức giá cho **khách mới**. Lưu trữ mức giá để tạm dừng link.
 
 ## Hóa đơn bán hàng (Receipts)
 
 Khi một yêu cầu thanh toán (chế độ Live) gắn với `priceId` được thanh toán thành công, ApiPay tự động tạo một hóa đơn bán hàng (`CommerceInvoice`) với số hóa đơn có định dạng `CINV-YYYYMM-XXXX`.
 
 - **Thông tin bên bán**: Thể hiện tên doanh nghiệp và thông tin liên hệ của bạn.
-- **Thông tin bên mua**: Tự động điền từ thông tin `customer` khi tạo link thanh toán, hoặc chỉnh sửa trực tiếp trong dashboard.
-- **Tải file PDF**: Tải file hóa đơn / biên lai PDF (`apipay-cinv-*.pdf`) trực tiếp từ dashboard hoặc API để gửi cho khách hàng.
+- **Thông tin bên mua**: Thu thập trên trang thanh toán (họ tên + email bắt buộc; mã số thuế và địa chỉ tùy chọn), hoặc điền sẵn từ `customer` khi tạo thanh toán một lần. Có thể sửa sau trên dashboard.
+- **Tải file PDF**: Tải file hóa đơn / biên lai PDF (`apipay-cinv-*.pdf`) từ dashboard hoặc API. Sau thanh toán live, PDF cũng được gửi email cho người mua.
 - **Lưu ý pháp lý**: Hóa đơn bán hàng xác nhận thanh toán thương mại cho sản phẩm / dịch vụ. Đây không phải hóa đơn điện tử GTGT theo Nghị định 123/2020/NĐ-CP (*"Đây không phải hóa đơn GTGT / This is not an official VAT invoice"*).
+
+## Ảnh sản phẩm
+
+Tải PNG, JPEG hoặc WebP (tối đa 3 MB) trên form tạo sản phẩm hoặc trang chi tiết. Ảnh hiện trên trang thanh toán; khách bấm để xem lớn. Xóa ảnh không xóa sản phẩm.
+
+## Nội dung chuyển khoản
+
+Khi khách mở link Commerce mà bạn không gửi `content`, ApiPay gắn nội dung CK duy nhất (đuôi public id của yêu cầu thanh toán) vào QR. Hai khách trả cùng số tiền không bị khớp nhầm, trừ ngân hàng không trả nội dung CK (ví dụ VietinBank).
+
+## Không có trong Commerce
+
+- Giỏ hàng / số lượng
+- CRM khách hàng
+- Thu tự động hàng tháng
+- Hóa đơn GTGT / HDDT
 
 ## Thử ngay
 
-1. Mở **Commerce** và tạo sản phẩm (có thể thêm mức giá đầu ngay trong form).
-2. Trên trang sản phẩm, bấm **Tạo thanh toán** — hoặc thêm mức giá trước nếu bạn bỏ qua bước đó.
-3. Mở trang thanh toán. Ở sandbox, mô phỏng thanh toán để kiểm tra webhook.
-4. Trên giao dịch thực tế, xem và tải hóa đơn tự động tại tab **Hóa đơn bán hàng**.
+1. Mở **Commerce** và tạo sản phẩm (có thể thêm mức giá và ảnh ngay trong form).
+2. Trên trang sản phẩm, bấm **Sao chép link thanh toán** — hoặc thêm mức giá trước nếu bạn bỏ qua bước đó.
+3. Mở link, nhập họ tên và email, rồi thanh toán. Ở sandbox, tạo thanh toán một lần từ mức giá rồi mô phỏng.
+4. Trên giao dịch thực tế, khách nhận biên lai qua email. Bạn cũng xem được ở tab **Hóa đơn bán hàng**.
 
 Cần chi tiết HTTP? Xem [Commerce API](/vi/api/commerce) hoặc thử gọi API trong [Interactive Reference](/vi/api-reference).

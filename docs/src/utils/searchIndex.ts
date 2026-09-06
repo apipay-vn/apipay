@@ -88,7 +88,7 @@ export const searchItems: SearchItem[] = [
   },
   {
     title: 'Commerce',
-    description: 'Sản phẩm, mức giá và link thanh toán từ Commerce',
+    description: 'Sản phẩm, mức giá, link dùng lại, ảnh và biên lai Commerce',
     href: '/vi/commerce',
     section: 'Hướng dẫn',
   },
@@ -100,7 +100,7 @@ export const searchItems: SearchItem[] = [
   },
   {
     title: 'Commerce API',
-    description: 'API tạo sản phẩm, mức giá và checkout bằng priceId',
+    description: 'API sản phẩm, mức giá, link dùng lại, ảnh và biên lai',
     href: '/vi/api/commerce',
     section: 'API Reference',
   },
@@ -204,7 +204,7 @@ export const searchItems: SearchItem[] = [
   },
   {
     title: 'Commerce',
-    description: 'Products, prices, and payment links from Commerce',
+    description: 'Products, prices, reusable payment links, images, and receipts',
     href: '/en/commerce',
     section: 'Guides',
   },
@@ -216,7 +216,7 @@ export const searchItems: SearchItem[] = [
   },
   {
     title: 'Commerce API',
-    description: 'API for products, prices, and checkout with priceId',
+    description: 'API for products, prices, reusable links, images, and receipts',
     href: '/en/api/commerce',
     section: 'API Reference',
   },

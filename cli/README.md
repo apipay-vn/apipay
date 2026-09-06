@@ -68,6 +68,12 @@ apipay webhooks:add           # Register a webhook for notifications
 | `apipay webhooks:history <ID>` | View delivery history |
 | `apipay webhooks:resend <ID>` | Resend a failed delivery |
 
+### Payment Requests
+
+| Command | Description |
+|---------|-------------|
+| `apipay pay:create` | Generate a one-shot payment request. Reusable Commerce links are created in the dashboard (https://apipay.vn/commerce). |
+
 ### Metrics
 
 | Command | Description |

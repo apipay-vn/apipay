@@ -23,7 +23,8 @@
   "security": [{"bearerAuth": []}],
   "tags": [
     {"name": "Payment Requests", "description": "Create and manage payment links"},
-    {"name": "Commerce", "description": "Commerce products and prices. Checkout with priceId on payment requests."},
+    {"name": "Commerce", "description": "Commerce products, prices, reusable payment links, invoices, and product images."},
+    {"name": "Media", "description": "Hosted images. Upload with auth; public GET serves bytes."},
     {"name": "Webhooks", "description": "Register and inspect webhook deliveries"},
     {"name": "Banks", "description": "List and manage connected bank accounts"},
     {"name": "Metrics", "description": "Dashboard analytics and reporting"}
@@ -59,7 +60,11 @@
                   "content": {
                     "type": "string",
                     "maxLength": 140,
-                    "description": "Transfer content / memo"
+                    "description": "Transfer content / memo. If omitted on a priceId request, ApiPay stamps a unique suffix from the payment-request public id so two buyers of the same amount are not mixed up."
+                  },
+                  "customer": {
+                    "$ref": "#/components/schemas/PaymentRequestCustomer",
+                    "description": "Optional buyer details for a one-time Commerce payment. Reusable payment-link checkout collects these on the pay page instead."
                   },
                   "title": {
                     "type": "string",
@@ -193,6 +198,195 @@
           "200": {"description": "Sandbox payment simulated"},
           "400": {"description": "Not a sandbox payment request, or request is not ACTIVE"},
           "404": {"description": "Sandbox payment request not found"}
+        }
+      }
+    },
+    "/v1/commerce/payment-links/{publicId}": {
+      "get": {
+        "tags": ["Commerce"],
+        "summary": "Get a reusable Commerce payment link (public)",
+        "description": "Used by pay.apipay.vn/p/{publicId}. Returns product name, amount, image, and merchant branding. No API key required.",
+        "operationId": "getCommercePaymentLink",
+        "security": [],
+        "parameters": [
+          {
+            "name": "publicId",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "string"},
+            "description": "Price payment-link public id (`pl…`)"
+          },
+          {
+            "name": "merchantId",
+            "in": "query",
+            "schema": {"type": "string"},
+            "description": "Merchant ID when accessing via a custom domain"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Reusable payment link",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/PublicPaymentLinkResponse"}
+              }
+            }
+          },
+          "404": {"description": "Payment link not found, archived, or merchant is not publicly accessible"}
+        }
+      }
+    },
+    "/v1/commerce/payment-links/{publicId}/checkout": {
+      "post": {
+        "tags": ["Commerce"],
+        "summary": "Start checkout on a reusable Commerce payment link (public)",
+        "description": "Collects buyer name and email, then mints a one-time payment request from the price. No API key required.",
+        "operationId": "checkoutCommercePaymentLink",
+        "security": [],
+        "parameters": [
+          {
+            "name": "publicId",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "string"},
+            "description": "Price payment-link public id (`pl…`)"
+          },
+          {
+            "name": "merchantId",
+            "in": "query",
+            "schema": {"type": "string"},
+            "description": "Merchant ID when accessing via a custom domain"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/CheckoutCustomerRequest"}
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "One-time payment request created",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/PaymentRequestCreateResponse"}
+              }
+            }
+          },
+          "400": {"description": "Invalid buyer details"},
+          "404": {"description": "Payment link not found or archived"}
+        }
+      }
+    },
+    "/v1/payment-requests/{cuid}/customer": {
+      "patch": {
+        "tags": ["Payment Requests"],
+        "summary": "Collect buyer details on a Commerce payment request (public)",
+        "description": "Used by the pay page before showing the QR on an existing Commerce payment request. Sandbox `test_pr_*` ids are rejected. No API key required.",
+        "operationId": "updatePaymentRequestCustomer",
+        "security": [],
+        "parameters": [
+          {
+            "name": "cuid",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "string"},
+            "description": "Payment request public ID"
+          },
+          {
+            "name": "merchantId",
+            "in": "query",
+            "schema": {"type": "string"},
+            "description": "Merchant ID when accessing via a custom domain"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/CheckoutCustomerRequest"}
+            }
+          }
+        },
+        "responses": {
+          "200": {"description": "Buyer details saved"},
+          "400": {"description": "Not an active Commerce payment request, or sandbox id"},
+          "404": {"description": "Payment request not found"}
+        }
+      }
+    },
+    "/v1/client/media": {
+      "post": {
+        "tags": ["Media"],
+        "summary": "Upload an image",
+        "description": "Multipart upload. Attach the returned `id` to a product with `PATCH /v1/client/commerce/products/{id}` (`imageId`). PNG, JPEG, or WebP, max 3 MB.",
+        "operationId": "uploadMedia",
+        "security": [{"bearerAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": ["file", "kind"],
+                "properties": {
+                  "file": {"type": "string", "format": "binary", "description": "PNG, JPEG, or WebP image (max 3 MB)"},
+                  "kind": {"type": "string", "enum": ["commerce_product"], "description": "Must be `commerce_product`"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Image uploaded",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/MediaUploadResponse"}
+              }
+            }
+          },
+          "400": {"description": "Missing file/kind, unsupported type, or file too large"}
+        }
+      }
+    },
+    "/v1/client/media/{id}": {
+      "delete": {
+        "tags": ["Media"],
+        "summary": "Delete an image you own",
+        "operationId": "deleteMedia",
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {"name": "id", "in": "path", "required": true, "schema": {"type": "string"}, "description": "Media asset id"}
+        ],
+        "responses": {
+          "200": {"description": "Image deleted"},
+          "404": {"description": "Media not found"}
+        }
+      }
+    },
+    "/v1/media/{id}": {
+      "get": {
+        "tags": ["Media"],
+        "summary": "Get public image bytes",
+        "description": "Public proxy for hosted product images. Checkout and dashboard use this URL. No API key required.",
+        "operationId": "getPublicMedia",
+        "security": [],
+        "parameters": [
+          {"name": "id", "in": "path", "required": true, "schema": {"type": "string"}, "description": "Media asset id"}
+        ],
+        "responses": {
+          "200": {
+            "description": "Image bytes",
+            "content": {
+              "image/png": {"schema": {"type": "string", "format": "binary"}},
+              "image/jpeg": {"schema": {"type": "string", "format": "binary"}},
+              "image/webp": {"schema": {"type": "string", "format": "binary"}}
+            }
+          },
+          "404": {"description": "Media not found"}
         }
       }
     },
@@ -836,6 +1030,11 @@
             "type": "string",
             "nullable": true,
             "description": "Must be an active price of this product. Send null to clear."
+          },
+          "imageId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Hosted media id from POST /v1/client/media. Send null to remove the image."
           }
         }
       },
@@ -870,11 +1069,17 @@
         "properties": {
           "id": {"type": "string"},
           "productId": {"type": "string"},
+          "publicId": {"type": "string", "description": "Payment-link public id (`pl…`)"},
           "unitAmount": {"type": "string"},
           "currency": {"type": "string", "example": "VND"},
           "lookupKey": {"type": "string", "nullable": true},
           "nickname": {"type": "string", "nullable": true},
           "active": {"type": "boolean"},
+          "paymentLinkUrl": {
+            "type": "string",
+            "nullable": true,
+            "description": "Reusable checkout URL (`https://pay.apipay.vn/p/{publicId}`). Null when the price is archived."
+          },
           "createdAt": {"type": "string", "format": "date-time"},
           "updatedAt": {"type": "string", "format": "date-time"}
         }
@@ -886,12 +1091,96 @@
           "name": {"type": "string"},
           "description": {"type": "string", "nullable": true},
           "active": {"type": "boolean"},
+          "imageId": {"type": "string", "nullable": true},
+          "imageUrl": {
+            "type": "string",
+            "nullable": true,
+            "description": "Public URL for the product image (`/v1/media/{imageId}`)"
+          },
           "defaultPriceId": {"type": "string", "nullable": true},
           "defaultPrice": {"$ref": "#/components/schemas/Price", "nullable": true},
           "activePriceCount": {"type": "integer"},
           "prices": {"type": "array", "items": {"$ref": "#/components/schemas/Price"}},
           "createdAt": {"type": "string", "format": "date-time"},
           "updatedAt": {"type": "string", "format": "date-time"}
+        }
+      },
+      "PaymentRequestCustomer": {
+        "type": "object",
+        "properties": {
+          "name": {"type": "string", "maxLength": 200, "description": "Buyer name"},
+          "email": {"type": "string", "format": "email", "maxLength": 200, "description": "Buyer email"},
+          "taxCode": {"type": "string", "maxLength": 50, "description": "Buyer tax code (MST)"},
+          "address": {"type": "string", "maxLength": 500, "description": "Buyer address"}
+        }
+      },
+      "CheckoutCustomerRequest": {
+        "type": "object",
+        "required": ["name", "email"],
+        "properties": {
+          "name": {"type": "string", "maxLength": 200, "description": "Buyer name"},
+          "email": {"type": "string", "format": "email", "maxLength": 200, "description": "Buyer email — used to send the receipt"},
+          "taxCode": {"type": "string", "maxLength": 50, "description": "Buyer tax code (MST)"},
+          "address": {
+            "type": "string",
+            "maxLength": 500,
+            "description": "Buyer address. Required when taxCode is sent."
+          }
+        }
+      },
+      "PublicPaymentLink": {
+        "type": "object",
+        "properties": {
+          "publicId": {"type": "string"},
+          "productName": {"type": "string"},
+          "productDescription": {"type": "string", "nullable": true},
+          "imageUrl": {"type": "string", "nullable": true},
+          "amount": {"type": "string"},
+          "currency": {"type": "string", "example": "VND"},
+          "merchant": {
+            "type": "object",
+            "properties": {
+              "name": {"type": "string", "nullable": true},
+              "logoUrl": {"type": "string", "nullable": true},
+              "companyName": {"type": "string", "nullable": true}
+            }
+          }
+        }
+      },
+      "PublicPaymentLinkResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "status": {"type": "boolean"},
+              "data": {"$ref": "#/components/schemas/PublicPaymentLink"}
+            }
+          },
+          "statusCode": {"type": "integer"},
+          "timestamp": {"type": "string", "format": "date-time"}
+        }
+      },
+      "MediaUploadResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "status": {"type": "boolean"},
+              "data": {
+                "type": "object",
+                "properties": {
+                  "id": {"type": "string"},
+                  "kind": {"type": "string", "example": "commerce_product"},
+                  "mimeType": {"type": "string"},
+                  "url": {"type": "string"}
+                }
+              }
+            }
+          },
+          "statusCode": {"type": "integer"},
+          "timestamp": {"type": "string", "format": "date-time"}
         }
       },
       "ProductResponse": {

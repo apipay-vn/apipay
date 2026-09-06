@@ -339,7 +339,7 @@ Server đăng ký 23 tool. MCP client tự thêm tiền tố tên server `apipay
 ### Commerce
 
 - `list_products` — Liệt kê sản phẩm Commerce.
-- `get_product` — Lấy một sản phẩm kèm các mức giá.
+- `get_product` — Lấy một sản phẩm kèm các mức giá. JSON có thể gồm `paymentLinkUrl` và `imageUrl` — sao chép URL đó; không có tool MCP riêng cho link hay ảnh.
 - `create_product` — Tạo sản phẩm. `defaultPriceData` tùy chọn tạo mức giá đầu và đặt làm mặc định.
 - `update_product` — Cập nhật tên, mô tả, lưu trữ/khôi phục, hoặc giá mặc định.
 - `list_prices` — Liệt kê mức giá. Lọc `productId` hoặc `lookupKey` để lấy price id.

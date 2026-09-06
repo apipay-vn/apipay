@@ -31,10 +31,11 @@ POST /v1/client/payment-requests
 | `bankPublicId` | string | **✓ Yes** | Public ID of your connected bank                                                                                                                                                                                                      |
 | `amount`       | string | —         | Amount in VND (integer string or number, max `300000000`). Returned as string or `null`. Leave empty to allow customer input. Do not send together with `priceId`                                                                     |
 | `priceId`      | string | —         | Commerce price id. Copies that price amount onto this link once. Editing a product or price later does not change this request. Do not send together with `amount`. See [Commerce API](/en/api/commerce)                             |
-| `content`      | string | —         | Transfer content (max 140 characters)                                                                                                                                                                                                 |
+| `content`      | string | —         | Transfer content (max 140 characters). If omitted on a `priceId` request, ApiPay stamps a unique memo from the payment-request public id                                                                                              |
 | `title`        | string | —         | Title displayed on payment page                                                                                                                                                                                                       |
 | `expiresAt`    | string | —         | Expiration time (ISO 8601). Leave empty for no limit                                                                                                                                                                                  |
 | `redirectUrl`  | string | —         | URL to redirect after payment completion. When payment completes, the system will redirect to this URL with a signed payload (`?data=<base64>&signature=<hmac>`) for verification. Leave empty to use merchant's default redirect URL |
+| `customer`     | object | —         | Optional buyer details on a one-time `priceId` payment (`name`, `email`, `taxCode`, `address`). Reusable payment-link checkout collects these on the pay page instead                                                                 |
 
 ### Response
 

@@ -1,6 +1,6 @@
 ---
 title: Commerce API
-description: Tạo sản phẩm và mức giá, rồi checkout bằng price id
+description: Sản phẩm, mức giá, link thanh toán dùng lại, ảnh sản phẩm, và biên lai
 ---
 
 # Commerce API
@@ -22,7 +22,7 @@ Mọi path nằm dưới `/v1/client/commerce`.
 | `POST` | `/products` | Tạo sản phẩm. `defaultPriceData` tùy chọn tạo mức giá đầu và đặt làm mặc định |
 | `GET` | `/products` | Danh sách sản phẩm (`active`, `page`, `limit`) |
 | `GET` | `/products/:id` | Lấy sản phẩm kèm các mức giá |
-| `PATCH` | `/products/:id` | Cập nhật tên, mô tả, lưu trữ/khôi phục, hoặc giá mặc định |
+| `PATCH` | `/products/:id` | Cập nhật tên, mô tả, ảnh (`imageId`), lưu trữ/khôi phục, hoặc giá mặc định |
 | `POST` | `/prices` | Tạo mức giá. Mức giá đầu trên sản phẩm chưa có mặc định sẽ thành mặc định |
 | `GET` | `/prices` | Danh sách mức giá (`productId`, `lookupKey`, `active`, `page`, `limit`) |
 | `GET` | `/prices/:id` | Lấy một mức giá |
@@ -31,6 +31,19 @@ Mọi path nằm dưới `/v1/client/commerce`.
 | `GET` | `/invoices/:id` | Chi tiết hóa đơn bán hàng kèm line items |
 | `GET` | `/invoices/:id/pdf` | Tải file PDF hóa đơn / biên lai bán hàng |
 | `PATCH` | `/invoices/:id` | Cập nhật thông tin người mua (`buyerName`, `buyerEmail`, `buyerTaxCode`, `buyerAddress`) |
+
+Công khai (không cần auth), dùng bởi `pay.apipay.vn`:
+
+| Method | Path | Mô tả |
+| ------ | ---- | ----- |
+| `GET` | `/v1/commerce/payment-links/:publicId` | Tên sản phẩm, số tiền, và branding merchant của link thanh toán dùng lại |
+| `POST` | `/v1/commerce/payment-links/:publicId/checkout` | Thu thập thông tin người mua và tạo yêu cầu thanh toán một lần |
+| `PATCH` | `/v1/payment-requests/:cuid/customer` | Thu thập thông tin người mua trên yêu cầu thanh toán commerce đã có, trước khi họ trả |
+| `POST` | `/v1/client/media` | Tải ảnh (multipart `file` + `kind=commerce_product`). Cần auth |
+| `DELETE` | `/v1/client/media/:id` | Xóa ảnh bạn sở hữu. Cần auth |
+| `GET` | `/v1/media/:id` | Tải bytes ảnh công khai (trang thanh toán và dashboard dùng URL này) |
+
+Sản phẩm trả về `imageId` / `imageUrl`. Gắn ảnh: `POST /v1/client/media` rồi `PATCH /products/:id` với `imageId`. Gửi `imageId: null` để gỡ.
 
 ---
 
@@ -79,26 +92,32 @@ curl -X POST https://app.apipay.vn/v1/client/commerce/products \
       "name": "Goi Pro",
       "description": "Truy cap hang thang",
       "active": true,
+      "imageId": null,
+      "imageUrl": null,
       "defaultPriceId": "cml8x1abc0000price0000000",
       "defaultPrice": {
         "id": "cml8x1abc0000price0000000",
         "productId": "cml8x1abc0000prod0000000",
+        "publicId": "plA2B3C4D5E6F7",
         "unitAmount": "99000",
         "currency": "VND",
         "lookupKey": "pro-monthly",
         "nickname": "Gia ra mat",
-        "active": true
+        "active": true,
+        "paymentLinkUrl": "https://pay.apipay.vn/p/plA2B3C4D5E6F7"
       },
       "activePriceCount": 1,
       "prices": [
         {
           "id": "cml8x1abc0000price0000000",
           "productId": "cml8x1abc0000prod0000000",
+          "publicId": "plA2B3C4D5E6F7",
           "unitAmount": "99000",
           "currency": "VND",
           "lookupKey": "pro-monthly",
           "nickname": "Gia ra mat",
-          "active": true
+          "active": true,
+          "paymentLinkUrl": "https://pay.apipay.vn/p/plA2B3C4D5E6F7"
         }
       ]
     }
@@ -171,6 +190,7 @@ PATCH /v1/client/commerce/products/:id
 | `description` | string \| null | Gửi `null` để xóa |
 | `active` | boolean | `false` lưu trữ, `true` khôi phục |
 | `defaultPriceId` | string \| null | Phải là mức giá đang hoạt động của sản phẩm này. Gửi `null` để xóa |
+| `imageId` | string \| null | Id ảnh từ `POST /v1/client/media`. Gửi `null` để gỡ |
 
 ---
 
@@ -224,6 +244,8 @@ curl -X POST https://app.apipay.vn/v1/client/payment-requests \
 ```
 
 Xem [Payment Requests](/vi/api/payment-requests) cho response đầy đủ và [Webhook](/vi/api/webhooks) cho payload khi khách trả.
+
+Mỗi mức giá còn có `paymentLinkUrl` dùng lại (`https://pay.apipay.vn/p/{publicId}`). Chia sẻ URL đó thay vì tạo payment request cho từng khách. Trang thanh toán thu thập họ tên và email, rồi tạo yêu cầu thanh toán mới. Sau thanh toán live, PDF biên lai được gửi tới email người mua.
 
 ---
 

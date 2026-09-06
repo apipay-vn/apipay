@@ -79,6 +79,19 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.21.0',
+    date: '2026-09-06',
+    features: [
+      'Reusable Commerce payment links — copy one URL from a price and share it. Each customer who opens it gets their own QR. Archiving the price pauses the link.',
+      'Buyer checkout on the payment page — name and email before the QR, optional company tax code and address. After payment, the receipt PDF is emailed to the buyer.',
+      'Product image on Commerce — upload PNG, JPEG, or WebP in the dashboard; it shows on checkout and opens a viewer when clicked.',
+    ],
+    fixes: [],
+    improvements: [
+      'Commerce checkouts without a custom transfer memo now stamp a unique VietQR content code so two buyers of the same amount are not matched to the wrong request.',
+    ],
+  },
+  {
     version: '1.20.0',
     date: '2026-09-04',
     features: [
@@ -563,6 +576,19 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.21.0',
+    date: '2026-09-06',
+    features: [
+      'Link thanh toán Commerce dùng lại được — sao chép một URL từ mức giá rồi chia sẻ. Mỗi khách mở link nhận QR riêng. Lưu trữ mức giá thì link tạm dừng.',
+      'Thu thập thông tin người mua trên trang thanh toán — họ tên và email trước khi hiện QR, mã số thuế và địa chỉ tùy chọn. Sau khi thanh toán, PDF biên lai được gửi tới email người mua.',
+      'Ảnh sản phẩm Commerce — tải PNG, JPEG hoặc WebP trên dashboard; hiện trên trang thanh toán, bấm để xem lớn.',
+    ],
+    fixes: [],
+    improvements: [
+      'Checkout Commerce không gửi content thì gắn mã CK duy nhất trên QR, tránh khớp nhầm hai khách cùng số tiền.',
+    ],
+  },
   {
     version: '1.20.0',
     date: '2026-09-04',

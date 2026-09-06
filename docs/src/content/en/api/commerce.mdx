@@ -1,6 +1,6 @@
 ---
 title: Commerce API
-description: Create products and prices, then check out with a price id
+description: Products, prices, reusable payment links, product images, and receipts
 ---
 
 # Commerce API
@@ -22,7 +22,7 @@ All paths are under `/v1/client/commerce`.
 | `POST` | `/products` | Create a product. Optional `defaultPriceData` creates the first price and makes it the default |
 | `GET` | `/products` | List products (`active`, `page`, `limit`) |
 | `GET` | `/products/:id` | Get a product with its prices |
-| `PATCH` | `/products/:id` | Update name, description, archive/restore, or default price |
+| `PATCH` | `/products/:id` | Update name, description, image (`imageId`), archive/restore, or default price |
 | `POST` | `/prices` | Create a price. First price on a product with no default becomes the default |
 | `GET` | `/prices` | List prices (`productId`, `lookupKey`, `active`, `page`, `limit`) |
 | `GET` | `/prices/:id` | Get a price |
@@ -31,6 +31,19 @@ All paths are under `/v1/client/commerce`.
 | `GET` | `/invoices/:id` | Get commerce invoice details with line items |
 | `GET` | `/invoices/:id/pdf` | Download commerce invoice PDF receipt |
 | `PATCH` | `/invoices/:id` | Update invoice buyer details (`buyerName`, `buyerEmail`, `buyerTaxCode`, `buyerAddress`) |
+
+Public (no auth), used by `pay.apipay.vn`:
+
+| Method | Path | Description |
+| ------ | ---- | ----------- |
+| `GET` | `/v1/commerce/payment-links/:publicId` | Product name, amount, and merchant branding for a reusable payment link |
+| `POST` | `/v1/commerce/payment-links/:publicId/checkout` | Collect buyer details and mint a one-time payment request |
+| `PATCH` | `/v1/payment-requests/:cuid/customer` | Collect buyer details on an existing commerce payment request before they pay |
+| `POST` | `/v1/client/media` | Upload an image (multipart `file` + `kind=commerce_product`). Auth required |
+| `DELETE` | `/v1/client/media/:id` | Delete an image you own. Auth required |
+| `GET` | `/v1/media/:id` | Public image bytes (checkout and dashboard use this URL) |
+
+Products return `imageId` / `imageUrl`. Attach an image with `POST /v1/client/media` then `PATCH /products/:id` with `imageId`. Send `imageId: null` to remove.
 
 ---
 
@@ -79,26 +92,32 @@ curl -X POST https://app.apipay.vn/v1/client/commerce/products \
       "name": "Pro plan",
       "description": "Monthly access",
       "active": true,
+      "imageId": null,
+      "imageUrl": null,
       "defaultPriceId": "cml8x1abc0000price0000000",
       "defaultPrice": {
         "id": "cml8x1abc0000price0000000",
         "productId": "cml8x1abc0000prod0000000",
+        "publicId": "plA2B3C4D5E6F7",
         "unitAmount": "99000",
         "currency": "VND",
         "lookupKey": "pro-monthly",
         "nickname": "Launch price",
-        "active": true
+        "active": true,
+        "paymentLinkUrl": "https://pay.apipay.vn/p/plA2B3C4D5E6F7"
       },
       "activePriceCount": 1,
       "prices": [
         {
           "id": "cml8x1abc0000price0000000",
           "productId": "cml8x1abc0000prod0000000",
+          "publicId": "plA2B3C4D5E6F7",
           "unitAmount": "99000",
           "currency": "VND",
           "lookupKey": "pro-monthly",
           "nickname": "Launch price",
-          "active": true
+          "active": true,
+          "paymentLinkUrl": "https://pay.apipay.vn/p/plA2B3C4D5E6F7"
         }
       ]
     }
@@ -171,6 +190,7 @@ PATCH /v1/client/commerce/products/:id
 | `description` | string \| null | Send `null` to clear |
 | `active` | boolean | `false` archives, `true` restores |
 | `defaultPriceId` | string \| null | Must be an active price of this product. Send `null` to clear |
+| `imageId` | string \| null | Media id from `POST /v1/client/media`. Send `null` to remove |
 
 ---
 
@@ -224,6 +244,8 @@ curl -X POST https://app.apipay.vn/v1/client/payment-requests \
 ```
 
 See [Payment Requests](/en/api/payment-requests) for the full response and [Webhooks](/en/api/webhooks) for what arrives after the customer pays.
+
+Each price also has a reusable `paymentLinkUrl` (`https://pay.apipay.vn/p/{publicId}`). Share that URL instead of creating a payment request per customer. The pay page collects name and email, then mints a new payment request. After a live payment, the receipt PDF is emailed to the buyer.
 
 ---
 

@@ -9,7 +9,8 @@ import {
 } from "../../lib/prompts.js";
 
 export default class PayCreate extends ApiKeyCommand {
-	static override description = "Generate a new payment link (payment request)";
+	static override description =
+		"Generate a one-shot payment request. Reusable Commerce links are created in the dashboard (https://apipay.vn/commerce).";
 
 	static override examples = ["<%= config.bin %> pay:create"];
 

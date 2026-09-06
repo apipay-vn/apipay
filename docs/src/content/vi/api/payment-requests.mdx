@@ -31,10 +31,11 @@ POST /v1/client/payment-requests
 | `bankPublicId` | string | **✓ Có** | Public ID của ngân hàng đã kết nối                                                                                                                                               |
 | `amount`       | string | —        | Số tiền VND (chuỗi số nguyên hoặc số, tối đa `300000000`). Trả về dưới dạng chuỗi hoặc `null`. Để trống nếu cho phép khách tự nhập. Không gửi cùng `priceId`                    |
 | `priceId`      | string | —        | Id mức giá Commerce. Số tiền của mức giá được ghi vào link này một lần. Sửa sản phẩm hoặc mức giá sau đó không đổi request này. Không gửi cùng `amount`. Xem [Commerce API](/vi/api/commerce) |
-| `content`      | string | —        | Nội dung chuyển khoản (tối đa 140 ký tự)                                                                                                                                         |
+| `content`      | string | —        | Nội dung chuyển khoản (tối đa 140 ký tự). Nếu bỏ trống khi gửi `priceId`, hệ thống gắn mã CK duy nhất từ public id của yêu cầu thanh toán |
 | `title`        | string | —        | Tiêu đề hiển thị trên trang thanh toán                                                                                                                                           |
 | `expiresAt`    | string | —        | Thời hạn (ISO 8601). Để trống nếu không giới hạn                                                                                                                                 |
 | `redirectUrl`  | string | —        | URL đưa khách về sau khi thanh toán. Khi hoàn tất, hệ thống chuyển đến URL này kèm payload đã ký (`?data=<base64>&signature=<hmac>`). Để trống để dùng URL mặc định của merchant |
+| `customer`     | object | —        | Thông tin người mua tùy chọn khi tạo thanh toán một lần từ `priceId` (`name`, `email`, `taxCode`, `address`). Link dùng lại thu thập trên trang thanh toán |
 
 ### Response
 

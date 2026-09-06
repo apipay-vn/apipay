@@ -334,7 +334,7 @@ The server registers 23 tools. MCP clients automatically prefix tool names with 
 
 ### Commerce
 - `list_products`: Lists Commerce products.
-- `get_product`: Gets a product with its prices.
+- `get_product`: Gets a product with its prices. JSON may include `paymentLinkUrl` and `imageUrl` — copy that URL; there is no separate MCP tool for links or images.
 - `create_product`: Creates a product. Optional `defaultPriceData` creates the first price and makes it the default.
 - `update_product`: Updates name, description, archive/restore, or default price.
 - `list_prices`: Lists prices. Filter by `productId` or `lookupKey` to resolve a price id.

@@ -45,7 +45,7 @@ ApiPay is a payment gateway API that helps you easily create payment links via b
 | [Payment Speaker](/en/payment-speaker)     | Turn any phone or tablet into a real-time voice alert speaker |
 | [Subscription & Billing](/en/subscription) | Manage plans, billing, and the 72-hour free trial   |
 | [Bank Accounts](/en/banking)               | Connect and manage bank accounts        |
-| [Commerce](/en/commerce)                   | Products and prices, then a payment link |
+| [Commerce](/en/commerce)                   | Products, prices, reusable payment links, and receipts |
 
 ### Quick Start
 
@@ -975,7 +975,10 @@ When you log in, you'll see the main dashboard with:
    └─ Dashboard home with key metrics
 
 💳 Payment Requests
-   └─ Create and manage payment links
+   └─ Create and manage one-time payment links
+
+🛒 Commerce
+   └─ Products, prices, reusable payment links
 
 📈 Transactions
    └─ View payment history and details
@@ -1054,13 +1057,14 @@ Create and manage payment links for your customers.
 
 ## Commerce
 
-Products and prices you sell, then a payment link from a price.
+Products and prices you sell. Copy one reusable link from a price.
 
 1. Open **Commerce** in the sidebar.
-2. Create a product. You can add the first price in the same form.
-3. On the product page, click **Create payment** to open a link at that amount.
+2. Create a product. You can add the first price and image in the same form.
+3. On the product page, click **Copy payment link**. Paste the URL for customers (Zalo, Facebook). Each visitor enters their details, then scans a QR.
+4. **Create one-time payment** is still there if you already know the buyer.
 
-The default price is used when you click **Create payment**. Amounts on a price do not change — create a new price to charge a different amount. Details: [Commerce](/en/commerce).
+The default price is used when copying the link. Amounts on a price do not change — create a new price to charge a different amount. Details: [Commerce](/en/commerce). Marketing page: [apipay.vn/commerce](https://apipay.vn/commerce).
 
 ---
 
@@ -1696,13 +1700,15 @@ Open **Commerce** in the dashboard to create a product, add a price, and try a p
 
 1. **Create a product** — the item you sell (for example “Pro plan”).
 2. **Add a price** — the amount in VND. You can add more than one price on the same product (launch price, current price, yearly, …).
-3. **Create a payment link** from that price.
+3. **Share the payment link** on that price — one URL, many customers. Each visitor types their name and email, then scans a new QR.
 4. **Customer pays** — they scan the QR or transfer as usual.
-5. **You get the same webhook** as any other payment.
+5. **You get the same webhook** as any other payment. The buyer receives the receipt PDF by email.
 
 ```
-Product  →  Price  →  Payment link  →  Customer pays  →  Webhook
+Product  →  Price  →  Reusable link  →  Buyer details  →  QR  →  Pay  →  Receipt email + webhook
 ```
+
+You can still create a **one-time** payment request from a price (dashboard **Create one-time payment**, or `POST /v1/client/payment-requests` with `priceId`) when you already know the buyer.
 
 ## Lookup key
 
@@ -1712,7 +1718,7 @@ A lookup key is a stable name you keep in your app, such as `pro-monthly`. Use i
 GET /v1/client/commerce/prices?lookupKey=pro-monthly
 ```
 
-Checkout still sends the price id (`priceId`), not the lookup key. Look the price up first, then create the payment link.
+Checkout still sends the price id (`priceId`), not the lookup key, when you create a one-time payment request. The reusable payment link uses `paymentLinkUrl` / `publicId` on the price.
 
 ## Nickname
 
@@ -1729,13 +1735,38 @@ Each product has one **default price**. The dashboard uses it when you click **C
 
 Once a price exists, its amount is fixed. To change what you charge, create a new price and archive the old one.
 
-Payment links already created keep the amount they were created with. Editing a product or price later does not change links that are already open.
+One-time payment requests already created keep the amount they were created with. Editing a product or price later does not change those requests. The reusable payment link always uses the current price amount for **new** visitors. Archive the price to pause the reusable link.
+
+## Sales Invoices (Receipts)
+
+When a live payment request created with a `priceId` is completed, ApiPay automatically generates a sales invoice (`CommerceInvoice`) with invoice number sequence `CINV-YYYYMM-XXXX`.
+
+- **Seller info**: Shows your merchant business name and contact details.
+- **Buyer info**: Collected on the payment page (name + email required; tax code and address optional), or pre-filled from the optional `customer` object on a one-time payment request. Editable later in the dashboard.
+- **PDF download**: Download formatted PDF receipts (`apipay-cinv-*.pdf`) from the dashboard or API. After a live commerce payment, the PDF is also emailed to the buyer.
+- **Disclaimer**: These receipts confirm commercial payment for products and services. They do not replace official VAT e-invoices (Hóa đơn GTGT) under Decree 123/2020/NĐ-CP (*"Đây không phải hóa đơn GTGT / This is not an official VAT invoice"*).
+
+## Product image
+
+Upload PNG, JPEG, or WebP (max 3 MB) on create or on the product page. It shows on checkout; the customer can tap to view larger. Removing the image does not delete the product.
+
+## Transfer memo
+
+When a customer opens a Commerce link and you did not send `content`, ApiPay puts a unique transfer memo (the payment-request public id suffix) on the QR. Two buyers of the same amount are not mixed up, except on banks that do not return transfer content (for example VietinBank).
+
+## Not in Commerce
+
+- Cart / quantity
+- Customer CRM
+- Automatic monthly debit
+- Official VAT e-invoices (hóa đơn GTGT / HDDT)
 
 ## Try it
 
-1. Open **Commerce** and create a product (you can add the first price in the same form).
-2. On the product page, click **Create payment** — or add a price first if you skipped it.
-3. Open the payment page. In sandbox, simulate the payment to confirm the webhook.
+1. Open **Commerce** and create a product (you can add the first price and image in the same form).
+2. On the product page, click **Copy payment link** — or add a price first if you skipped it.
+3. Open the link, enter buyer name and email, then pay. In sandbox, create a one-time payment from the price and simulate it.
+4. On live payments, the buyer gets the receipt by email. You can also view it in the **Invoices** tab.
 
 Need the HTTP details? See the [Commerce API](/en/api/commerce) or try the calls in the [Interactive Reference](/en/api-reference).
 
@@ -2769,7 +2800,7 @@ The server registers 23 tools. MCP clients automatically prefix tool names with 
 ### Commerce
 
 - `list_products` — Lists Commerce products.
-- `get_product` — Gets a product with its prices.
+- `get_product` — Gets a product with its prices. JSON may include `paymentLinkUrl` and `imageUrl` — copy that URL; there is no separate MCP tool for links or images.
 - `create_product` — Creates a product. Optional `defaultPriceData` creates the first price and makes it the default.
 - `update_product` — Updates name, description, archive/restore, or default price.
 - `list_prices` — Lists prices. Filter by `productId` or `lookupKey` to resolve a price id.
@@ -3076,10 +3107,11 @@ POST /v1/client/payment-requests
 | `bankPublicId` | string | **✓ Yes** | Public ID of your connected bank                                                                                                                                                                                                      |
 | `amount`       | string | —         | Amount in VND (integer string or number, max `300000000`). Returned as string or `null`. Leave empty to allow customer input. Do not send together with `priceId`                                                                     |
 | `priceId`      | string | —         | Commerce price id. Copies that price amount onto this link once. Editing a product or price later does not change this request. Do not send together with `amount`. See [Commerce API](/en/api/commerce)                             |
-| `content`      | string | —         | Transfer content (max 140 characters)                                                                                                                                                                                                 |
+| `content`      | string | —         | Transfer content (max 140 characters). If omitted on a `priceId` request, ApiPay stamps a unique memo from the payment-request public id                                                                                              |
 | `title`        | string | —         | Title displayed on payment page                                                                                                                                                                                                       |
 | `expiresAt`    | string | —         | Expiration time (ISO 8601). Leave empty for no limit                                                                                                                                                                                  |
 | `redirectUrl`  | string | —         | URL to redirect after payment completion. When payment completes, the system will redirect to this URL with a signed payload (`?data=<base64>&signature=<hmac>`) for verification. Leave empty to use merchant's default redirect URL |
+| `customer`     | object | —         | Optional buyer details on a one-time `priceId` payment (`name`, `email`, `taxCode`, `address`). Reusable payment-link checkout collects these on the pay page instead                                                                 |
 
 ### Response
 
@@ -3537,11 +3569,28 @@ All paths are under `/v1/client/commerce`.
 | `POST` | `/products` | Create a product. Optional `defaultPriceData` creates the first price and makes it the default |
 | `GET` | `/products` | List products (`active`, `page`, `limit`) |
 | `GET` | `/products/:id` | Get a product with its prices |
-| `PATCH` | `/products/:id` | Update name, description, archive/restore, or default price |
+| `PATCH` | `/products/:id` | Update name, description, image (`imageId`), archive/restore, or default price |
 | `POST` | `/prices` | Create a price. First price on a product with no default becomes the default |
 | `GET` | `/prices` | List prices (`productId`, `lookupKey`, `active`, `page`, `limit`) |
 | `GET` | `/prices/:id` | Get a price |
 | `PATCH` | `/prices/:id` | Update `active`, `nickname`, `lookupKey`. Not `unitAmount` |
+| `GET` | `/invoices` | List commerce invoices (`search`, `page`, `limit`) |
+| `GET` | `/invoices/:id` | Get commerce invoice details with line items |
+| `GET` | `/invoices/:id/pdf` | Download commerce invoice PDF receipt |
+| `PATCH` | `/invoices/:id` | Update invoice buyer details (`buyerName`, `buyerEmail`, `buyerTaxCode`, `buyerAddress`) |
+
+Public (no auth), used by `pay.apipay.vn`:
+
+| Method | Path | Description |
+| ------ | ---- | ----------- |
+| `GET` | `/v1/commerce/payment-links/:publicId` | Product name, amount, and merchant branding for a reusable payment link |
+| `POST` | `/v1/commerce/payment-links/:publicId/checkout` | Collect buyer details and mint a one-time payment request |
+| `PATCH` | `/v1/payment-requests/:cuid/customer` | Collect buyer details on an existing commerce payment request before they pay |
+| `POST` | `/v1/client/media` | Upload an image (multipart `file` + `kind=commerce_product`). Auth required |
+| `DELETE` | `/v1/client/media/:id` | Delete an image you own. Auth required |
+| `GET` | `/v1/media/:id` | Public image bytes (checkout and dashboard use this URL) |
+
+Products return `imageId` / `imageUrl`. Attach an image with `POST /v1/client/media` then `PATCH /products/:id` with `imageId`. Send `imageId: null` to remove.
 
 ---
 
@@ -3590,26 +3639,32 @@ curl -X POST https://app.apipay.vn/v1/client/commerce/products \
       "name": "Pro plan",
       "description": "Monthly access",
       "active": true,
+      "imageId": null,
+      "imageUrl": null,
       "defaultPriceId": "cml8x1abc0000price0000000",
       "defaultPrice": {
         "id": "cml8x1abc0000price0000000",
         "productId": "cml8x1abc0000prod0000000",
+        "publicId": "plA2B3C4D5E6F7",
         "unitAmount": "99000",
         "currency": "VND",
         "lookupKey": "pro-monthly",
         "nickname": "Launch price",
-        "active": true
+        "active": true,
+        "paymentLinkUrl": "https://pay.apipay.vn/p/plA2B3C4D5E6F7"
       },
       "activePriceCount": 1,
       "prices": [
         {
           "id": "cml8x1abc0000price0000000",
           "productId": "cml8x1abc0000prod0000000",
+          "publicId": "plA2B3C4D5E6F7",
           "unitAmount": "99000",
           "currency": "VND",
           "lookupKey": "pro-monthly",
           "nickname": "Launch price",
-          "active": true
+          "active": true,
+          "paymentLinkUrl": "https://pay.apipay.vn/p/plA2B3C4D5E6F7"
         }
       ]
     }
@@ -3682,6 +3737,7 @@ PATCH /v1/client/commerce/products/:id
 | `description` | string \| null | Send `null` to clear |
 | `active` | boolean | `false` archives, `true` restores |
 | `defaultPriceId` | string \| null | Must be an active price of this product. Send `null` to clear |
+| `imageId` | string \| null | Media id from `POST /v1/client/media`. Send `null` to remove |
 
 ---
 
@@ -3715,7 +3771,84 @@ curl -X POST https://app.apipay.vn/v1/client/payment-requests \
   }'
 ```
 
-The payment amount becomes the price `unitAmount`. If you omit `title`, the product name is used. See [Payment Requests](/en/api/payment-requests) for the full response and [Webhooks](/en/api/webhooks) for what arrives after the customer pays.
+The payment amount becomes the price `unitAmount`. If you omit `title`, the product name is used. You can also pass optional `customer` details to pre-populate the invoice buyer information:
+
+```bash
+curl -X POST https://app.apipay.vn/v1/client/payment-requests \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer " \
+  -d '{
+    "bankPublicId": "bank_abc123",
+    "priceId": "cml8x1abc0000price0000000",
+    "content": "ORDER-001",
+    "customer": {
+      "name": "Nguyen Van A",
+      "email": "customer@example.com",
+      "taxCode": "0101234567",
+      "address": "123 Le Loi, Ben Nghe, Dist 1, HCMC"
+    }
+  }'
+```
+
+See [Payment Requests](/en/api/payment-requests) for the full response and [Webhooks](/en/api/webhooks) for what arrives after the customer pays.
+
+Each price also has a reusable `paymentLinkUrl` (`https://pay.apipay.vn/p/{publicId}`). Share that URL instead of creating a payment request per customer. The pay page collects name and email, then mints a new payment request. After a live payment, the receipt PDF is emailed to the buyer.
+
+---
+
+## Commerce Invoices (Receipts)
+
+When a live payment request with a `commercePriceId` completes, a paid `CommerceInvoice` is automatically created with an invoice number format of `CINV-YYYYMM-XXXX`.
+
+**Notice**: Commerce invoices are commercial sales receipts issued by the merchant to confirm payment. They are **not official VAT invoices** (*"Đây không phải hóa đơn GTGT / This is not an official VAT invoice"*).
+
+### List commerce invoices
+
+```bash
+GET /v1/client/commerce/invoices?search=CINV-202609&page=1&limit=20
+```
+
+| Query parameter | Type | Description |
+| --------------- | ---- | ----------- |
+| `search` | string | Filter by invoice number, buyer name, buyer email, or product name |
+| `page` | number | Page number (default: 1) |
+| `limit` | number | Items per page (default: 20, max: 100) |
+
+### Get invoice details
+
+```bash
+GET /v1/client/commerce/invoices/:id
+```
+
+Returns the invoice details including seller details, buyer details, totals, and line items.
+
+### Download invoice PDF
+
+```bash
+GET /v1/client/commerce/invoices/:id/pdf
+```
+
+Returns the binary `application/pdf` stream for the receipt, suggested filename `apipay-cinv-{invoiceNumber}.pdf`.
+
+### Update invoice buyer details
+
+```bash
+PATCH /v1/client/commerce/invoices/:id
+```
+
+Update buyer information on an existing invoice if customer details were missing or need correction:
+
+```bash
+curl -X PATCH https://app.apipay.vn/v1/client/commerce/invoices/cml8x1abc0000inv0000000 \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer " \
+  -d '{
+    "buyerName": "Nguyen Van A",
+    "buyerEmail": "buyer@example.com",
+    "buyerTaxCode": "0101234567",
+    "buyerAddress": "123 Le Loi, Dist 1, HCMC"
+  }'
+```
 
 ### Webhooks
 
