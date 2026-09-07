@@ -548,6 +548,107 @@
           }
         },
         "responses": {"200": {"description": "Price updated"}}
+      },
+      "delete": {
+        "tags": ["Commerce"],
+        "summary": "Delete a price",
+        "description": "Permanently deletes an unused price. Prices that have been used for payments cannot be deleted — archive them with PATCH instead. If this price is the product default, the default is cleared.",
+        "operationId": "deletePrice",
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {"name": "id", "in": "path", "required": true, "schema": {"type": "string"}, "description": "Price id"}
+        ],
+        "responses": {
+          "200": {"description": "Price deleted"},
+          "404": {"description": "Price not found"},
+          "409": {"description": "Price has been used for a payment. Archive it instead."}
+        }
+      }
+    },
+    "/v1/client/commerce/invoices": {
+      "get": {
+        "tags": ["Commerce"],
+        "summary": "List commerce invoices",
+        "description": "Paid sales receipts created when a live commerce payment completes. These are not official VAT invoices.",
+        "operationId": "listCommerceInvoices",
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {"name": "search", "in": "query", "schema": {"type": "string"}, "description": "Filter by invoice number, buyer, or product"},
+          {"name": "page", "in": "query", "schema": {"type": "integer", "minimum": 1}},
+          {"name": "limit", "in": "query", "schema": {"type": "integer", "minimum": 1, "maximum": 100}}
+        ],
+        "responses": {"200": {"description": "Paginated list of commerce invoices"}}
+      }
+    },
+    "/v1/client/commerce/invoices/{id}": {
+      "get": {
+        "tags": ["Commerce"],
+        "summary": "Get a commerce invoice",
+        "operationId": "getCommerceInvoice",
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {"name": "id", "in": "path", "required": true, "schema": {"type": "string"}, "description": "Commerce invoice id"}
+        ],
+        "responses": {
+          "200": {
+            "description": "Invoice with line items",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/CommerceInvoiceResponse"}
+              }
+            }
+          },
+          "404": {"description": "Invoice not found"}
+        }
+      },
+      "patch": {
+        "tags": ["Commerce"],
+        "summary": "Update invoice buyer details",
+        "description": "Only buyer fields can change. Seller snapshot, amounts, and line items stay immutable.",
+        "operationId": "updateCommerceInvoiceBuyer",
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {"name": "id", "in": "path", "required": true, "schema": {"type": "string"}, "description": "Commerce invoice id"}
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/UpdateCommerceInvoiceBuyerRequest"}
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Invoice updated",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/CommerceInvoiceResponse"}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/client/commerce/invoices/{id}/pdf": {
+      "get": {
+        "tags": ["Commerce"],
+        "summary": "Download commerce invoice PDF",
+        "operationId": "downloadCommerceInvoicePdf",
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {"name": "id", "in": "path", "required": true, "schema": {"type": "string"}, "description": "Commerce invoice id"}
+        ],
+        "responses": {
+          "200": {
+            "description": "PDF receipt (`apipay-cinv-{invoiceNumber}.pdf`)",
+            "content": {
+              "application/pdf": {
+                "schema": {"type": "string", "format": "binary"}
+              }
+            }
+          },
+          "404": {"description": "Invoice not found"}
+        }
       }
     },
     "/v1/client/webhooks": {
@@ -1013,7 +1114,11 @@
         "required": ["name"],
         "properties": {
           "name": {"type": "string", "maxLength": 200, "description": "Product name"},
-          "description": {"type": "string", "maxLength": 2000},
+          "description": {
+            "type": "string",
+            "maxLength": 10000,
+            "description": "Optional HTML description shown on the payment page. Same tags as support tickets (p, lists, links, bold, italic, code)."
+          },
           "defaultPriceData": {
             "$ref": "#/components/schemas/CreatePriceData",
             "description": "Create the first price and make it the product default"
@@ -1024,7 +1129,12 @@
         "type": "object",
         "properties": {
           "name": {"type": "string", "maxLength": 200},
-          "description": {"type": "string", "nullable": true, "maxLength": 2000},
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 10000,
+            "description": "HTML description. Send null to clear."
+          },
           "active": {"type": "boolean", "description": "Archive (false) or restore (true)"},
           "defaultPriceId": {
             "type": "string",
@@ -1089,7 +1199,11 @@
         "properties": {
           "id": {"type": "string"},
           "name": {"type": "string"},
-          "description": {"type": "string", "nullable": true},
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "description": "HTML description shown on the payment page"
+          },
           "active": {"type": "boolean"},
           "imageId": {"type": "string", "nullable": true},
           "imageUrl": {
@@ -1133,7 +1247,11 @@
         "properties": {
           "publicId": {"type": "string"},
           "productName": {"type": "string"},
-          "productDescription": {"type": "string", "nullable": true},
+          "productDescription": {
+            "type": "string",
+            "nullable": true,
+            "description": "HTML product description. Legacy values may be plain text."
+          },
           "imageUrl": {"type": "string", "nullable": true},
           "amount": {"type": "string"},
           "currency": {"type": "string", "example": "VND"},
@@ -1205,6 +1323,72 @@
             "properties": {
               "status": {"type": "boolean"},
               "data": {"$ref": "#/components/schemas/Price"}
+            }
+          },
+          "statusCode": {"type": "integer"},
+          "timestamp": {"type": "string", "format": "date-time"}
+        }
+      },
+      "UpdateCommerceInvoiceBuyerRequest": {
+        "type": "object",
+        "properties": {
+          "buyerName": {"type": "string", "nullable": true, "maxLength": 200},
+          "buyerEmail": {"type": "string", "format": "email", "nullable": true, "maxLength": 200},
+          "buyerTaxCode": {"type": "string", "nullable": true, "maxLength": 50, "description": "Buyer tax code (MST)"},
+          "buyerAddress": {"type": "string", "nullable": true, "maxLength": 500}
+        }
+      },
+      "CommerceInvoiceLineItem": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "string"},
+          "description": {"type": "string"},
+          "quantity": {"type": "number"},
+          "unitPrice": {"type": "string"},
+          "amount": {"type": "string"},
+          "sortOrder": {"type": "integer"}
+        }
+      },
+      "CommerceInvoice": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "string"},
+          "invoiceNumber": {"type": "string", "example": "CINV-202609-0001"},
+          "sellerName": {"type": "string"},
+          "sellerTaxCode": {"type": "string", "nullable": true},
+          "sellerAddress": {"type": "string", "nullable": true},
+          "sellerEmail": {"type": "string", "nullable": true},
+          "sellerWebsite": {"type": "string", "nullable": true},
+          "buyerName": {"type": "string", "nullable": true},
+          "buyerTaxCode": {"type": "string", "nullable": true},
+          "buyerAddress": {"type": "string", "nullable": true},
+          "buyerEmail": {"type": "string", "nullable": true},
+          "currency": {"type": "string", "example": "VND"},
+          "subtotal": {"type": "string"},
+          "taxRate": {"type": "number"},
+          "taxAmount": {"type": "string"},
+          "totalAmount": {"type": "string"},
+          "paymentRequestId": {"type": "string"},
+          "commercePriceId": {"type": "string", "nullable": true},
+          "productId": {"type": "string", "nullable": true},
+          "productName": {"type": "string", "nullable": true},
+          "status": {"type": "string"},
+          "issuedAt": {"type": "string", "format": "date-time"},
+          "paidAt": {"type": "string", "format": "date-time"},
+          "notes": {"type": "string", "nullable": true},
+          "lineItems": {"type": "array", "items": {"$ref": "#/components/schemas/CommerceInvoiceLineItem"}},
+          "createdAt": {"type": "string", "format": "date-time"},
+          "updatedAt": {"type": "string", "format": "date-time"}
+        }
+      },
+      "CommerceInvoiceResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "status": {"type": "boolean"},
+              "data": {"$ref": "#/components/schemas/CommerceInvoice"}
             }
           },
           "statusCode": {"type": "integer"},

@@ -341,6 +341,7 @@ The server registers 23 tools. MCP clients automatically prefix tool names with 
 - `get_price`: Gets a price by id.
 - `create_price`: Creates a price. Amounts cannot be edited later.
 - `update_price`: Updates nickname, lookup key, or archive/restore. Does not change `unitAmount`.
+- `delete_price`: **(Destructive)** Permanently deletes an unused price. Prices that have been used for payments cannot be deleted.
 
 ### Webhooks
 - `list_webhooks`: Lists registered webhook endpoints.

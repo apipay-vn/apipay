@@ -114,6 +114,25 @@ test("update_price patches active and does not send unitAmount", async () => {
   });
 });
 
+test("delete_price sends DELETE to the price id", async () => {
+  let capturedUrl = "";
+  let capturedMethod = "";
+  await withCommerceClient(async (url, init) => {
+    capturedUrl = url.toString();
+    capturedMethod = init?.method ?? "";
+    return new Response(JSON.stringify({ status: true }), { status: 200 });
+  }, async (client) => {
+    const result = await client.callTool({
+      name: "delete_price",
+      arguments: { id: "price_1" },
+    });
+
+    assert.equal(result.isError, undefined);
+    assert.equal(capturedMethod, "DELETE");
+    assert.equal(new URL(capturedUrl).pathname, "/v1/client/commerce/prices/price_1");
+  });
+});
+
 test("list_commerce_invoices sends search and pagination params", async () => {
   let capturedUrl = "";
   await withCommerceClient(async (url) => {

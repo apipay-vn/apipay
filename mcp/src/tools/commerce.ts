@@ -319,6 +319,24 @@ export function registerCommerceTools(server: McpServer, client: ApiClient): voi
   );
 
   server.registerTool(
+    "delete_price",
+    {
+      description:
+        "Permanently delete an unused price. Prices that have been used for payments cannot be deleted — archive them with update_price instead.",
+      inputSchema: {
+        id: z.string().describe("Price id"),
+      },
+    },
+    async (args) => {
+      try {
+        return ok(await client.delete(`/client/commerce/prices/${args.id}`));
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
+
+  server.registerTool(
     "list_commerce_invoices",
     {
       description:

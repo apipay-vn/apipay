@@ -27,6 +27,7 @@ Mọi path nằm dưới `/v1/client/commerce`.
 | `GET` | `/prices` | Danh sách mức giá (`productId`, `lookupKey`, `active`, `page`, `limit`) |
 | `GET` | `/prices/:id` | Lấy một mức giá |
 | `PATCH` | `/prices/:id` | Cập nhật `active`, `nickname`, `lookupKey`. Không đổi `unitAmount` |
+| `DELETE` | `/prices/:id` | Xóa vĩnh viễn mức giá chưa dùng. Mức giá đã dùng thì phải lưu trữ |
 | `GET` | `/invoices` | Danh sách hóa đơn bán hàng (`search`, `page`, `limit`) |
 | `GET` | `/invoices/:id` | Chi tiết hóa đơn bán hàng kèm line items |
 | `GET` | `/invoices/:id/pdf` | Tải file PDF hóa đơn / biên lai bán hàng |
@@ -58,7 +59,7 @@ POST /v1/client/commerce/products
 | Tham số | Kiểu | Bắt buộc | Mô tả |
 | ------- | ---- | -------- | ----- |
 | `name` | string | **Có** | Tên sản phẩm (tối đa 200) |
-| `description` | string | — | Mô tả tùy chọn (tối đa 2000) |
+| `description` | string | — | Mô tả HTML tùy chọn (tối đa 10000). Cùng bộ thẻ với phiếu hỗ trợ |
 | `defaultPriceData` | object | — | Tạo mức giá đầu và đặt làm mặc định |
 | `defaultPriceData.unitAmount` | string | **Có** nếu gửi `defaultPriceData` | Số tiền VND (chuỗi số nguyên, 1–300000000) |
 | `defaultPriceData.lookupKey` | string | — | Mã ổn định bạn giữ trong app, ví dụ `pro-monthly` |
@@ -187,7 +188,7 @@ PATCH /v1/client/commerce/products/:id
 | Tham số | Kiểu | Mô tả |
 | ------- | ---- | ----- |
 | `name` | string | Tên sản phẩm |
-| `description` | string \| null | Gửi `null` để xóa |
+| `description` | string \| null | HTML. Gửi `null` để xóa |
 | `active` | boolean | `false` lưu trữ, `true` khôi phục |
 | `defaultPriceId` | string \| null | Phải là mức giá đang hoạt động của sản phẩm này. Gửi `null` để xóa |
 | `imageId` | string \| null | Id ảnh từ `POST /v1/client/media`. Gửi `null` để gỡ |
@@ -206,6 +207,16 @@ PATCH /v1/client/commerce/prices/:id
 | `nickname` | string \| null | Gửi `null` để xóa |
 | `lookupKey` | string \| null | Gửi `null` để xóa |
 | `transferLookupKey` | boolean | Chuyển `lookupKey` từ mức giá đang giữ mã đó |
+
+---
+
+## Xóa mức giá
+
+```bash
+DELETE /v1/client/commerce/prices/:id
+```
+
+Xóa vĩnh viễn mức giá chưa từng dùng trên yêu cầu thanh toán. Nếu đó là giá mặc định của sản phẩm, mặc định sẽ bị gỡ. Mức giá đã có thanh toán trả về `409` — hãy lưu trữ bằng `PATCH`.
 
 Không nhận `unitAmount`. Mức giá đã lưu trữ không dùng để tạo link mới. Link tạo trước đó vẫn giữ mức giá lúc tạo (`commercePriceId` trên payment request).
 

@@ -27,6 +27,7 @@ All paths are under `/v1/client/commerce`.
 | `GET` | `/prices` | List prices (`productId`, `lookupKey`, `active`, `page`, `limit`) |
 | `GET` | `/prices/:id` | Get a price |
 | `PATCH` | `/prices/:id` | Update `active`, `nickname`, `lookupKey`. Not `unitAmount` |
+| `DELETE` | `/prices/:id` | Permanently delete an unused price. Used prices must be archived instead |
 | `GET` | `/invoices` | List commerce invoices (`search`, `page`, `limit`) |
 | `GET` | `/invoices/:id` | Get commerce invoice details with line items |
 | `GET` | `/invoices/:id/pdf` | Download commerce invoice PDF receipt |
@@ -58,7 +59,7 @@ POST /v1/client/commerce/products
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `name` | string | **Yes** | Product name (max 200) |
-| `description` | string | — | Optional description (max 2000) |
+| `description` | string | — | Optional HTML description (max 10000). Same tags as support tickets |
 | `defaultPriceData` | object | — | Create the first price and make it the default |
 | `defaultPriceData.unitAmount` | string | **Yes** if `defaultPriceData` is sent | Amount in VND (integer string, 1–300000000) |
 | `defaultPriceData.lookupKey` | string | — | Stable key you keep in your app, e.g. `pro-monthly` |
@@ -187,7 +188,7 @@ PATCH /v1/client/commerce/products/:id
 | Parameter | Type | Description |
 | --------- | ---- | ----------- |
 | `name` | string | Product name |
-| `description` | string \| null | Send `null` to clear |
+| `description` | string \| null | HTML. Send `null` to clear |
 | `active` | boolean | `false` archives, `true` restores |
 | `defaultPriceId` | string \| null | Must be an active price of this product. Send `null` to clear |
 | `imageId` | string \| null | Media id from `POST /v1/client/media`. Send `null` to remove |
@@ -206,6 +207,16 @@ PATCH /v1/client/commerce/prices/:id
 | `nickname` | string \| null | Send `null` to clear |
 | `lookupKey` | string \| null | Send `null` to clear |
 | `transferLookupKey` | boolean | Move `lookupKey` from the price that currently holds it |
+
+---
+
+## Delete a price
+
+```bash
+DELETE /v1/client/commerce/prices/:id
+```
+
+Permanently deletes a price that has never been used on a payment request. If the price is the product default, the default is cleared. Prices that already have payments return `409` — archive them with `PATCH` instead.
 
 `unitAmount` is not accepted. Archived prices cannot be used to create new payment links. Links created earlier still point at the price they used (`commercePriceId` on the payment request).
 

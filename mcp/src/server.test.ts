@@ -19,6 +19,7 @@ const EXPECTED_TOOLS = [
   "get_price",
   "create_price",
   "update_price",
+  "delete_price",
   "list_commerce_invoices",
   "get_commerce_invoice",
   "list_webhooks",
@@ -32,7 +33,7 @@ const EXPECTED_TOOLS = [
   "list_transactions",
 ];
 
-test("server registers exactly the 25 expected tools", async () => {
+test("server registers exactly the 26 expected tools", async () => {
   const server = createServer({
     accessKey: "ak_test_123",
     secretKey: "sec_test_456",
@@ -49,7 +50,7 @@ test("server registers exactly the 25 expected tools", async () => {
   const { tools } = await client.listTools();
   const toolNames = tools.map((t) => t.name);
 
-  assert.equal(toolNames.length, 25, `Expected 25 tools, received: ${toolNames.length}`);
+  assert.equal(toolNames.length, 26, `Expected 26 tools, received: ${toolNames.length}`);
   assert.deepEqual(toolNames.sort(), [...EXPECTED_TOOLS].sort());
 });
 
