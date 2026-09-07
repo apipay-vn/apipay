@@ -14,7 +14,7 @@ Source: https://docs.apipay.vn/en/index
 
 ApiPay is a payment gateway API that helps you easily create payment links via bank transfer in Vietnam.
 
-![ApiPay documentation overview](/apipay-docs.jpg)
+![ApiPay documentation overview](/apipay-banner.jpg)
 
 ## Key Features
 

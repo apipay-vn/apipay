@@ -4,7 +4,7 @@ export const DOCS_URL = 'https://docs.apipay.vn';
 export const DOCS_DEFAULT_TITLE = `${DOCS_PRODUCT_NAME} | ${DOCS_SITE_NAME}`;
 export const DOCS_DEFAULT_DESCRIPTION =
   'ApiPay API documentation and integration guides for Vietnamese bank transfer payments.';
-export const DOCS_DEFAULT_IMAGE = `${DOCS_URL}/apipay-docs.jpg`;
+export const DOCS_DEFAULT_IMAGE = `${DOCS_URL}/apipay-banner.jpg`;
 
 export function createDocsTitle(pageTitle?: string) {
   return pageTitle ? `${pageTitle} | ${DOCS_PRODUCT_NAME} | ${DOCS_SITE_NAME}` : DOCS_DEFAULT_TITLE;

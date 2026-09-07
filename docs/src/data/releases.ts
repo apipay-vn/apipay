@@ -79,6 +79,18 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.23.0',
+    date: '2026-09-07',
+    features: [
+      'Commerce invoice management — view invoices for Commerce purchases in the dashboard and via API: list and search invoices, open details with line items, download the invoice PDF, and update buyer details (name, email, tax code, address) when needed.',
+      'Delete prices — permanently remove a price in the dashboard or delete it from the API or MCP. Only unused prices can be deleted; prices that already have payments must be archived instead.',
+    ],
+    fixes: [],
+    improvements: [
+      'VAT disclaimer on invoices — invoices now show a VAT disclaimer in the dashboard and admin invoice views.',
+    ],
+  },
+  {
     version: '1.22.0',
     date: '2026-09-06',
     features: [],
@@ -585,6 +597,18 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.23.0',
+    date: '2026-09-07',
+    features: [
+      'Quản lý hóa đơn Commerce — xem hóa đơn thanh toán Commerce trên dashboard và qua API: liệt kê, tìm kiếm, xem chi tiết kèm dòng sản phẩm, tải PDF hóa đơn và cập nhật thông tin người mua (họ tên, email, mã số thuế, địa chỉ) khi cần.',
+      'Xóa mức giá — xóa vĩnh viễn mức giá trên dashboard, qua API hoặc MCP. Chỉ mức giá chưa dùng mới xóa được; mức giá đã có thanh toán phải lưu trữ thay vì xóa.',
+    ],
+    fixes: [],
+    improvements: [
+      'Ghi chú VAT trên hóa đơn — hóa đơn nay hiển thị ghi chú VAT trên dashboard và các màn hình quản trị hóa đơn.',
+    ],
+  },
   {
     version: '1.22.0',
     date: '2026-09-06',
