@@ -15,7 +15,7 @@
     "fuse.js": "^7.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-router-dom": "^7.13.1",
+    "react-router-dom": "^7.13.2",
     "tailwind-merge": "^2.5.2"
   },
   "devDependencies": {
@@ -25,6 +25,6 @@
     "@vitejs/plugin-react": "^4.3.4",
     "tailwindcss": "^4.0.0",
     "typescript": "^5.5.4",
-    "vite": "^6.1.0"
+    "vite": "^6.4.3"
   }
 }
