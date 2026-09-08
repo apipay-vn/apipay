@@ -79,6 +79,17 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.24.0',
+    date: '2026-09-07',
+    features: [
+      'Commerce Customers & Send Invoice — manage customer directory in the dashboard, API, and MCP: automatically saved on checkout, searchable, view recent payments and invoices, and send VietQR payment request links directly to customer email.',
+    ],
+    fixes: [],
+    improvements: [
+      'Payment request emails sent to customers clearly state payment-request status and include the official VAT disclaimer.',
+    ],
+  },
+  {
     version: '1.23.0',
     date: '2026-09-07',
     features: [
@@ -597,6 +608,17 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.24.0',
+    date: '2026-09-07',
+    features: [
+      'Khách hàng Commerce & Gửi hóa đơn — quản lý danh bạ khách hàng trên dashboard, API và MCP: tự động lưu khi khách thanh toán, tìm kiếm, xem lịch sử giao dịch và hóa đơn, tạo yêu cầu và gửi link thanh toán VietQR trực tiếp qua email cho khách.',
+    ],
+    fixes: [],
+    improvements: [
+      'Email yêu cầu thanh toán gửi cho khách hàng thể hiện rõ trạng thái yêu cầu thanh toán VietQR và ghi chú miễn trừ hóa đơn GTGT.',
+    ],
+  },
   {
     version: '1.23.0',
     date: '2026-09-07',

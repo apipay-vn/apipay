@@ -391,4 +391,155 @@ export function registerCommerceTools(server: McpServer, client: ApiClient): voi
       }
     },
   );
+
+  server.registerTool(
+    "list_commerce_customers",
+    {
+      description:
+        "List Commerce customers with optional search by name, email, or tax code.",
+      inputSchema: {
+        search: z
+          .string()
+          .optional()
+          .describe("Search by customer name, email, or tax code"),
+        page: z
+          .number()
+          .int()
+          .min(1)
+          .optional()
+          .describe("Page number (starts at 1)"),
+        limit: z
+          .number()
+          .int()
+          .min(1)
+          .max(100)
+          .optional()
+          .describe("Items per page (max 100)"),
+      },
+    },
+    async (args) => {
+      try {
+        const query: Record<string, unknown> = {};
+        if (args.search !== undefined) query.search = args.search;
+        if (args.page !== undefined) query.page = args.page;
+        if (args.limit !== undefined) query.limit = args.limit;
+        return ok(await client.get("/client/commerce/customers", { query }));
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
+
+  server.registerTool(
+    "get_commerce_customer",
+    {
+      description:
+        "Get customer details including recent payment requests and invoices.",
+      inputSchema: {
+        id: z.string().describe("Customer id"),
+      },
+    },
+    async ({ id }) => {
+      try {
+        return ok(await client.get(`/client/commerce/customers/${id}`));
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
+
+  server.registerTool(
+    "create_commerce_customer",
+    {
+      description:
+        "Create a Commerce customer. Email must be unique per user.",
+      inputSchema: {
+        name: z.string().max(200).describe("Customer name"),
+        email: z.string().email().max(200).describe("Customer email"),
+        taxCode: z.string().max(50).optional().describe("Tax code (MST)"),
+        address: z.string().max(500).optional().describe("Customer address"),
+      },
+    },
+    async (args) => {
+      try {
+        return ok(await client.post("/client/commerce/customers", args));
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
+
+  server.registerTool(
+    "update_commerce_customer",
+    {
+      description: "Update a Commerce customer's information.",
+      inputSchema: {
+        id: z.string().describe("Customer id"),
+        name: z.string().max(200).optional().describe("Customer name"),
+        email: z.string().email().max(200).optional().describe("Customer email"),
+        taxCode: z.string().max(50).optional().describe("Tax code (MST)"),
+        address: z.string().max(500).optional().describe("Customer address"),
+      },
+    },
+    async ({ id, ...body }) => {
+      try {
+        return ok(await client.patch(`/client/commerce/customers/${id}`, body));
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
+
+  server.registerTool(
+    "delete_commerce_customer",
+    {
+      description:
+        "Delete a Commerce customer. Fails if the customer has linked payment requests or invoices.",
+      inputSchema: {
+        id: z.string().describe("Customer id"),
+      },
+    },
+    async ({ id }) => {
+      try {
+        return ok(await client.delete(`/client/commerce/customers/${id}`));
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
+
+  server.registerTool(
+    "send_commerce_invoice",
+    {
+      description:
+        "Send a VietQR payment request link to a customer via email for a Commerce product price. Returns payment request publicId, payUrl, and whether email was sent.",
+      inputSchema: {
+        customerId: z
+          .string()
+          .optional()
+          .describe("Existing customer id (either customerId or customer is required)"),
+        customer: z
+          .object({
+            name: z.string().max(200).optional().describe("Customer name"),
+            email: z.string().email().max(200).describe("Customer email"),
+            taxCode: z.string().max(50).optional().describe("Tax code"),
+            address: z.string().max(500).optional().describe("Customer address"),
+          })
+          .optional()
+          .describe("New customer details (either customerId or customer is required)"),
+        priceId: z.string().describe("Active commerce price id"),
+        expiresAt: z
+          .string()
+          .optional()
+          .describe("Optional ISO expiration date-time"),
+      },
+    },
+    async (args) => {
+      try {
+        return ok(await client.post("/client/commerce/invoices/send", args));
+      } catch (err) {
+        return fail(err);
+      }
+    },
+  );
 }

@@ -1750,12 +1750,19 @@ Upload PNG, JPEG, or WebP (max 3 MB) on create or on the product page. It shows 
 
 When a customer opens a Commerce link and you did not send `content`, ApiPay puts a unique transfer memo (the payment-request public id suffix) on the QR. Two buyers of the same amount are not mixed up, except on banks that do not return transfer content (for example VietinBank).
 
+## Customers & Send Invoice
+
+ApiPay automatically saves customers (`CommerceCustomer`) when buyers enter their details during Commerce checkout. You can also manage your customer directory directly from the **Customers** tab in the dashboard or via the API / MCP.
+
+- **Customer identity**: Identified by email (normalized to lowercase). The latest non-empty details from checkout or updates are preserved.
+- **Send invoice**: Select a customer and active product price to email a VietQR payment request link directly to the customer.
+- **Important note**: "Send invoice" creates a payment request with a VietQR code emailed to the buyer. After the payment is completed, the system generates the paid sales invoice (`CINV-*`). This emailed request is a pay-by-QR link, not an official VAT e-invoice.
+
 ## Not in Commerce
 
-- Cart / quantity
-- Customer CRM
-- Automatic monthly debit
-- Official VAT e-invoices (hóa đơn GTGT / HDDT)
+- Multi-item cart / quantity selector
+- Automatic scheduled monthly debit
+- Official VAT e-invoices (hóa đơn GTGT / HDDT) under Decree 123/2020/NĐ-CP
 
 ## Try it
 
@@ -3575,6 +3582,12 @@ All paths are under `/v1/client/commerce`.
 | `GET` | `/invoices/:id` | Get commerce invoice details with line items |
 | `GET` | `/invoices/:id/pdf` | Download commerce invoice PDF receipt |
 | `PATCH` | `/invoices/:id` | Update invoice buyer details (`buyerName`, `buyerEmail`, `buyerTaxCode`, `buyerAddress`) |
+| `POST` | `/invoices/send` | Send a VietQR payment request link via email to a customer |
+| `GET` | `/customers` | List customers (`search`, `page`, `limit`) |
+| `POST` | `/customers` | Create a customer (`name`, `email`, `taxCode`, `address`) |
+| `GET` | `/customers/:id` | Get customer details with linked payments and invoices |
+| `PATCH` | `/customers/:id` | Update customer details |
+| `DELETE` | `/customers/:id` | Delete a customer (only if no linked payments or invoices) |
 
 Public (no auth), used by `pay.apipay.vn`:
 
@@ -3856,6 +3869,92 @@ curl -X PATCH https://app.apipay.vn/v1/client/commerce/invoices/cml8x1abc0000inv
     "buyerAddress": "123 Le Loi, Dist 1, HCMC"
   }'
 ```
+
+---
+
+## Send Invoice
+
+```bash
+POST /v1/client/commerce/invoices/send
+```
+
+Create a payment request with a VietQR code and email the pay link directly to the customer. Once the customer completes payment, the paid sales receipt (`CINV-*`) will be automatically generated and emailed to them.
+
+This is a VietQR payment request, not an official VAT e-invoice under Decree 123/2020/NĐ-CP. This endpoint is rate limited to 20 requests per minute.
+
+### Request body
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `priceId` | string | **Yes** | ID of the active Commerce product price |
+| `customerId` | string | Optional* | ID of an existing customer. Either `customerId` or `customer` is required |
+| `customer` | object | Optional* | Inline new customer object (`name`, `email` required; `taxCode`, `address` optional) |
+| `expiresAt` | string | — | Payment expiration (ISO 8601 string) |
+
+### Example
+
+```bash
+curl -X POST https://app.apipay.vn/v1/client/commerce/invoices/send \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer " \
+  -d '{
+    "customerId": "cml8x1abc0000cust000000",
+    "priceId": "cml8x1abc0000price0000000"
+  }'
+```
+
+---
+
+## Customers
+
+### List customers
+
+```bash
+GET /v1/client/commerce/customers
+```
+
+| Parameter | Type | Description |
+| --------- | ---- | ----------- |
+| `search` | string | Search by name, email, or tax code |
+| `page` | number | Page number (default: 1) |
+| `limit` | number | Page size (default: 20, max: 100) |
+
+### Get customer
+
+```bash
+GET /v1/client/commerce/customers/:id
+```
+
+Returns customer details along with recent payment requests and invoices associated with the customer.
+
+### Create customer
+
+```bash
+POST /v1/client/commerce/customers
+```
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `name` | string | **Yes** | Customer name (max 200 chars) |
+| `email` | string | **Yes** | Customer email (max 200 chars, unique per user) |
+| `taxCode` | string | — | Tax code (max 50 chars) |
+| `address` | string | — | Customer address (max 500 chars, required if `taxCode` is provided) |
+
+### Update customer
+
+```bash
+PATCH /v1/client/commerce/customers/:id
+```
+
+Update customer information. If changing `email` to an email already registered to another of your customers, returns `409 Conflict`.
+
+### Delete customer
+
+```bash
+DELETE /v1/client/commerce/customers/:id
+```
+
+Permanently deletes a customer. Returns `409 Conflict` if the customer already has linked payment requests or invoices.
 
 ### Webhooks
 

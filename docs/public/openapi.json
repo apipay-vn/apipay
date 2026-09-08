@@ -651,6 +651,142 @@
         }
       }
     },
+    "/v1/client/commerce/invoices/send": {
+      "post": {
+        "tags": ["Commerce"],
+        "summary": "Send invoice / payment request",
+        "description": "Mint a payment request with VietQR and email the pay link directly to the customer. This is not an official VAT invoice.",
+        "operationId": "sendCommerceInvoice",
+        "security": [{"bearerAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/SendCommerceInvoiceRequest"}
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Payment request minted and email dispatched",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/SendCommerceInvoiceResponse"}
+              }
+            }
+          },
+          "400": {"description": "Invalid input or price/product not active"},
+          "429": {"description": "Rate limit exceeded (max 20 requests per minute)"}
+        }
+      }
+    },
+    "/v1/client/commerce/customers": {
+      "get": {
+        "tags": ["Commerce"],
+        "summary": "List customers",
+        "description": "List customers with optional search by name, email, or tax code.",
+        "operationId": "listCommerceCustomers",
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {"name": "search", "in": "query", "schema": {"type": "string"}, "description": "Search by name, email, or tax code"},
+          {"name": "page", "in": "query", "schema": {"type": "integer", "minimum": 1}},
+          {"name": "limit", "in": "query", "schema": {"type": "integer", "minimum": 1, "maximum": 100}}
+        ],
+        "responses": {
+          "200": {"description": "Paginated list of commerce customers"}
+        }
+      },
+      "post": {
+        "tags": ["Commerce"],
+        "summary": "Create a customer",
+        "operationId": "createCommerceCustomer",
+        "security": [{"bearerAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/CreateCommerceCustomerRequest"}
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Customer created",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/CommerceCustomerResponse"}
+              }
+            }
+          },
+          "409": {"description": "Customer with this email already exists"}
+        }
+      }
+    },
+    "/v1/client/commerce/customers/{id}": {
+      "get": {
+        "tags": ["Commerce"],
+        "summary": "Get customer details",
+        "operationId": "getCommerceCustomer",
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {"name": "id", "in": "path", "required": true, "schema": {"type": "string"}, "description": "Customer id"}
+        ],
+        "responses": {
+          "200": {
+            "description": "Customer detail with recent payment requests and invoices",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/CommerceCustomerDetailResponse"}
+              }
+            }
+          },
+          "404": {"description": "Customer not found"}
+        }
+      },
+      "patch": {
+        "tags": ["Commerce"],
+        "summary": "Update customer",
+        "operationId": "updateCommerceCustomer",
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {"name": "id", "in": "path", "required": true, "schema": {"type": "string"}, "description": "Customer id"}
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/UpdateCommerceCustomerRequest"}
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Customer updated",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/CommerceCustomerResponse"}
+              }
+            }
+          },
+          "404": {"description": "Customer not found"},
+          "409": {"description": "Email already in use"}
+        }
+      },
+      "delete": {
+        "tags": ["Commerce"],
+        "summary": "Delete customer",
+        "operationId": "deleteCommerceCustomer",
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {"name": "id", "in": "path", "required": true, "schema": {"type": "string"}, "description": "Customer id"}
+        ],
+        "responses": {
+          "200": {"description": "Customer deleted"},
+          "404": {"description": "Customer not found"},
+          "409": {"description": "Cannot delete customer with linked payment requests or invoices"}
+        }
+      }
+    },
     "/v1/client/webhooks": {
       "post": {
         "tags": ["Webhooks"],
@@ -1413,6 +1549,115 @@
               "createdAt": {"type": "string", "format": "date-time"},
               "redirectSecret": {"type": "string"}
             }
+          },
+          "statusCode": {"type": "integer"},
+          "timestamp": {"type": "string", "format": "date-time"}
+        }
+      },
+      "SendCommerceInvoiceRequest": {
+        "type": "object",
+        "required": ["priceId"],
+        "properties": {
+          "priceId": {"type": "string", "description": "Active commerce price ID"},
+          "customerId": {"type": "string", "description": "Existing customer ID (either customerId or customer is required)"},
+          "customer": {
+            "type": "object",
+            "properties": {
+              "name": {"type": "string", "maxLength": 200},
+              "email": {"type": "string", "format": "email", "maxLength": 200},
+              "taxCode": {"type": "string", "maxLength": 50},
+              "address": {"type": "string", "maxLength": 500}
+            }
+          },
+          "expiresAt": {"type": "string", "format": "date-time"}
+        }
+      },
+      "SendCommerceInvoiceResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "customer": {
+                "type": "object",
+                "properties": {
+                  "id": {"type": "string"},
+                  "name": {"type": "string"},
+                  "email": {"type": "string"},
+                  "taxCode": {"type": "string", "nullable": true},
+                  "address": {"type": "string", "nullable": true}
+                }
+              },
+              "paymentRequest": {
+                "type": "object",
+                "properties": {
+                  "publicId": {"type": "string"},
+                  "payUrl": {"type": "string"},
+                  "amount": {"type": "string", "nullable": true},
+                  "expiresAt": {"type": "string", "format": "date-time", "nullable": true}
+                }
+              },
+              "emailed": {"type": "boolean"}
+            }
+          },
+          "statusCode": {"type": "integer"},
+          "timestamp": {"type": "string", "format": "date-time"}
+        }
+      },
+      "CreateCommerceCustomerRequest": {
+        "type": "object",
+        "required": ["name", "email"],
+        "properties": {
+          "name": {"type": "string", "maxLength": 200},
+          "email": {"type": "string", "format": "email", "maxLength": 200},
+          "taxCode": {"type": "string", "maxLength": 50},
+          "address": {"type": "string", "maxLength": 500}
+        }
+      },
+      "UpdateCommerceCustomerRequest": {
+        "type": "object",
+        "properties": {
+          "name": {"type": "string", "maxLength": 200},
+          "email": {"type": "string", "format": "email", "maxLength": 200},
+          "taxCode": {"type": "string", "maxLength": 50},
+          "address": {"type": "string", "maxLength": 500}
+        }
+      },
+      "CommerceCustomer": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "string"},
+          "userId": {"type": "string"},
+          "name": {"type": "string"},
+          "email": {"type": "string"},
+          "taxCode": {"type": "string", "nullable": true},
+          "address": {"type": "string", "nullable": true},
+          "createdAt": {"type": "string", "format": "date-time"},
+          "updatedAt": {"type": "string", "format": "date-time"}
+        }
+      },
+      "CommerceCustomerResponse": {
+        "type": "object",
+        "properties": {
+          "data": {"$ref": "#/components/schemas/CommerceCustomer"},
+          "statusCode": {"type": "integer"},
+          "timestamp": {"type": "string", "format": "date-time"}
+        }
+      },
+      "CommerceCustomerDetailResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "allOf": [
+              {"$ref": "#/components/schemas/CommerceCustomer"},
+              {
+                "type": "object",
+                "properties": {
+                  "paymentRequests": {"type": "array", "items": {"type": "object"}},
+                  "commerceInvoices": {"type": "array", "items": {"type": "object"}}
+                }
+              }
+            ]
           },
           "statusCode": {"type": "integer"},
           "timestamp": {"type": "string", "format": "date-time"}

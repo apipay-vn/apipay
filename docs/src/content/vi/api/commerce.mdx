@@ -32,6 +32,12 @@ Mọi path nằm dưới `/v1/client/commerce`.
 | `GET` | `/invoices/:id` | Chi tiết hóa đơn bán hàng kèm line items |
 | `GET` | `/invoices/:id/pdf` | Tải file PDF hóa đơn / biên lai bán hàng |
 | `PATCH` | `/invoices/:id` | Cập nhật thông tin người mua (`buyerName`, `buyerEmail`, `buyerTaxCode`, `buyerAddress`) |
+| `POST` | `/invoices/send` | Gửi yêu cầu thanh toán VietQR qua email cho khách hàng |
+| `GET` | `/customers` | Danh sách khách hàng (`search`, `page`, `limit`) |
+| `POST` | `/customers` | Tạo khách hàng mới (`name`, `email`, `taxCode`, `address`) |
+| `GET` | `/customers/:id` | Chi tiết khách hàng kèm danh sách thanh toán và hóa đơn liên kết |
+| `PATCH` | `/customers/:id` | Cập nhật thông tin khách hàng |
+| `DELETE` | `/customers/:id` | Xóa khách hàng (chỉ khi chưa có giao dịch hoặc hóa đơn liên kết) |
 
 Công khai (không cần auth), dùng bởi `pay.apipay.vn`:
 
@@ -315,3 +321,92 @@ curl -X PATCH https://app.apipay.vn/v1/client/commerce/invoices/cml8x1abc0000inv
     "buyerAddress": "123 Le Loi, Q.1, TP.HCM"
   }'
 ```
+
+---
+
+## Gửi hóa đơn (Send invoice)
+
+```bash
+POST /v1/client/commerce/invoices/send
+```
+
+Tạo một yêu cầu thanh toán kèm mã VietQR và gửi link qua email cho khách hàng. Sau khi khách thanh toán thành công, hóa đơn biên lai điện tử (`CINV-*`) sẽ tự động được tạo và gửi lại qua email cho khách.
+
+<Callout type="warning">
+Đây là yêu cầu thanh toán bằng mã VietQR, không phải hóa đơn điện tử GTGT theo Nghị định 123/2020/NĐ-CP. Endpoint này bị giới hạn 20 yêu cầu/phút.
+</Callout>
+
+### Request body
+
+| Tham số | Kiểu | Bắt buộc | Mô tả |
+| ------- | ---- | -------- | ----- |
+| `priceId` | string | **Có** | ID của mức giá sản phẩm Commerce đang hoạt động |
+| `customerId` | string | Tùy chọn* | ID khách hàng hiện có. Cần gửi `customerId` hoặc `customer` |
+| `customer` | object | Tùy chọn* | Thông tin khách hàng mới (`name`, `email` bắt buộc; `taxCode`, `address` tùy chọn) |
+| `expiresAt` | string | — | Thời hạn thanh toán (định dạng ISO 8601) |
+
+### Ví dụ
+
+```bash
+curl -X POST https://app.apipay.vn/v1/client/commerce/invoices/send \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <Auth>" \
+  -d '{
+    "customerId": "cml8x1abc0000cust000000",
+    "priceId": "cml8x1abc0000price0000000"
+  }'
+```
+
+---
+
+## Khách hàng (Customers)
+
+### Danh sách khách hàng
+
+```bash
+GET /v1/client/commerce/customers
+```
+
+| Tham số | Kiểu | Mô tả |
+| ------- | ---- | ----- |
+| `search` | string | Tìm kiếm theo tên, email hoặc mã số thuế |
+| `page` | number | Trang (mặc định: 1) |
+| `limit` | number | Số lượng mỗi trang (mặc định: 20, tối đa: 100) |
+
+### Chi tiết khách hàng
+
+```bash
+GET /v1/client/commerce/customers/:id
+```
+
+Trả về chi tiết khách hàng kèm danh sách các yêu cầu thanh toán và hóa đơn gần nhất liên kết với khách hàng.
+
+### Tạo khách hàng
+
+```bash
+POST /v1/client/commerce/customers
+```
+
+| Tham số | Kiểu | Bắt buộc | Mô tả |
+| ------- | ---- | -------- | ----- |
+| `name` | string | **Có** | Tên khách hàng (tối đa 200 ký tự) |
+| `email` | string | **Có** | Email khách hàng (tối đa 200 ký tự, duy nhất cho mỗi tài khoản) |
+| `taxCode` | string | — | Mã số thuế (tối đa 50 ký tự) |
+| `address` | string | — | Địa chỉ khách hàng (tối đa 500 ký tự, bắt buộc nếu có `taxCode`) |
+
+### Cập nhật khách hàng
+
+```bash
+PATCH /v1/client/commerce/customers/:id
+```
+
+Cập nhật thông tin khách hàng. Nếu thay đổi `email` sang một email đã thuộc về khách hàng khác của bạn, API trả về lỗi `409 Conflict`.
+
+### Xóa khách hàng
+
+```bash
+DELETE /v1/client/commerce/customers/:id
+```
+
+Xóa vĩnh viễn khách hàng. Nếu khách hàng đã có yêu cầu thanh toán hoặc hóa đơn liên kết, API trả về lỗi `409 Conflict`.
+

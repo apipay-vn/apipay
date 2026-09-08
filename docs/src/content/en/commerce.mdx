@@ -73,12 +73,19 @@ Upload PNG, JPEG, or WebP (max 3 MB) on create or on the product page. It shows 
 
 When a customer opens a Commerce link and you did not send `content`, ApiPay puts a unique transfer memo (the payment-request public id suffix) on the QR. Two buyers of the same amount are not mixed up, except on banks that do not return transfer content (for example VietinBank).
 
+## Customers & Send Invoice
+
+ApiPay automatically saves customers (`CommerceCustomer`) when buyers enter their details during Commerce checkout. You can also manage your customer directory directly from the **Customers** tab in the dashboard or via the API / MCP.
+
+- **Customer identity**: Identified by email (normalized to lowercase). The latest non-empty details from checkout or updates are preserved.
+- **Send invoice**: Select a customer and active product price to email a VietQR payment request link directly to the customer.
+- **Important note**: "Send invoice" creates a payment request with a VietQR code emailed to the buyer. After the payment is completed, the system generates the paid sales invoice (`CINV-*`). This emailed request is a pay-by-QR link, not an official VAT e-invoice.
+
 ## Not in Commerce
 
-- Cart / quantity
-- Customer CRM
-- Automatic monthly debit
-- Official VAT e-invoices (hóa đơn GTGT / HDDT)
+- Multi-item cart / quantity selector
+- Automatic scheduled monthly debit
+- Official VAT e-invoices (hóa đơn GTGT / HDDT) under Decree 123/2020/NĐ-CP
 
 ## Try it
 

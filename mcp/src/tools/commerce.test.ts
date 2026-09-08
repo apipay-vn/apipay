@@ -174,3 +174,84 @@ test("get_commerce_invoice calls endpoint with id", async () => {
     assert.equal(new URL(capturedUrl).pathname, "/v1/client/commerce/invoices/cinv_123");
   });
 });
+
+test("list_commerce_customers sends search and pagination params", async () => {
+  let capturedUrl = "";
+  await withCommerceClient(async (url) => {
+    capturedUrl = url.toString();
+    return new Response(JSON.stringify({ data: [], pagination: { page: 1, limit: 10, total: 0 } }), { status: 200 });
+  }, async (client) => {
+    const result = await client.callTool({
+      name: "list_commerce_customers",
+      arguments: {
+        search: "Acme",
+        page: 1,
+        limit: 10,
+      },
+    });
+
+    assert.equal(result.isError, undefined);
+    const parsed = new URL(capturedUrl);
+    assert.equal(parsed.pathname, "/v1/client/commerce/customers");
+    assert.equal(parsed.searchParams.get("search"), "Acme");
+  });
+});
+
+test("create_commerce_customer posts customer data", async () => {
+  let capturedUrl = "";
+  let capturedBody = "";
+  await withCommerceClient(async (url, init) => {
+    capturedUrl = url.toString();
+    capturedBody = String(init?.body ?? "");
+    return new Response(JSON.stringify({ data: { id: "cust_123" } }), { status: 200 });
+  }, async (client) => {
+    const result = await client.callTool({
+      name: "create_commerce_customer",
+      arguments: {
+        name: "Acme Corp",
+        email: "contact@acme.vn",
+        taxCode: "0101234567",
+      },
+    });
+
+    assert.equal(result.isError, undefined);
+    assert.equal(new URL(capturedUrl).pathname, "/v1/client/commerce/customers");
+    assert.deepEqual(JSON.parse(capturedBody), {
+      name: "Acme Corp",
+      email: "contact@acme.vn",
+      taxCode: "0101234567",
+    });
+  });
+});
+
+test("send_commerce_invoice posts payload to send endpoint", async () => {
+  let capturedUrl = "";
+  let capturedBody = "";
+  await withCommerceClient(async (url, init) => {
+    capturedUrl = url.toString();
+    capturedBody = String(init?.body ?? "");
+    return new Response(JSON.stringify({
+      data: {
+        customer: { id: "cust_123", name: "Acme Corp", email: "contact@acme.vn" },
+        paymentRequest: { publicId: "PR123", payUrl: "https://pay.apipay.vn/p/PR123" },
+        emailed: true,
+      },
+    }), { status: 200 });
+  }, async (client) => {
+    const result = await client.callTool({
+      name: "send_commerce_invoice",
+      arguments: {
+        customerId: "cust_123",
+        priceId: "price_abc",
+      },
+    });
+
+    assert.equal(result.isError, undefined);
+    assert.equal(new URL(capturedUrl).pathname, "/v1/client/commerce/invoices/send");
+    assert.deepEqual(JSON.parse(capturedBody), {
+      customerId: "cust_123",
+      priceId: "price_abc",
+    });
+  });
+});
+

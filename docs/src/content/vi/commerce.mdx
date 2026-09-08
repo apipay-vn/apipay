@@ -73,12 +73,19 @@ Tải PNG, JPEG hoặc WebP (tối đa 3 MB) trên form tạo sản phẩm hoặ
 
 Khi khách mở link Commerce mà bạn không gửi `content`, ApiPay gắn nội dung CK duy nhất (đuôi public id của yêu cầu thanh toán) vào QR. Hai khách trả cùng số tiền không bị khớp nhầm, trừ ngân hàng không trả nội dung CK (ví dụ VietinBank).
 
+## Khách hàng & Gửi hóa đơn
+
+ApiPay tự động lưu danh bạ khách hàng (`CommerceCustomer`) khi người mua điền thông tin thanh toán sản phẩm Commerce. Bạn cũng có thể quản lý danh sách khách hàng trực tiếp trên tab **Khách hàng** trong dashboard hoặc qua API / MCP.
+
+- **Định danh khách hàng**: Dựa trên email (chuẩn hóa chữ thường). Thông tin mới nhất từ thanh toán hoặc cập nhật sẽ được lưu.
+- **Gửi hóa đơn (Send invoice)**: Chọn một khách hàng và mức giá sản phẩm để gửi link thanh toán VietQR qua email.
+- **Lưu ý quan trọng**: Thao tác "Gửi hóa đơn" tạo một yêu cầu thanh toán kèm mã VietQR gửi qua email cho khách. Sau khi khách chuyển khoản thành công, hệ thống mới tự động tạo hóa đơn biên lai điện tử (`CINV-*`). Đây là yêu cầu thanh toán, không phải hóa đơn điện tử GTGT.
+
 ## Không có trong Commerce
 
-- Giỏ hàng / số lượng
-- CRM khách hàng
-- Thu tự động hàng tháng
-- Hóa đơn GTGT / HDDT
+- Giỏ hàng / chọn số lượng nhiều sản phẩm
+- Thu nợ tự động định kỳ từ tài khoản khách hàng
+- Hóa đơn điện tử GTGT / HDDT theo Nghị định 123/2020/NĐ-CP
 
 ## Thử ngay
 
