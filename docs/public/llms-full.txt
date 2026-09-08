@@ -1878,9 +1878,31 @@ ApiPay automatically checks TXT records for unverified domains every 15 minutes.
 
 Once your domain shows a green **Verified** badge in the Dashboard:
 
+#### In the Dashboard
+
 1. Create a new payment request (or edit an existing one)
 2. In the payment request form, select your custom domain from the **Custom Domain** dropdown
 3. When you share the payment link with your customer, it will use your domain instead of ApiPay's default domain
+
+#### Via API
+
+Pass `customDomainId` when calling `POST /v1/client/payment-requests`. The generated `payUrl` in the response will use your custom domain.
+
+You can copy your **Domain ID** directly from the table or from the **...** actions menu on **Integrations → Custom Domains** in the Dashboard.
+
+```bash
+curl -X POST https://app.apipay.vn/v1/client/payment-requests \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer " \
+  -d '{
+    "bankPublicId": "bank_abc123",
+    "amount": "500000",
+    "content": "ORDER-001",
+    "customDomainId": "cml8x1abc0000domain0000000"
+  }'
+```
+
+See [Payment Requests API](/en/api/payment-requests) for full endpoint specifications.
 
 ---
 
@@ -3113,8 +3135,9 @@ POST /v1/client/payment-requests
 | `content`      | string | —         | Transfer content (max 140 characters). If omitted on a `priceId` request, ApiPay stamps a unique memo from the payment-request public id                                                                                              |
 | `title`        | string | —         | Title displayed on payment page                                                                                                                                                                                                       |
 | `expiresAt`    | string | —         | Expiration time (ISO 8601). Leave empty for no limit                                                                                                                                                                                  |
-| `redirectUrl`  | string | —         | URL to redirect after payment completion. When payment completes, the system will redirect to this URL with a signed payload (`?data=<base64>&signature=<hmac>`) for verification. Leave empty to use merchant's default redirect URL |
-| `customer`     | object | —         | Optional buyer details on a one-time `priceId` payment (`name`, `email`, `taxCode`, `address`). Reusable payment-link checkout collects these on the pay page instead                                                                 |
+| `redirectUrl`    | string | —         | URL to redirect after payment completion. When payment completes, the system will redirect to this URL with a signed payload (`?data=<base64>&signature=<hmac>`) for verification. Leave empty to use merchant's default redirect URL |
+| `customDomainId` | string | —         | Verified custom domain ID to host the payment page. When provided, the returned `payUrl` will use this domain (e.g. `https://pay.yourdomain.com/...`). Leave empty to use default domain. See [Custom Domains](/en/custom-domains) |
+| `customer`       | object | —         | Optional buyer details on a one-time `priceId` payment (`name`, `email`, `taxCode`, `address`). Reusable payment-link checkout collects these on the pay page instead                                                                 |
 
 ### Response
 
@@ -3150,6 +3173,20 @@ curl -X POST https://app.apipay.vn/v1/client/payment-requests \
     "content": "ORDER-001",
     "title": "Payment for Order #001",
     "redirectUrl": "https://yoursite.com/payment/result"
+  }'
+```
+
+Create with a verified custom domain (the returned `payUrl` will use `https://pay.yourbrand.com/...`):
+
+```bash
+curl -X POST https://app.apipay.vn/v1/client/payment-requests \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer " \
+  -d '{
+    "bankPublicId": "bank_abc123",
+    "amount": "500000",
+    "content": "ORDER-001",
+    "customDomainId": "cml8x1abc0000domain0000000"
   }'
 ```
 

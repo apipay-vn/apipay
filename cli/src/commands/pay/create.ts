@@ -1,3 +1,4 @@
+import {Flags} from "@oclif/core";
 import chalk from "chalk";
 import {ApiKeyCommand} from "../../lib/base-command.js";
 import {fetchClientBanks} from "../../lib/client-banks.js";
@@ -12,9 +13,21 @@ export default class PayCreate extends ApiKeyCommand {
 	static override description =
 		"Generate a one-shot payment request. Reusable Commerce links are created in the dashboard (https://apipay.vn/commerce).";
 
-	static override examples = ["<%= config.bin %> pay:create"];
+	static override flags = {
+		...ApiKeyCommand.baseFlags,
+		"custom-domain-id": Flags.string({
+			description: "Custom domain ID for the payment page",
+		}),
+	};
+
+	static override examples = [
+		"<%= config.bin %> pay:create",
+		"<%= config.bin %> pay:create --custom-domain-id cml8x1domain0000000",
+	];
 
 	async run(): Promise<void> {
+		const {flags} = await this.parse(PayCreate);
+
 		console.log("");
 		console.log(chalk.bold("  Generate Payment Link"));
 		console.log(chalk.gray("  ─────────────────────"));
@@ -53,6 +66,10 @@ export default class PayCreate extends ApiKeyCommand {
 
 		if (note.trim() !== "") {
 			payload.content = note.trim();
+		}
+
+		if (flags["custom-domain-id"]) {
+			payload.customDomainId = flags["custom-domain-id"].trim();
 		}
 
 		this.spinner.start("Generating payment link...");

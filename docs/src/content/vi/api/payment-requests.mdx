@@ -34,8 +34,9 @@ POST /v1/client/payment-requests
 | `content`      | string | —        | Nội dung chuyển khoản (tối đa 140 ký tự). Nếu bỏ trống khi gửi `priceId`, hệ thống gắn mã CK duy nhất từ public id của yêu cầu thanh toán |
 | `title`        | string | —        | Tiêu đề hiển thị trên trang thanh toán                                                                                                                                           |
 | `expiresAt`    | string | —        | Thời hạn (ISO 8601). Để trống nếu không giới hạn                                                                                                                                 |
-| `redirectUrl`  | string | —        | URL đưa khách về sau khi thanh toán. Khi hoàn tất, hệ thống chuyển đến URL này kèm payload đã ký (`?data=<base64>&signature=<hmac>`). Để trống để dùng URL mặc định của merchant |
-| `customer`     | object | —        | Thông tin người mua tùy chọn khi tạo thanh toán một lần từ `priceId` (`name`, `email`, `taxCode`, `address`). Link dùng lại thu thập trên trang thanh toán |
+| `redirectUrl`    | string | —        | URL đưa khách về sau khi thanh toán. Khi hoàn tất, hệ thống chuyển đến URL này kèm payload đã ký (`?data=<base64>&signature=<hmac>`). Để trống để dùng URL mặc định của merchant |
+| `customDomainId` | string | —        | ID của tên miền riêng đã xác minh để hiển thị trang thanh toán. Khi truyền vào, `payUrl` trả về sẽ sử dụng tên miền này (ví dụ: `https://pay.yourdomain.com/...`). Để trống nếu dùng tên miền mặc định. Xem [Tên miền riêng](/vi/custom-domains) |
+| `customer`       | object | —        | Thông tin người mua tùy chọn khi tạo thanh toán một lần từ `priceId` (`name`, `email`, `taxCode`, `address`). Link dùng lại thu thập trên trang thanh toán |
 
 ### Response
 
@@ -71,6 +72,20 @@ curl -X POST https://app.apipay.vn/v1/client/payment-requests \
     "content": "THANHTOAN-001",
     "title": "DON HANG 12345",
     "redirectUrl": "https://yoursite.com/payment/result"
+  }'
+```
+
+Tạo với tên miền riêng đã xác minh (`payUrl` trả về sẽ dùng `https://pay.yourbrand.com/...`):
+
+```bash
+curl -X POST https://app.apipay.vn/v1/client/payment-requests \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <Auth>" \
+  -d '{
+    "bankPublicId": "bank_abc123",
+    "amount": "500000",
+    "content": "THANHTOAN-001",
+    "customDomainId": "cml8x1abc0000domain0000000"
   }'
 ```
 

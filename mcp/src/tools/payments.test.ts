@@ -235,3 +235,56 @@ test("create_payment returns isError and does not invoke fetch when amount and p
     globalThis.fetch = originalFetch;
   }
 });
+
+test("create_payment sends customDomainId when provided", async () => {
+  let capturedBody: any = null;
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (url, init) => {
+    capturedBody = JSON.parse(init?.body as string);
+    return new Response(
+      JSON.stringify({
+        data: {
+          publicId: "APIPAYJSC69C3F00A3212",
+          payUrl: "https://pay.example.com/APIPAYJSC69C3F00A3212",
+        },
+      }),
+      { status: 200, headers: { "Content-Type": "application/json" } }
+    );
+  };
+
+  try {
+    const server = new McpServer({ name: "test-server", version: "0.1.0" });
+    const apiClient = new ApiClient({
+      baseUrl: "https://app.apipay.vn/v1",
+      accessKey: "ak_test_123",
+      secretKey: "sec_test_456",
+    });
+    registerPaymentsTools(server, apiClient);
+
+    const client = new Client({ name: "test-client", version: "0.1.0" });
+    const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
+
+    await Promise.all([
+      server.connect(serverTransport),
+      client.connect(clientTransport),
+    ]);
+
+    const result = await client.callTool({
+      name: "create_payment",
+      arguments: {
+        bankPublicId: "bank_abc",
+        amount: "50000",
+        customDomainId: "cml8x1domain0000000",
+      },
+    });
+
+    assert.equal(result.isError, undefined);
+    assert.deepEqual(capturedBody, {
+      bankPublicId: "bank_abc",
+      amount: "50000",
+      customDomainId: "cml8x1domain0000000",
+    });
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});

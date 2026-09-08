@@ -79,6 +79,10 @@
                   "redirectUrl": {
                     "type": "string",
                     "description": "HTTPS URL to redirect after payment completion"
+                  },
+                  "customDomainId": {
+                    "type": "string",
+                    "description": "ID of a verified custom domain to host the payment page. When provided, the generated payUrl will use this domain. Leave empty to use the default pay domain."
                   }
                 }
               }

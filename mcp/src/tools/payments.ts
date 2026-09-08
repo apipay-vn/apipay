@@ -44,6 +44,12 @@ export function registerPaymentsTools(server: McpServer, client: ApiClient): voi
           .string()
           .optional()
           .describe("HTTPS URL to redirect after payment completion"),
+        customDomainId: z
+          .string()
+          .optional()
+          .describe(
+            "ID of a verified custom domain to host the payment page. When provided, the generated payUrl will use this domain. Leave empty to use the default pay domain.",
+          ),
         customer: z
           .object({
             name: z.string().max(200).optional().describe("Customer / buyer name"),
@@ -78,6 +84,7 @@ export function registerPaymentsTools(server: McpServer, client: ApiClient): voi
         if (args.title !== undefined) body.title = args.title;
         if (args.expiresAt !== undefined) body.expiresAt = args.expiresAt;
         if (args.redirectUrl !== undefined) body.redirectUrl = args.redirectUrl;
+        if (args.customDomainId !== undefined) body.customDomainId = args.customDomainId;
         if (args.customer !== undefined) body.customer = args.customer;
 
         const data = await client.post("/client/payment-requests", body);

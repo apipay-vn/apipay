@@ -104,9 +104,31 @@ ApiPay tự kiểm tra bản ghi TXT của các tên miền chưa xác minh mỗ
 
 Khi tên miền hiển thị nhãn **Đã xác minh** màu xanh trong Dashboard:
 
+#### Trong Dashboard
+
 1. Tạo yêu cầu thanh toán mới (hoặc chỉnh sửa yêu cầu hiện có)
 2. Trong form yêu cầu thanh toán, chọn tên miền riêng từ dropdown **Tên miền tùy chỉnh**
 3. Khi chia sẻ link thanh toán, URL sẽ dùng tên miền của bạn
+
+#### Qua API
+
+Truyền tham số `customDomainId` khi gọi `POST /v1/client/payment-requests`. `payUrl` trong kết quả trả về sẽ tự động dùng tên miền riêng của bạn.
+
+Bạn có thể sao chép **Domain ID** trực tiếp trên bảng danh sách hoặc từ menu thao tác **...** tại **Tích hợp → Tên miền riêng** trong Dashboard.
+
+```bash
+curl -X POST https://app.apipay.vn/v1/client/payment-requests \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <Auth>" \
+  -d '{
+    "bankPublicId": "bank_abc123",
+    "amount": "500000",
+    "content": "THANHTOAN-001",
+    "customDomainId": "cml8x1abc0000domain0000000"
+  }'
+```
+
+Xem chi tiết tại [Payment Requests API](/vi/api/payment-requests).
 
 ---
 

@@ -104,9 +104,31 @@ ApiPay automatically checks TXT records for unverified domains every 15 minutes.
 
 Once your domain shows a green **Verified** badge in the Dashboard:
 
+#### In the Dashboard
+
 1. Create a new payment request (or edit an existing one)
 2. In the payment request form, select your custom domain from the **Custom Domain** dropdown
 3. When you share the payment link with your customer, it will use your domain instead of ApiPay's default domain
+
+#### Via API
+
+Pass `customDomainId` when calling `POST /v1/client/payment-requests`. The generated `payUrl` in the response will use your custom domain.
+
+You can copy your **Domain ID** directly from the table or from the **...** actions menu on **Integrations → Custom Domains** in the Dashboard.
+
+```bash
+curl -X POST https://app.apipay.vn/v1/client/payment-requests \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <Auth>" \
+  -d '{
+    "bankPublicId": "bank_abc123",
+    "amount": "500000",
+    "content": "ORDER-001",
+    "customDomainId": "cml8x1abc0000domain0000000"
+  }'
+```
+
+See [Payment Requests API](/en/api/payment-requests) for full endpoint specifications.
 
 ---
 
