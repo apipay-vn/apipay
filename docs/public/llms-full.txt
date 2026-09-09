@@ -529,7 +529,7 @@ The **effective monthly price** is lower for discounted 6-month and 12-month ter
 - ✅ Generous monthly transaction quotas with competitive per-tx economics
 - ✅ Multi-bank connection support
 - ✅ Real-time payment notifications (1s refresh)
-- ✅ VietQR PRO & Dynamic QR generation
+- ✅ Payment request VietQR-compatible, auto reconciliation
 - ✅ HMAC-secured webhook integrations
 - ✅ Customer payment pages & Commerce links
 - ✅ Transaction analytics & detailed reports
