@@ -29,7 +29,7 @@ ApiPay áp dụng mô hình **gói hạn mức giao dịch (Usage Quota Billing)
 ### Cơ chế cước vượt hạn mức (Soft Capping)
 
 - Khi đạt 100% hạn mức tháng, hệ thống **không ngắt dịch vụ**. Giao dịch tiếp tục được xử lý bình thường.
-- Cước vượt được tính **350đ/giao dịch thành công** (không tính phí đối với giao dịch thất bại).
+- Cước vượt tính **đúng đơn giá của gói đang dùng** (giá gói chia hạn mức) — không phụ phí. Gói lớn hơn có đơn giá vượt thấp hơn. Không tính phí đối với giao dịch thất bại.
 - Hóa đơn gia hạn ở kỳ tiếp theo sẽ gồm phí gói kỳ mới + cước vượt của chu kỳ vừa qua.
 
 ### Tất cả gói trả phí đều bao gồm
@@ -50,7 +50,7 @@ ApiPay áp dụng mô hình **gói hạn mức giao dịch (Usage Quota Billing)
 ### Nên cân nhắc gì?
 
 1. **Sản lượng giao dịch trung bình/tháng** - Chọn gói tiệm cận hoặc nhỉnh hơn sản lượng thực tế để hưởng đơn giá tối ưu nhất (chỉ từ 150đ - 350đ/GD).
-2. **Kinh doanh theo mùa vụ** - Không lo gián đoạn vì cước vượt 350đ/GD tự động hỗ trợ khi lượng đơn đột biến.
+2. **Kinh doanh theo mùa vụ** - Không lo gián đoạn: cước vượt tính đúng đơn giá gói, dịch vụ không bị ngắt khi lượng đơn đột biến.
 3. **Nhu cầu nhiều tài khoản ngân hàng** - Tất cả các gói đều hỗ trợ kết nối đa ngân hàng phục vụ vận hành đa kênh.
 
 ### Gợi ý theo quy mô kinh doanh

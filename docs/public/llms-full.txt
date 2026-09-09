@@ -521,7 +521,7 @@ The **effective monthly price** is lower for discounted 6-month and 12-month ter
 ### Soft Capping & Overage
 
 - When reaching 100% of your monthly transaction quota, service is **never cut off**. Transactions process normally.
-- Overage is billed at **350 VND per successful transaction** (failed transactions are never charged).
+- Extra usage is billed at **your plan’s effective rate** (plan price ÷ included transactions). This is the same rate as included transactions, not a penalty — larger plans have a lower extra rate. Failed transactions are never charged.
 - Your next renewal invoice consolidates the upcoming term's quota fee plus any past cycle overage.
 
 ### What's Included in Paid Plans
@@ -542,7 +542,7 @@ The **effective monthly price** is lower for discounted 6-month and 12-month ter
 ### Factors to Consider
 
 1. **Average Monthly Transaction Volume** - Pick a plan that matches or slightly exceeds your typical volume to unlock lower effective unit costs (down to 150 VND/tx).
-2. **Seasonal Peaks** - Never worry about unexpected volume spikes; soft capping at 350 VND/tx ensures zero downtime.
+2. **Seasonal Peaks** - Never worry about unexpected volume spikes; extra usage is billed at your plan’s rate and service is never interrupted.
 3. **Multi-Bank Architecture** - All quota plans support multi-bank connections to power multi-channel sales and reconciliation.
 
 ### Recommendations by Scale
