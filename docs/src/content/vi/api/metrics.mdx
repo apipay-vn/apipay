@@ -149,11 +149,22 @@ GET /v1/client/metrics/hourly-transactions
 
 ## Phân bố theo ngân hàng
 
-Lấy tỷ trọng giao dịch theo ngân hàng.
+Lấy tỷ trọng giao dịch theo ngân hàng. Mặc định xếp hạng theo số lượng giao dịch.
 
 ```bash
 GET /v1/client/metrics/bank-distribution
 ```
+
+### Query Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `period` | string | — | Khoảng thời gian: `today`, `this_week`, `last_week`, `this_month`, `last_month`, `last_3_months`, `last_6_months`, `this_year`, `custom` |
+| `dateFrom` | string | — | Ngày bắt đầu (ISO 8601) |
+| `dateTo` | string | — | Ngày kết thúc (ISO 8601) |
+| `page` | integer | — | Số trang (mặc định `1`) |
+| `limit` | integer | — | Số bản ghi mỗi trang (mặc định `10`, tối đa `50`) |
+| `sortBy` | string | — | Tiêu chí xếp hạng: `transactionCount` (mặc định, số lượng) hoặc `totalIn` (số tiền) |
 
 ### Response
 

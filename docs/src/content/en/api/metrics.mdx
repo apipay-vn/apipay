@@ -149,11 +149,22 @@ GET /v1/client/metrics/hourly-transactions
 
 ## Bank Distribution
 
-Get transaction distribution by bank.
+Get transaction distribution by bank. Banks are ranked by transaction count by default.
 
 ```bash
 GET /v1/client/metrics/bank-distribution
 ```
+
+### Query Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `period` | string | — | Time period: `today`, `this_week`, `last_week`, `this_month`, `last_month`, `last_3_months`, `last_6_months`, `this_year`, `custom` |
+| `dateFrom` | string | — | Start date (ISO 8601) |
+| `dateTo` | string | — | End date (ISO 8601) |
+| `page` | integer | — | Page number (default `1`) |
+| `limit` | integer | — | Page size (default `10`, max `50`) |
+| `sortBy` | string | — | Ranking metric: `transactionCount` (default, quantity) or `totalIn` (amount) |
 
 ### Response
 
