@@ -10,18 +10,16 @@ function formatVnd(amount: number, locale: Locale) {
 export function OnboardingPricingTable({ locale = "en" }: { locale?: Locale }) {
 	const copy = locale === "vi"
 		? {
-			plan: "Gói",
+			plan: "Gói hạn mức",
+			quota: "Hạn mức GD/tháng",
 			price: "Giá",
-			banks: "Tài Khoản Ngân Hàng",
 			perMonth: "/tháng",
-			bankUnit: (count: number) => `${count} tài khoản`,
 		}
 		: {
-			plan: "Plan",
+			plan: "Quota Plan",
+			quota: "Included Tx/mo",
 			price: "Price",
-			banks: "Bank Accounts",
 			perMonth: "/month",
-			bankUnit: (count: number) => `${count} ${count === 1 ? "account" : "accounts"}`,
 		};
 
 	return (
@@ -30,16 +28,16 @@ export function OnboardingPricingTable({ locale = "en" }: { locale?: Locale }) {
 				<thead>
 					<tr>
 						<th>{copy.plan}</th>
+						<th>{copy.quota}</th>
 						<th>{copy.price}</th>
-						<th>{copy.banks}</th>
 					</tr>
 				</thead>
 				<tbody>
 					{DOCS_PLANS.map(plan => (
 						<tr key={plan.name}>
-							<td>{plan.name}</td>
+							<td><strong>{plan.displayName || plan.name}</strong></td>
+							<td>{plan.includedTx.toLocaleString()}</td>
 							<td>{formatVnd(plan.price, locale)}{copy.perMonth}</td>
-							<td>{copy.bankUnit(plan.banks)}</td>
 						</tr>
 					))}
 				</tbody>

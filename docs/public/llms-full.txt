@@ -505,29 +505,35 @@ Learn how to manage your ApiPay subscription and pricing.
 
 ## Plan Overview
 
-ApiPay offers transparent pricing based on the number of bank accounts you need. Paid plans include unlimited transactions with no per-transaction fees. Choose a **billing term** of 1, 3, 6, or 12 months at checkout — 6-month and 12-month terms include automatic discounts.
+ApiPay uses a **Usage Quota Billing** model with flexible transaction tiers from 200 to 500,000 transactions/month. All tiers support multi-bank connections simultaneously. Choose a **billing term** of 1, 3, 6 (5% discount), or 12 months (10% discount) at checkout. Listed prices are final checkout totals with no extra taxes added.
 
 ### Term Discounts
 
-| Term | Discount | Example (PRO — 450,000 VND/month) |
-| ---- | -------- | ------------------------------------ |
-| 1 month | 0% | 450,000 VND |
-| 3 months | 0% | 1,350,000 VND (450,000 VND/month) |
-| 6 months | 5% | 2,565,000 VND (427,500 VND/month) |
-| 12 months | 10% | 4,860,000 VND (405,000 VND/month) |
+| Term      | Discount | Example (QUOTA 1200 — 348,000 VND/month) |
+| --------- | -------- | ---------------------------------------- |
+| 1 month   | 0%       | 348,000 VND                              |
+| 3 months  | 0%       | 1,044,000 VND (348,000 VND/month)        |
+| 6 months  | 5%       | 1,983,600 VND (330,600 VND/month)        |
+| 12 months | 10%      | 3,758,400 VND (313,200 VND/month)        |
 
 The **effective monthly price** is lower for discounted 6-month and 12-month terms. You'll see the subtotal, discount, and effective monthly price before confirming payment.
 
+### Soft Capping & Overage
+
+- When reaching 100% of your monthly transaction quota, service is **never cut off**. Transactions process normally.
+- Overage is billed at **350 VND per successful transaction** (failed transactions are never charged).
+- Your next renewal invoice consolidates the upcoming term's quota fee plus any past cycle overage.
+
 ### What's Included in Paid Plans
 
-- ✅ Unlimited transactions
-- ✅ All supported banks
-- ✅ Real-time payment notifications
-- ✅ QR code generation
-- ✅ Webhook integration
-- ✅ Customer payment page
-- ✅ Transaction analytics
-- ✅ Email support
+- ✅ Generous monthly transaction quotas with competitive per-tx economics
+- ✅ Multi-bank connection support
+- ✅ Real-time payment notifications (1s refresh)
+- ✅ VietQR PRO & Dynamic QR generation
+- ✅ HMAC-secured webhook integrations
+- ✅ Customer payment pages & Commerce links
+- ✅ Transaction analytics & detailed reports
+- ✅ 24/7 technical support
 
 ---
 
@@ -535,20 +541,21 @@ The **effective monthly price** is lower for discounted 6-month and 12-month ter
 
 ### Factors to Consider
 
-1. **Transaction Volume** - More bank accounts means more capacity
-2. **Business Growth** - Choose a plan that accommodates growth
-3. **Peak Hours** - Multiple banks help during high-traffic periods
+1. **Average Monthly Transaction Volume** - Pick a plan that matches or slightly exceeds your typical volume to unlock lower effective unit costs (down to 150 VND/tx).
+2. **Seasonal Peaks** - Never worry about unexpected volume spikes; soft capping at 350 VND/tx ensures zero downtime.
+3. **Multi-Bank Architecture** - All quota plans support multi-bank connections to power multi-channel sales and reconciliation.
 
-### Recommendations by Business Type
+### Recommendations by Scale
 
-| Business Type     | Recommended Plan | Reason                    |
-| ----------------- | ---------------- | ------------------------- |
-| Solo entrepreneur | BASIC            | Start simple              |
-| Small e-commerce  | STARTER          | Handle moderate volume    |
-| Growing SaaS      | PRO              | Balance cost and capacity |
-| Large marketplace | TEAM+            | High volume needs         |
+| Scale / Business Type  | Recommended Plan | Included Tx/mo |
+| ---------------------- | ---------------- | -------------- |
+| Solo entrepreneur      | QUOTA 200        | 200 tx         |
+| Growing online store   | QUOTA 1200       | 1,200 tx       |
+| Web App / SaaS         | QUOTA 5000       | 5,000 tx       |
+| Large marketplace      | QUOTA 50000      | 50,000 tx      |
+| Enterprise (> 500k tx) | Enterprise       | Contact Sales  |
 
-> **Pro Tip:** You can always upgrade anytime. Starting with a lower plan and upgrading as you grow is perfectly fine.
+> **Pro Tip:** You can upgrade anytime directly in the Dashboard. New plans activate immediately.
 
 ---
 

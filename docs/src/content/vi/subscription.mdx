@@ -11,31 +11,37 @@ Trang này giúp bạn chọn gói, mua gói và quản lý chu kỳ thanh toán
 
 ## Tổng quan gói dịch vụ
 
-ApiPay cung cấp giá minh bạch dựa trên số lượng tài khoản ngân hàng bạn cần. Gói trả phí bao gồm giao dịch không giới hạn mà không có phí mỗi giao dịch. Khi thanh toán, bạn chọn **kỳ hạn** 1, 3, 6 hoặc 12 tháng — kỳ hạn 6 tháng và 12 tháng được giảm giá tự động.
+ApiPay áp dụng mô hình **gói hạn mức giao dịch (Usage Quota Billing)** với mức linh hoạt từ 200 đến 500.000 giao dịch/tháng. Toàn bộ các gói đều hỗ trợ kết nối đa ngân hàng đồng thời. Khi thanh toán, bạn chọn **kỳ hạn** 1, 3, 6 hoặc 12 tháng — kỳ hạn 6 tháng (giảm 5%) và 12 tháng (giảm 10%) được giảm giá tự động. Giá niêm yết là số tiền thanh toán thực tế, không cộng thêm thuế.
 
 <PricingTabs locale="vi" />
 
 ### Giảm giá theo kỳ hạn
 
-| Kỳ hạn | Giảm giá | Ví dụ (PRO — 450.000 VND/tháng) |
-| ------ | -------- | --------------------------------- |
-| 1 tháng | 0% | 450.000 VND |
-| 3 tháng | 0% | 1.350.000 VND (450.000 VND/tháng) |
-| 6 tháng | 5% | 2.565.000 VND (427.500 VND/tháng) |
-| 12 tháng | 10% | 4.860.000 VND (405.000 VND/tháng) |
+| Kỳ hạn   | Giảm giá | Ví dụ (QUOTA 1200 — 348.000 VND/tháng) |
+| -------- | -------- | -------------------------------------- |
+| 1 tháng  | 0%       | 348.000 VND                            |
+| 3 tháng  | 0%       | 1.044.000 VND (348.000 VND/tháng)      |
+| 6 tháng  | 5%       | 1.983.600 VND (330.600 VND/tháng)      |
+| 12 tháng | 10%      | 3.758.400 VND (313.200 VND/tháng)      |
 
 **Giá tương đương mỗi tháng** thấp hơn với kỳ hạn 6 tháng và 12 tháng có giảm giá. Trước khi xác nhận thanh toán, bạn sẽ thấy tạm tính, mức giảm và giá tương đương mỗi tháng.
 
+### Cơ chế cước vượt hạn mức (Soft Capping)
+
+- Khi đạt 100% hạn mức tháng, hệ thống **không ngắt dịch vụ**. Giao dịch tiếp tục được xử lý bình thường.
+- Cước vượt được tính **350đ/giao dịch thành công** (không tính phí đối với giao dịch thất bại).
+- Hóa đơn gia hạn ở kỳ tiếp theo sẽ gồm phí gói kỳ mới + cước vượt của chu kỳ vừa qua.
+
 ### Tất cả gói trả phí đều bao gồm
 
-- ✅ Giao dịch không giới hạn
-- ✅ Tất cả ngân hàng được hỗ trợ
-- ✅ Thông báo thanh toán theo thời gian thực
-- ✅ Tạo mã QR
-- ✅ Tích hợp webhook
-- ✅ Trang thanh toán cho khách hàng
-- ✅ Analytics giao dịch
-- ✅ Hỗ trợ qua email
+- ✅ Hạn mức giao dịch định sẵn, giá trọn gói siêu tiết kiệm
+- ✅ Hỗ trợ kết nối đa ngân hàng đồng thời
+- ✅ Thông báo thanh toán theo thời gian thực (1s/lần)
+- ✅ Tạo mã VietQR PRO, Dynamic QR
+- ✅ Tích hợp webhook bảo mật chữ ký HMAC
+- ✅ Trang thanh toán Commerce và Payment Request
+- ✅ Analytics và báo cáo giao dịch chi tiết
+- ✅ Hỗ trợ kỹ thuật 24/7
 
 ---
 
@@ -43,20 +49,21 @@ ApiPay cung cấp giá minh bạch dựa trên số lượng tài khoản ngân 
 
 ### Nên cân nhắc gì?
 
-1. **Khối lượng giao dịch** - Nhiều tài khoản ngân hàng giúp chia tải tốt hơn
-2. **Tốc độ tăng trưởng** - Chọn gói đủ dùng cho hiện tại và vài tháng tới
-3. **Giờ cao điểm** - Nhiều ngân hàng giúp giảm nghẽn khi giao dịch tăng
+1. **Sản lượng giao dịch trung bình/tháng** - Chọn gói tiệm cận hoặc nhỉnh hơn sản lượng thực tế để hưởng đơn giá tối ưu nhất (chỉ từ 150đ - 350đ/GD).
+2. **Kinh doanh theo mùa vụ** - Không lo gián đoạn vì cước vượt 350đ/GD tự động hỗ trợ khi lượng đơn đột biến.
+3. **Nhu cầu nhiều tài khoản ngân hàng** - Tất cả các gói đều hỗ trợ kết nối đa ngân hàng phục vụ vận hành đa kênh.
 
-### Gợi ý theo loại hình kinh doanh
+### Gợi ý theo quy mô kinh doanh
 
-| Loại hình kinh doanh   | Gói gợi ý | Lý do                          |
-| ---------------------- | --------- | ------------------------------ |
-| Cá nhân kinh doanh     | BASIC     | Bắt đầu đơn giản               |
-| Thương mại điện tử nhỏ | STARTER   | Xử lý lượng vừa phải           |
-| SaaS đang phát triển   | PRO       | Cân bằng chi phí và dung lượng |
-| Thị trường lớn         | TEAM+     | Nhu cầu lượng cao              |
+| Quy mô / Mô hình        | Gói gợi ý   | Hạn mức GD/tháng |
+| ----------------------- | ----------- | ---------------- |
+| Cá nhân kinh doanh      | QUOTA 200   | 200 GD           |
+| Shop online vừa         | QUOTA 1200  | 1.200 GD         |
+| Web App / SaaS          | QUOTA 5000  | 5.000 GD         |
+| Sàn TMĐT / Doanh nghiệp | QUOTA 50000 | 50.000 GD        |
+| Quy mô lớn (> 500k GD)  | Enterprise  | Liên hệ ApiPay   |
 
-> **Mẹo:** Bạn có thể nâng cấp bất kỳ lúc nào. Bắt đầu với gói thấp rồi nâng cấp khi cần.
+> **Mẹo:** Bạn có thể nâng cấp gói bất kỳ lúc nào ngay trên Dashboard. Gói mới sẽ có hiệu lực ngay lập tức.
 
 ---
 

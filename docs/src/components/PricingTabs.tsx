@@ -21,17 +21,17 @@ export function PricingTabs({locale = "en"}: {locale?: Locale}) {
 	const copy = locale === "vi"
 		? {
 			term: (months: number) => (months === 12 ? "1 năm" : `${months} tháng`),
-			plan: "Gói",
+			plan: "Gói hạn mức",
+			quota: "Hạn mức GD/tháng",
 			price: "Giá",
 			effective: "Tương đương/tháng",
-			banks: "Tài khoản ngân hàng",
 		}
 		: {
 			term: (months: number) => (months === 12 ? "1 year" : `${months} months`),
-			plan: "Plan",
+			plan: "Quota Plan",
+			quota: "Included Tx/mo",
 			price: "Price",
 			effective: "Effective/month",
-			banks: "Bank accounts",
 		};
 
 	return (
@@ -58,9 +58,9 @@ export function PricingTabs({locale = "en"}: {locale?: Locale}) {
 					<thead>
 						<tr>
 							<th>{copy.plan}</th>
+							<th>{copy.quota}</th>
 							<th>{copy.price}</th>
 							<th>{copy.effective}</th>
-							<th>{copy.banks}</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -70,10 +70,10 @@ export function PricingTabs({locale = "en"}: {locale?: Locale}) {
 							const total = subtotal - discount;
 							return (
 								<tr key={plan.name}>
-									<td>{plan.name}</td>
+									<td><strong>{plan.displayName || plan.name}</strong></td>
+									<td>{plan.includedTx.toLocaleString()}</td>
 									<td>{formatVnd(total, locale)}</td>
 									<td>{formatVnd(Math.round(total / termMonths), locale)}</td>
-									<td>{plan.banks}</td>
 								</tr>
 							);
 						})}
