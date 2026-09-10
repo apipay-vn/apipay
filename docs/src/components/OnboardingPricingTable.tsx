@@ -12,12 +12,14 @@ export function OnboardingPricingTable({ locale = "en" }: { locale?: Locale }) {
 		? {
 			plan: "Gói hạn mức",
 			quota: "Hạn mức GD/tháng",
+			banks: "Tài khoản NH",
 			price: "Giá",
 			perMonth: "/tháng",
 		}
 		: {
 			plan: "Quota Plan",
 			quota: "Included Tx/mo",
+			banks: "Bank accounts",
 			price: "Price",
 			perMonth: "/month",
 		};
@@ -29,6 +31,7 @@ export function OnboardingPricingTable({ locale = "en" }: { locale?: Locale }) {
 					<tr>
 						<th>{copy.plan}</th>
 						<th>{copy.quota}</th>
+						<th>{copy.banks}</th>
 						<th>{copy.price}</th>
 					</tr>
 				</thead>
@@ -37,6 +40,7 @@ export function OnboardingPricingTable({ locale = "en" }: { locale?: Locale }) {
 						<tr key={plan.name}>
 							<td><strong>{plan.displayName || plan.name}</strong></td>
 							<td>{plan.includedTx.toLocaleString()}</td>
+							<td>{plan.maxBanks.toLocaleString()}</td>
 							<td>{formatVnd(plan.price, locale)}{copy.perMonth}</td>
 						</tr>
 					))}

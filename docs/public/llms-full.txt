@@ -23,7 +23,7 @@ ApiPay is a payment gateway API that helps you easily create payment links via b
 - **Free Payment Speaker** - Real-time voice announcements for incoming bank transfers on any device
 - **Webhook notifications** - Receive real-time payment notifications
 - **Multiple banks** - Supports ACB, MB Bank, BIDV, OCB, VietinBank, VIB, Sacombank, VPBank, PGBank, Shinhan Bank, Co-opBank, and Vietcombank
-- **No transaction fees** - Zero fee per transaction
+- **No percentage fees** - Successful transactions count toward your quota; failed transactions are never charged
 
 ## How It Works
 
@@ -327,7 +327,7 @@ ApiPay is a payment gateway that enables Vietnamese businesses to accept bank tr
 Here's what you'll accomplish:
 
 1. **Sign Up** - Create your merchant account
-2. **Choose a Plan** - Pick a paid plan
+2. **Choose a Plan** - Activate the free plan or pick a paid quota plan
 3. **Connect Banks** - Link your Vietnamese bank accounts
 4. **Configure Settings** - Set up webhooks and API keys
 5. **Start Accepting Payments** - Create your first payment request
@@ -353,15 +353,16 @@ You can register using:
 
 ## Step 2: Choose Your Plan
 
-ApiPay offers paid plans based on the number of bank accounts you need:
+ApiPay offers a free starter plan plus paid transaction-quota plans based on monthly successful transaction volume:
 
 ### How to Choose
 
 **Start small and scale up:**
 
-- New businesses: Start with BASIC or STARTER
-- Growing businesses: PRO offers the best value
-- High-volume businesses: TEAM or above
+- First integration: Start with FREE
+- New businesses: Start with QUOTA 200 or QUOTA 400
+- Growing businesses: QUOTA 1200 or QUOTA 2500
+- High-volume businesses: QUOTA 5000 or above
 
 You can upgrade anytime. Downgrading takes effect at the next billing cycle.
 
@@ -371,7 +372,7 @@ You can upgrade anytime. Downgrading takes effect at the next billing cycle.
 
 ## Step 3: Connect Your Bank Accounts
 
-After subscribing, you'll connect your Vietnamese bank account(s). This is essential for receiving payments.
+After activating a plan, you'll connect your Vietnamese bank account(s). This is essential for receiving payments. The free plan supports 1 bank account; paid plans support multiple bank accounts.
 
 ### Supported Banks
 
@@ -505,7 +506,7 @@ Learn how to manage your ApiPay subscription and pricing.
 
 ## Plan Overview
 
-ApiPay uses a **Usage Quota Billing** model with flexible transaction tiers from 200 to 500,000 transactions/month. All tiers support multi-bank connections simultaneously. Choose a **billing term** of 1, 3, 6 (5% discount), or 12 months (10% discount) at checkout. Listed prices are final checkout totals with no extra taxes added.
+ApiPay uses a **Usage Quota Billing** model. The free plan includes 50 successful transactions/month and 1 bank account. Paid tiers range from 200 to 500,000 transactions/month and support multi-bank connections simultaneously. Choose a **billing term** of 1, 3, 6 (5% discount), or 12 months (10% discount) at checkout. Listed prices are final checkout totals with no extra taxes added.
 
 ### Term Discounts
 
@@ -518,11 +519,12 @@ ApiPay uses a **Usage Quota Billing** model with flexible transaction tiers from
 
 The **effective monthly price** is lower for discounted 6-month and 12-month terms. You'll see the subtotal, discount, and effective monthly price before confirming payment.
 
-### Soft Capping & Overage
+### Balance Overage & Hold Cap
 
-- When reaching 100% of your monthly transaction quota, service is **never cut off**. Transactions process normally.
-- Extra usage is billed at **your plan’s effective rate** (plan price ÷ included transactions). This is the same rate as included transactions, not a penalty — larger plans have a lower extra rate. Failed transactions are never charged.
-- Your next renewal invoice consolidates the upcoming term's quota fee plus any past cycle overage.
+- At 80% and 100% of included monthly quota, ApiPay sends usage notices so you can top up or upgrade before extra usage starts.
+- After 100%, successful extra transactions are deducted from your prepaid balance at your plan’s rate. The free plan uses 350 VND/extra transaction.
+- If the prepaid balance cannot cover an extra transaction, ApiPay places the account on hold and still allows up to 60 additional successful transactions.
+- When the hold reaches 60 transactions, connected banks can be removed until you add enough balance. Failed transactions are never charged.
 
 ### What's Included in Paid Plans
 
@@ -535,20 +537,28 @@ The **effective monthly price** is lower for discounted 6-month and 12-month ter
 - ✅ Transaction analytics & detailed reports
 - ✅ 24/7 technical support
 
+### What's Included in the Free Plan
+
+- 50 successful transactions/month
+- 1 connected bank account
+- Extra usage at 350 VND/transaction from prepaid balance
+- Up to 60 hold transactions when balance is insufficient
+
 ---
 
 ## Choosing the Right Plan
 
 ### Factors to Consider
 
-1. **Average Monthly Transaction Volume** - Pick a plan that matches or slightly exceeds your typical volume to unlock lower effective unit costs (down to 150 VND/tx).
-2. **Seasonal Peaks** - Never worry about unexpected volume spikes; extra usage is billed at your plan’s rate and service is never interrupted.
-3. **Multi-Bank Architecture** - All quota plans support multi-bank connections to power multi-channel sales and reconciliation.
+1. **Average Monthly Transaction Volume** - Use the free plan to validate a small setup, then pick a paid plan that matches or slightly exceeds your typical volume to unlock lower effective unit costs (down to 150 VND/tx).
+2. **Seasonal Peaks** - Keep enough prepaid balance for spikes; extra successful transactions are deducted at your plan’s rate.
+3. **Multi-Bank Architecture** - Paid quota plans support multi-bank connections to power multi-channel sales and reconciliation.
 
 ### Recommendations by Scale
 
 | Scale / Business Type  | Recommended Plan | Included Tx/mo |
 | ---------------------- | ---------------- | -------------- |
+| Trial / first setup    | FREE             | 50 tx          |
 | Solo entrepreneur      | QUOTA 200        | 200 tx         |
 | Growing online store   | QUOTA 1200       | 1,200 tx       |
 | Web App / SaaS         | QUOTA 5000       | 5,000 tx       |
@@ -631,15 +641,15 @@ After payment is confirmed, your plan activates immediately.
 
 ### Optimize Your Plan
 
-1. **Start with BASIC** - Start lean before scaling up
-2. **Track usage** - Monitor your bank account usage in the dashboard
-3. **Upgrade strategically** - Upgrade only when you hit limits
+1. **Start free** - Validate your bank connection and integration before scaling up
+2. **Track usage** - Monitor transaction usage and prepaid balance in the dashboard
+3. **Upgrade strategically** - Upgrade before predictable volume exceeds the free or current paid quota
 
 ### Avoid Unexpected Charges
 
-1. **Set budget alerts** - Monitor your transaction patterns
+1. **Keep prepaid balance funded** - Extra usage is deducted from balance as it happens
 2. **Remove unused banks** - If a bank account is inactive, consider removing it
-3. **Review invoices** - Check monthly invoices for accuracy
+3. **Review invoices and balance history** - Check monthly invoices and credit-balance entries for accuracy
 
 ---
 
@@ -4861,11 +4871,22 @@ GET /v1/client/metrics/hourly-transactions
 
 ## Bank Distribution
 
-Get transaction distribution by bank.
+Get transaction distribution by bank. Banks are ranked by transaction count by default.
 
 ```bash
 GET /v1/client/metrics/bank-distribution
 ```
+
+### Query Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `period` | string | — | Time period: `today`, `this_week`, `last_week`, `this_month`, `last_month`, `last_3_months`, `last_6_months`, `this_year`, `custom` |
+| `dateFrom` | string | — | Start date (ISO 8601) |
+| `dateTo` | string | — | End date (ISO 8601) |
+| `page` | integer | — | Page number (default `1`) |
+| `limit` | integer | — | Page size (default `10`, max `50`) |
+| `sortBy` | string | — | Ranking metric: `transactionCount` (default, quantity) or `totalIn` (amount) |
 
 ### Response
 

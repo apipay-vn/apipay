@@ -16,7 +16,7 @@ ApiPay giúp doanh nghiệp Việt Nam nhận chuyển khoản ngân hàng qua A
 Dưới đây là các bước chính:
 
 1. **Đăng ký** - Tạo tài khoản ApiPay
-2. **Chọn gói dịch vụ** - Chọn gói trả phí phù hợp
+2. **Chọn gói dịch vụ** - Kích hoạt gói miễn phí hoặc chọn gói hạn mức trả phí
 3. **Kết nối ngân hàng** - Liên kết tài khoản ngân hàng Việt Nam
 4. **Thiết lập tích hợp** - Tạo API keys và webhook
 5. **Nhận thanh toán đầu tiên** - Tạo payment request đầu tiên
@@ -42,7 +42,7 @@ Bạn có thể đăng ký bằng:
 
 ## Bước 2: Chọn gói dịch vụ
 
-ApiPay có các gói trả phí khác nhau chủ yếu ở số lượng tài khoản ngân hàng bạn có thể kết nối:
+ApiPay có gói miễn phí để bắt đầu và các gói hạn mức trả phí theo sản lượng giao dịch thành công mỗi tháng:
 
 <OnboardingPricingTable locale="vi" />
 
@@ -50,9 +50,10 @@ ApiPay có các gói trả phí khác nhau chủ yếu ở số lượng tài kh
 
 **Bắt đầu nhỏ, rồi nâng cấp khi cần:**
 
-- Doanh nghiệp mới: BASIC hoặc STARTER
-- Doanh nghiệp đang tăng trưởng: PRO
-- Doanh nghiệp có nhiều giao dịch: TEAM trở lên
+- Mới tích hợp: bắt đầu với FREE
+- Doanh nghiệp mới: QUOTA 200 hoặc QUOTA 400
+- Doanh nghiệp đang tăng trưởng: QUOTA 1200 hoặc QUOTA 2500
+- Doanh nghiệp có nhiều giao dịch: QUOTA 5000 trở lên
 
 Bạn có thể nâng cấp bất kỳ lúc nào. Nếu hạ cấp, thay đổi sẽ áp dụng từ chu kỳ thanh toán tiếp theo.
 
@@ -62,7 +63,7 @@ Bạn có thể nâng cấp bất kỳ lúc nào. Nếu hạ cấp, thay đổi 
 
 ## Bước 3: Kết nối tài khoản ngân hàng
 
-Sau khi đăng ký, hãy kết nối tài khoản ngân hàng Việt Nam. Đây là bước cần có để ApiPay ghi nhận giao dịch và gửi webhook.
+Sau khi kích hoạt gói, hãy kết nối tài khoản ngân hàng Việt Nam. Đây là bước cần có để ApiPay ghi nhận giao dịch và gửi webhook. Gói miễn phí hỗ trợ 1 tài khoản ngân hàng; các gói trả phí hỗ trợ nhiều tài khoản ngân hàng.
 
 ### Ngân hàng được hỗ trợ
 
