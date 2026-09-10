@@ -61,7 +61,7 @@ function docPlan(
 }
 
 export const DOCS_PLANS: DocsPlan[] = [
-  docPlan('QUOTA_60', 60, 350, 0, 1),
+  docPlan('QUOTA_60', 60, 350, 0),
   docPlan('QUOTA_200', 200, 350, 70000),
   docPlan('QUOTA_400', 400, 320, 128000),
   docPlan('QUOTA_600', 600, 300, 180000),
