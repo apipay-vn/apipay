@@ -79,6 +79,19 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.25.0',
+    date: '2026-09-10',
+    features: [
+      'Usage Quota Billing — pricing is now based on monthly successful transactions. Start with a free plan (60 tx/month) or pick a paid tier from 200 to 500,000 tx/month. Every quota plan supports connecting multiple bank accounts.',
+      'Free plan — activate from Dashboard → Settings → Subscription at no cost. Extra successful transactions are 350 VND each from prepaid balance. Paid extra usage uses that plan’s rate so service is not interrupted when you exceed quota.',
+    ],
+    fixes: [],
+    improvements: [
+      'Listed prices are the checkout total (no extra tax at purchase). Track included usage and prepaid balance from the Subscription page.',
+      'Legacy bank-slot plans remain usable until they expire and do not auto-renew. You can switch to a quota plan now; unused value is applied to the new plan and leftover credit goes to prepaid balance.',
+    ],
+  },
+  {
     version: '1.24.0',
     date: '2026-09-07',
     features: [
@@ -608,6 +621,19 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.25.0',
+    date: '2026-09-10',
+    features: [
+      'Gói hạn mức giao dịch — bảng giá mới tính theo số giao dịch thành công mỗi tháng. Bắt đầu với gói miễn phí (60 GD/tháng) hoặc chọn gói trả phí từ 200 đến 500.000 GD/tháng. Mọi gói hạn mức đều hỗ trợ kết nối nhiều tài khoản ngân hàng.',
+      'Gói miễn phí — kích hoạt miễn phí tại Dashboard → Cài đặt → Đăng ký. Giao dịch vượt hạn mức là 350 VND/GD trừ từ số dư trả trước. Gói trả phí dùng đơn giá của gói đó, dịch vụ không bị gián đoạn khi vượt hạn mức.',
+    ],
+    fixes: [],
+    improvements: [
+      'Giá niêm yết là số tiền thanh toán thực tế (không cộng thêm thuế khi mua gói). Theo dõi hạn mức đã dùng và số dư trả trước ngay trên trang Đăng ký.',
+      'Gói theo số tài khoản ngân hàng cũ vẫn dùng được đến hết hạn và không tự gia hạn. Bạn có thể chuyển sang gói hạn mức ngay; giá trị còn lại được trừ vào gói mới, phần dư cộng vào số dư trả trước.',
+    ],
+  },
   {
     version: '1.24.0',
     date: '2026-09-07',

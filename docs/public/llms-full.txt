@@ -24,6 +24,7 @@ ApiPay is a payment gateway API that helps you easily create payment links via b
 - **Webhook notifications** - Receive real-time payment notifications
 - **Multiple banks** - Supports ACB, MB Bank, BIDV, OCB, VietinBank, VIB, Sacombank, VPBank, PGBank, Shinhan Bank, Co-opBank, and Vietcombank
 - **No percentage fees** - Successful transactions count toward your quota; failed transactions are never charged
+- **Free plan** - Start with 60 successful transactions/month, then upgrade to a paid quota from 200 to 500,000 tx/month. Every quota plan supports connecting multiple banks.
 
 ## How It Works
 
@@ -53,11 +54,11 @@ Source: https://docs.apipay.vn/en/quickstart
 
 # Quick Start
 
-Quick guide to integrate ApiPay into your system.
+Quick guide to integrate ApiPay into your system. You can start on the **free plan** (60 successful transactions/month, multiple bank accounts) — activate it at **Settings → Subscription**, then create an API key.
 
 ## Step 1: Get API Key
 
-Log in to [dashboard](https://my.apipay.vn) and create an API Key at **Integrations → API Keys**.
+Log in to [dashboard](https://my.apipay.vn), activate a plan if you have not yet, and create an API Key at **Integrations → API Keys**.
 
 You'll receive:
 
@@ -353,7 +354,11 @@ You can register using:
 
 ## Step 2: Choose Your Plan
 
-ApiPay offers a free starter plan plus paid transaction-quota plans based on monthly successful transaction volume:
+ApiPay offers a **free starter plan** plus paid transaction-quota plans based on monthly successful transaction volume.
+
+Activate **FREE** from **Settings → Subscription** after you complete your profile (phone and address). No payment is required. Paid plans start at 200 tx/month.
+
+The table shows representative tiers. See [Subscription & Billing](/en/subscription) or [apipay.vn/pricing](https://apipay.vn/pricing) for the full list and how extra usage is billed.
 
 ### How to Choose
 
@@ -364,7 +369,7 @@ ApiPay offers a free starter plan plus paid transaction-quota plans based on mon
 - Growing businesses: QUOTA 1200 or QUOTA 2500
 - High-volume businesses: QUOTA 5000 or above
 
-You can upgrade anytime. Downgrading takes effect at the next billing cycle.
+You can upgrade anytime from the dashboard. While a paid quota plan is active, you can only move to a higher quota.
 
 > **Pro Tip:** Having multiple bank accounts helps distribute payment volume and reduces wait times during peak hours.
 
@@ -372,7 +377,7 @@ You can upgrade anytime. Downgrading takes effect at the next billing cycle.
 
 ## Step 3: Connect Your Bank Accounts
 
-After activating a plan, you'll connect your Vietnamese bank account(s). This is essential for receiving payments. The free plan supports 1 bank account; paid plans support multiple bank accounts.
+After activating a plan, you'll connect your Vietnamese bank account(s). This is essential for receiving payments. Every quota plan, including free, supports connecting multiple bank accounts.
 
 ### Supported Banks
 
@@ -506,7 +511,9 @@ Learn how to manage your ApiPay subscription and pricing.
 
 ## Plan Overview
 
-ApiPay uses a **Usage Quota Billing** model. The free plan includes 60 successful transactions/month and 1 bank account. Paid tiers range from 200 to 500,000 transactions/month and support multi-bank connections simultaneously. Choose a **billing term** of 1, 3, 6 (5% discount), or 12 months (10% discount) at checkout. Listed prices are final checkout totals with no extra taxes added.
+ApiPay uses a **Usage Quota Billing** model. The **free plan** includes 60 successful transactions/month. Paid tiers range from 200 to 500,000 transactions/month. Every quota plan, including free, supports connecting multiple bank accounts. Choose a **billing term** of 1, 3, 6 (5% discount), or 12 months (10% discount) at checkout. Listed prices are final checkout totals with no extra taxes added.
+
+New accounts can **activate the free plan** from [Dashboard → Settings → Subscription](https://my.apipay.vn) with no payment. See [Activating the Free Plan](#activating-the-free-plan). The table below shows representative paid tiers; the full catalog of 23 paid plans is on [apipay.vn/pricing](https://apipay.vn/pricing).
 
 ### Term Discounts
 
@@ -522,7 +529,8 @@ The **effective monthly price** is lower for discounted 6-month and 12-month ter
 ### Extra Usage
 
 - At 80% and 100% of included monthly quota, ApiPay sends usage notices so you can top up or upgrade before extra usage starts.
-- After 100%, successful extra transactions are deducted from your prepaid balance at your plan’s rate. The free plan uses 350 VND/extra transaction.
+- After 100%, successful extra transactions are deducted from your **prepaid balance** at your plan’s rate. Service is not interrupted when you exceed quota.
+- The free plan uses **350 VND** per extra transaction. Paid plans use that plan’s effective rate (plan price ÷ included tx).
 - Keep enough prepaid balance for extra usage. Failed transactions are never charged.
 
 ### What's Included in Paid Plans
@@ -539,8 +547,10 @@ The **effective monthly price** is lower for discounted 6-month and 12-month ter
 ### What's Included in the Free Plan
 
 - 60 successful transactions/month
-- 1 connected bank account
+- Connect multiple bank accounts (same as paid quota plans)
 - Extra usage at 350 VND/transaction from prepaid balance
+- Same product features as paid plans: webhooks, VietQR, Commerce, Payment Speaker, custom domains
+- Does not expire and does not auto-renew — stay on free until you upgrade
 
 ---
 
@@ -550,7 +560,7 @@ The **effective monthly price** is lower for discounted 6-month and 12-month ter
 
 1. **Average Monthly Transaction Volume** - Use the free plan to validate a small setup, then pick a paid plan that matches or slightly exceeds your typical volume to unlock lower effective unit costs (down to 150 VND/tx).
 2. **Seasonal Peaks** - Keep enough prepaid balance for spikes; extra successful transactions are deducted at your plan’s rate.
-3. **Multi-Bank Architecture** - Paid quota plans support multi-bank connections to power multi-channel sales and reconciliation.
+3. **Multi-Bank Architecture** - Every quota plan, including free, supports connecting multiple banks for multi-channel sales and reconciliation.
 
 ### Recommendations by Scale
 
@@ -567,15 +577,26 @@ The **effective monthly price** is lower for discounted 6-month and 12-month ter
 
 ---
 
-## Purchasing a Plan
+## Activating the Free Plan
+
+1. Log in to [my.apipay.vn](https://my.apipay.vn)
+2. Complete your profile (phone number and address) if prompted
+3. Go to **Settings → Subscription**
+4. Click **Activate free** on the FREE plan
+
+The free plan activates immediately. No bank transfer is required.
+
+> **Note:** Each phone number can activate the free plan on one account. Accounts that have already purchased a paid plan cannot switch back to free.
+
+## Purchasing a Paid Plan
 
 ### Via Dashboard
 
 1. Log in to [my.apipay.vn](https://my.apipay.vn)
 2. Go to **Settings → Subscription**
-3. Browse available plans
+3. Browse available quota plans (or open the full list at [apipay.vn/pricing](https://apipay.vn/pricing))
 4. Click **Select Plan** on your choice
-5. Complete payment
+5. Choose a billing term and complete payment
 
 ### Payment Methods
 
@@ -594,27 +615,23 @@ After payment is confirmed, your plan activates immediately.
 1. Navigate to **Settings → Subscription**
 2. Your current plan details are displayed at the top:
    - Plan name
-   - Price
-   - Bank account limit
-   - Renewal date
+   - Included monthly quota and usage
+   - Prepaid balance
+   - Price and renewal date (paid plans)
 
 ### Upgrading Your Plan
 
 1. Go to **Settings → Subscription**
-2. Select your desired plan
+2. Select a higher quota plan
 3. Complete payment
 4. Changes take effect immediately
 5. The selected term becomes your default renewal term
 
-### Downgrading Your Plan
+While a paid quota plan is active, you can only move to a **higher** quota. Same-size switches and downgrades are blocked until the current cycle ends.
 
-1. Go to **Settings → Subscription**
-2. Select a lower plan
-3. Confirm the change
-4. **Downgrade takes effect at the next billing cycle**
-5. Your current bank accounts above the new limit will need to be removed
+### Switching from a Legacy Plan
 
-> **Warning:** Downgrading may result in losing access to features. Make sure to adjust your bank accounts accordingly.
+If you are still on an older bank-slot plan (BASIC, STARTER, PRO, TEAM, and similar), you can keep it until the current term expires. Those plans **do not auto-renew**. You can switch to a transaction quota plan now: unused value is applied to the quota you pick, and leftover credit is added to prepaid balance.
 
 ---
 
@@ -749,13 +766,15 @@ After connecting, a bank account has one of these statuses:
 - **Redundancy** — Backup accounts ensure continuous service if one bank has issues
 - **Transaction limits** — Some banks have daily transfer limits; additional accounts give you more capacity
 
+Every quota plan, including **free**, supports connecting multiple banks at the same time.
+
 ### Recommended Setup
 
 | Volume | Recommended             |
 | ------ | ----------------------- |
 | Low    | 1-2 banks               |
 | Medium | 3-5 banks               |
-| High   | Use all available slots |
+| High   | Multiple supported banks |
 
 ---
 
@@ -804,7 +823,7 @@ Both use the same payload shape and `ApiPay-Signature` HMAC header as production
 
 Live Test lets you verify your real webhook endpoint end to end without waiting for a real bank transfer. It creates a mock transaction, stores it separately from production data, and sends it to the webhook destinations on the selected bank.
 
-Live Test requires an active plan and at least one live bank account.
+Live Test requires an active plan (free or paid) and at least one live bank account.
 
 ### Run a Live Test
 
@@ -1178,10 +1197,10 @@ See [Webhook Documentation](/en/api/webhooks) for technical details.
 
 View and manage your plan:
 
-- Current plan status
-- Upgrade/downgrade options
-- Billing history
-- Renewal date
+- Activate the **free plan** (60 tx/month) or pick a paid quota
+- Current plan, included usage, and prepaid balance
+- Upgrade to a higher quota anytime
+- Billing history and renewal date (paid plans)
 
 See [Subscription Guide](/en/subscription) for plan and billing details.
 
@@ -1311,7 +1330,7 @@ Once linked, your bank account appears in the **Banks** section of the dashboard
 
 Before linking a bank account, make sure you have:
 
-- An ApiPay account
+- An ApiPay account with an **active plan** (free or paid). Every quota plan supports connecting multiple banks.
 - An active Vietnamese bank account from the supported list above
 - The phone number registered with your bank (for OTP verification)
 - For **MB Bank**, **VIB**, **Sacombank**, **VPBank**, **PGBank**, **Shinhan Bank** Personal: your CCCD/ID card number (12 digits)

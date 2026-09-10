@@ -11,7 +11,11 @@ Trang này giúp bạn chọn gói, mua gói và quản lý chu kỳ thanh toán
 
 ## Tổng quan gói dịch vụ
 
-ApiPay áp dụng mô hình **gói hạn mức giao dịch (Usage Quota Billing)**. Gói miễn phí bao gồm 60 giao dịch thành công/tháng và 1 tài khoản ngân hàng. Các gói trả phí linh hoạt từ 200 đến 500.000 giao dịch/tháng và hỗ trợ kết nối đa ngân hàng đồng thời. Khi thanh toán, bạn chọn **kỳ hạn** 1, 3, 6 hoặc 12 tháng — kỳ hạn 6 tháng (giảm 5%) và 12 tháng (giảm 10%) được giảm giá tự động. Giá niêm yết là số tiền thanh toán thực tế, không cộng thêm thuế.
+ApiPay áp dụng mô hình **gói hạn mức giao dịch (Usage Quota Billing)**. **Gói miễn phí** bao gồm 60 giao dịch thành công/tháng. Các gói trả phí linh hoạt từ 200 đến 500.000 giao dịch/tháng. Mọi gói hạn mức, kể cả miễn phí, đều hỗ trợ kết nối nhiều tài khoản ngân hàng. Khi thanh toán, bạn chọn **kỳ hạn** 1, 3, 6 hoặc 12 tháng — kỳ hạn 6 tháng (giảm 5%) và 12 tháng (giảm 10%) được giảm giá tự động. Giá niêm yết là số tiền thanh toán thực tế, không cộng thêm thuế.
+
+<Callout type="info">
+Tài khoản mới có thể **kích hoạt gói miễn phí** tại [Dashboard → Cài đặt → Đăng ký](https://my.apipay.vn) mà không cần thanh toán. Xem [Kích hoạt gói miễn phí](#kích-hoạt-gói-miễn-phí). Bảng dưới đây là các gói đại diện; đầy đủ 23 gói trả phí nằm trên [apipay.vn/pricing](https://apipay.vn/pricing).
+</Callout>
 
 <PricingTabs locale="vi" />
 
@@ -29,7 +33,8 @@ ApiPay áp dụng mô hình **gói hạn mức giao dịch (Usage Quota Billing)
 ### Cước vượt hạn mức
 
 - Khi đạt 80% và 100% hạn mức tháng, ApiPay gửi thông báo để bạn kịp nạp số dư hoặc nâng cấp gói.
-- Sau 100%, giao dịch thành công vượt hạn mức được trừ từ số dư trả trước theo đơn giá gói đang dùng. Gói miễn phí dùng đơn giá 350 VND/giao dịch vượt.
+- Sau 100%, giao dịch thành công vượt hạn mức được trừ từ **số dư trả trước** theo đơn giá gói đang dùng. Dịch vụ không bị gián đoạn khi vượt hạn mức.
+- Gói miễn phí dùng đơn giá **350 VND**/giao dịch vượt. Gói trả phí dùng đơn giá hiệu lực của gói đó (giá gói ÷ hạn mức).
 - Nên giữ đủ số dư trả trước cho phần vượt hạn mức. Giao dịch thất bại không bị tính phí.
 
 ### Tất cả gói trả phí đều bao gồm
@@ -46,8 +51,10 @@ ApiPay áp dụng mô hình **gói hạn mức giao dịch (Usage Quota Billing)
 ### Gói miễn phí bao gồm
 
 - 60 giao dịch thành công/tháng
-- 1 tài khoản ngân hàng được kết nối
+- Kết nối nhiều tài khoản ngân hàng (giống các gói hạn mức trả phí)
 - Giao dịch vượt hạn mức trừ từ số dư với đơn giá 350 VND/giao dịch
+- Cùng tính năng sản phẩm với gói trả phí: webhook, VietQR, Commerce, Loa Thanh Toán, tên miền riêng
+- Không hết hạn và không tự gia hạn — dùng miễn phí đến khi bạn nâng cấp
 
 ---
 
@@ -57,7 +64,7 @@ ApiPay áp dụng mô hình **gói hạn mức giao dịch (Usage Quota Billing)
 
 1. **Sản lượng giao dịch trung bình/tháng** - Dùng gói miễn phí để kiểm chứng thiết lập nhỏ, sau đó chọn gói trả phí tiệm cận hoặc nhỉnh hơn sản lượng thực tế để hưởng đơn giá tối ưu nhất (chỉ từ 150đ - 350đ/GD).
 2. **Kinh doanh theo mùa vụ** - Chuẩn bị số dư trả trước cho giai đoạn cao điểm; giao dịch vượt được trừ theo đúng đơn giá gói.
-3. **Nhu cầu nhiều tài khoản ngân hàng** - Các gói trả phí hỗ trợ kết nối đa ngân hàng phục vụ vận hành đa kênh.
+3. **Nhu cầu nhiều tài khoản ngân hàng** - Mọi gói hạn mức, kể cả miễn phí, đều hỗ trợ kết nối nhiều ngân hàng phục vụ vận hành đa kênh.
 
 ### Gợi ý theo quy mô kinh doanh
 
@@ -74,15 +81,26 @@ ApiPay áp dụng mô hình **gói hạn mức giao dịch (Usage Quota Billing)
 
 ---
 
-## Mua gói dịch vụ
+## Kích hoạt gói miễn phí
+
+1. Đăng nhập [my.apipay.vn](https://my.apipay.vn)
+2. Điền hồ sơ (số điện thoại và địa chỉ) nếu hệ thống yêu cầu
+3. Vào **Cài đặt → Đăng ký**
+4. Nhấn **Kích hoạt miễn phí** trên gói FREE
+
+Gói miễn phí có hiệu lực ngay, không cần chuyển khoản.
+
+> **Lưu ý:** Mỗi số điện thoại chỉ kích hoạt gói miễn phí trên một tài khoản. Tài khoản đã mua gói trả phí không thể chuyển về gói miễn phí.
+
+## Mua gói trả phí
 
 ### Qua Dashboard
 
 1. Đăng nhập [my.apipay.vn](https://my.apipay.vn)
 2. Vào **Cài đặt → Đăng ký**
-3. Duyệt các gói có sẵn
+3. Duyệt các gói hạn mức (hoặc xem đủ danh sách tại [apipay.vn/pricing](https://apipay.vn/pricing))
 4. Nhấn **Chọn gói** cho lựa chọn của bạn
-5. Hoàn tất thanh toán
+5. Chọn kỳ hạn và hoàn tất thanh toán
 
 ### Phương Thức Thanh Toán
 
@@ -101,27 +119,23 @@ Sau khi thanh toán được xác nhận, gói sẽ được kích hoạt ngay.
 1. Vào **Cài đặt → Đăng ký**
 2. Chi tiết gói hiện tại hiển thị ở đầu trang:
    - Tên gói
-   - Giá
-   - Giới hạn tài khoản ngân hàng
-   - Ngày gia hạn
+   - Hạn mức tháng và mức đã dùng
+   - Số dư trả trước
+   - Giá và ngày gia hạn (gói trả phí)
 
 ### Nâng cấp gói
 
 1. Vào **Cài đặt → Đăng ký**
-2. Chọn gói mong muốn
+2. Chọn gói hạn mức cao hơn
 3. Hoàn tất thanh toán
 4. Thay đổi có hiệu lực ngay
-5. Phần phí chênh lệch sẽ được tính theo tỷ lệ (vui lòng liên hệ)
+5. Kỳ hạn đã chọn trở thành kỳ hạn gia hạn mặc định
 
-### Hạ cấp gói
+Trong chu kỳ gói hạn mức trả phí đang chạy, bạn chỉ có thể chuyển sang gói **cao hơn**. Đổi sang gói cùng hạn mức hoặc hạ cấp sẽ bị chặn đến hết chu kỳ hiện tại.
 
-1. Vào **Cài đặt → Đăng ký**
-2. Chọn gói thấp hơn
-3. Xác nhận thay đổi
-4. **Hạ cấp có hiệu lực vào chu kỳ thanh toán tiếp theo**
-5. Nếu số tài khoản ngân hàng vượt giới hạn gói mới, bạn cần xóa bớt
+### Chuyển từ gói cũ
 
-> **Cảnh báo:** Hạ cấp có thể làm mất quyền dùng một số tính năng. Hãy kiểm tra số tài khoản ngân hàng trước khi đổi gói.
+Nếu bạn còn dùng gói theo số tài khoản ngân hàng (BASIC, STARTER, PRO, TEAM và tương tự), gói đó vẫn dùng được đến hết hạn và **không tự gia hạn**. Bạn có thể chuyển sang gói hạn mức giao dịch ngay: giá trị còn lại được trừ vào gói mới, phần dư cộng vào số dư trả trước.
 
 ---
 

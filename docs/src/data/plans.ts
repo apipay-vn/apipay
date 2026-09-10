@@ -74,3 +74,7 @@ export const DOCS_PLANS: DocsPlan[] = [
   docPlan('QUOTA_100000', 100000, 200, 20000000),
   docPlan('QUOTA_500000', 500000, 150, 75000000),
 ];
+
+export function formatDocsBankLimit(_plan: DocsPlan, locale: 'en' | 'vi'): string {
+  return locale === 'vi' ? 'Không giới hạn' : 'Unlimited';
+}

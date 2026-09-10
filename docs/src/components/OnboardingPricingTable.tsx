@@ -1,4 +1,4 @@
-import { DOCS_PLANS } from "../data/plans";
+import { DOCS_PLANS, formatDocsBankLimit } from "../data/plans";
 
 type Locale = "en" | "vi";
 
@@ -40,7 +40,7 @@ export function OnboardingPricingTable({ locale = "en" }: { locale?: Locale }) {
 						<tr key={plan.name}>
 							<td><strong>{plan.displayName || plan.name}</strong></td>
 							<td>{plan.includedTx.toLocaleString()}</td>
-							<td>{plan.maxBanks.toLocaleString()}</td>
+							<td>{formatDocsBankLimit(plan, locale)}</td>
 							<td>{formatVnd(plan.price, locale)}{copy.perMonth}</td>
 						</tr>
 					))}

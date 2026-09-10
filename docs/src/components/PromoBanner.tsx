@@ -20,11 +20,11 @@ export function PromoBanner({visible, onClose}: PromoBannerProps) {
       <span className="promo-badge">{isEn ? 'NEW' : 'MỚI'}</span>
       <span className="promo-text">
         {isEn
-          ? 'Interactive OpenAPI reference — try every endpoint live.'
-          : 'Tài liệu API tương tác chuẩn OpenAPI — thử ngay.'}
+          ? 'New usage quota pricing — start free with 60 tx/month.'
+          : 'Bảng giá hạn mức mới — bắt đầu miễn phí với 60 GD/tháng.'}
       </span>
-      <Link to={`/${locale}/api-reference`} className="promo-cta">
-        {isEn ? 'Open API Reference' : 'Mở tài liệu API'}
+      <Link to={`/${locale}/subscription`} className="promo-cta">
+        {isEn ? 'See plans' : 'Xem bảng giá'}
         <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
           <path
             d="M6 4L10 8L6 12"
