@@ -11,7 +11,7 @@ Trang này giúp bạn chọn gói, mua gói và quản lý chu kỳ thanh toán
 
 ## Tổng quan gói dịch vụ
 
-ApiPay áp dụng mô hình **gói hạn mức giao dịch (Usage Quota Billing)**. Gói miễn phí bao gồm 50 giao dịch thành công/tháng và 1 tài khoản ngân hàng. Các gói trả phí linh hoạt từ 200 đến 500.000 giao dịch/tháng và hỗ trợ kết nối đa ngân hàng đồng thời. Khi thanh toán, bạn chọn **kỳ hạn** 1, 3, 6 hoặc 12 tháng — kỳ hạn 6 tháng (giảm 5%) và 12 tháng (giảm 10%) được giảm giá tự động. Giá niêm yết là số tiền thanh toán thực tế, không cộng thêm thuế.
+ApiPay áp dụng mô hình **gói hạn mức giao dịch (Usage Quota Billing)**. Gói miễn phí bao gồm 60 giao dịch thành công/tháng và 1 tài khoản ngân hàng. Các gói trả phí linh hoạt từ 200 đến 500.000 giao dịch/tháng và hỗ trợ kết nối đa ngân hàng đồng thời. Khi thanh toán, bạn chọn **kỳ hạn** 1, 3, 6 hoặc 12 tháng — kỳ hạn 6 tháng (giảm 5%) và 12 tháng (giảm 10%) được giảm giá tự động. Giá niêm yết là số tiền thanh toán thực tế, không cộng thêm thuế.
 
 <PricingTabs locale="vi" />
 
@@ -26,12 +26,11 @@ ApiPay áp dụng mô hình **gói hạn mức giao dịch (Usage Quota Billing)
 
 **Giá tương đương mỗi tháng** thấp hơn với kỳ hạn 6 tháng và 12 tháng có giảm giá. Trước khi xác nhận thanh toán, bạn sẽ thấy tạm tính, mức giảm và giá tương đương mỗi tháng.
 
-### Cước vượt hạn mức và giữ tạm thời
+### Cước vượt hạn mức
 
 - Khi đạt 80% và 100% hạn mức tháng, ApiPay gửi thông báo để bạn kịp nạp số dư hoặc nâng cấp gói.
 - Sau 100%, giao dịch thành công vượt hạn mức được trừ từ số dư trả trước theo đơn giá gói đang dùng. Gói miễn phí dùng đơn giá 350 VND/giao dịch vượt.
-- Nếu số dư không đủ cho giao dịch vượt, ApiPay đưa tài khoản vào trạng thái giữ tạm thời và vẫn cho xử lý thêm tối đa 60 giao dịch thành công.
-- Khi số giao dịch giữ tạm thời đạt 60, các ngân hàng đã kết nối có thể bị gỡ cho đến khi bạn nạp đủ số dư. Giao dịch thất bại không bị tính phí.
+- Nên giữ đủ số dư trả trước cho phần vượt hạn mức. Giao dịch thất bại không bị tính phí.
 
 ### Tất cả gói trả phí đều bao gồm
 
@@ -46,10 +45,9 @@ ApiPay áp dụng mô hình **gói hạn mức giao dịch (Usage Quota Billing)
 
 ### Gói miễn phí bao gồm
 
-- 50 giao dịch thành công/tháng
+- 60 giao dịch thành công/tháng
 - 1 tài khoản ngân hàng được kết nối
 - Giao dịch vượt hạn mức trừ từ số dư với đơn giá 350 VND/giao dịch
-- Tối đa 60 giao dịch giữ tạm thời khi số dư không đủ
 
 ---
 
@@ -65,7 +63,7 @@ ApiPay áp dụng mô hình **gói hạn mức giao dịch (Usage Quota Billing)
 
 | Quy mô / Mô hình        | Gói gợi ý   | Hạn mức GD/tháng |
 | ----------------------- | ----------- | ---------------- |
-| Dùng thử / mới tích hợp  | FREE        | 50 GD            |
+| Dùng thử / mới tích hợp  | FREE        | 60 GD            |
 | Cá nhân kinh doanh      | QUOTA 200   | 200 GD           |
 | Shop online vừa         | QUOTA 1200  | 1.200 GD         |
 | Web App / SaaS          | QUOTA 5000  | 5.000 GD         |
