@@ -42,10 +42,11 @@ Bạn có thể đăng ký bằng:
 
 ## Bước 2: Chọn gói dịch vụ
 
-ApiPay có **gói miễn phí** để bắt đầu và các gói hạn mức trả phí theo sản lượng giao dịch thành công mỗi tháng.
+ApiPay có **gói miễn phí** để bắt đầu và các gói hạn mức trả phí theo khối lượng giao dịch thành công mỗi tháng.
 
 <Callout type="info">
-Kích hoạt **FREE** tại **Cài đặt → Đăng ký** sau khi điền hồ sơ (số điện thoại và địa chỉ). Không cần thanh toán. Gói trả phí bắt đầu từ 200 GD/tháng.
+  Kích hoạt **FREE** tại **Cài đặt → Đăng ký** sau khi điền hồ sơ (số điện thoại và địa chỉ). Không cần thanh toán. Gói
+  trả phí bắt đầu từ 200 GD/tháng.
 </Callout>
 
 <OnboardingPricingTable locale="vi" />
@@ -100,7 +101,9 @@ ApiPay hỗ trợ các ngân hàng lớn tại Việt Nam:
 > **Quan trọng:** Tài khoản ngân hàng phải mang tên doanh nghiệp của bạn (hoặc tên đại diện hợp lệ).
 
 <Callout type="tip">
-**Tính năng miễn phí sẵn có:** Ngay sau khi tài khoản ngân hàng hoạt động, bạn có thể bật ngay tính năng **[Loa Thanh Toán](/vi/payment-speaker)** để biến điện thoại/máy tính bảng tại quầy thành loa đọc tiền về realtime mà không cần mua thiết bị riêng.
+  **Tính năng miễn phí sẵn có:** Ngay sau khi tài khoản ngân hàng hoạt động, bạn có thể bật ngay tính năng **[Loa Thanh
+  Toán](/vi/payment-speaker)** để biến điện thoại/máy tính bảng tại quầy thành loa đọc tiền về realtime mà không cần mua
+  thiết bị riêng.
 </Callout>
 
 ---
@@ -161,7 +164,9 @@ const response = await fetch('https://app.apipay.vn/v1/client/payment-requests',
   }),
 });
 
-const {data: {payUrl, qrUrl}} = await response.json();
+const {
+  data: {payUrl, qrUrl},
+} = await response.json();
 // Chia sẻ payUrl hoặc qrUrl với khách hàng
 ```
 
