@@ -1,57 +1,96 @@
 import {useLocale} from '@/lib/i18n';
 import {Link} from 'react-router-dom';
 
-interface PromoBannerProps {
-  visible: boolean;
-  onClose: () => void;
+export type PromoBannerId = 'openapi' | 'pricing';
+
+export const PROMO_BANNER_HEIGHT_REM = 2.25;
+
+interface PromoBannerCopy {
+  text: string;
+  ctaLabel: string;
 }
 
-export function PromoBanner({visible, onClose}: PromoBannerProps) {
+const BANNERS: Record<
+  PromoBannerId,
+  {en: PromoBannerCopy; vi: PromoBannerCopy; href: (locale: string) => string}
+> = {
+  openapi: {
+    en: {text: 'Interactive OpenAPI reference — try every endpoint live.', ctaLabel: 'Open API Reference'},
+    vi: {text: 'Tài liệu API tương tác chuẩn OpenAPI — thử ngay.', ctaLabel: 'Mở tài liệu API'},
+    href: locale => `/${locale}/api-reference`,
+  },
+  pricing: {
+    en: {text: 'New usage quota pricing — start free with 60 tx/month.', ctaLabel: 'See plans'},
+    vi: {text: 'Bảng giá hạn mức mới — bắt đầu miễn phí với 60 GD/tháng.', ctaLabel: 'Xem bảng giá'},
+    href: locale => `/${locale}/subscription`,
+  },
+};
+
+export const PROMO_BANNER_ORDER: PromoBannerId[] = ['openapi', 'pricing'];
+
+interface PromoBannerProps {
+  visibleIds: PromoBannerId[];
+  onClose: (id: PromoBannerId) => void;
+}
+
+export function PromoBanner({visibleIds, onClose}: PromoBannerProps) {
   const locale = useLocale();
 
-  if (!visible) {
+  if (visibleIds.length === 0) {
     return null;
   }
 
   const isEn = locale === 'en';
 
   return (
-    <div className="promo-banner" role="note">
-      <span className="promo-badge">{isEn ? 'NEW' : 'MỚI'}</span>
-      <span className="promo-text">
-        {isEn
-          ? 'New usage quota pricing — start free with 60 tx/month.'
-          : 'Bảng giá hạn mức mới — bắt đầu miễn phí với 60 GD/tháng.'}
-      </span>
-      <Link to={`/${locale}/subscription`} className="promo-cta">
-        {isEn ? 'See plans' : 'Xem bảng giá'}
-        <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
-          <path
-            d="M6 4L10 8L6 12"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </Link>
-      <button className="promo-close" onClick={onClose} aria-label={isEn ? 'Dismiss' : 'Đóng'}>
-        <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-          <path d="M4 4L12 12M12 4L4 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-        </svg>
-      </button>
+    <div className="promo-banner-stack">
+      {visibleIds.map(id => {
+        const banner = BANNERS[id];
+        const copy = isEn ? banner.en : banner.vi;
+
+        return (
+          <div className="promo-banner" role="note" key={id}>
+            <span className="promo-badge">{isEn ? 'NEW' : 'MỚI'}</span>
+            <span className="promo-text">{copy.text}</span>
+            <Link to={banner.href(locale)} className="promo-cta">
+              {copy.ctaLabel}
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                <path
+                  d="M6 4L10 8L6 12"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </Link>
+            <button
+              className="promo-close"
+              onClick={() => onClose(id)}
+              aria-label={isEn ? 'Dismiss' : 'Đóng'}
+            >
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                <path d="M4 4L12 12M12 4L4 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+              </svg>
+            </button>
+          </div>
+        );
+      })}
 
       <style>{`
-				.layout.banner-visible {
-					--banner-height: 2.25rem;
-				}
-
-				.promo-banner {
+				.promo-banner-stack {
 					position: fixed;
 					top: 0;
 					left: 0;
 					right: 0;
-					height: var(--banner-height);
+					z-index: 70;
+					display: flex;
+					flex-direction: column;
+				}
+
+				.promo-banner {
+					position: relative;
+					height: ${PROMO_BANNER_HEIGHT_REM}rem;
 					display: flex;
 					align-items: center;
 					justify-content: center;
@@ -59,7 +98,6 @@ export function PromoBanner({visible, onClose}: PromoBannerProps) {
 					padding: 0 3rem;
 					background: var(--color-bg);
 					border-bottom: 1px solid var(--color-border);
-					z-index: 70;
 					font-size: 0.8rem;
 					white-space: nowrap;
 					overflow: hidden;

@@ -1,5 +1,5 @@
 import {searchItems} from '@/utils/searchIndex';
-import {useCallback, useEffect, useState} from 'react';
+import {useCallback, useEffect, useState, type CSSProperties} from 'react';
 import {Outlet, useLocation} from 'react-router-dom';
 import {
   DOCS_DEFAULT_DESCRIPTION,
@@ -11,7 +11,12 @@ import {
   createStructuredData,
 } from '@/lib/seo';
 import {Navbar} from './Navbar';
-import {PromoBanner} from './PromoBanner';
+import {
+  PROMO_BANNER_HEIGHT_REM,
+  PROMO_BANNER_ORDER,
+  PromoBanner,
+  type PromoBannerId,
+} from './PromoBanner';
 import {SearchDialog} from './SearchDialog';
 import {Sidebar} from './Sidebar';
 import {TableOfContents} from './TableOfContents';
@@ -66,8 +71,11 @@ function upsertStructuredData(scriptId: string, payload: unknown) {
 export function Layout({routeMetadata}: LayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [bannerVisible, setBannerVisible] = useState(true);
+  const [dismissedBanners, setDismissedBanners] = useState<Partial<Record<PromoBannerId, boolean>>>({});
   const {pathname} = useLocation();
+
+  const visibleBanners = PROMO_BANNER_ORDER.filter(id => !dismissedBanners[id]);
+  const bannerHeight = visibleBanners.length * PROMO_BANNER_HEIGHT_REM;
 
   const toggleSidebar = useCallback(() => setSidebarOpen(s => !s), []);
   const closeSidebar = useCallback(() => setSidebarOpen(false), []);
@@ -115,8 +123,14 @@ export function Layout({routeMetadata}: LayoutProps) {
   }, [pathname, routeMetadata]);
 
   return (
-    <div className={`layout ${bannerVisible ? 'banner-visible' : ''}`}>
-      <PromoBanner visible={bannerVisible} onClose={() => setBannerVisible(false)} />
+    <div
+      className={`layout ${visibleBanners.length > 0 ? 'banner-visible' : ''}`}
+      style={{'--banner-height': `${bannerHeight}rem`} as CSSProperties}
+    >
+      <PromoBanner
+        visibleIds={visibleBanners}
+        onClose={id => setDismissedBanners(prev => ({...prev, [id]: true}))}
+      />
       <Navbar onMenuToggle={toggleSidebar} onSearchOpen={() => setSearchOpen(true)} />
       <Sidebar isOpen={sidebarOpen} onClose={closeSidebar} />
 
