@@ -85,7 +85,7 @@ POST /v1/client/banks
 | `accountNumber` | string | Yes         | Bank account number                                                      |
 | `accountName`   | string | Yes         | Account holder name in uppercase without accents                         |
 | `mobile`        | string | Yes         | Phone number registered with the bank                                    |
-| `identity`      | string | Yes         | Citizen ID for personal accounts, or tax code for business account types |
+| `identity`      | string | Yes         | Citizen ID for personal accounts and VPBank household accounts, or tax code for other business/household types |
 | `acbUserId`     | string | Conditional | ACB OneBiz username for ACB business and household business accounts     |
 
 Sacombank accepts `personal-account` and `business-household-account`.
@@ -146,8 +146,8 @@ Submit the verification code to the confirm OTP endpoint.
 
 Manual activation applies to:
 
-- MB Bank, OCB, VIB, and VPBank business or household business accounts
-- BIDV, VietinBank, and Shinhan Bank business accounts
+- MB Bank, OCB, and VIB business or household business accounts
+- VPBank, BIDV, VietinBank, and Shinhan Bank business accounts
 - Vietcombank business and household business accounts
 
 ApiPay contacts the account owner to complete activation.
