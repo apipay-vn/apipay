@@ -144,9 +144,7 @@ export const enReleases: ReleaseNote[] = withAnchors([
       'MCP Commerce tools — list, create, and update products and prices from your AI assistant, and create a payment from a price id.',
     ],
     fixes: [],
-    improvements: [
-      'You can now send a follow-up on an open support ticket without waiting for it to close.',
-    ],
+    improvements: ['You can now send a follow-up on an open support ticket without waiting for it to close.'],
   },
   {
     version: '1.19.1',
@@ -630,7 +628,7 @@ export const viReleases: ReleaseNote[] = withAnchors([
     ],
     fixes: [],
     improvements: [
-      'Giá niêm yết là số tiền thanh toán thực tế (không cộng thêm thuế khi mua gói). Theo dõi hạn mức đã dùng và số dư trả trước ngay trên trang Đăng ký.',
+      'Giá niêm yết là số tiền thanh toán thực tế (đã bao gồm thuế VAT). Theo dõi hạn mức đã dùng và số dư trả trước ngay trên trang Đăng ký.',
       'Gói theo số tài khoản ngân hàng cũ vẫn dùng được đến hết hạn và không tự gia hạn. Bạn có thể chuyển sang gói hạn mức ngay; giá trị còn lại được trừ vào gói mới, phần dư cộng vào số dư trả trước.',
     ],
   },
@@ -687,9 +685,7 @@ export const viReleases: ReleaseNote[] = withAnchors([
       'MCP Commerce — liệt kê, tạo và cập nhật sản phẩm, mức giá từ AI assistant, và tạo thanh toán từ price id.',
     ],
     fixes: [],
-    improvements: [
-      'Bạn có thể gửi tin tiếp theo trên ticket hỗ trợ đang mở, không cần đợi ticket đóng.',
-    ],
+    improvements: ['Bạn có thể gửi tin tiếp theo trên ticket hỗ trợ đang mở, không cần đợi ticket đóng.'],
   },
   {
     version: '1.19.1',
