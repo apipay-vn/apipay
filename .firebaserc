@@ -10,6 +10,9 @@
         ],
         "docs": [
           "apipay-docs"
+        ],
+        "business": [
+          "apipay-business"
         ]
       }
     }

@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Host: https://business.apipay.vn
+Sitemap: https://business.apipay.vn/sitemap.xml
