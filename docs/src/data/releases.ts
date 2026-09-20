@@ -79,6 +79,25 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.26.0',
+    date: '2026-09-20',
+    features: [
+      'MSB support — connect MSB business, household business, or personal accounts to receive automated bank transfer payments and real-time transaction webhooks. MSB connections are activated manually.',
+      'Pay for your plan with balance — apply your prepaid balance at checkout and transfer only the remaining amount by bank. Balance can also cover renewals automatically.',
+      'Webhook delivery management — search deliveries by reference, content, VA, or bank, and resend a failed delivery directly from the delivery log.',
+    ],
+    fixes: [],
+    improvements: [
+      'Legacy bank-slot plans ended on 15 September 2026. Remaining unused plan value is credited to your ApiPay balance, or refunded to your bank account on request. A dashboard banner links to the announcement.',
+      'Plan expiry reminders — emails are sent 3, 2, and 1 day before your plan expires, with follow-ups after expiry.',
+      'Clearer extra-usage handling — you can exceed your monthly quota by up to 100 transactions. Emails warn at 50 and 100 extra transactions, and a daily summary keeps you informed.',
+      'Bank connections are paused rather than removed when a plan ends or balance runs out. Renew or top up your balance to resume without reconnecting.',
+      'Enterprise custom plans — private, high-volume quota plans above 500,000 transactions/month are available on request.',
+      'Sign-up now includes an extra verification step to keep automated fake accounts off the platform.',
+      'Improved VPBank household business account connection and naming.',
+    ],
+  },
+  {
     version: '1.25.0',
     date: '2026-09-10',
     features: [
@@ -619,6 +638,25 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.26.0',
+    date: '2026-09-20',
+    features: [
+      'Hỗ trợ ngân hàng MSB — kết nối tài khoản doanh nghiệp, hộ kinh doanh hoặc cá nhân MSB để nhận chuyển khoản tự động và webhook giao dịch thời gian thực. Kết nối MSB được kích hoạt thủ công.',
+      'Thanh toán gói bằng số dư — dùng số dư trả trước khi thanh toán và chỉ chuyển khoản phần còn lại qua ngân hàng. Số dư cũng có thể tự động gia hạn gói.',
+      'Quản lý gửi webhook — tìm kiếm theo mã tham chiếu, nội dung, số VA hoặc ngân hàng, và gửi lại một lần gửi thất bại ngay trong nhật ký gửi.',
+    ],
+    fixes: [],
+    improvements: [
+      'Gói theo số ngân hàng kết nối cũ đã chấm dứt từ 15/09/2026. Giá trị chưa sử dụng được cộng vào số dư ApiPay hoặc hoàn về tài khoản ngân hàng theo yêu cầu. Dashboard hiển thị thông báo kèm liên kết.',
+      'Nhắc gia hạn gói — email được gửi trước 3, 2 và 1 ngày khi gói hết hạn, kèm nhắc nhở sau khi hết hạn.',
+      'Xử lý vượt hạn mức rõ ràng hơn — được phép vượt tối đa 100 giao dịch/tháng. Email cảnh báo tại mốc 50 và 100 giao dịch vượt, kèm bản tóm tắt mỗi ngày.',
+      'Kết nối ngân hàng được tạm dừng thay vì bị xóa khi gói hết hạn hoặc hết số dư. Gia hạn hoặc nạp thêm số dư để tiếp tục mà không cần kết nối lại.',
+      'Gói tùy chỉnh cho doanh nghiệp — gói hạn mức riêng, sản lượng lớn trên 500.000 giao dịch/tháng, có thể yêu cầu riêng.',
+      'Đăng ký nay có bước xác minh bổ sung để ngăn tài khoản giả tự động.',
+      'Cải thiện kết nối và tên hiển thị cho tài khoản hộ kinh doanh VPBank.',
+    ],
+  },
   {
     version: '1.25.0',
     date: '2026-09-10',
