@@ -119,23 +119,25 @@ export function BankDetail() {
 						</div>
 					</details>
 
-					<header className="flex flex-wrap items-start gap-4">
-						<BankLogo bank={bank} className="h-20 w-20 shrink-0" />
-						<div className="min-w-0 flex-1">
-							<h1 className="text-2xl font-bold tracking-tight">{bank.name}</h1>
-							<p className="mt-1 text-muted-foreground">{bank.fullName}</p>
-							<div className="mt-2 flex flex-wrap gap-4 text-xs text-muted-foreground">
-								<span>
-									{t.banks.detail.bin}: <span className="font-mono">{bank.bin}</span>
-								</span>
-								<span className="font-mono">{bank.code}</span>
+					<header className="flex flex-col gap-4 sm:flex-row sm:items-start">
+						<div className="flex min-w-0 flex-1 items-start gap-4">
+							<BankLogo bank={bank} className="h-16 w-16 shrink-0 sm:h-20 sm:w-20" />
+							<div className="min-w-0">
+								<h1 className="text-2xl font-bold tracking-tight">{bank.name}</h1>
+								<p className="mt-1 text-muted-foreground">{bank.fullName}</p>
+								<div className="mt-2 flex flex-wrap gap-4 text-xs text-muted-foreground">
+									<span>
+										{t.banks.detail.bin}: <span className="font-mono">{bank.bin}</span>
+									</span>
+									<span className="font-mono">{bank.code}</span>
+								</div>
 							</div>
 						</div>
 						<a
 							href="https://my.apipay.vn"
 							target="_blank"
 							rel="noopener noreferrer"
-							className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-primary px-3.5 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
+							className="inline-flex h-9 w-full shrink-0 items-center justify-center gap-1.5 rounded-lg bg-primary px-3.5 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 sm:w-auto"
 						>
 							{t.banks.detail.linkCta}
 							<ExternalLinkIcon className="h-3.5 w-3.5" />
