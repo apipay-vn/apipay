@@ -14,6 +14,7 @@ export const banks = {
 	list: {
 		title: 'Danh sách ngân hàng',
 		searchPlaceholder: 'Tìm nhanh ngân hàng...',
+		switchLabel: 'Chọn ngân hàng khác',
 	},
 	card: {
 		cta: 'Xem hướng dẫn',

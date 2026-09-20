@@ -14,6 +14,7 @@ export const banks = {
 	list: {
 		title: 'Banks',
 		searchPlaceholder: 'Quick find a bank...',
+		switchLabel: 'Switch bank',
 	},
 	card: {
 		cta: 'View guide',

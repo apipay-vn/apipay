@@ -1,6 +1,6 @@
 import {useMemo, useState} from 'react';
 import {Link, useParams} from 'react-router-dom';
-import {ACCOUNT_TYPES, ACCOUNT_TYPE_KEYS, findBankBySlug, type AccountType} from '../data/banks';
+import {ACCOUNT_TYPES, ACCOUNT_TYPE_KEYS, findBankBySlug, type AccountType, type Bank, type Locale} from '../data/banks';
 import {localePath, useDocumentTitle, useLocale} from '../lib/hooks';
 import {searchBanks} from '../lib/search';
 import {cn} from '../lib/utils';
@@ -12,6 +12,41 @@ import {FlowAccordion} from '../components/FlowAccordion';
 import {SearchInput} from '../components/SearchInput';
 import {SettlementTable} from '../components/SettlementTable';
 import {NotFound} from './NotFound';
+
+function BankPicker({
+	query,
+	onQueryChange,
+	banks,
+	activeSlug,
+	locale,
+	placeholder,
+	ariaLabel,
+	empty,
+}: {
+	query: string;
+	onQueryChange: (value: string) => void;
+	banks: Bank[];
+	activeSlug: string;
+	locale: Locale;
+	placeholder: string;
+	ariaLabel: string;
+	empty: string;
+}) {
+	return (
+		<>
+			<div className="mb-3">
+				<SearchInput
+					value={query}
+					onChange={onQueryChange}
+					placeholder={placeholder}
+					ariaLabel={ariaLabel}
+					size="sm"
+				/>
+			</div>
+			<BankList banks={banks} activeSlug={activeSlug} locale={locale} empty={empty} />
+		</>
+	);
+}
 
 export function BankDetail() {
 	const {slug} = useParams<{slug: string}>();
@@ -44,25 +79,20 @@ export function BankDetail() {
 	return (
 		<div className="mx-auto max-w-6xl px-4 py-8">
 			<div className="grid gap-8 lg:grid-cols-[260px_1fr]">
-				<aside className="lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:self-start lg:overflow-y-auto">
-					<div className="mb-3">
-						<SearchInput
-							value={listQuery}
-							onChange={setListQuery}
-							placeholder={t.banks.list.searchPlaceholder}
-							ariaLabel={t.home.search.label}
-							size="sm"
-						/>
-					</div>
-					<BankList
+				<aside className="order-2 hidden lg:order-1 lg:block lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:self-start lg:overflow-y-auto">
+					<BankPicker
+						query={listQuery}
+						onQueryChange={setListQuery}
 						banks={listBanks}
 						activeSlug={bank.slug}
 						locale={locale}
+						placeholder={t.banks.list.searchPlaceholder}
+						ariaLabel={t.home.search.label}
 						empty={t.banks.search.empty}
 					/>
 				</aside>
 
-				<div className="min-w-0">
+				<div className="order-1 min-w-0 lg:order-2">
 					<Link
 						to={localePath(locale, '/banks')}
 						className="mb-5 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
@@ -70,6 +100,24 @@ export function BankDetail() {
 						<ArrowLeftIcon className="h-4 w-4" />
 						{t.banks.detail.back}
 					</Link>
+
+					<details className="mb-5 rounded-lg border border-border bg-card lg:hidden">
+						<summary className="cursor-pointer select-none px-3 py-2.5 text-sm font-medium">
+							{t.banks.list.switchLabel}
+						</summary>
+						<div className="border-t border-border p-2">
+							<BankPicker
+								query={listQuery}
+								onQueryChange={setListQuery}
+								banks={listBanks}
+								activeSlug={bank.slug}
+								locale={locale}
+								placeholder={t.banks.list.searchPlaceholder}
+								ariaLabel={t.home.search.label}
+								empty={t.banks.search.empty}
+							/>
+						</div>
+					</details>
 
 					<header className="flex flex-wrap items-start gap-4">
 						<BankLogo bank={bank} className="h-20 w-20 shrink-0" />
