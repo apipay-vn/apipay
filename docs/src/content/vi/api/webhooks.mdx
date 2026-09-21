@@ -25,14 +25,14 @@ POST /v1/client/webhooks
 
 ### Request Body
 
-| Tham số          | Kiểu     | Bắt buộc | Mô tả                                                                                                                     |
-| ---------------- | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `webhookUrl`     | string   | **✓ Có** | HTTPS URL để nhận webhook                                                                                                 |
-| `bankPublicId`   | string   | Không    | Legacy: gắn vào một tài khoản ngân hàng theo public ID                                                                    |
+| Tham số          | Kiểu     | Bắt buộc | Mô tả                                                                                                                    |
+| ---------------- | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `webhookUrl`     | string   | **✓ Có** | HTTPS URL để nhận webhook                                                                                                |
+| `bankPublicId`   | string   | Không    | Legacy: gắn vào một tài khoản ngân hàng theo public ID                                                                   |
 | `bankPublicIds`  | string[] | Không    | Danh sách ngân hàng được chọn. Bỏ trống (và không có `bankPublicId`) = tất cả ngân hàng; `[]` = không khớp ngân hàng nào |
-| `isActive`       | boolean  | Không    | Tạo webhook ở trạng thái bật hoặc tắt (mặc định `true`)                                                                   |
-| `timeoutSeconds` | integer  | Không    | Timeout mỗi lần gửi, 5–10 giây (mặc định `10`)                                                                            |
-| `extraHeader`    | object   | Không    | Header tùy chọn `{name, value}`. `name` phải bắt đầu bằng `X-`                                                            |
+| `isActive`       | boolean  | Không    | Tạo webhook ở trạng thái bật hoặc tắt (mặc định `true`)                                                                  |
+| `timeoutSeconds` | integer  | Không    | Timeout mỗi lần gửi, 5–10 giây (mặc định `10`)                                                                           |
+| `extraHeader`    | object   | Không    | Header tùy chọn `{name, value}`. `name` phải bắt đầu bằng `X-`                                                           |
 
 > Không gửi đồng thời `bankPublicId` và `bankPublicIds`. API sẽ từ chối trừ khi chúng mô tả cùng một ngân hàng.
 
@@ -56,15 +56,15 @@ POST /v1/client/webhooks
 
 ## Quản lý webhooks
 
-| Endpoint                                             | Mô tả                                                     |
-| ---------------------------------------------------- | --------------------------------------------------------- |
-| `GET /v1/client/webhooks`                            | Danh sách webhook (`page`, `limit`)                       |
+| Endpoint                                             | Mô tả                                                        |
+| ---------------------------------------------------- | ------------------------------------------------------------ |
+| `GET /v1/client/webhooks`                            | Danh sách webhook (`page`, `limit`)                          |
 | `PATCH /v1/client/webhooks/:id`                      | Cập nhật URL, trạng thái, phạm vi ngân hàng, timeout, header |
-| `PATCH /v1/client/webhooks/:id/toggle`               | Bật hoặc tắt webhook                                      |
-| `DELETE /v1/client/webhooks/:id`                     | Xóa webhook                                               |
-| `GET /v1/client/webhooks/:id/history`                | Xem lịch sử gửi (`page`, `limit`)                         |
-| `POST /v1/client/webhooks/history/:historyId/resend` | Gửi lại một lần gửi thất bại                              |
-| `GET /v1/client/webhooks/deliveries`                 | Xem lịch sử gửi webhook trên production, kèm bộ lọc       |
+| `PATCH /v1/client/webhooks/:id/toggle`               | Bật hoặc tắt webhook                                         |
+| `DELETE /v1/client/webhooks/:id`                     | Xóa webhook                                                  |
+| `GET /v1/client/webhooks/:id/history`                | Xem lịch sử gửi (`page`, `limit`)                            |
+| `POST /v1/client/webhooks/history/:historyId/resend` | Gửi lại một lần gửi thất bại                                 |
+| `GET /v1/client/webhooks/deliveries`                 | Xem lịch sử gửi webhook trên production, kèm bộ lọc          |
 
 ### Cập nhật webhook
 
@@ -72,13 +72,13 @@ POST /v1/client/webhooks
 PATCH /v1/client/webhooks/:id
 ```
 
-| Tham số          | Kiểu             | Mô tả                                                                    |
-| ---------------- | ---------------- | ------------------------------------------------------------------------ |
-| `webhookUrl`     | string           | HTTPS URL mới                                                            |
-| `isActive`       | boolean          | Bật hoặc tắt webhook                                                     |
+| Tham số          | Kiểu             | Mô tả                                                                                               |
+| ---------------- | ---------------- | --------------------------------------------------------------------------------------------------- |
+| `webhookUrl`     | string           | HTTPS URL mới                                                                                       |
+| `isActive`       | boolean          | Bật hoặc tắt webhook                                                                                |
 | `bankPublicIds`  | string[] \| null | Danh sách ngân hàng. `null` = tất cả ngân hàng; `[]` = không ngân hàng nào; mảng = các ngân hàng đó |
-| `timeoutSeconds` | integer \| null  | Timeout gửi 5–10. `null` đưa về mặc định `10`                            |
-| `extraHeader`    | object \| null   | Header `{name, value}` tùy chọn. `null` để tắt                           |
+| `timeoutSeconds` | integer \| null  | Timeout gửi 5–10. `null` đưa về mặc định `10`                                                       |
+| `extraHeader`    | object \| null   | Header `{name, value}` tùy chọn. `null` để tắt                                                      |
 
 Bỏ qua một trường để giữ nguyên, hoặc truyền `null` để đưa trường đó về mặc định:
 
@@ -97,13 +97,13 @@ PATCH /v1/client/webhooks/wh_abc123
 
 `GET /v1/client/webhooks` trả về mỗi webhook kèm phạm vi hiệu lực và cấu hình nâng cao:
 
-| Trường          | Kiểu           | Mô tả                                                             |
-| --------------- | -------------- | ----------------------------------------------------------------- |
+| Trường          | Kiểu           | Mô tả                                                              |
+| --------------- | -------------- | ------------------------------------------------------------------ |
 | `bankAccountId` | number \| null | Liên kết một ngân hàng legacy; `null` với webhook toàn cục/đã chọn |
-| `bankAccount`   | object \| null | Ngân hàng đã gắn khi `scope` là `bank`                            |
-| `scope`         | string         | `all`, `selected`, hoặc `bank`                                    |
-| `selectedBanks` | array          | Danh sách ngân hàng đã chọn khi `scope` là `selected`             |
-| `configs`       | object         | `{bankPublicIds, timeoutSeconds, extraHeader}`                    |
+| `bankAccount`   | object \| null | Ngân hàng đã gắn khi `scope` là `bank`                             |
+| `scope`         | string         | `all`, `selected`, hoặc `bank`                                     |
+| `selectedBanks` | array          | Danh sách ngân hàng đã chọn khi `scope` là `selected`              |
+| `configs`       | object         | `{bankPublicIds, timeoutSeconds, extraHeader}`                     |
 
 `configs.bankPublicIds` là `null` khi webhook áp dụng cho tất cả ngân hàng. `configs.timeoutSeconds` luôn phản ánh giá trị hiệu lực (mặc định `10`).
 
@@ -420,7 +420,7 @@ Nếu webhook delivery thất bại, hệ thống sẽ thử gửi lại:
 - Lần 2: Sau 20 giây
 - Lần 3: Sau 1 phút
 
-Sau 3 lần retry thất bại, webhook sẽ bị vô hiệu hóa.
+Sau 3 lần retry thất bại, webhook sẽ không được gửi nữa.
 
 `timeoutSeconds` quy định thời gian tối đa cho mỗi lần thử trước khi bị coi là thất bại. Tham số này không làm thay đổi lịch thử lại hay số lần thử.
 

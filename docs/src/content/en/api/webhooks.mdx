@@ -25,14 +25,14 @@ POST /v1/client/webhooks
 
 ### Request Body
 
-| Parameter        | Type     | Required  | Description                                                                               |
-| ---------------- | -------- | --------- | ----------------------------------------------------------------------------------------- |
-| `webhookUrl`     | string   | **✓ Yes** | HTTPS URL to receive webhook notifications                                                |
-| `bankPublicId`   | string   | No        | Legacy: bind to a single bank account by public ID                                        |
+| Parameter        | Type     | Required  | Description                                                                                |
+| ---------------- | -------- | --------- | ------------------------------------------------------------------------------------------ |
+| `webhookUrl`     | string   | **✓ Yes** | HTTPS URL to receive webhook notifications                                                 |
+| `bankPublicId`   | string   | No        | Legacy: bind to a single bank account by public ID                                         |
 | `bankPublicIds`  | string[] | No        | Selected allowlist. Omit (with no `bankPublicId`) to cover all banks; `[]` matches nothing |
-| `isActive`       | boolean  | No        | Create the webhook active or inactive (default `true`)                                    |
-| `timeoutSeconds` | integer  | No        | Per-request delivery timeout, 5–10 seconds (default `10`)                                 |
-| `extraHeader`    | object   | No        | Optional `{name, value}` request header. `name` must start with `X-`                      |
+| `isActive`       | boolean  | No        | Create the webhook active or inactive (default `true`)                                     |
+| `timeoutSeconds` | integer  | No        | Per-request delivery timeout, 5–10 seconds (default `10`)                                  |
+| `extraHeader`    | object   | No        | Optional `{name, value}` request header. `name` must start with `X-`                       |
 
 > Do not send `bankPublicId` and `bankPublicIds` together. The API rejects the request unless they describe the same single bank.
 
@@ -72,13 +72,13 @@ POST /v1/client/webhooks
 PATCH /v1/client/webhooks/:id
 ```
 
-| Parameter        | Type             | Description                                                   |
-| ---------------- | ---------------- | ------------------------------------------------------------- |
-| `webhookUrl`     | string           | New HTTPS URL                                                 |
-| `isActive`       | boolean          | Enable or disable the webhook                                 |
+| Parameter        | Type             | Description                                                          |
+| ---------------- | ---------------- | -------------------------------------------------------------------- |
+| `webhookUrl`     | string           | New HTTPS URL                                                        |
+| `isActive`       | boolean          | Enable or disable the webhook                                        |
 | `bankPublicIds`  | string[] \| null | Bank allowlist. `null` = all banks; `[]` = none; array = those banks |
-| `timeoutSeconds` | integer \| null  | Delivery timeout 5–10. `null` resets to `10`                  |
-| `extraHeader`    | object \| null   | Extra `{name, value}` header. `null` turns it off             |
+| `timeoutSeconds` | integer \| null  | Delivery timeout 5–10. `null` resets to `10`                         |
+| `extraHeader`    | object \| null   | Extra `{name, value}` header. `null` turns it off                    |
 
 Omit a field to leave it unchanged, or pass `null` to reset it to the default:
 
@@ -97,13 +97,13 @@ Setting `bankPublicIds` replaces any legacy single-bank binding. To move a webho
 
 `GET /v1/client/webhooks` returns each webhook with its resolved scope and advanced configuration:
 
-| Field           | Type           | Description                                                    |
-| --------------- | -------------- | -------------------------------------------------------------- |
+| Field           | Type           | Description                                                     |
+| --------------- | -------------- | --------------------------------------------------------------- |
 | `bankAccountId` | number \| null | Legacy single-bank binding; `null` for global/selected webhooks |
-| `bankAccount`   | object \| null | The bound bank when `scope` is `bank`                          |
-| `scope`         | string         | `all`, `selected`, or `bank`                                   |
-| `selectedBanks` | array          | Resolved banks for the `selected` scope                        |
-| `configs`       | object         | `{bankPublicIds, timeoutSeconds, extraHeader}`                 |
+| `bankAccount`   | object \| null | The bound bank when `scope` is `bank`                           |
+| `scope`         | string         | `all`, `selected`, or `bank`                                    |
+| `selectedBanks` | array          | Resolved banks for the `selected` scope                         |
+| `configs`       | object         | `{bankPublicIds, timeoutSeconds, extraHeader}`                  |
 
 `configs.bankPublicIds` is `null` when the webhook covers all banks. `configs.timeoutSeconds` always echoes the effective value (default `10`).
 
@@ -420,7 +420,7 @@ If webhook delivery fails, the system will retry:
 - Attempt 2: After 20 seconds
 - Attempt 3: After 1 minute
 
-After 3 failed retry attempts, the webhook will be disabled.
+After 3 failed retry attempts, the webhook will be considered failed and no further attempts will be made.
 
 `timeoutSeconds` controls how long each attempt may take before it counts as a failure. It does not change the retry schedule or the number of attempts.
 
