@@ -345,8 +345,8 @@ The server registers 23 tools. MCP clients automatically prefix tool names with 
 
 ### Webhooks
 - `list_webhooks`: Lists registered webhook endpoints.
-- `create_webhook`: Registers a webhook URL for a connected bank account.
-- `update_webhook`: Updates destination URL for a webhook.
+- `create_webhook`: Registers a webhook URL. By default it fires for all current and future banks; optionally bind a single bank with `bankPublicId` or an allowlist with `bankPublicIds`, plus `timeoutSeconds` (5–10) and an extra `X-*` header.
+- `update_webhook`: Updates the destination URL, active state, bank scope, `timeoutSeconds`, or extra `X-*` header. Pass `null` to reset a field to its default.
 - `toggle_webhook`: Toggles a webhook between active and inactive.
 - `remove_webhook`: **(Destructive)** Permanently deletes a webhook.
 - `list_webhook_deliveries`: Lists webhook delivery attempts and status logs.

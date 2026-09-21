@@ -50,22 +50,64 @@ export function registerWebhooksTools(server: McpServer, client: ApiClient): voi
     "create_webhook",
     {
       description:
-        "Register a new webhook endpoint for transaction notifications on a connected bank account.",
+        "Register a new webhook endpoint for transaction notifications. By default the webhook fires for ALL current and future bank accounts. Optionally bind it to a legacy single bank with bankPublicId, or to an explicit allowlist with bankPublicIds ([] matches no banks). Delivery timeout defaults to 10s and an optional extra X-* request header can be attached. HMAC (ApiPay-Signature) is always sent and unchanged.",
       inputSchema: {
         webhookUrl: z
           .string()
           .describe("HTTPS URL to receive webhook notifications"),
+        isActive: z
+          .boolean()
+          .optional()
+          .describe("Whether the webhook is active on creation (default true)"),
         bankPublicId: z
           .string()
-          .describe("Public ID of the connected bank account"),
+          .optional()
+          .describe(
+            "Legacy: bind the webhook to a single bank account by its public ID. Omit (with bankPublicIds) to cover all current and future banks.",
+          ),
+        bankPublicIds: z
+          .array(z.string())
+          .optional()
+          .describe(
+            "Selected bank allowlist. Omit (with no bankPublicId) to cover all current and future banks; [] matches no banks; future banks are not auto-added.",
+          ),
+        timeoutSeconds: z
+          .number()
+          .int()
+          .min(5)
+          .max(10)
+          .optional()
+          .describe("HTTP delivery timeout in seconds (5-10, default 10)"),
+        extraHeader: z
+          .object({
+            name: z
+              .string()
+              .describe('Custom header name; must start with "X-"'),
+            value: z.string().describe("Custom header value (non-empty)"),
+          })
+          .optional()
+          .describe(
+            "Optional extra request header sent with every delivery (X-* only).",
+          ),
       },
     },
-    async ({ webhookUrl, bankPublicId }) => {
+    async ({
+      webhookUrl,
+      isActive,
+      bankPublicId,
+      bankPublicIds,
+      timeoutSeconds,
+      extraHeader,
+    }) => {
       try {
-        const data = await client.post("/client/webhooks", {
-          webhookUrl,
-          bankPublicId,
-        });
+        const body: Record<string, any> = { webhookUrl };
+        if (isActive !== undefined) body.isActive = isActive;
+        if (bankPublicId !== undefined) body.bankPublicId = bankPublicId;
+        if (bankPublicIds !== undefined) body.bankPublicIds = bankPublicIds;
+        if (timeoutSeconds !== undefined) body.timeoutSeconds = timeoutSeconds;
+        if (extraHeader !== undefined) body.extraHeader = extraHeader;
+
+        const data = await client.post("/client/webhooks", body);
         return {
           content: [{ type: "text", text: JSON.stringify(data, null, 2) }],
         };
@@ -85,17 +127,66 @@ export function registerWebhooksTools(server: McpServer, client: ApiClient): voi
   server.registerTool(
     "update_webhook",
     {
-      description: "Update the destination URL of an existing webhook.",
+      description:
+        "Update an existing webhook's destination URL, active state, bank scope, delivery timeout, or extra header. Omit a field to leave it unchanged; pass null to reset it (bankPublicIds: null => all banks, timeoutSeconds: null => 10, extraHeader: null => off). HMAC (ApiPay-Signature) is always sent and unchanged.",
       inputSchema: {
         id: z.string().describe("Webhook ID to update"),
-        webhookUrl: z.string().describe("New HTTPS webhook URL"),
+        webhookUrl: z
+          .string()
+          .optional()
+          .describe("New HTTPS webhook URL"),
+        isActive: z
+          .boolean()
+          .optional()
+          .describe("Enable or disable the webhook"),
+        bankPublicIds: z
+          .array(z.string())
+          .nullable()
+          .optional()
+          .describe(
+            "Selected bank allowlist. Pass [] to match no banks, or null to cover all current and future banks.",
+          ),
+        timeoutSeconds: z
+          .number()
+          .int()
+          .min(5)
+          .max(10)
+          .nullable()
+          .optional()
+          .describe(
+            "HTTP delivery timeout in seconds (5-10). Pass null to reset to the default of 10.",
+          ),
+        extraHeader: z
+          .object({
+            name: z
+              .string()
+              .describe('Custom header name; must start with "X-"'),
+            value: z.string().describe("Custom header value (non-empty)"),
+          })
+          .nullable()
+          .optional()
+          .describe(
+            "Optional extra request header sent with every delivery (X-* only). Pass null to remove it.",
+          ),
       },
     },
-    async ({ id, webhookUrl }) => {
+    async ({
+      id,
+      webhookUrl,
+      isActive,
+      bankPublicIds,
+      timeoutSeconds,
+      extraHeader,
+    }) => {
       try {
-        const data = await client.patch(`/client/webhooks/${id}`, {
-          webhookUrl,
-        });
+        const body: Record<string, any> = {};
+        if (webhookUrl !== undefined) body.webhookUrl = webhookUrl;
+        if (isActive !== undefined) body.isActive = isActive;
+        if (bankPublicIds !== undefined) body.bankPublicIds = bankPublicIds;
+        if (timeoutSeconds !== undefined) body.timeoutSeconds = timeoutSeconds;
+        if (extraHeader !== undefined) body.extraHeader = extraHeader;
+
+        const data = await client.patch(`/client/webhooks/${id}`, body);
         return {
           content: [{ type: "text", text: JSON.stringify(data, null, 2) }],
         };

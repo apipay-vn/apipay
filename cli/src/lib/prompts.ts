@@ -1,4 +1,4 @@
-import {confirm, input, password, select} from "@inquirer/prompts";
+import {checkbox, confirm, input, password, select} from "@inquirer/prompts";
 import {formatBankLabel} from "./banks.js";
 import {
 	ACCOUNT_TYPES,
@@ -179,6 +179,57 @@ export async function promptBankFromList(
 			name: `${formatBankLabel(b)} — ${b.accountNumber} (${b.status})`,
 		})),
 	});
+}
+
+/**
+ * Resolved bank scope for a webhook.
+ * - `null` => all current and future banks (the API default)
+ * - `{bankPublicId}` => legacy single-bank binding
+ * - `{bankPublicIds}` => explicit allowlist ([] matches nothing)
+ */
+export type WebhookScopeSelection =
+	| {bankPublicId: string}
+	| {bankPublicIds: string[]}
+	| null;
+
+export async function promptWebhookScope(
+	banks: Array<{
+		publicId: string;
+		bankName: string;
+		accountNumber: string;
+		status: string;
+	}>,
+): Promise<WebhookScopeSelection> {
+	const choice = await select<string>({
+		message: "Which banks should this webhook receive notifications from?",
+		choices: [
+			{
+				value: "all",
+				name: "All banks — current and future (recommended)",
+			},
+			...banks.map((b) => ({
+				value: `one:${b.publicId}`,
+				name: `${formatBankLabel(b)} — ${b.accountNumber} (${b.status})`,
+			})),
+			...(banks.length > 1
+				? [{value: "selected", name: "Select specific banks..."}]
+				: []),
+		],
+	});
+
+	if (choice === "all") return null;
+	if (choice.startsWith("one:")) {
+		return {bankPublicId: choice.slice("one:".length)};
+	}
+
+	const selected = await checkbox({
+		message: "Select bank accounts:",
+		choices: banks.map((b) => ({
+			value: b.publicId,
+			name: `${formatBankLabel(b)} — ${b.accountNumber} (${b.status})`,
+		})),
+	});
+	return {bankPublicIds: selected};
 }
 
 export async function promptAmount(): Promise<string> {

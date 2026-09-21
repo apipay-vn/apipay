@@ -113,6 +113,18 @@ export function validateWebhookUrl(input: string): string | true {
 	return true;
 }
 
+export function validateWebhookHeaderName(input: string): string | true {
+	const trimmed = input.trim();
+	if (!trimmed) return "Header name is required";
+	if (!/^x-/i.test(trimmed)) {
+		return 'Extra header name must start with "X-" (only X-* custom headers are allowed).';
+	}
+	if (!/^[A-Za-z0-9-]+$/.test(trimmed)) {
+		return "Header name may only contain letters, numbers, and hyphens.";
+	}
+	return true;
+}
+
 export function validatePhoneNumber(input: string): string | true {
 	const trimmed = input.trim();
 	if (!trimmed) return "Phone number is required";

@@ -16,7 +16,7 @@ Both use the same payload shape and `ApiPay-Signature` HMAC header as production
 
 ## Live Test
 
-Live Test lets you verify your real webhook endpoint end to end without waiting for a real bank transfer. It creates a mock transaction, stores it separately from production data, and sends it to the webhook destinations on the selected bank.
+Live Test lets you verify your real webhook endpoint end to end without waiting for a real bank transfer. It creates a mock transaction, stores it separately from production data, and sends it to every webhook that applies to the selected bank — global webhooks plus any bound to that bank.
 
 Live Test requires an active plan (free or paid) and at least one live bank account.
 
@@ -25,7 +25,7 @@ Live Test requires an active plan (free or paid) and at least one live bank acco
 1. Open **Sandbox** in the left sidebar and make sure the **Sandbox** toggle is **off** (Live Test is the default view).
 2. Select an active bank account.
 3. Enter an amount and an optional transfer content.
-4. Choose a webhook destination — **All active webhooks** on that bank, or one specific webhook.
+4. Choose a webhook destination — **All active webhooks** that apply to that bank (including global webhooks), or one specific webhook.
 5. Click **Create and trigger**.
 
 ApiPay creates a mock transaction and calls the selected webhook URLs. The result card shows the payload and each delivery's response code and body.

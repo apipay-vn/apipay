@@ -60,9 +60,9 @@ apipay webhooks:add           # Register a webhook for notifications
 
 | Command | Description |
 |---------|-------------|
-| `apipay webhooks:add` | Register a webhook endpoint |
+| `apipay webhooks:add` | Register a webhook endpoint (defaults to all banks) |
 | `apipay webhooks:list` | List registered webhooks |
-| `apipay webhooks:update <ID>` | Update webhook URL or type |
+| `apipay webhooks:update <ID>` | Update webhook URL, bank scope, timeout, or extra header |
 | `apipay webhooks:toggle <ID>` | Toggle webhook active/inactive |
 | `apipay webhooks:remove <ID>` | Remove a webhook |
 | `apipay webhooks:history <ID>` | View delivery history |

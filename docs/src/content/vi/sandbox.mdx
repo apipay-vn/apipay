@@ -16,7 +16,7 @@ Cả hai đều dùng cùng cấu trúc payload và header HMAC `ApiPay-Signatur
 
 ## Live Test
 
-Live Test giúp bạn kiểm tra webhook thật của mình một cách trọn vẹn mà không cần chờ giao dịch ngân hàng thực tế. Nó tạo một giao dịch giả lập, lưu riêng khỏi dữ liệu production và gửi đến các webhook của ngân hàng bạn chọn.
+Live Test giúp bạn kiểm tra webhook thật của mình một cách trọn vẹn mà không cần chờ giao dịch ngân hàng thực tế. Nó tạo một giao dịch giả lập, lưu riêng khỏi dữ liệu production và gửi đến mọi webhook áp dụng cho ngân hàng bạn chọn — webhook toàn cục cùng các webhook gắn với ngân hàng đó.
 
 Live Test yêu cầu gói dịch vụ đang hoạt động (miễn phí hoặc trả phí) và ít nhất một tài khoản ngân hàng live.
 
@@ -25,7 +25,7 @@ Live Test yêu cầu gói dịch vụ đang hoạt động (miễn phí hoặc t
 1. Mở **Sandbox** ở thanh bên trái và chắc chắn nút gạt **Sandbox** đang **tắt** (Live Test là chế độ mặc định).
 2. Chọn một tài khoản ngân hàng đang hoạt động.
 3. Nhập số tiền và nội dung chuyển khoản (không bắt buộc).
-4. Chọn đích nhận webhook — **Tất cả webhook đang bật** của ngân hàng đó, hoặc một webhook cụ thể.
+4. Chọn đích nhận webhook — **Tất cả webhook đang bật** áp dụng cho ngân hàng đó (bao gồm webhook toàn cục), hoặc một webhook cụ thể.
 5. Nhấn **Tạo và kích hoạt**.
 
 ApiPay tạo giao dịch giả lập và gọi đến các webhook bạn chọn. Thẻ kết quả hiển thị payload cùng mã phản hồi và nội dung phản hồi của từng lần gửi.
