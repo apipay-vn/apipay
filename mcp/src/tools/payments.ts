@@ -137,11 +137,11 @@ export function registerPaymentsTools(server: McpServer, client: ApiClient): voi
         dateFrom: z
           .string()
           .optional()
-          .describe("Filter by start date (YYYY-MM-DD or ISO 8601)"),
+          .describe("Filter by start date, interpreted as a Vietnam (UTC+7) calendar day (YYYY-MM-DD or ISO 8601)"),
         dateTo: z
           .string()
           .optional()
-          .describe("Filter by end date (YYYY-MM-DD or ISO 8601)"),
+          .describe("Filter by end date, inclusive, Vietnam (UTC+7) calendar day (YYYY-MM-DD or ISO 8601)"),
       },
     },
     async (args) => {

@@ -4,6 +4,7 @@ import { ApiClient, ApiError } from "../client.js";
 
 const PERIOD_ENUM = [
   "today",
+  "yesterday",
   "this_week",
   "last_week",
   "this_month",
@@ -28,11 +29,11 @@ export function registerMetricsTools(server: McpServer, client: ApiClient): void
         dateFrom: z
           .string()
           .optional()
-          .describe("Start date for custom period (YYYY-MM-DD or ISO 8601)"),
+          .describe("Start date for custom period, interpreted as a Vietnam (UTC+7) calendar day"),
         dateTo: z
           .string()
           .optional()
-          .describe("End date for custom period (YYYY-MM-DD or ISO 8601)"),
+          .describe("End date for custom period, interpreted as a Vietnam (UTC+7) calendar day, inclusive"),
       },
     },
     async (args) => {
@@ -87,11 +88,11 @@ export function registerMetricsTools(server: McpServer, client: ApiClient): void
         dateFrom: z
           .string()
           .optional()
-          .describe("Start date (YYYY-MM-DD or ISO 8601)"),
+          .describe("Start date (YYYY-MM-DD, interpreted as a Vietnam (UTC+7) calendar day)"),
         dateTo: z
           .string()
           .optional()
-          .describe("End date (YYYY-MM-DD or ISO 8601)"),
+          .describe("End date (YYYY-MM-DD, Vietnam (UTC+7) calendar day, inclusive)"),
         search: z
           .string()
           .optional()
