@@ -25,9 +25,9 @@ GET /v1/client/metrics/overview
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `period` | string | — | Time period: `today`, `this_week`, `last_week`, `this_month`, `last_month`, `last_3_months`, `last_6_months`, `this_year`, `custom` |
-| `dateFrom` | string | — | Start date (ISO 8601) |
-| `dateTo` | string | — | End date (ISO 8601) |
+| `period` | string | — | Time period: `today`, `yesterday`, `this_week`, `last_week`, `this_month`, `last_month`, `last_3_months`, `last_6_months`, `this_year`, `custom` |
+| `dateFrom` | string | — | Start date, interpreted as a Vietnam (UTC+7) calendar day (ISO 8601 accepted) |
+| `dateTo` | string | — | End date, interpreted as a Vietnam (UTC+7) calendar day, inclusive (ISO 8601 accepted) |
 | `search` | string | — | Search by reference code, content, account number, bank name, bank code, or VA number |
 
 ### Response
@@ -69,8 +69,8 @@ GET /v1/client/metrics/time-series
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `period` | string | — | Time period |
-| `dateFrom` | string | — | Start date (ISO 8601) |
-| `dateTo` | string | — | End date (ISO 8601) |
+| `dateFrom` | string | — | Start date, interpreted as a Vietnam (UTC+7) calendar day (ISO 8601 accepted) |
+| `dateTo` | string | — | End date, interpreted as a Vietnam (UTC+7) calendar day, inclusive (ISO 8601 accepted) |
 | `granularity` | string | — | Data granularity: `daily`, `weekly`, `monthly` |
 
 ### Response
@@ -159,9 +159,9 @@ GET /v1/client/metrics/bank-distribution
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `period` | string | — | Time period: `today`, `this_week`, `last_week`, `this_month`, `last_month`, `last_3_months`, `last_6_months`, `this_year`, `custom` |
-| `dateFrom` | string | — | Start date (ISO 8601) |
-| `dateTo` | string | — | End date (ISO 8601) |
+| `period` | string | — | Time period: `today`, `yesterday`, `this_week`, `last_week`, `this_month`, `last_month`, `last_3_months`, `last_6_months`, `this_year`, `custom` |
+| `dateFrom` | string | — | Start date, interpreted as a Vietnam (UTC+7) calendar day (ISO 8601 accepted) |
+| `dateTo` | string | — | End date, interpreted as a Vietnam (UTC+7) calendar day, inclusive (ISO 8601 accepted) |
 | `page` | integer | — | Page number (default `1`) |
 | `limit` | integer | — | Page size (default `10`, max `50`) |
 | `sortBy` | string | — | Ranking metric: `transactionCount` (default, quantity) or `totalIn` (amount) |
@@ -224,8 +224,8 @@ GET /v1/client/metrics/transactions
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `period` | string | — | Time period |
-| `dateFrom` | string | — | Start date (ISO 8601) |
-| `dateTo` | string | — | End date (ISO 8601) |
+| `dateFrom` | string | — | Start date, interpreted as a Vietnam (UTC+7) calendar day (ISO 8601 accepted) |
+| `dateTo` | string | — | End date, interpreted as a Vietnam (UTC+7) calendar day, inclusive (ISO 8601 accepted) |
 | `search` | string | — | Search by reference code, content, account number, bank name, bank code, or VA number |
 | `accountNumber` | string | — | Filter by account number or VA number |
 | `bankPublicId` | string[] | — | Filter by one or more linked bank public IDs |

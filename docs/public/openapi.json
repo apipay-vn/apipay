@@ -1209,6 +1209,7 @@
           "type": "string",
           "enum": [
             "today",
+            "yesterday",
             "this_week",
             "last_week",
             "this_month",
@@ -1223,11 +1224,13 @@
       "DateFrom": {
         "name": "dateFrom",
         "in": "query",
+        "description": "Interpreted as a Vietnam (UTC+7) calendar day; ISO 8601 accepted.",
         "schema": {"type": "string", "format": "date-time"}
       },
       "DateTo": {
         "name": "dateTo",
         "in": "query",
+        "description": "Interpreted as a Vietnam (UTC+7) calendar day, inclusive; ISO 8601 accepted.",
         "schema": {"type": "string", "format": "date-time"}
       },
       "Search": {

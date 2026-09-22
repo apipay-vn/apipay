@@ -25,9 +25,9 @@ GET /v1/client/metrics/overview
 
 | Tham số | Kiểu | Bắt buộc | Mô tả |
 |---------|------|----------|--------|
-| `period` | string | — | Khoảng thời gian: `today`, `this_week`, `last_week`, `this_month`, `last_month`, `last_3_months`, `last_6_months`, `this_year`, `custom` |
-| `dateFrom` | string | — | Ngày bắt đầu (ISO 8601) |
-| `dateTo` | string | — | Ngày kết thúc (ISO 8601) |
+| `period` | string | — | Khoảng thời gian: `today`, `yesterday`, `this_week`, `last_week`, `this_month`, `last_month`, `last_3_months`, `last_6_months`, `this_year`, `custom` |
+| `dateFrom` | string | — | Ngày bắt đầu, hiểu theo ngày lịch Việt Nam (UTC+7), chấp nhận ISO 8601 |
+| `dateTo` | string | — | Ngày kết thúc, hiểu theo ngày lịch Việt Nam (UTC+7), bao gồm cả ngày này, chấp nhận ISO 8601 |
 | `search` | string | — | Tìm theo mã tham chiếu, nội dung, số tài khoản, tên ngân hàng, mã ngân hàng hoặc số VA |
 
 ### Response
@@ -69,8 +69,8 @@ GET /v1/client/metrics/time-series
 | Tham số | Kiểu | Bắt buộc | Mô tả |
 |---------|------|----------|--------|
 | `period` | string | — | Khoảng thời gian |
-| `dateFrom` | string | — | Ngày bắt đầu (ISO 8601) |
-| `dateTo` | string | — | Ngày kết thúc (ISO 8601) |
+| `dateFrom` | string | — | Ngày bắt đầu, hiểu theo ngày lịch Việt Nam (UTC+7), chấp nhận ISO 8601 |
+| `dateTo` | string | — | Ngày kết thúc, hiểu theo ngày lịch Việt Nam (UTC+7), bao gồm cả ngày này, chấp nhận ISO 8601 |
 | `granularity` | string | — | Độ chi tiết: `daily`, `weekly`, `monthly` |
 
 ### Response
@@ -159,9 +159,9 @@ GET /v1/client/metrics/bank-distribution
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `period` | string | — | Khoảng thời gian: `today`, `this_week`, `last_week`, `this_month`, `last_month`, `last_3_months`, `last_6_months`, `this_year`, `custom` |
-| `dateFrom` | string | — | Ngày bắt đầu (ISO 8601) |
-| `dateTo` | string | — | Ngày kết thúc (ISO 8601) |
+| `period` | string | — | Khoảng thời gian: `today`, `yesterday`, `this_week`, `last_week`, `this_month`, `last_month`, `last_3_months`, `last_6_months`, `this_year`, `custom` |
+| `dateFrom` | string | — | Ngày bắt đầu, hiểu theo ngày lịch Việt Nam (UTC+7), chấp nhận ISO 8601 |
+| `dateTo` | string | — | Ngày kết thúc, hiểu theo ngày lịch Việt Nam (UTC+7), bao gồm cả ngày này, chấp nhận ISO 8601 |
 | `page` | integer | — | Số trang (mặc định `1`) |
 | `limit` | integer | — | Số bản ghi mỗi trang (mặc định `10`, tối đa `50`) |
 | `sortBy` | string | — | Tiêu chí xếp hạng: `transactionCount` (mặc định, số lượng) hoặc `totalIn` (số tiền) |
@@ -224,8 +224,8 @@ GET /v1/client/metrics/transactions
 | Tham số | Kiểu | Bắt buộc | Mô tả |
 |---------|------|----------|--------|
 | `period` | string | — | Khoảng thời gian |
-| `dateFrom` | string | — | Ngày bắt đầu (ISO 8601) |
-| `dateTo` | string | — | Ngày kết thúc (ISO 8601) |
+| `dateFrom` | string | — | Ngày bắt đầu, hiểu theo ngày lịch Việt Nam (UTC+7), chấp nhận ISO 8601 |
+| `dateTo` | string | — | Ngày kết thúc, hiểu theo ngày lịch Việt Nam (UTC+7), bao gồm cả ngày này, chấp nhận ISO 8601 |
 | `search` | string | — | Tìm theo mã tham chiếu, nội dung, số tài khoản, tên ngân hàng, mã ngân hàng hoặc số VA |
 | `accountNumber` | string | — | Lọc theo số tài khoản hoặc số VA |
 | `bankPublicId` | string[] | — | Lọc theo một hoặc nhiều public ID tài khoản ngân hàng đã liên kết |

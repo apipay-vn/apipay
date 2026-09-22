@@ -211,8 +211,8 @@ GET /v1/client/payment-requests
 | `search`        | string   | —        | Search by public ID, content, title, or account number |
 | `status`        | string[] | —        | Filter by status: `ACTIVE`, `EXPIRED`, `COMPLETED`, `CANCELLED`. Can be passed multiple times |
 | `bankAccountId` | number   | —        | Filter by bank account ID                              |
-| `dateFrom`      | string   | —        | Filter by creation date from this ISO date             |
-| `dateTo`        | string   | —        | Filter by creation date through this ISO date          |
+| `dateFrom`      | string   | —        | Filter by creation date from this day (Vietnam UTC+7)              |
+| `dateTo`        | string   | —        | Filter by creation date through this day, inclusive (Vietnam UTC+7) |
 
 ### Status Filters
 

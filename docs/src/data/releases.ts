@@ -79,6 +79,20 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.27.0',
+    date: '2026-09-22',
+    features: [
+      'Daily total in payment notifications — a new {{data.todayTotal}} variable for custom notification templates (Slack, Discord, Telegram, Lark, in-app and email) shows the total amount received today across all your banks, in Vietnam time.',
+      'Yesterday quick filter — the date range picker now includes Yesterday on the dashboard, transactions, payment requests, invoices, audit log, and admin chat screens.',
+    ],
+    fixes: [
+      'Date filters now follow the Vietnam calendar day — dateFrom and dateTo on payment requests, webhook deliveries, and metrics are interpreted in Asia/Ho_Chi_Minh (UTC+7) instead of UTC, so filters no longer skip transactions received between midnight and 7am Vietnam time.',
+    ],
+    improvements: [
+      'Notification channels now format amounts as VND (for example 100.000 ₫) in Slack, Discord, Telegram, and Lark messages.',
+    ],
+  },
+  {
     version: '1.26.0',
     date: '2026-09-20',
     features: [
@@ -638,6 +652,20 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.27.0',
+    date: '2026-09-22',
+    features: [
+      'Tổng tiền nhận trong ngày trong thông báo — biến mới {{data.todayTotal}} cho mẫu thông báo tùy chỉnh (Slack, Discord, Telegram, Lark, in-app và email) hiển thị tổng số tiền đã nhận trong ngày trên tất cả ngân hàng, theo giờ Việt Nam.',
+      'Bộ lọc nhanh Hôm qua — bộ chọn khoảng ngày đã có thêm Hôm qua trên dashboard, giao dịch, yêu cầu thanh toán, hóa đơn, nhật ký kiểm toán và chat admin.',
+    ],
+    fixes: [
+      'Bộ lọc ngày nay theo ngày lịch Việt Nam — dateFrom và dateTo của yêu cầu thanh toán, lịch sử webhook và metrics được hiểu theo Asia/Ho_Chi_Minh (UTC+7) thay vì UTC, không còn bỏ sót giao dịch nhận từ 0h đến 7h sáng giờ Việt Nam.',
+    ],
+    improvements: [
+      'Các kênh thông báo định dạng số tiền theo VND (ví dụ 100.000 ₫) trong Slack, Discord, Telegram và Lark.',
+    ],
+  },
   {
     version: '1.26.0',
     date: '2026-09-20',

@@ -211,8 +211,8 @@ GET /v1/client/payment-requests
 | `search`        | string   | —        | Tìm theo public ID, nội dung, tiêu đề hoặc số tài khoản                                     |
 | `status`        | string[] | —        | Lọc theo trạng thái: `ACTIVE`, `EXPIRED`, `COMPLETED`, `CANCELLED`. Có thể truyền nhiều lần |
 | `bankAccountId` | number   | —        | Lọc theo ID tài khoản ngân hàng                                                             |
-| `dateFrom`      | string   | —        | Lọc theo ngày tạo từ ngày ISO này                                                           |
-| `dateTo`        | string   | —        | Lọc theo ngày tạo đến ngày ISO này                                                          |
+| `dateFrom`      | string   | —        | Lọc theo ngày tạo từ ngày này (theo ngày lịch Việt Nam UTC+7)                              |
+| `dateTo`        | string   | —        | Lọc theo ngày tạo đến hết ngày này (theo ngày lịch Việt Nam UTC+7)                          |
 
 ### Bộ lọc status
 
