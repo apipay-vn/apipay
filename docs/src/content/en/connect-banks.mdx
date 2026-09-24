@@ -59,8 +59,8 @@ Before linking a bank account, make sure you have:
 - For Business or Household Business accounts: your company/household Tax Code (MST) / CCCD
 - For **ACB Business**: an ACB OneBiz username
 - **Vietcombank**: supports Business and Household Business only (all manual activation)
-- **MB Bank** Business, **OCB**/**VIB** Business or Household, **VPBank**/**BIDV**/**VietinBank**/**Shinhan Bank** Business, and **Vietcombank** Business/Household: manual activation
-- **PGBank**, **Co-opBank**, **MB Bank** Personal/Household, and **VPBank** Personal/Household: fully online, no manual activation
+- **OCB**/**VIB** Business, **VPBank**/**BIDV**/**VietinBank**/**Shinhan Bank** Business, and **Vietcombank** Business/Household: manual activation
+- **ACB** Business/Household, **MB Bank** (all types), **PGBank**, **Co-opBank**, and Household Business for **BIDV**, **VietinBank**, **Sacombank**, **VIB**, and **OCB**: fully online, no manual activation. **ACB** Business/Household link the original account number.
 
 ---
 
@@ -95,7 +95,7 @@ Per-bank availability:
 
 > **VietinBank note:** Transactions from VietinBank have no transfer content; contact support for more details.
 
-> **Manual activation.** MB Business, OCB/VIB Business or Household, VPBank/BIDV/VietinBank/Shinhan Business, and Vietcombank Business/Household use activation requests. You'll see **Activation Requested** until they complete. PGBank, Co-opBank, MB Personal/Household, and VPBank Personal/Household are fully online.
+> **Manual activation.** OCB/VIB Business, VPBank/BIDV/VietinBank/Shinhan Business, and Vietcombank Business/Household use activation requests. You'll see **Activation Requested** until they complete. ACB, MB (all types), PGBank, Co-opBank, and Household Business for BIDV, VietinBank, Sacombank, VIB, and OCB are fully online.
 
 Click the card that matches your account type to continue.
 
@@ -115,11 +115,13 @@ Fill in the required fields. The fields shown depend on which bank you selected.
 
 No additional fields required beyond the base fields above.
 
-#### ACB — Business Account
+#### ACB — Business / Household Business Account
 
 | Additional Field        | Description                    |
 | ----------------------- | ------------------------------ |
 | **ACB OneBiz Username** | Your ACB OneBiz login username |
+
+> **Note:** ACB Business and Household Business connect online and link the original account number. ApiPay does not issue a separate virtual account.
 
 #### MB Bank — Personal / Household Business Account
 
@@ -127,15 +129,13 @@ No additional fields required beyond the base fields above.
 | ------------------------- | ------------------------------------------------------- |
 | **CCCD / ID Card Number** | Your 12-digit CCCD number (Citizen Identification Card) |
 
-> **Note:** MB Bank Personal and Household Business accounts are processed fully online with no manual activation required. Household Business is sent to the bank as a personal account.
+> **Note:** MB Bank Personal, Business, and Household Business accounts are processed fully online with no manual activation required. Household Business is sent to the bank as a personal account.
 
 #### MB Bank — Business Account
 
 | Additional Field   | Description                              |
 | ------------------ | ---------------------------------------- |
 | **Tax Code (MST)** | Your company's Tax Identification Number |
-
-> **Manual activation:** MB Bank Business connections are submitted for manual activation. ApiPay enables the account after the API contract is signed.
 
 #### BIDV — Personal Account
 
@@ -166,7 +166,7 @@ No additional fields required beyond the base fields above.
 | ------------------ | --------------------------------------------------- |
 | **Tax Code (MST)** | Tax Identification Number of the household business |
 
-> **Note for Sacombank:** Company (Business) accounts are not currently supported. Use Personal or Household Business.
+> **Note for Sacombank:** Company (Business) accounts are not currently supported. Personal and Household Business connect online.
 
 #### VPBank — Personal / Household Business Account
 
@@ -198,13 +198,21 @@ No additional fields required beyond the base fields above.
 
 > **Note:** All PGBank account types (Personal, Business, Household Business) are processed fully online with no manual activation required.
 
-#### OCB / VIB — Business or Household Business
+#### OCB / VIB — Household Business Account
 
-| Additional Field   | Description                                                    |
-| ------------------ | -------------------------------------------------------------- |
-| **Tax Code (MST)** | Tax Identification Number of the company or household business |
+| Additional Field   | Description                                         |
+| ------------------ | --------------------------------------------------- |
+| **Tax Code (MST)** | Tax Identification Number of the household business |
 
-> **Manual activation:** Business and Household Business connections for OCB and VIB are submitted for manual activation. ApiPay enables the account after the API contract is signed.
+> **Note:** OCB and VIB Household Business accounts connect online. No manual activation.
+
+#### OCB / VIB — Business Account
+
+| Additional Field   | Description                              |
+| ------------------ | ---------------------------------------- |
+| **Tax Code (MST)** | Tax Identification Number of the company |
+
+> **Manual activation:** OCB and VIB Business connections are submitted for manual activation. ApiPay enables the account after the API contract is signed.
 
 #### BIDV / VietinBank / Shinhan Bank — Business Account
 
@@ -296,7 +304,7 @@ If you want to temporarily stop receiving payments on a specific bank:
 | OTP code incorrect                | Double-check that you're entering the code sent to your phone. Codes are 6 digits.                                                                                                    |
 | CCCD rejected                     | Make sure you enter exactly 12 digits without spaces or special characters.                                                                                                           |
 | Bank shows "Pending" status       | After linking, the bank should become Active within seconds. If it stays Pending, try refreshing the page.                                                                            |
-| Bank shows "Activation Requested" | This is expected for manual-activation flows (MB Business, OCB/VIB Business or Household, VPBank/BIDV/VietinBank/Shinhan Business, Vietcombank Business/Household). ApiPay will contact you to complete activation. |
+| Bank shows "Activation Requested" | This is expected for manual-activation flows (OCB/VIB Business, VPBank/BIDV/VietinBank/Shinhan Business, Vietcombank Business/Household). ApiPay will contact you to complete activation. |
 | Account number already linked     | Each bank account can only be linked once. If you see this error, the account may already be connected to another ApiPay account.                                                     |
 | Account type not available        | Sacombank does not support Business accounts; Vietcombank does not support Personal accounts.                                                                                           |
 

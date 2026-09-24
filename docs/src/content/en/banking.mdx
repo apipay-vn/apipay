@@ -58,10 +58,11 @@ Notes:
 - **VPBank** supports Personal and Household Business (automatic) and Business (manual activation).
 - **Shinhan Bank** supports Personal (automatic) and Business (manual activation).
 - **BIDV** and **VietinBank** Business require manual activation; Household Business uses the online flow.
-- **MB Bank** Business requires manual activation. Personal and Household Business are fully online. Household Business is sent to the bank as a personal account.
-- **OCB** and **VIB** Business and Household Business require manual activation. Personal is fully online.
+- **MB Bank** Personal, Business, and Household Business are fully online. Household Business is sent to the bank as a personal account.
+- **OCB** and **VIB** Business require manual activation. Personal and Household Business are fully online.
+- **Sacombank** Household Business uses the online flow.
 - **PGBank** and **Co-opBank**: all account types are online, with no manual activation.
-- **ACB** Business uses ACB OneBiz and is fully online.
+- **ACB** Business and Household Business connect online and link the original account number. They use an ACB OneBiz username. ApiPay does not issue a separate virtual account.
 
 ### Statuses
 
@@ -69,7 +70,7 @@ After connecting, a bank account has one of these statuses:
 
 - **Active** — fully operational, receiving payments
 - **Pending** — OTP verified but final confirmation in progress
-- **Activation Requested** — manual activation queued (MB Business, OCB/VIB Business/Household, VPBank/BIDV/VietinBank/Shinhan Business, and Vietcombank Business/Household)
+- **Activation Requested** — manual activation queued (OCB/VIB Business, VPBank/BIDV/VietinBank/Shinhan Business, and Vietcombank Business/Household)
 - **Inactive** — temporarily disabled; payments won't be routed here
 
 ## Managing Multiple Banks
