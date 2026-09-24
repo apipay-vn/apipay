@@ -172,7 +172,7 @@ export const BANKS: Bank[] = [
 		fullName: 'Ngân hàng TMCP Quân đội',
 		searchNames: ['mb', 'mb bank', 'mbbank', 'quân đội'],
 		accountTypes: ['personal', 'household', 'business'],
-		modes: {personal: 'otp', household: 'manual', business: 'manual'},
+		modes: {personal: 'otp', household: 'otp', business: 'manual'},
 	},
 	{
 		slug: 'msb',
