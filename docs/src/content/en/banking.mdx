@@ -37,6 +37,7 @@ This means you don't need to manually reconcile payments — everything is autom
 | **Shinhan Bank**     | SHBVN|   Yes    |   Yes    |    No     | OpenBanking, Sync inward, Virtual Account (VA) |
 | **Co-opBank**        | COOPBANK | Yes  |   Yes    |    Yes    | OpenBanking, Sync inward, Virtual Account (VA) |
 | **Vietcombank**      | VCB  |    No    |   Yes    |    Yes    | OpenBanking, Sync inward, Bank account |
+| **MSB**              | MSB  |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Bank account |
 
 ---
 
@@ -63,6 +64,7 @@ Notes:
 - **Sacombank** Household Business uses the online flow.
 - **PGBank** and **Co-opBank**: all account types are online, with no manual activation.
 - **ACB** Business and Household Business connect online and link the original account number. They use an ACB OneBiz username. ApiPay does not issue a separate virtual account.
+- **MSB**: Personal, Business, and Household Business all require manual activation. Business accounts must enable MSB Merchant at a bank branch before linking. Do not edit the referral code. Each account can be linked only once.
 
 ### Statuses
 
@@ -70,7 +72,7 @@ After connecting, a bank account has one of these statuses:
 
 - **Active** — fully operational, receiving payments
 - **Pending** — OTP verified but final confirmation in progress
-- **Activation Requested** — manual activation queued (OCB/VIB Business, VPBank/BIDV/VietinBank/Shinhan Business, and Vietcombank Business/Household)
+- **Activation Requested** — manual activation queued (OCB/VIB Business, VPBank/BIDV/VietinBank/Shinhan Business, Vietcombank Business/Household, and every MSB account type)
 - **Inactive** — temporarily disabled; payments won't be routed here
 
 ## Managing Multiple Banks

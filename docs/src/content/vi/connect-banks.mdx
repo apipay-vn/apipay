@@ -45,6 +45,7 @@ Sau khi kết nối thành công, tài khoản sẽ xuất hiện trong phần *
 | **Shinhan Bank**     |   Có    |      Có      |    Không      | OpenBanking, Đồng bộ tiền vào, Tài khoản ảo (VA) |
 | **Co-opBank**        |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào, Tài khoản ảo (VA) |
 | **Vietcombank**      |  Không  |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào, Tài khoản ngân hàng |
+| **MSB**              |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào, Tài khoản ngân hàng |
 
 ---
 
@@ -59,7 +60,8 @@ Bạn cần chuẩn bị:
 - Đối với tài khoản Doanh nghiệp hoặc Hộ kinh doanh: Mã số thuế (MST) / CCCD của công ty/hộ kinh doanh
 - Đối với **ACB Doanh nghiệp**: Tên đăng nhập ACB OneBiz
 - **Vietcombank**: chỉ hỗ trợ Doanh nghiệp và Hộ kinh doanh (kích hoạt thủ công)
-- **OCB**/**VIB** Doanh nghiệp, **VPBank**/**BIDV**/**VietinBank**/**Shinhan Bank** Doanh nghiệp, và **Vietcombank** Doanh nghiệp/Hộ kinh doanh: kích hoạt thủ công
+- **MSB**: Cá nhân, Doanh nghiệp và Hộ kinh doanh đều kích hoạt thủ công. Doanh nghiệp cần bật MSB Merchant tại chi nhánh. Không chỉnh sửa mã giới thiệu.
+- **OCB**/**VIB** Doanh nghiệp, **VPBank**/**BIDV**/**VietinBank**/**Shinhan Bank** Doanh nghiệp, **Vietcombank** Doanh nghiệp/Hộ kinh doanh, và mọi loại tài khoản **MSB**: kích hoạt thủ công
 - **ACB** Doanh nghiệp/Hộ kinh doanh, **MB Bank** (mọi loại), **PGBank**, **Co-opBank**, và Hộ kinh doanh của **BIDV**, **VietinBank**, **Sacombank**, **VIB**, **OCB**: trực tuyến, không cần kích hoạt. **ACB** Doanh nghiệp/Hộ kinh doanh liên kết số tài khoản gốc.
 
 ---
@@ -88,14 +90,14 @@ Hầu hết các ngân hàng hỗ trợ ba loại tài khoản. Chọn loại ph
 
 Hỗ trợ theo từng ngân hàng:
 
-- **ACB**, **MB Bank**, **BIDV**, **OCB**, **VietinBank**, **VIB**, **VPBank**, **PGBank**, **Co-opBank** — Cá nhân, Doanh nghiệp, Hộ kinh doanh
+- **ACB**, **MB Bank**, **BIDV**, **OCB**, **VietinBank**, **VIB**, **VPBank**, **PGBank**, **Co-opBank**, **MSB** — Cá nhân, Doanh nghiệp, Hộ kinh doanh
 - **Vietcombank** — Doanh nghiệp, Hộ kinh doanh (không hỗ trợ Cá nhân)
 - **Shinhan Bank** — Cá nhân, Doanh nghiệp (không hỗ trợ Hộ kinh doanh)
 - **Sacombank** — Cá nhân, Hộ kinh doanh (chưa hỗ trợ Doanh nghiệp)
 
 > **Lưu ý VietinBank:** Giao dịch từ VietinBank sẽ không có nội dung. Liên hệ hỗ trợ để biết thêm chi tiết.
 
-> **Kích hoạt thủ công.** OCB/VIB Doanh nghiệp, VPBank/BIDV/VietinBank/Shinhan Doanh nghiệp, và Vietcombank Doanh nghiệp/Hộ kinh doanh, dùng yêu cầu kích hoạt. Trạng thái là **Yêu cầu kích hoạt**. ACB, MB (mọi loại), PGBank, Co-opBank, và Hộ kinh doanh của BIDV, VietinBank, Sacombank, VIB, OCB đều trực tuyến.
+> **Kích hoạt thủ công.** OCB/VIB Doanh nghiệp, VPBank/BIDV/VietinBank/Shinhan Doanh nghiệp, Vietcombank Doanh nghiệp/Hộ kinh doanh, và mọi loại tài khoản MSB dùng yêu cầu kích hoạt. Trạng thái là **Yêu cầu kích hoạt**. ACB, MB (mọi loại), PGBank, Co-opBank, và Hộ kinh doanh của BIDV, VietinBank, Sacombank, VIB, OCB đều trực tuyến.
 
 Nhấn vào thẻ phù hợp với loại tài khoản của bạn để tiếp tục.
 
@@ -232,6 +234,14 @@ Không cần thêm trường nào ngoài các trường chung bên trên.
 
 > **Kích hoạt thủ công:** Mọi tài khoản Vietcombank (Doanh nghiệp và Hộ kinh doanh) đều qua luồng kích hoạt thủ công. Tài khoản cá nhân không được hỗ trợ. ApiPay sẽ hỗ trợ xác minh và kích hoạt sau khi thiết lập hợp đồng API.
 
+#### MSB — Cá nhân, Doanh nghiệp hoặc Hộ kinh doanh
+
+| Trường bổ sung       | Mô tả                                                    |
+| -------------------- | -------------------------------------------------------- |
+| **CCCD / mã số thuế**| CCCD với tài khoản cá nhân, mã số thuế với doanh nghiệp hoặc hộ kinh doanh |
+
+> **Kích hoạt thủ công:** Mọi tài khoản MSB đều qua luồng kích hoạt thủ công. Doanh nghiệp cần bật MSB Merchant tại chi nhánh trước. Không chỉnh sửa mã giới thiệu. Mỗi tài khoản chỉ liên kết một lần. ApiPay kích hoạt trong vòng 24 giờ.
+
 Sau khi điền đầy đủ các trường:
 
 1. Đọc nội dung đồng ý về chính sách bảo mật và điều khoản sử dụng
@@ -304,7 +314,7 @@ Nếu muốn tạm ngừng nhận thanh toán qua một ngân hàng:
 | Mã OTP không đúng                        | Kiểm tra kỹ mã bạn nhập, gồm 6 chữ số.                                                                                                               |
 | CCCD bị từ chối                          | Hãy nhập đúng 12 chữ số, không có khoảng trắng hay ký tự đặc biệt.                                                                                   |
 | Ngân hàng hiển thị trạng thái "Đang chờ" | Sau khi liên kết, ngân hàng thường chuyển sang Hoạt động trong vài giây. Nếu vẫn Đang chờ, hãy tải lại trang.                                        |
-| Ngân hàng hiển thị "Yêu cầu kích hoạt"   | Đây là trạng thái bình thường cho luồng thủ công (OCB/VIB Doanh nghiệp, VPBank/BIDV/VietinBank/Shinhan Doanh nghiệp, Vietcombank Doanh nghiệp/Hộ kinh doanh). ApiPay sẽ liên hệ kích hoạt. |
+| Ngân hàng hiển thị "Yêu cầu kích hoạt"   | Đây là trạng thái bình thường cho luồng thủ công (OCB/VIB Doanh nghiệp, VPBank/BIDV/VietinBank/Shinhan Doanh nghiệp, Vietcombank Doanh nghiệp/Hộ kinh doanh, mọi loại tài khoản MSB). ApiPay sẽ liên hệ kích hoạt. |
 | Số tài khoản đã được liên kết            | Mỗi tài khoản ngân hàng chỉ có thể liên kết một lần. Nếu thấy lỗi này, tài khoản có thể đã được liên kết với tài khoản ApiPay khác.                  |
 | Loại tài khoản không khả dụng            | Sacombank không hỗ trợ Doanh nghiệp; Vietcombank không hỗ trợ Cá nhân.                                                                               |
 
