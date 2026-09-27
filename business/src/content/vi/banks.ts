@@ -66,26 +66,6 @@ const OTP_STEPS: FlowStep[] = [
 	},
 ];
 
-const REDIRECT_STEPS: FlowStep[] = [
-	DASHBOARD_STEP,
-	{
-		title: 'Chọn ngân hàng và loại tài khoản',
-		body: 'Chọn ngân hàng và loại tài khoản bạn muốn liên kết.',
-	},
-	{
-		title: 'Chuyển sang app ngân hàng',
-		body: 'Hệ thống chuyển hướng bạn đến ứng dụng ngân hàng để xác nhận.',
-	},
-	{
-		title: 'Cho phép và chọn tài khoản',
-		body: 'Xác nhận “Cho phép” và chọn tài khoản hoặc VA nhận tiền trong app ngân hàng.',
-	},
-	{
-		title: 'Hoàn tất',
-		body: 'Tài khoản được liên kết sau khi bạn xác nhận trong app ngân hàng.',
-	},
-];
-
 const MANUAL_STEPS: FlowStep[] = [
 	DASHBOARD_STEP,
 	{
@@ -108,7 +88,6 @@ const MANUAL_STEPS: FlowStep[] = [
 
 const FLOWS: Record<LinkMode, AccountFlow> = {
 	otp: {steps: OTP_STEPS},
-	redirect: {steps: REDIRECT_STEPS},
 	manual: {steps: MANUAL_STEPS},
 };
 

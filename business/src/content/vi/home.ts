@@ -1,7 +1,7 @@
 export const home = {
 	title: 'Quy trình liên kết ngân hàng',
 	subtitle:
-		'Hướng dẫn cách liên kết tài khoản ngân hàng với ApiPay để nhận tiền — tự thao tác qua OTP, xác nhận qua app ngân hàng, hoặc kích hoạt thủ công.',
+		'Hướng dẫn cách liên kết tài khoản ngân hàng với ApiPay để nhận tiền — tự thao tác qua OTP, hoặc kích hoạt thủ công.',
 	search: {
 		label: 'Tìm ngân hàng',
 		placeholder: 'Tìm ngân hàng, mã BIN hoặc từ khoá...',

@@ -1,5 +1,5 @@
 export type AccountType = 'personal' | 'household' | 'business';
-export type LinkMode = 'otp' | 'redirect' | 'manual';
+export type LinkMode = 'otp' | 'manual';
 export type Locale = 'vi' | 'en';
 
 export const ACCOUNT_TYPES: Record<AccountType, {short: string; vi: string; en: string; glossary: string}> = {
@@ -13,7 +13,6 @@ export const ACCOUNT_TYPE_KEYS: AccountType[] = ['personal', 'household', 'busin
 export const MODE_TAGS: Record<LinkMode, {vi: string; en: string; slug: string}> = {
 	otp: {vi: 'Tự thao tác', en: 'Self-serve', slug: 'self-serve'},
 	manual: {vi: 'Kích hoạt thủ công', en: 'Manual activation', slug: 'manual'},
-	redirect: {vi: 'Qua app ngân hàng', en: 'Bank app', slug: 'bank-app'},
 };
 
 export interface FlowStep {
@@ -190,7 +189,7 @@ export const BANKS: Bank[] = [
 		bin: '970423',
 		name: 'TPBank',
 		fullName: 'Ngân hàng TMCP Tiên Phong',
-		searchNames: ['tpbank', 'tiên phong', 'tpbank connect', 'connect'],
+		searchNames: ['tpbank', 'tiên phong', 'tpbank connect'],
 		accountTypes: ['personal', 'household', 'business'],
 		modes: {personal: 'manual', household: 'manual', business: 'manual'},
 	},

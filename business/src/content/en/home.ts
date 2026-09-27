@@ -1,7 +1,7 @@
 export const home = {
 	title: 'Bank linking flow',
 	subtitle:
-		'How to link a bank account to ApiPay to receive funds — self-serve with OTP, confirm in your bank app, or request manual activation.',
+		'How to link a bank account to ApiPay to receive funds — self-serve with OTP, or request manual activation.',
 	search: {
 		label: 'Find a bank',
 		placeholder: 'Search bank, BIN, or keyword...',

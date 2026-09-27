@@ -66,26 +66,6 @@ const OTP_STEPS: FlowStep[] = [
 	},
 ];
 
-const REDIRECT_STEPS: FlowStep[] = [
-	DASHBOARD_STEP,
-	{
-		title: 'Select bank and account type',
-		body: 'Choose the bank and the account type you want to link.',
-	},
-	{
-		title: 'Continue to the bank app',
-		body: 'You are redirected to your bank’s mobile app to confirm.',
-	},
-	{
-		title: 'Allow and pick an account',
-		body: 'Tap “Allow” and choose the account or VA to receive funds in the bank app.',
-	},
-	{
-		title: 'Done',
-		body: 'The account is linked once you confirm in the bank app.',
-	},
-];
-
 const MANUAL_STEPS: FlowStep[] = [
 	DASHBOARD_STEP,
 	{
@@ -108,7 +88,6 @@ const MANUAL_STEPS: FlowStep[] = [
 
 const FLOWS: Record<LinkMode, AccountFlow> = {
 	otp: {steps: OTP_STEPS},
-	redirect: {steps: REDIRECT_STEPS},
 	manual: {steps: MANUAL_STEPS},
 };
 
