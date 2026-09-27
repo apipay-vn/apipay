@@ -22,7 +22,7 @@ ApiPay is a payment gateway API that helps you easily create payment links via b
 - **Automatic confirmation** when payment is received
 - **Free Payment Speaker** - Real-time voice announcements for incoming bank transfers on any device
 - **Webhook notifications** - Receive real-time payment notifications
-- **Multiple banks** - Supports ACB, MB Bank, BIDV, OCB, VietinBank, VIB, Sacombank, VPBank, PGBank, Shinhan Bank, Co-opBank, and Vietcombank
+- **Multiple banks** - Supports ACB, MB Bank, BIDV, OCB, VietinBank, VIB, Sacombank, VPBank, PGBank, Shinhan Bank, Co-opBank, Vietcombank, MSB, and TPBank
 - **No percentage fees** - Successful transactions count toward your quota; failed transactions are never charged
 - **Free plan** - Start with 60 successful transactions/month, then upgrade to a paid quota from 200 to 500,000 tx/month. Every quota plan supports connecting multiple banks.
 
@@ -395,6 +395,8 @@ ApiPay supports the following major Vietnamese banks:
 - Shinhan Bank (SHBVN)
 - Co-opBank (COOPBANK)
 - Vietcombank (VCB)
+- MSB
+- TPBank (TPB)
 
 ### Connection Process
 
@@ -588,7 +590,7 @@ The **effective monthly price** is lower for discounted 6-month and 12-month ter
 
 The free plan activates immediately. No bank transfer is required.
 
-> **Note:** Each phone number can activate the free plan on one account. Accounts that have already purchased a paid plan cannot switch back to free.
+> **Note:** Each phone number can activate the free plan on one account. An account cannot switch to free while a paid term is still active. After that term ends and the renewal is unpaid, the account can activate free. Free overage stays 350 VND per transaction and does not keep the paid plan's included quota or lower rate.
 
 ## Purchasing a Paid Plan
 
@@ -725,6 +727,8 @@ This means you don't need to manually reconcile payments — everything is autom
 | **Shinhan Bank**     | SHBVN|   Yes    |   Yes    |    No     | OpenBanking, Sync inward, Virtual Account (VA) |
 | **Co-opBank**        | COOPBANK | Yes  |   Yes    |    Yes    | OpenBanking, Sync inward, Virtual Account (VA) |
 | **Vietcombank**      | VCB  |    No    |   Yes    |    Yes    | OpenBanking, Sync inward, Bank account |
+| **MSB**              | MSB  |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Bank account |
+| **TPBank**           | TPB  |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Bank account |
 
 ---
 
@@ -751,6 +755,8 @@ Notes:
 - **Sacombank** Household Business uses the online flow.
 - **PGBank** and **Co-opBank**: all account types are online, with no manual activation.
 - **ACB** Business and Household Business connect online and link the original account number. They use an ACB OneBiz username. ApiPay does not issue a separate virtual account.
+- **MSB**: Personal, Business, and Household Business all require manual activation. Business accounts must enable MSB Merchant at a bank branch before linking. Do not edit the referral code. Each account can be linked only once.
+- **TPBank**: Personal, Business, and Household Business connect online. Confirm Allow in the TPBank app (TPBank Connect) and select the receiving account. ApiPay does not manually activate these accounts. The virtual account appears as a sub-account of the original account.
 
 ### Statuses
 
@@ -758,7 +764,7 @@ After connecting, a bank account has one of these statuses:
 
 - **Active** — fully operational, receiving payments
 - **Pending** — OTP verified but final confirmation in progress
-- **Activation Requested** — manual activation queued (OCB/VIB Business, VPBank/BIDV/VietinBank/Shinhan Business, and Vietcombank Business/Household)
+- **Activation Requested** — manual activation queued (OCB/VIB Business, VPBank/BIDV/VietinBank/Shinhan Business, Vietcombank Business/Household, and every MSB account type)
 - **Inactive** — temporarily disabled; payments won't be routed here
 
 ## Managing Multiple Banks
@@ -1327,6 +1333,8 @@ Once linked, your bank account appears in the **Banks** section of the dashboard
 | **Shinhan Bank**     |   Yes    |   Yes    |    No     | OpenBanking, Sync inward, Virtual Account (VA) |
 | **Co-opBank**        |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Virtual Account (VA) |
 | **Vietcombank**      |    No    |   Yes    |    Yes    | OpenBanking, Sync inward, Bank account |
+| **MSB**              |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Bank account |
+| **TPBank**           |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Bank account |
 
 ---
 
@@ -1341,8 +1349,10 @@ Before linking a bank account, make sure you have:
 - For Business or Household Business accounts: your company/household Tax Code (MST) / CCCD
 - For **ACB Business**: an ACB OneBiz username
 - **Vietcombank**: supports Business and Household Business only (all manual activation)
-- **OCB**/**VIB** Business, **VPBank**/**BIDV**/**VietinBank**/**Shinhan Bank** Business, and **Vietcombank** Business/Household: manual activation
-- **ACB** Business/Household, **MB Bank** (all types), **PGBank**, **Co-opBank**, and Household Business for **BIDV**, **VietinBank**, **Sacombank**, **VIB**, and **OCB**: fully online, no manual activation. **ACB** Business/Household link the original account number.
+- **MSB**: Personal, Business, and Household Business all require manual activation. Business accounts must enable MSB Merchant at a branch. Do not edit the referral code.
+- **TPBank**: Personal, Business, and Household Business connect online. Confirm Allow in the TPBank app (TPBank Connect) and select the receiving account. The virtual account appears as a sub-account of the original account.
+- **OCB**/**VIB** Business, **VPBank**/**BIDV**/**VietinBank**/**Shinhan Bank** Business, **Vietcombank** Business/Household, and every **MSB** account type: manual activation
+- **ACB** Business/Household, **MB Bank** (all types), **PGBank**, **Co-opBank**, **TPBank** (all types), and Household Business for **BIDV**, **VietinBank**, **Sacombank**, **VIB**, and **OCB**: fully online, no manual activation. **ACB** Business/Household link the original account number. **TPBank** is confirmed in the TPBank app.
 
 ---
 
@@ -1370,14 +1380,14 @@ Most banks support three account types. Pick the one that matches your account:
 
 Per-bank availability:
 
-- **ACB**, **MB Bank**, **BIDV**, **OCB**, **VietinBank**, **VIB**, **VPBank**, **PGBank**, **Co-opBank** — Personal, Business, Household Business
+- **ACB**, **MB Bank**, **BIDV**, **OCB**, **VietinBank**, **VIB**, **VPBank**, **PGBank**, **Co-opBank**, **MSB**, **TPBank** — Personal, Business, Household Business
 - **Vietcombank** — Business, Household Business (Personal not supported)
 - **Shinhan Bank** — Personal, Business (Household Business not supported)
 - **Sacombank** — Personal, Household Business (Business not supported)
 
 > **VietinBank note:** Transactions from VietinBank have no transfer content; contact support for more details.
 
-> **Manual activation.** OCB/VIB Business, VPBank/BIDV/VietinBank/Shinhan Business, and Vietcombank Business/Household use activation requests. You'll see **Activation Requested** until they complete. ACB, MB (all types), PGBank, Co-opBank, and Household Business for BIDV, VietinBank, Sacombank, VIB, and OCB are fully online.
+> **Manual activation.** OCB/VIB Business, VPBank/BIDV/VietinBank/Shinhan Business, Vietcombank Business/Household, and every MSB account type use activation requests. You'll see **Activation Requested** until they complete. ACB, MB (all types), PGBank, Co-opBank, TPBank (all types), and Household Business for BIDV, VietinBank, Sacombank, VIB, and OCB are fully online. TPBank is confirmed in the TPBank app.
 
 Click the card that matches your account type to continue.
 
@@ -1514,6 +1524,22 @@ No additional fields required beyond the base fields above.
 
 > **Manual activation:** All Vietcombank connections (Business and Household Business) are submitted for manual activation. Personal accounts are not supported. ApiPay enables the account after verification and API contract setup.
 
+#### MSB — Personal, Business, or Household Business Account
+
+| Additional Field   | Description                                                    |
+| ------------------ | -------------------------------------------------------------- |
+| **CCCD / Tax Code**| Citizen ID for personal accounts, or tax code for business and household business |
+
+> **Manual activation:** Every MSB account type is submitted for manual activation. Business accounts must enable MSB Merchant at a bank branch first. Do not edit the referral code. Each account can be linked only once. ApiPay activates the account within 24 hours.
+
+#### TPBank — Personal, Business, or Household Business Account
+
+| Additional Field   | Description                                                    |
+| ------------------ | -------------------------------------------------------------- |
+| **CCCD / Tax Code**| Citizen ID for personal accounts, or tax code for business and household business |
+
+> **TPBank app:** All three account types connect online. Confirm Allow in the TPBank app (TPBank Connect) and select the receiving account. ApiPay does not manually activate these accounts. The virtual account appears as a sub-account of the original account.
+
 After filling in all fields:
 
 1. Read the consent text about privacy policy and terms of use
@@ -1586,7 +1612,7 @@ If you want to temporarily stop receiving payments on a specific bank:
 | OTP code incorrect                | Double-check that you're entering the code sent to your phone. Codes are 6 digits.                                                                                                    |
 | CCCD rejected                     | Make sure you enter exactly 12 digits without spaces or special characters.                                                                                                           |
 | Bank shows "Pending" status       | After linking, the bank should become Active within seconds. If it stays Pending, try refreshing the page.                                                                            |
-| Bank shows "Activation Requested" | This is expected for manual-activation flows (OCB/VIB Business, VPBank/BIDV/VietinBank/Shinhan Business, Vietcombank Business/Household). ApiPay will contact you to complete activation. |
+| Bank shows "Activation Requested" | This is expected for manual-activation flows (OCB/VIB Business, VPBank/BIDV/VietinBank/Shinhan Business, Vietcombank Business/Household, every MSB account type). ApiPay will contact you to complete activation. |
 | Account number already linked     | Each bank account can only be linked once. If you see this error, the account may already be connected to another ApiPay account.                                                     |
 | Account type not available        | Sacombank does not support Business accounts; Vietcombank does not support Personal accounts.                                                                                           |
 
@@ -4527,6 +4553,8 @@ Base route:
 | Shinhan    | `SHBVN`    | `970424` | personal, business                     |
 | Co-opBank  | `COOPBANK` | `970446` | personal, business, household business |
 | Vietcombank| `VCB`      | `970436` | business, household business           |
+| MSB        | `MSB`      | `970426` | personal, business, household business |
+| TPBank     | `TPB`      | `970423` | personal, business, household business |
 
 Use `GET /v1/client/banks/available` to retrieve the live bank catalog before showing a bank picker.
 
@@ -4647,8 +4675,11 @@ Manual activation applies to:
 - OCB and VIB business accounts
 - VPBank, BIDV, VietinBank, and Shinhan Bank business accounts
 - Vietcombank business and household business accounts
+- Every MSB account type (personal, business, and household business)
 
 ApiPay contacts the account owner to complete activation.
+
+TPBank personal, business, and household business accounts connect online. Confirm Allow in the TPBank app (TPBank Connect) and select the receiving account. The virtual account appears as a sub-account of the original account.
 
 ## 3. Confirm OTP
 

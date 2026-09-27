@@ -182,7 +182,7 @@ export const BANKS: Bank[] = [
 		fullName: 'Ngân hàng TMCP Hàng Hải Việt Nam',
 		searchNames: ['msb', 'hàng hải', 'msb merchant', 'merchant app'],
 		accountTypes: ['personal', 'household', 'business'],
-		modes: {personal: 'redirect', household: 'redirect', business: 'redirect'},
+		modes: {personal: 'manual', household: 'manual', business: 'manual'},
 	},
 	{
 		slug: 'tpbank',

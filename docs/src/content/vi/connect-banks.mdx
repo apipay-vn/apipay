@@ -46,6 +46,7 @@ Sau khi kết nối thành công, tài khoản sẽ xuất hiện trong phần *
 | **Co-opBank**        |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào, Tài khoản ảo (VA) |
 | **Vietcombank**      |  Không  |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào, Tài khoản ngân hàng |
 | **MSB**              |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào, Tài khoản ngân hàng |
+| **TPBank**           |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào, Tài khoản ngân hàng |
 
 ---
 
@@ -61,8 +62,9 @@ Bạn cần chuẩn bị:
 - Đối với **ACB Doanh nghiệp**: Tên đăng nhập ACB OneBiz
 - **Vietcombank**: chỉ hỗ trợ Doanh nghiệp và Hộ kinh doanh (kích hoạt thủ công)
 - **MSB**: Cá nhân, Doanh nghiệp và Hộ kinh doanh đều kích hoạt thủ công. Doanh nghiệp cần bật MSB Merchant tại chi nhánh. Không chỉnh sửa mã giới thiệu.
+- **TPBank**: Cá nhân, Doanh nghiệp và Hộ kinh doanh đều kết nối online. Xác nhận Cho phép trong ứng dụng TPBank (TPBank Connect) và chọn tài khoản nhận tiền. Tài khoản ảo hiển thị dưới dạng tài khoản phụ của tài khoản gốc.
 - **OCB**/**VIB** Doanh nghiệp, **VPBank**/**BIDV**/**VietinBank**/**Shinhan Bank** Doanh nghiệp, **Vietcombank** Doanh nghiệp/Hộ kinh doanh, và mọi loại tài khoản **MSB**: kích hoạt thủ công
-- **ACB** Doanh nghiệp/Hộ kinh doanh, **MB Bank** (mọi loại), **PGBank**, **Co-opBank**, và Hộ kinh doanh của **BIDV**, **VietinBank**, **Sacombank**, **VIB**, **OCB**: trực tuyến, không cần kích hoạt. **ACB** Doanh nghiệp/Hộ kinh doanh liên kết số tài khoản gốc.
+- **ACB** Doanh nghiệp/Hộ kinh doanh, **MB Bank** (mọi loại), **PGBank**, **Co-opBank**, **TPBank** (mọi loại), và Hộ kinh doanh của **BIDV**, **VietinBank**, **Sacombank**, **VIB**, **OCB**: trực tuyến, không cần kích hoạt. **ACB** Doanh nghiệp/Hộ kinh doanh liên kết số tài khoản gốc. **TPBank** xác nhận trong ứng dụng TPBank.
 
 ---
 
@@ -90,14 +92,14 @@ Hầu hết các ngân hàng hỗ trợ ba loại tài khoản. Chọn loại ph
 
 Hỗ trợ theo từng ngân hàng:
 
-- **ACB**, **MB Bank**, **BIDV**, **OCB**, **VietinBank**, **VIB**, **VPBank**, **PGBank**, **Co-opBank**, **MSB** — Cá nhân, Doanh nghiệp, Hộ kinh doanh
+- **ACB**, **MB Bank**, **BIDV**, **OCB**, **VietinBank**, **VIB**, **VPBank**, **PGBank**, **Co-opBank**, **MSB**, **TPBank** — Cá nhân, Doanh nghiệp, Hộ kinh doanh
 - **Vietcombank** — Doanh nghiệp, Hộ kinh doanh (không hỗ trợ Cá nhân)
 - **Shinhan Bank** — Cá nhân, Doanh nghiệp (không hỗ trợ Hộ kinh doanh)
 - **Sacombank** — Cá nhân, Hộ kinh doanh (chưa hỗ trợ Doanh nghiệp)
 
 > **Lưu ý VietinBank:** Giao dịch từ VietinBank sẽ không có nội dung. Liên hệ hỗ trợ để biết thêm chi tiết.
 
-> **Kích hoạt thủ công.** OCB/VIB Doanh nghiệp, VPBank/BIDV/VietinBank/Shinhan Doanh nghiệp, Vietcombank Doanh nghiệp/Hộ kinh doanh, và mọi loại tài khoản MSB dùng yêu cầu kích hoạt. Trạng thái là **Yêu cầu kích hoạt**. ACB, MB (mọi loại), PGBank, Co-opBank, và Hộ kinh doanh của BIDV, VietinBank, Sacombank, VIB, OCB đều trực tuyến.
+> **Kích hoạt thủ công.** OCB/VIB Doanh nghiệp, VPBank/BIDV/VietinBank/Shinhan Doanh nghiệp, Vietcombank Doanh nghiệp/Hộ kinh doanh, và mọi loại tài khoản MSB dùng yêu cầu kích hoạt. Trạng thái là **Yêu cầu kích hoạt**. ACB, MB (mọi loại), PGBank, Co-opBank, TPBank (mọi loại), và Hộ kinh doanh của BIDV, VietinBank, Sacombank, VIB, OCB đều trực tuyến. TPBank xác nhận trong ứng dụng TPBank.
 
 Nhấn vào thẻ phù hợp với loại tài khoản của bạn để tiếp tục.
 
@@ -241,6 +243,14 @@ Không cần thêm trường nào ngoài các trường chung bên trên.
 | **CCCD / mã số thuế**| CCCD với tài khoản cá nhân, mã số thuế với doanh nghiệp hoặc hộ kinh doanh |
 
 > **Kích hoạt thủ công:** Mọi tài khoản MSB đều qua luồng kích hoạt thủ công. Doanh nghiệp cần bật MSB Merchant tại chi nhánh trước. Không chỉnh sửa mã giới thiệu. Mỗi tài khoản chỉ liên kết một lần. ApiPay kích hoạt trong vòng 24 giờ.
+
+#### TPBank — Cá nhân, Doanh nghiệp hoặc Hộ kinh doanh
+
+| Trường bổ sung       | Mô tả                                                    |
+| -------------------- | -------------------------------------------------------- |
+| **CCCD / mã số thuế**| CCCD với tài khoản cá nhân, mã số thuế với doanh nghiệp hoặc hộ kinh doanh |
+
+> **Ứng dụng TPBank:** Cả ba loại tài khoản kết nối online. Xác nhận Cho phép trong ứng dụng TPBank (TPBank Connect) và chọn tài khoản nhận tiền. ApiPay không kích hoạt thủ công. Tài khoản ảo hiển thị dưới dạng tài khoản phụ của tài khoản gốc.
 
 Sau khi điền đầy đủ các trường:
 

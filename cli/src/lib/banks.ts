@@ -5,6 +5,8 @@ const BANK_CODE_BY_BIN: Record<string, string> = {
 	"970448": "OCB",
 	"970415": "ICB",
 	"970436": "VCB",
+	"970426": "MSB",
+	"970423": "TPB",
 };
 
 export function formatBankShortName(value: string | null | undefined): string {

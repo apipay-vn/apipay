@@ -79,6 +79,15 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.28.0',
+    date: '2026-09-27',
+    features: [
+      'TPBank support — connect TPBank personal, business, or household business accounts to receive automated bank transfer payments and real-time transaction webhooks. Confirm the link in the TPBank app. ApiPay does not manually activate these accounts.',
+    ],
+    fixes: [],
+    improvements: [],
+  },
+  {
     version: '1.27.0',
     date: '2026-09-22',
     features: [
@@ -652,6 +661,15 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.28.0',
+    date: '2026-09-27',
+    features: [
+      'Hỗ trợ ngân hàng TPBank — kết nối tài khoản cá nhân, doanh nghiệp hoặc hộ kinh doanh TPBank để nhận chuyển khoản tự động và webhook giao dịch thời gian thực. Xác nhận liên kết trong ứng dụng TPBank. ApiPay không kích hoạt thủ công các tài khoản này.',
+    ],
+    fixes: [],
+    improvements: [],
+  },
   {
     version: '1.27.0',
     date: '2026-09-22',

@@ -171,6 +171,32 @@ export const SUPPORTED_BANKS = [
 		] satisfies AccountType[],
 		requiresIdentity: true,
 	},
+	{
+		value: "MSB",
+		shortName: "MSB",
+		bankBin: "970426",
+		bankName: "MSB",
+		name: "MSB — Ngân hàng TMCP Hàng Hải Việt Nam",
+		accountTypes: [
+			"personal-account",
+			"business-account",
+			"business-household-account",
+		] satisfies AccountType[],
+		requiresIdentity: true,
+	},
+	{
+		value: "TPB",
+		shortName: "TPB",
+		bankBin: "970423",
+		bankName: "TPBank",
+		name: "TPBank — Ngân hàng TMCP Tiên Phong",
+		accountTypes: [
+			"personal-account",
+			"business-account",
+			"business-household-account",
+		] satisfies AccountType[],
+		requiresIdentity: true,
+	},
 ] as const;
 
 export type SupportedBank = (typeof SUPPORTED_BANKS)[number];

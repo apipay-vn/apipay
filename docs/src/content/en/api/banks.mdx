@@ -30,6 +30,7 @@ Base route:
 | Co-opBank  | `COOPBANK` | `970446` | personal, business, household business |
 | Vietcombank| `VCB`      | `970436` | business, household business           |
 | MSB        | `MSB`      | `970426` | personal, business, household business |
+| TPBank     | `TPB`      | `970423` | personal, business, household business |
 
 Use `GET /v1/client/banks/available` to retrieve the live bank catalog before showing a bank picker.
 
@@ -153,6 +154,8 @@ Manual activation applies to:
 - Every MSB account type (personal, business, and household business)
 
 ApiPay contacts the account owner to complete activation.
+
+TPBank personal, business, and household business accounts connect online. Confirm Allow in the TPBank app (TPBank Connect) and select the receiving account. The virtual account appears as a sub-account of the original account.
 
 ## 3. Confirm OTP
 
