@@ -192,7 +192,7 @@ export const BANKS: Bank[] = [
 		fullName: 'Ngân hàng TMCP Tiên Phong',
 		searchNames: ['tpbank', 'tiên phong', 'tpbank connect', 'connect'],
 		accountTypes: ['personal', 'household', 'business'],
-		modes: {personal: 'redirect', household: 'redirect', business: 'redirect'},
+		modes: {personal: 'manual', household: 'manual', business: 'manual'},
 	},
 	{
 		slug: 'vib',

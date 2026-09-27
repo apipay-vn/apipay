@@ -5,7 +5,7 @@ export const home = {
 	search: {
 		label: 'Find a bank',
 		placeholder: 'Search bank, BIN, or keyword...',
-		hint: 'e.g. Vietcombank, BIDV, 970416, MSB Merchant, TPBank Connect',
+		hint: 'e.g. Vietcombank, BIDV, 970416, MSB Merchant, TPBank',
 		empty: 'No matching bank found.',
 		results: 'Results',
 	},

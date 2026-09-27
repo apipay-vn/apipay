@@ -82,7 +82,7 @@ export const enReleases: ReleaseNote[] = withAnchors([
     version: '1.28.0',
     date: '2026-09-27',
     features: [
-      'TPBank support — connect TPBank personal, business, or household business accounts to receive automated bank transfer payments and real-time transaction webhooks. Confirm the link in the TPBank app. ApiPay does not manually activate these accounts.',
+      'TPBank support — connect TPBank personal, business, or household business accounts to receive automated bank transfer payments and real-time transaction webhooks. Every TPBank account type is activated manually.',
     ],
     fixes: [],
     improvements: [],
@@ -665,7 +665,7 @@ export const viReleases: ReleaseNote[] = withAnchors([
     version: '1.28.0',
     date: '2026-09-27',
     features: [
-      'Hỗ trợ ngân hàng TPBank — kết nối tài khoản cá nhân, doanh nghiệp hoặc hộ kinh doanh TPBank để nhận chuyển khoản tự động và webhook giao dịch thời gian thực. Xác nhận liên kết trong ứng dụng TPBank. ApiPay không kích hoạt thủ công các tài khoản này.',
+      'Hỗ trợ ngân hàng TPBank — kết nối tài khoản cá nhân, doanh nghiệp hoặc hộ kinh doanh TPBank để nhận chuyển khoản tự động và webhook giao dịch thời gian thực. Mọi loại tài khoản TPBank được kích hoạt thủ công.',
     ],
     fixes: [],
     improvements: [],

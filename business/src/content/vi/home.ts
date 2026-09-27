@@ -5,7 +5,7 @@ export const home = {
 	search: {
 		label: 'Tìm ngân hàng',
 		placeholder: 'Tìm ngân hàng, mã BIN hoặc từ khoá...',
-		hint: 'Ví dụ: Vietcombank, BIDV, 970416, MSB Merchant, TPBank Connect',
+		hint: 'Ví dụ: Vietcombank, BIDV, 970416, MSB Merchant, TPBank',
 		empty: 'Không tìm thấy ngân hàng phù hợp.',
 		results: 'Kết quả',
 	},
