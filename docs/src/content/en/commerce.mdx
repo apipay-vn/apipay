@@ -7,12 +7,12 @@ description: Create a product, copy a reusable payment link, collect buyer detai
 
 Commerce is where you keep the products you sell and the prices on those products. Create a payment link from a price so every customer for that item pays the same amount.
 
-You can do this in the dashboard under **Commerce**, or through the [Commerce API](/en/api/commerce). Creating a payment link still uses the [Payment Requests API](/en/api/payment-requests) — send `priceId` instead of typing the amount.
+You can do this in the dashboard under **Integrations → Commerce** (Beta), or through the [Commerce API](/en/api/commerce). Creating a payment link still uses the [Payment Requests API](/en/api/payment-requests) — send `priceId` instead of typing the amount.
 
 <Callout type="tip">
-Open **Commerce** in the dashboard to create a product, add a price, and try a payment link.
+Open **Integrations → Commerce** in the dashboard to create a product, add a price, and try a payment link.
 
-[Open Commerce in dashboard](https://my.apipay.vn/en/commerce)
+[Open Commerce in dashboard](https://my.apipay.vn/en/integrations/commerce)
 </Callout>
 
 ## How it works
@@ -89,7 +89,7 @@ ApiPay automatically saves customers (`CommerceCustomer`) when buyers enter thei
 
 ## Try it
 
-1. Open **Commerce** and create a product (you can add the first price and image in the same form).
+1. Open **Integrations → Commerce** and create a product (you can add the first price and image in the same form).
 2. On the product page, click **Copy payment link** — or add a price first if you skipped it.
 3. Open the link, enter buyer name and email, then pay. In sandbox, create a one-time payment from the price and simulate it.
 4. On live payments, the buyer gets the receipt by email. You can also view it in the **Invoices** tab.

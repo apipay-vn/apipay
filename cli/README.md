@@ -72,7 +72,7 @@ apipay webhooks:add           # Register a webhook for notifications
 
 | Command | Description |
 |---------|-------------|
-| `apipay pay:create` | Generate a one-shot payment request. Reusable Commerce links are created in the dashboard (https://apipay.vn/commerce). |
+| `apipay pay:create` | Generate a one-shot payment request. Reusable Commerce links are created in the dashboard (https://my.apipay.vn/integrations/commerce). |
 
 ### Metrics
 

@@ -7,12 +7,12 @@ description: Tạo sản phẩm, sao chép link thanh toán dùng lại, thu th�
 
 Commerce là nơi bạn quản lý sản phẩm và mức giá. Tạo link thanh toán từ một mức giá để khách mua cùng mặt hàng đều chuyển đúng số tiền.
 
-Bạn làm việc này trên dashboard (**Commerce**) hoặc qua [Commerce API](/vi/api/commerce). Tạo link thanh toán vẫn dùng [Payment Requests API](/vi/api/payment-requests) — gửi `priceId` thay vì tự nhập số tiền.
+Bạn làm việc này trên dashboard (**Tích hợp → Commerce**, Beta) hoặc qua [Commerce API](/vi/api/commerce). Tạo link thanh toán vẫn dùng [Payment Requests API](/vi/api/payment-requests) — gửi `priceId` thay vì tự nhập số tiền.
 
 <Callout type="tip">
-Mở **Commerce** trong dashboard để tạo sản phẩm, thêm mức giá và thử một link thanh toán.
+Mở **Tích hợp → Commerce** trong dashboard để tạo sản phẩm, thêm mức giá và thử một link thanh toán.
 
-[Mở Commerce trong dashboard](https://my.apipay.vn/vi/commerce)
+[Mở Commerce trong dashboard](https://my.apipay.vn/vi/integrations/commerce)
 </Callout>
 
 ## Cách hoạt động
@@ -89,7 +89,7 @@ ApiPay tự động lưu danh bạ khách hàng (`CommerceCustomer`) khi ngườ
 
 ## Thử ngay
 
-1. Mở **Commerce** và tạo sản phẩm (có thể thêm mức giá và ảnh ngay trong form).
+1. Mở **Tích hợp → Commerce** và tạo sản phẩm (có thể thêm mức giá và ảnh ngay trong form).
 2. Trên trang sản phẩm, bấm **Sao chép link thanh toán** — hoặc thêm mức giá trước nếu bạn bỏ qua bước đó.
 3. Mở link, nhập họ tên và email, rồi thanh toán. Ở sandbox, tạo thanh toán một lần từ mức giá rồi mô phỏng.
 4. Trên giao dịch thực tế, khách nhận biên lai qua email. Bạn cũng xem được ở tab **Hóa đơn bán hàng**.
