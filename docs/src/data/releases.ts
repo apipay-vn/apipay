@@ -79,6 +79,25 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.29.0',
+    date: '2026-09-30',
+    features: [
+      'Stores and staff (Beta) — organize your receiving bank accounts into stores and invite your team. Each staff member signs in with their own email and password and sees only the stores you assign, so someone at one location never sees another location’s payments.',
+      'Custom permissions — give a staff member exactly what they need with a reusable permission set: view or export transactions, view, create, or cancel payment requests, view sales receipts, bank accounts, and webhooks. Start from Viewer or Cashier, or use a one-click preset for Store manager, Accountant, or Staff.',
+      'Activity log — review staff sign-ins and recorded changes to staff access, receiving-account assignments, and permission sets in one place.',
+      'Staff on the mobile app — your team can sign in to the ApiPay mobile app with the same email and password, choose their store, and use only the features they have permission to access.',
+      'Extra confirmation for sensitive actions — after you first set up a passkey or two-factor authentication, revealing, creating, or revoking an API key and switching a bank account on or off require confirmation. Accounts that have never set up either method can continue without confirmation.',
+      'Organize receiving accounts by store — add a bank account to a store, move it to another store, or leave it unassigned at any time. Each receiving account belongs to at most one store.',
+    ],
+    fixes: [],
+    improvements: [
+      'A new Getting started card on the dashboard guides you through the first steps: connect a bank, create a store, and invite your team.',
+      'Commerce now sits under Integrations in the sidebar, together with your other integrations.',
+      'Clearer empty states across the dashboard and a tidier webhook delivery log make it easier to see what to do next.',
+      'Support ticket emails are easier to read, with a cleaner and more consistent layout.',
+    ],
+  },
+  {
     version: '1.28.0',
     date: '2026-09-27',
     features: [
@@ -661,6 +680,25 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.29.0',
+    date: '2026-09-30',
+    features: [
+      'Cửa hàng và nhân viên (Beta) — nhóm tài khoản nhận tiền theo từng cửa hàng và mời nhân viên tham gia. Mỗi nhân viên đăng nhập bằng email và mật khẩu riêng, chỉ thấy những cửa hàng bạn phân công, nên người ở cửa hàng này không thấy giao dịch của cửa hàng khác.',
+      'Phân quyền tùy chỉnh — cấp cho nhân viên đúng những gì họ cần bằng một nhóm quyền dùng lại được: xem hoặc xuất giao dịch; xem, tạo hoặc hủy yêu cầu thanh toán; xem hóa đơn bán hàng, tài khoản ngân hàng và webhook. Bạn có thể bắt đầu với Người xem, Thu ngân hoặc mẫu thiết lập sẵn cho Quản lý cửa hàng, Kế toán và Nhân viên.',
+      'Nhật ký hoạt động — xem lại các lần nhân viên đăng nhập, thay đổi quyền truy cập, phân công tài khoản nhận tiền và cập nhật nhóm quyền tại một nơi.',
+      'Nhân viên dùng ứng dụng di động — nhân viên đăng nhập vào ứng dụng ApiPay bằng email và mật khẩu riêng, chọn cửa hàng và chỉ dùng những tính năng được cấp quyền.',
+      'Xác minh thêm cho thao tác nhạy cảm — sau lần đầu thiết lập passkey hoặc xác thực hai lớp, bạn cần xác minh khi xem, tạo hoặc thu hồi API key và khi bật hoặc tắt tài khoản ngân hàng. Tài khoản chưa từng thiết lập phương thức nào vẫn có thể tiếp tục mà không cần xác minh.',
+      'Quản lý tài khoản nhận tiền theo cửa hàng — thêm tài khoản ngân hàng vào cửa hàng, chuyển sang cửa hàng khác hoặc để ở trạng thái chưa phân bất cứ lúc nào. Mỗi tài khoản nhận tiền thuộc tối đa một cửa hàng.',
+    ],
+    fixes: [],
+    improvements: [
+      'Thẻ Bắt đầu mới trên dashboard hướng dẫn bạn các bước đầu tiên: kết nối ngân hàng, tạo cửa hàng và mời nhân viên.',
+      'Commerce nay nằm trong mục Tích hợp trên thanh bên, cùng với các tích hợp khác.',
+      'Trạng thái trống rõ ràng hơn trên dashboard và nhật ký gửi webhook gọn gàng hơn giúp bạn biết cần làm gì tiếp theo.',
+      'Email về yêu cầu hỗ trợ dễ đọc hơn nhờ bố cục rõ ràng và nhất quán.',
+    ],
+  },
   {
     version: '1.28.0',
     date: '2026-09-27',

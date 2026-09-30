@@ -1,0 +1,133 @@
+---
+title: Cửa hàng và nhân viên
+description: Nhóm tài khoản nhận tiền theo từng cửa hàng và cấp cho mỗi nhân viên quyền truy cập đúng phần việc họ phụ trách
+---
+
+# Cửa hàng và nhân viên
+
+Nếu có nhiều người cùng xử lý thanh toán, bạn có thể để mỗi người tập trung vào đúng phần việc mình phụ trách. **Cửa hàng và nhân viên** (Beta) cho phép bạn nhóm tài khoản nhận tiền theo cửa hàng, mời nhân viên tham gia và chọn nội dung mỗi người được xem hoặc thao tác.
+
+**Cửa hàng** là một nhóm tài khoản nhận tiền có tên — ví dụ mỗi cửa hàng, chi nhánh hoặc thương hiệu một nhóm. **Nhân viên** là người bạn mời đăng nhập bằng email và mật khẩu riêng. Nhân viên chỉ thấy những cửa hàng bạn phân cho họ.
+
+> **Lưu ý:** Tính năng này đang ở giai đoạn **Beta**. Chủ tài khoản luôn giữ toàn quyền. Việc liên kết ngân hàng, sửa webhook, quản lý API key, gói dịch vụ và hóa đơn ApiPay vẫn thuộc về chủ tài khoản.
+
+---
+
+## Trước khi bắt đầu
+
+- Bạn có thể tạo cửa hàng trước khi kết nối ngân hàng. Khi cần thêm tài khoản nhận tiền vào cửa hàng, hãy xem [Quản lý ngân hàng](/vi/banking).
+- Bạn quản lý cửa hàng và nhân viên tại **Cài đặt → Cửa hàng** (cũng có ở **Cài đặt → Nhân viên**, **Cài đặt → Phân quyền** và **Cài đặt → Hoạt động**).
+- Chỉ chủ tài khoản mới tạo được cửa hàng, mời nhân viên và đặt phân quyền. Nhân viên không quản lý được nhân viên khác.
+
+---
+
+## Thiết lập trong bốn bước
+
+1. **Tạo cửa hàng** — đặt tên và thêm các tài khoản nhận tiền mà nhân viên của cửa hàng được phép quản lý. Tài khoản mới liên kết sẽ chưa thuộc cửa hàng nào cho đến khi bạn phân vào.
+2. **Thêm nhân viên** — mời nhân viên bằng email, đặt mật khẩu ban đầu và gửi cho họ qua kênh an toàn. ApiPay không gửi mật khẩu qua email.
+3. **Chọn quyền** — gán **Người xem**, **Thu ngân** hoặc một nhóm quyền tùy chỉnh do bạn tạo (xem bên dưới).
+4. **Xem lại hoạt động** — vào **Cài đặt → Hoạt động** để kiểm tra các lần đăng nhập và thay đổi quyền truy cập.
+
+```
+Cửa hàng  →  Thêm tài khoản nhận tiền  →  Thêm nhân viên  →  Chọn quyền  →  Nhân viên đăng nhập
+```
+
+---
+
+## Cửa hàng dùng để làm gì
+
+- Cửa hàng nhóm các tài khoản nhận tiền để bạn quyết định ai thấy khoản thanh toán nào.
+- Mỗi tài khoản nhận tiền thuộc **tối đa một** cửa hàng. Bạn có thể chuyển sang cửa hàng khác hoặc để chưa phân bất cứ lúc nào.
+- Một nhân viên có thể được phân vào một hoặc nhiều cửa hàng. Nếu được phân vào nhiều cửa hàng, họ có thể dùng bộ chọn cửa hàng để chuyển nơi làm việc.
+- Khoản thanh toán được gắn với cửa hàng thông qua tài khoản đã nhận tiền. Khi chuyển tài khoản sang cửa hàng khác, cửa hàng được phép xem các khoản thanh toán của tài khoản đó cũng thay đổi.
+
+---
+
+## Các mức quyền
+
+Mỗi nhân viên nhận một mức quyền cho từng cửa hàng được phân.
+
+| Mức quyền | Cho phép |
+| --- | --- |
+| **Người xem** | Xem giao dịch và yêu cầu thanh toán của cửa hàng được phân. Không tạo, hủy, xuất hay thay đổi gì. |
+| **Thu ngân** | Như Người xem, thêm quyền tạo và hủy yêu cầu thanh toán. Không xuất dữ liệu. |
+| **Nhóm quyền tùy chỉnh** | Chỉ gồm những quyền bạn chọn (xem bên dưới). |
+
+### Nhóm quyền tùy chỉnh
+
+Nếu Người xem hoặc Thu ngân chưa phù hợp, bạn tạo một nhóm quyền dùng lại được với đúng các quyền cần thiết:
+
+| Nhóm | Quyền | Ý nghĩa |
+| --- | --- | --- |
+| Thanh toán | Xem giao dịch | Xem các khoản tiền vào của cửa hàng |
+| Thanh toán | Xuất giao dịch | Tải giao dịch của cửa hàng dưới dạng CSV (đồng thời bật Xem giao dịch) |
+| Thanh toán | Xem yêu cầu thanh toán | Xem yêu cầu thanh toán của cửa hàng |
+| Thanh toán | Tạo yêu cầu thanh toán | Tạo yêu cầu thanh toán (đồng thời bật Xem yêu cầu thanh toán) |
+| Thanh toán | Hủy yêu cầu thanh toán | Hủy yêu cầu thanh toán (đồng thời bật Xem yêu cầu thanh toán) |
+| Hóa đơn bán hàng | Xem hóa đơn bán hàng | Xem và tải hóa đơn bán hàng của cửa hàng (không phải hóa đơn GTGT) |
+| Tài khoản ngân hàng và webhook | Xem tài khoản ngân hàng | Xem tài khoản nhận tiền của cửa hàng (nhân viên không liên kết, tắt hay ngắt kết nối) |
+| Tài khoản ngân hàng và webhook | Xem webhook | Xem URL webhook của cửa hàng (nhân viên không sửa webhook hay xem khóa ký) |
+
+Để nhanh hơn, bạn bắt đầu từ một **mẫu** rồi chỉnh lại:
+
+- **Quản lý cửa hàng** — tất cả quyền.
+- **Kế toán** — xem và xuất giao dịch, xem yêu cầu thanh toán, xem hóa đơn bán hàng và xem tài khoản ngân hàng.
+- **Nhân viên** — xem giao dịch và yêu cầu thanh toán, tạo yêu cầu thanh toán.
+
+Mẫu chỉ điền sẵn vào biểu mẫu. Chưa có gì được áp dụng cho đến khi bạn lưu, và khi sửa một nhóm quyền thì mọi người đang dùng nhóm đó nhận thay đổi ngay ở thao tác kế tiếp.
+
+---
+
+## Nhân viên không được làm gì
+
+Nhân viên không bao giờ có toàn quyền đối với tài khoản ApiPay. Dù được cấp quyền gì, nhân viên cũng không thể:
+
+- Liên kết, tắt hoặc ngắt kết nối tài khoản ngân hàng.
+- Tạo, sửa hay xóa webhook, hoặc xem khóa ký.
+- Xem, tạo hay thu hồi API key.
+- Xem hoặc quản lý gói dịch vụ, thanh toán hay hóa đơn ApiPay.
+- Dùng chế độ sandbox hoặc quản lý nhân viên khác.
+
+Quyền của nhân viên chỉ áp dụng cho những cửa hàng bạn phân công. Khi họ truy cập dữ liệu ngoài phạm vi đó, ApiPay không hiển thị dữ liệu của cửa hàng khác.
+
+---
+
+## Nhật ký hoạt động
+
+**Cài đặt → Hoạt động** hiển thị các lần nhân viên đăng nhập và những sự kiện phân quyền được hỗ trợ: thêm, khóa, mở khóa hoặc xóa nhân viên; đặt lại mật khẩu; thêm hoặc gỡ tài khoản nhận tiền; nhân viên tạo hoặc hủy yêu cầu thanh toán; tạo, cập nhật hoặc xóa nhóm quyền; và thay đổi cửa hàng được phân công. Sự kiện mới nhất hiển thị trước và có thể lọc theo loại. Hiện tại, nhật ký chưa ghi nhận việc tạo, đổi tên hoặc xóa cửa hàng và chỉnh sửa hồ sơ nhân viên.
+
+---
+
+## Xác nhận danh tính trước thao tác nhạy cảm
+
+Sau lần đầu thiết lập passkey hoặc xác thực hai lớp, ApiPay sẽ bảo vệ các thao tác nhạy cảm bằng một bước xác minh bổ sung. Trước khi **xem, tạo hoặc thu hồi API key**, hoặc **bật/tắt một tài khoản ngân hàng**, ApiPay yêu cầu bạn xác nhận bằng passkey hoặc mã xác thực hai lớp.
+
+- Nếu hiện có passkey hoặc xác thực hai lớp, bạn chỉ cần dùng một trong hai.
+- Nếu chưa từng thiết lập phương thức nào, bạn có thể tiếp tục mà không cần xác minh. ApiPay vẫn khuyến nghị thiết lập một phương thức trong Cài đặt.
+- Sau lần thiết lập đầu tiên, việc xóa phương thức cuối cùng không tắt lớp bảo vệ này. Bạn cần thiết lập lại passkey hoặc xác thực hai lớp trước khi tiếp tục. Xem [Passkey](/vi/passkeys).
+- Xác nhận chỉ dùng một lần cho mỗi thao tác, nên lần sau bạn sẽ được hỏi lại.
+- Nhân viên luôn bị từ chối với các thao tác này.
+
+---
+
+## Nhân viên trên ứng dụng di động
+
+Nhân viên đăng nhập vào ứng dụng ApiPay bằng email và mật khẩu bạn đặt. Nếu được phân vào nhiều cửa hàng, họ chọn nơi làm việc bằng bộ chọn cửa hàng và chỉ thấy những tính năng được cấp quyền. Các khu vực dành riêng cho chủ tài khoản như gói dịch vụ, cài đặt tài khoản, liên kết ngân hàng và sửa webhook vẫn bị ẩn.
+
+---
+
+## Nên biết
+
+- **Mỗi tài khoản nhận tiền thuộc tối đa một cửa hàng.** Tài khoản ngân hàng có thể thuộc một cửa hàng hoặc để ở trạng thái chưa phân.
+- **Quyền truy cập bị thu hồi ngay khi xóa cửa hàng hoặc nhân viên.** Hãy gỡ hoặc chuyển tài khoản nhận tiền và nhân viên trước khi xóa cửa hàng.
+- **API key không phải là tài khoản nhân viên.** API key hành động như chủ tài khoản và không giới hạn theo cửa hàng. Không chia sẻ cho nhân viên.
+- **Nhân viên vẫn cần mật khẩu do bạn đặt.** ApiPay không gửi mật khẩu ban đầu qua email; hãy gửi cho họ qua kênh an toàn.
+
+---
+
+## Bước tiếp theo
+
+- [Hướng dẫn Dashboard](/vi/dashboard) — Nắm rõ cách di chuyển trong dashboard
+- [Quản lý ngân hàng](/vi/banking) — Kết nối và quản lý tài khoản nhận tiền
+- [Passkey](/vi/passkeys) — Thêm passkey để đăng nhập nhanh và an toàn hơn
+- [Webhook](/vi/api/webhooks) — Gửi thông báo thanh toán theo thời gian thực

@@ -15,6 +15,7 @@
 - [Sandbox & Live Test](https://docs.apipay.vn/en/sandbox): Test payments and webhooks safely — no real money moves
 - [Dashboard Guide](https://docs.apipay.vn/en/dashboard): Navigate and use your ApiPay dashboard effectively
 - [Connect Banks](https://docs.apipay.vn/en/connect-banks): Link your Vietnamese bank account to start receiving payments via ApiPay
+- [Stores and Staff](https://docs.apipay.vn/en/stores-staff): Group your receiving accounts by store and give each team member access to only the payments they handle
 - [Payment Speaker](https://docs.apipay.vn/en/payment-speaker): Turn any phone, tablet, or computer into a real-time bank transfer voice announcement speaker for free
 - [Commerce](https://docs.apipay.vn/en/commerce): Create a product, copy a reusable payment link, collect buyer details, and email a receipt.
 - [Custom Domains](https://docs.apipay.vn/en/custom-domains): Use your own domain for the ApiPay payment page

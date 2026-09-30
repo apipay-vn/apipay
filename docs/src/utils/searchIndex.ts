@@ -93,6 +93,12 @@ export const searchItems: SearchItem[] = [
     section: 'Hướng dẫn',
   },
   {
+    title: 'Cửa hàng và nhân viên',
+    description: 'Nhóm tài khoản nhận tiền theo cửa hàng và phân quyền cho nhân viên',
+    href: '/vi/stores-staff',
+    section: 'Hướng dẫn',
+  },
+  {
     title: 'Payment Requests API',
     description: 'API tạo và quản lý liên kết thanh toán',
     href: '/vi/api/payment-requests',
@@ -206,6 +212,12 @@ export const searchItems: SearchItem[] = [
     title: 'Commerce',
     description: 'Products, prices, reusable payment links, images, and receipts',
     href: '/en/commerce',
+    section: 'Guides',
+  },
+  {
+    title: 'Stores and Staff',
+    description: 'Group receiving accounts by store and control what each team member can access',
+    href: '/en/stores-staff',
     section: 'Guides',
   },
   {

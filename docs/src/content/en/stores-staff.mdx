@@ -1,0 +1,133 @@
+---
+title: Stores and Staff
+description: Group your receiving accounts by store and give each team member access to only the payments they handle
+---
+
+# Stores and Staff
+
+If more than one person works with your payments, you can keep each person focused on the payments they actually handle. **Stores and staff** (Beta) lets you group receiving bank accounts into stores, invite your team, and choose what each person can see and do.
+
+A **store** is a named group of receiving bank accounts — for example one per shop, branch, or brand. A **staff member** is someone you invite to sign in with their own email and password. Staff see only the stores you assign to them.
+
+> **Note:** This feature is marked **Beta**. The owner of the account always keeps full access. Bank linking, webhook editing, API keys, and billing stay with the owner.
+
+---
+
+## Before you start
+
+- You can create a store before connecting a bank account. When you are ready to assign a receiving account, see [Bank Account Management](/en/banking).
+- You manage stores and staff from **Settings → Stores** (also available from **Settings → Staff**, **Settings → Permissions**, and **Settings → Activity**).
+- Only the account owner can create stores, invite staff, and set permissions. Staff cannot manage other staff.
+
+---
+
+## Set up in four steps
+
+1. **Create a store** — give it a name and assign the receiving accounts its staff may work with. Newly linked accounts stay unassigned until you add them to a store.
+2. **Add staff** — invite a team member using their email address, set an initial password, and share it with them securely. ApiPay does not send the password by email.
+3. **Choose access** — give them **Viewer**, **Cashier**, or a custom permission set of your own (see below).
+4. **Review activity** — use **Settings → Activity** to check staff sign-ins and changes to access.
+
+```
+Store  →  Assign receiving accounts  →  Add staff  →  Choose access  →  Staff signs in
+```
+
+---
+
+## How stores organize payments
+
+- A store groups receiving accounts so you can decide who sees which payments.
+- Each receiving account belongs to **at most one** store. You can move it or leave it unassigned at any time.
+- A staff member can be assigned to one or more stores. If they have more than one, they get a store switcher and choose which store to work in.
+- Payments are assigned to a store through the receiving account that received them. Moving an account changes which store can see its payments.
+
+---
+
+## Access levels
+
+Every staff member receives one access level for each store they are assigned to.
+
+| Access level | What it allows |
+| --- | --- |
+| **Viewer** | See transactions and payment requests for the assigned store. Cannot create, cancel, export, or change anything. |
+| **Cashier** | Everything a Viewer can do, plus create and cancel payment requests. Cannot export data. |
+| **Custom permission set** | Exactly the permissions you choose (see below). |
+
+### Custom permission sets
+
+If Viewer or Cashier is not the right fit, create a reusable permission set with the exact permissions you need:
+
+| Group | Permission | What it means |
+| --- | --- | --- |
+| Payments | View transactions | See incoming payments for the store |
+| Payments | Export transactions | Download the store's transactions as CSV (also turns on View transactions) |
+| Payments | View payment requests | See payment requests for the store |
+| Payments | Create payment requests | Create payment requests (also turns on View payment requests) |
+| Payments | Cancel payment requests | Cancel payment requests (also turns on View payment requests) |
+| Sales receipts | View sales receipts | View and download the store's sales receipts (not tax invoices) |
+| Bank accounts and webhooks | View bank accounts | See the store's receiving accounts (staff cannot link, disable, or disconnect) |
+| Bank accounts and webhooks | View webhooks | See the store's webhook URLs (staff cannot edit webhooks or reveal signing secrets) |
+
+To save time, start from a **preset** and adjust it:
+
+- **Store manager** — all permissions.
+- **Accountant** — view and export transactions, view payment requests, view sales receipts, and view bank accounts.
+- **Staff** — view transactions and payment requests, and create payment requests.
+
+Presets only fill the form. Nothing is applied until you save, and editing a permission set applies to everyone using it on their next action.
+
+---
+
+## What staff cannot do
+
+Staff never receive full account access. Regardless of their permissions, staff cannot:
+
+- Link, disable, or disconnect bank accounts.
+- Create, edit, or delete webhooks, or reveal a signing secret.
+- Reveal, create, or revoke API keys.
+- See or manage plans, billing, or ApiPay invoices.
+- Use sandbox mode, or manage other staff.
+
+A staff member's access covers only the stores you assign. If they try to open data outside that scope, ApiPay does not show data from another store.
+
+---
+
+## Activity log
+
+**Settings → Activity** shows staff sign-ins and supported access events: staff added, locked, unlocked, or deleted; member passwords reset; receiving accounts assigned or removed; staff payment requests created or cancelled; permission sets created, updated, or deleted; and store assignments changed. Events appear newest first and can be filtered by type. Store creation, renaming, and deletion and staff profile edits are not currently included.
+
+---
+
+## Confirm it's you before sensitive actions
+
+After you first set up a passkey or two-factor authentication, ApiPay protects sensitive actions with an extra check. Before you **reveal, create, or revoke an API key**, or **switch a bank account on or off**, ApiPay asks you to confirm with your passkey or authenticator code.
+
+- If you currently have a passkey or two-factor authentication set up, either one is enough.
+- If you have never set up either method, you can continue without confirmation. ApiPay recommends setting one up in Settings.
+- After your first setup, removing the last method does not turn this protection off. Set up a passkey or two-factor authentication again before continuing. See [Passkeys](/en/passkeys).
+- The confirmation is used once per action, so you are asked again next time.
+- Staff are always refused on these actions.
+
+---
+
+## Staff on the mobile app
+
+Staff can sign in to the ApiPay mobile app with the same email and password you set for them. They choose their store when assigned to more than one and see only the features they have permission to use. Owner-only areas such as plans, account settings, bank linking, and webhook editing stay hidden.
+
+---
+
+## Good to know
+
+- **At most one store per receiving account.** A bank account can be in one store or remain unassigned.
+- **Deleting a store or staff member removes access immediately.** Remove or reassign a store's accounts and staff before deleting the store.
+- **An API key is not a staff login.** API keys act as the owner and are not limited to a store. Do not share them with staff.
+- **Staff need a password you set.** ApiPay does not email the initial password; share it securely.
+
+---
+
+## Next steps
+
+- [Dashboard Guide](/en/dashboard) — Move around the dashboard with confidence
+- [Bank Account Management](/en/banking) — Connect and manage your receiving accounts
+- [Passkeys](/en/passkeys) — Add a passkey for faster, safer sign-in
+- [Webhooks](/en/api/webhooks) — Send real-time payment notifications

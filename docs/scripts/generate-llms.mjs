@@ -35,6 +35,7 @@ const SIDEBAR_SECTIONS = [
       {file: 'sandbox.mdx', label: 'Sandbox & Live Test'},
       {file: 'dashboard.mdx', label: 'Dashboard Guide'},
       {file: 'connect-banks.mdx', label: 'Connect Banks'},
+      {file: 'stores-staff.mdx', label: 'Stores and Staff'},
       {file: 'payment-speaker.mdx', label: 'Payment Speaker'},
       {file: 'commerce.mdx', label: 'Commerce'},
       {file: 'custom-domains.mdx', label: 'Custom Domains'},
