@@ -31,7 +31,7 @@ POST /v1/client/payment-requests
 | `bankPublicId` | string | **✓ Có** | Public ID của ngân hàng đã kết nối                                                                                                                                               |
 | `amount`       | string | —        | Số tiền VND (chuỗi số nguyên hoặc số, tối đa `300000000`). Trả về dưới dạng chuỗi hoặc `null`. Để trống nếu cho phép khách tự nhập. Không gửi cùng `priceId`                    |
 | `priceId`      | string | —        | Id mức giá Commerce. Số tiền của mức giá được ghi vào link này một lần. Sửa sản phẩm hoặc mức giá sau đó không đổi request này. Không gửi cùng `amount`. Xem [Commerce API](/vi/api/commerce) |
-| `content`      | string | —        | Nội dung chuyển khoản (tối đa 140 ký tự). Nếu bỏ trống khi gửi `priceId`, hệ thống gắn mã CK duy nhất từ public id của yêu cầu thanh toán |
+| `content`      | string | —        | Nội dung chuyển khoản (tối đa 140 ký tự). Nếu bỏ trống khi gửi `priceId`, hệ thống gắn nội dung CK duy nhất cho từng yêu cầu |
 | `title`        | string | —        | Tiêu đề hiển thị trên trang thanh toán                                                                                                                                           |
 | `expiresAt`    | string | —        | Thời hạn (ISO 8601). Để trống nếu không giới hạn                                                                                                                                 |
 | `redirectUrl`    | string | —        | URL đưa khách về sau khi thanh toán. Khi hoàn tất, hệ thống chuyển đến URL này kèm payload đã ký (`?data=<base64>&signature=<hmac>`). Để trống để dùng URL mặc định của merchant |
@@ -131,7 +131,6 @@ GET /v1/payment-requests/:publicId
     "canChangeBank": true,
     "bankChangedByCustomer": false,
     "redirectUrl": "https://yoursite.com/payment/result",
-    "completedRedirectUrl": "https://yoursite.com/payment/result?data=eyJ...&signature=abc...",
     "merchant": {
       "name": "Tên cửa hàng",
       "logoUrl": "https://yoursite.com/logo.png",
@@ -322,8 +321,6 @@ Trả về ảnh QR PNG có branding ApiPay cho payment request.
 GET /v1/payment-requests/:publicId/qr-image
 ```
 
-Query parameter tùy chọn: `merchantId` khi render từ custom domain.
-
 ---
 
 ## Hủy Payment Link
@@ -413,8 +410,10 @@ const payload = JSON.parse(payloadJson);
 // Tính signature mong đợi
 const expectedSignature = crypto.createHmac('sha256', redirectSecret).update(payloadJson).digest('hex');
 
-// Sử dụng timing-safe comparison để chống timing attacks
-const isValid = crypto.timingSafeEqual(Buffer.from(query.signature), Buffer.from(expectedSignature));
+// So sánh hex digest kèm kiểm tra độ dài (timingSafeEqual ném lỗi khi lệch độ dài).
+const expected = Buffer.from(expectedSignature, 'hex');
+const received = Buffer.from(String(query.signature || ''), 'hex');
+const isValid = received.length === expected.length && crypto.timingSafeEqual(received, expected);
 
 if (!isValid) {
 throw new Error('Invalid signature');
@@ -444,7 +443,7 @@ res.status(400).send('Invalid redirect');
 }
 });
 
-````
+```
 
 ```python
 import hmac
@@ -492,7 +491,7 @@ def handle_redirect(data: str, signature: str):
     except ValueError:
         from fastapi import HTTPException
         raise HTTPException(status_code=400, detail='Invalid redirect')
-````
+```
 
 ```php
 <?php
@@ -545,12 +544,13 @@ Khi tạo payment request, bạn nhận được:
 
 | Trường                 | Mô tả                                                                           |
 | ---------------------- | ------------------------------------------------------------------------------- |
-| `redirectSecret`       | Khóa bí mật (32 ký tự hex) để xác minh signed redirect payload. **Giữ bí mật!** |
-| `completedRedirectUrl` | Full signed URL sau khi thanh toán hoàn tất. Chỉ dùng để tham khảo              |
+| `redirectSecret`       | Khóa bí mật để xác minh signed redirect payload. **Giữ bí mật!**                |
+| `completedRedirectUrl` | Full signed URL sau khi thanh toán hoàn tất. Dùng webhook làm nguồn xác thực và xử lý idempotent theo `transactionId` — URL đã ký của giao dịch đã hoàn tất có thể bị phát lại. |
 
 ### Lưu ý bảo mật
 
 - **Luôn kiểm tra signature** trước khi xử lý thanh toán
+- Chỉ coi signed redirect là tiện ích UX; xác nhận thanh toán bằng webhook và xử lý idempotent theo `transactionId` (URL đã ký của giao dịch đã hoàn tất có thể bị phát lại)
 - Dùng `timingSafeEqual` để chống timing attacks
 - `redirectSecret` là duy nhất cho mỗi payment request
 - Không để lộ `redirectSecret` trong client-side code

@@ -71,7 +71,7 @@ Upload PNG, JPEG, or WebP (max 3 MB) on create or on the product page. It shows 
 
 ## Transfer memo
 
-When a customer opens a Commerce link and you did not send `content`, ApiPay puts a unique transfer memo (the payment-request public id suffix) on the QR. Two buyers of the same amount are not mixed up, except on banks that do not return transfer content (for example VietinBank).
+When a customer opens a Commerce link and you did not send `content`, ApiPay adds a unique transfer memo to the QR so each payment is matched to the right request.
 
 ## Customers & Send Invoice
 

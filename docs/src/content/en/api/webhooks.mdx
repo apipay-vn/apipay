@@ -301,30 +301,26 @@ HMAC signing is always enabled and unchanged by any of the settings above — `A
 ```javascript
 const crypto = require("crypto");
 
-function verifyWebhookSignature(payload, signature, secretKey) {
-const expectedSignature = crypto
-.createHmac("sha256", secretKey)
-.update(payload)
-.digest("hex");
+function verifyWebhookSignature(rawBody, signature, secretKey) {
+  const expectedSignature = crypto.createHmac("sha256", secretKey).update(rawBody).digest("hex");
+  const expected = Buffer.from(expectedSignature, "hex");
+  const received = Buffer.from(String(signature || ""), "hex");
 
-    return crypto.timingSafeEqual(
-    	Buffer.from(signature),
-    	Buffer.from(expectedSignature),
-    );
-
+  // timingSafeEqual throws on length mismatch, so guard first.
+  return received.length === expected.length && crypto.timingSafeEqual(received, expected);
 }
 
 // Usage in Express
-app.post("/webhook", (req, res) => {
-const signature = req.headers["apipay-signature"];
-const payload = JSON.stringify(req.body);
+app.post("/webhook", express.raw({type: "*/*"}), (req, res) => {
+  const signature = req.headers["apipay-signature"];
+  const payload = req.body; // raw Buffer, exactly as sent
 
-    if (!verifyWebhookSignature(payload, signature, process.env.WEBHOOK_SECRET)) {
-    	return res.status(401).json({error: "Invalid signature"});
-    }
+  if (!verifyWebhookSignature(payload, signature, process.env.WEBHOOK_SECRET)) {
+    return res.status(401).json({error: "Invalid signature"});
+  }
 
-    // Process webhook
-    const {event, data} = req.body;
+  // Process webhook
+  const {event, data} = JSON.parse(payload.toString("utf8"));
 
     if (event === "transaction.in") {
     	console.log("Money received:", data.amount);
@@ -337,7 +333,7 @@ const payload = JSON.stringify(req.body);
 
 });
 
-````
+```
 
 ```python
 import hmac
@@ -370,7 +366,7 @@ def handle_webhook():
         print(f"Content: {data['data']['content']}")
         # Update order
     return {'received': True}, 200
-````
+```
 
 ```php
 <?php

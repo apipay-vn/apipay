@@ -60,7 +60,7 @@
                   "content": {
                     "type": "string",
                     "maxLength": 140,
-                    "description": "Transfer content / memo. If omitted on a priceId request, ApiPay stamps a unique suffix from the payment-request public id so two buyers of the same amount are not mixed up."
+                    "description": "Transfer content / memo. If omitted on a priceId request, ApiPay adds a unique transfer memo so each payment matches the right request."
                   },
                   "customer": {
                     "$ref": "#/components/schemas/PaymentRequestCustomer",
@@ -168,12 +168,6 @@
             "required": true,
             "schema": {"type": "string"},
             "description": "Payment request public ID"
-          },
-          {
-            "name": "merchantId",
-            "in": "query",
-            "schema": {"type": "string"},
-            "description": "Merchant ID when accessing via a custom domain"
           }
         ],
         "responses": {
@@ -219,12 +213,6 @@
             "required": true,
             "schema": {"type": "string"},
             "description": "Price payment-link public id (`pl…`)"
-          },
-          {
-            "name": "merchantId",
-            "in": "query",
-            "schema": {"type": "string"},
-            "description": "Merchant ID when accessing via a custom domain"
           }
         ],
         "responses": {
@@ -254,12 +242,6 @@
             "required": true,
             "schema": {"type": "string"},
             "description": "Price payment-link public id (`pl…`)"
-          },
-          {
-            "name": "merchantId",
-            "in": "query",
-            "schema": {"type": "string"},
-            "description": "Merchant ID when accessing via a custom domain"
           }
         ],
         "requestBody": {
@@ -298,12 +280,6 @@
             "required": true,
             "schema": {"type": "string"},
             "description": "Payment request public ID"
-          },
-          {
-            "name": "merchantId",
-            "in": "query",
-            "schema": {"type": "string"},
-            "description": "Merchant ID when accessing via a custom domain"
           }
         ],
         "requestBody": {

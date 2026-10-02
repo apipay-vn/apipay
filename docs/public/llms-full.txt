@@ -2013,7 +2013,7 @@ Upload PNG, JPEG, or WebP (max 3 MB) on create or on the product page. It shows 
 
 ## Transfer memo
 
-When a customer opens a Commerce link and you did not send `content`, ApiPay puts a unique transfer memo (the payment-request public id suffix) on the QR. Two buyers of the same amount are not mixed up, except on banks that do not return transfer content (for example VietinBank).
+When a customer opens a Commerce link and you did not send `content`, ApiPay adds a unique transfer memo to the QR so each payment is matched to the right request.
 
 ## Customers & Send Invoice
 
@@ -3399,7 +3399,7 @@ POST /v1/client/payment-requests
 | `bankPublicId` | string | **✓ Yes** | Public ID of your connected bank                                                                                                                                                                                                      |
 | `amount`       | string | —         | Amount in VND (integer string or number, max `300000000`). Returned as string or `null`. Leave empty to allow customer input. Do not send together with `priceId`                                                                     |
 | `priceId`      | string | —         | Commerce price id. Copies that price amount onto this link once. Editing a product or price later does not change this request. Do not send together with `amount`. See [Commerce API](/en/api/commerce)                             |
-| `content`      | string | —         | Transfer content (max 140 characters). If omitted on a `priceId` request, ApiPay stamps a unique memo from the payment-request public id                                                                                              |
+| `content`      | string | —         | Transfer content (max 140 characters). If omitted on a `priceId` request, ApiPay adds a unique transfer memo                                                                                                                          |
 | `title`        | string | —         | Title displayed on payment page                                                                                                                                                                                                       |
 | `expiresAt`    | string | —         | Expiration time (ISO 8601). Leave empty for no limit                                                                                                                                                                                  |
 | `redirectUrl`    | string | —         | URL to redirect after payment completion. When payment completes, the system will redirect to this URL with a signed payload (`?data=<base64>&signature=<hmac>`) for verification. Leave empty to use merchant's default redirect URL |
@@ -3499,7 +3499,6 @@ GET /v1/payment-requests/:publicId
     "canChangeBank": true,
     "bankChangedByCustomer": false,
     "redirectUrl": "https://yoursite.com/payment/result",
-    "completedRedirectUrl": "https://yoursite.com/payment/result?data=eyJ...&signature=abc...",
     "merchant": {
       "name": "Store Name",
       "logoUrl": "https://yoursite.com/logo.png",
@@ -3626,8 +3625,6 @@ Stream the ApiPay-branded QR PNG for a payment request.
 GET /v1/payment-requests/:publicId/qr-image
 ```
 
-Optional query parameter: `merchantId` when rendering from a custom domain.
-
 ---
 
 ## Cancel Payment Link
@@ -3716,8 +3713,10 @@ function verifyRedirectPayload(query, redirectSecret) {
   // Calculate expected signature
   const expectedSignature = crypto.createHmac('sha256', redirectSecret).update(payloadJson).digest('hex');
 
-  // Use timing-safe comparison to prevent timing attacks
-  const isValid = crypto.timingSafeEqual(Buffer.from(query.signature), Buffer.from(expectedSignature));
+  // Compare the hex digests with a length guard (timingSafeEqual throws on length mismatch).
+  const expected = Buffer.from(expectedSignature, 'hex');
+  const received = Buffer.from(String(query.signature || ''), 'hex');
+  const isValid = received.length === expected.length && crypto.timingSafeEqual(received, expected);
 
   if (!isValid) {
     throw new Error('Invalid signature');
@@ -3844,12 +3843,13 @@ When creating a payment request, you receive:
 
 | Field                  | Description                                                                         |
 | ---------------------- | ----------------------------------------------------------------------------------- |
-| `redirectSecret`       | Secret key (32 hex chars) to verify signed redirect payloads. **Keep this secret!** |
-| `completedRedirectUrl` | Full signed URL (available after payment completion) - for reference only           |
+| `redirectSecret`       | Secret key to verify signed redirect payloads. **Keep this secret!**                 |
+| `completedRedirectUrl` | Full signed redirect URL produced after payment completion. Treat the webhook as the source of truth and make your handler idempotent by `transactionId` — a completed signed URL can be replayed. |
 
 ### Security Notes
 
 - **Always verify the signature** before processing the payment
+- Treat the signed redirect as a UX convenience only; confirm the payment with the webhook, and make your handler idempotent by `transactionId` (a completed signed URL can be replayed)
 - Use `timingSafeEqual` to prevent timing attacks
 - The `redirectSecret` is unique per payment request
 - Never expose `redirectSecret` in client-side code
@@ -4561,30 +4561,26 @@ HMAC signing is always enabled and unchanged by any of the settings above — `A
 ```javascript
 const crypto = require("crypto");
 
-function verifyWebhookSignature(payload, signature, secretKey) {
-const expectedSignature = crypto
-.createHmac("sha256", secretKey)
-.update(payload)
-.digest("hex");
+function verifyWebhookSignature(rawBody, signature, secretKey) {
+  const expectedSignature = crypto.createHmac("sha256", secretKey).update(rawBody).digest("hex");
+  const expected = Buffer.from(expectedSignature, "hex");
+  const received = Buffer.from(String(signature || ""), "hex");
 
-    return crypto.timingSafeEqual(
-    	Buffer.from(signature),
-    	Buffer.from(expectedSignature),
-    );
-
+  // timingSafeEqual throws on length mismatch, so guard first.
+  return received.length === expected.length && crypto.timingSafeEqual(received, expected);
 }
 
 // Usage in Express
-app.post("/webhook", (req, res) => {
-const signature = req.headers["apipay-signature"];
-const payload = JSON.stringify(req.body);
+app.post("/webhook", express.raw({type: "*/*"}), (req, res) => {
+  const signature = req.headers["apipay-signature"];
+  const payload = req.body; // raw Buffer, exactly as sent
 
-    if (!verifyWebhookSignature(payload, signature, process.env.WEBHOOK_SECRET)) {
-    	return res.status(401).json({error: "Invalid signature"});
-    }
+  if (!verifyWebhookSignature(payload, signature, process.env.WEBHOOK_SECRET)) {
+    return res.status(401).json({error: "Invalid signature"});
+  }
 
-    // Process webhook
-    const {event, data} = req.body;
+  // Process webhook
+  const {event, data} = JSON.parse(payload.toString("utf8"));
 
     if (event === "transaction.in") {
     	console.log("Money received:", data.amount);
@@ -4597,7 +4593,7 @@ const payload = JSON.stringify(req.body);
 
 });
 
-````
+```
 
 ```python
 import hmac
@@ -4630,7 +4626,7 @@ def handle_webhook():
         print(f"Content: {data['data']['content']}")
         # Update order
     return {'received': True}, 200
-````
+```
 
 ```php
 <?php

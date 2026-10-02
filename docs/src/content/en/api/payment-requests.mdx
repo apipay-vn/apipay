@@ -31,7 +31,7 @@ POST /v1/client/payment-requests
 | `bankPublicId` | string | **✓ Yes** | Public ID of your connected bank                                                                                                                                                                                                      |
 | `amount`       | string | —         | Amount in VND (integer string or number, max `300000000`). Returned as string or `null`. Leave empty to allow customer input. Do not send together with `priceId`                                                                     |
 | `priceId`      | string | —         | Commerce price id. Copies that price amount onto this link once. Editing a product or price later does not change this request. Do not send together with `amount`. See [Commerce API](/en/api/commerce)                             |
-| `content`      | string | —         | Transfer content (max 140 characters). If omitted on a `priceId` request, ApiPay stamps a unique memo from the payment-request public id                                                                                              |
+| `content`      | string | —         | Transfer content (max 140 characters). If omitted on a `priceId` request, ApiPay adds a unique transfer memo                                                                                                                          |
 | `title`        | string | —         | Title displayed on payment page                                                                                                                                                                                                       |
 | `expiresAt`    | string | —         | Expiration time (ISO 8601). Leave empty for no limit                                                                                                                                                                                  |
 | `redirectUrl`    | string | —         | URL to redirect after payment completion. When payment completes, the system will redirect to this URL with a signed payload (`?data=<base64>&signature=<hmac>`) for verification. Leave empty to use merchant's default redirect URL |
@@ -131,7 +131,6 @@ GET /v1/payment-requests/:publicId
     "canChangeBank": true,
     "bankChangedByCustomer": false,
     "redirectUrl": "https://yoursite.com/payment/result",
-    "completedRedirectUrl": "https://yoursite.com/payment/result?data=eyJ...&signature=abc...",
     "merchant": {
       "name": "Store Name",
       "logoUrl": "https://yoursite.com/logo.png",
@@ -258,8 +257,6 @@ Stream the ApiPay-branded QR PNG for a payment request.
 GET /v1/payment-requests/:publicId/qr-image
 ```
 
-Optional query parameter: `merchantId` when rendering from a custom domain.
-
 ---
 
 ## Cancel Payment Link
@@ -349,8 +346,10 @@ function verifyRedirectPayload(query, redirectSecret) {
   // Calculate expected signature
   const expectedSignature = crypto.createHmac('sha256', redirectSecret).update(payloadJson).digest('hex');
 
-  // Use timing-safe comparison to prevent timing attacks
-  const isValid = crypto.timingSafeEqual(Buffer.from(query.signature), Buffer.from(expectedSignature));
+  // Compare the hex digests with a length guard (timingSafeEqual throws on length mismatch).
+  const expected = Buffer.from(expectedSignature, 'hex');
+  const received = Buffer.from(String(query.signature || ''), 'hex');
+  const isValid = received.length === expected.length && crypto.timingSafeEqual(received, expected);
 
   if (!isValid) {
     throw new Error('Invalid signature');
@@ -478,12 +477,13 @@ When creating a payment request, you receive:
 
 | Field                  | Description                                                                         |
 | ---------------------- | ----------------------------------------------------------------------------------- |
-| `redirectSecret`       | Secret key (32 hex chars) to verify signed redirect payloads. **Keep this secret!** |
-| `completedRedirectUrl` | Full signed URL (available after payment completion) - for reference only           |
+| `redirectSecret`       | Secret key to verify signed redirect payloads. **Keep this secret!**                 |
+| `completedRedirectUrl` | Full signed redirect URL produced after payment completion. Treat the webhook as the source of truth and make your handler idempotent by `transactionId` — a completed signed URL can be replayed. |
 
 ### Security Notes
 
 - **Always verify the signature** before processing the payment
+- Treat the signed redirect as a UX convenience only; confirm the payment with the webhook, and make your handler idempotent by `transactionId` (a completed signed URL can be replayed)
 - Use `timingSafeEqual` to prevent timing attacks
 - The `redirectSecret` is unique per payment request
 - Never expose `redirectSecret` in client-side code
