@@ -950,7 +950,8 @@
                     "type": "string",
                     "description": "Citizen ID or tax code. Required except for ACB personal."
                   },
-                  "acbUserId": {"type": "string", "description": "ACB OneBiz username for ACB business accounts"}
+                  "acbUserId": {"type": "string", "description": "ACB OneBiz username for ACB business accounts"},
+                  "nickname": {"type": "string", "maxLength": 50, "description": "Optional dashboard-only memo name"}
                 }
               }
             }
@@ -1012,6 +1013,26 @@
         "responses": {
           "200": {"description": "`status: true` with bank in `message`, or `status: false` if not found"}
         }
+      },
+      "patch": {
+        "tags": ["Banks"],
+        "summary": "Update a bank account nickname",
+        "description": "Sets the dashboard-only memo name. Send a blank string to clear it.",
+        "operationId": "updateBankNickname",
+        "security": [{"bearerAuth": []}],
+        "parameters": [{"name": "publicId", "in": "path", "required": true, "schema": {"type": "string"}}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {"nickname": {"type": "string", "maxLength": 50}}
+              }
+            }
+          }
+        },
+        "responses": {"200": {"description": "Nickname updated"}}
       },
       "delete": {
         "tags": ["Banks"],

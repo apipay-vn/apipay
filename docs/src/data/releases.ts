@@ -79,6 +79,15 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.30.0',
+    date: '2026-10-02',
+    features: [
+      'Bank memo names — give each linked bank account a nickname so you can tell accounts apart at a glance. The memo name is optional when adding a bank and can be changed or cleared from the bank row menu. It is shown only in your dashboard; customers never see it.',
+    ],
+    fixes: [],
+    improvements: [],
+  },
+  {
     version: '1.29.0',
     date: '2026-09-30',
     features: [
@@ -680,6 +689,15 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.30.0',
+    date: '2026-10-02',
+    features: [
+      'Tên gợi nhớ ngân hàng — đặt tên gợi nhớ cho mỗi tài khoản ngân hàng đã liên kết để dễ phân biệt. Tên gợi nhớ là tùy chọn khi thêm ngân hàng và có thể đổi hoặc xóa từ menu của dòng ngân hàng. Chỉ hiển thị trong dashboard của bạn; khách hàng không bao giờ thấy.',
+    ],
+    fixes: [],
+    improvements: [],
+  },
   {
     version: '1.29.0',
     date: '2026-09-30',

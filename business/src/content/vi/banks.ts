@@ -54,7 +54,7 @@ const OTP_STEPS: FlowStep[] = [
 	},
 	{
 		title: 'Nhập thông tin tài khoản',
-		body: 'Điền số tài khoản (STK) và các thông tin liên quan theo hướng dẫn trên màn hình.',
+		body: 'Điền số tài khoản (STK) và các thông tin liên quan theo hướng dẫn trên màn hình. Bạn cũng có thể thêm tên gợi nhớ (tùy chọn) để dễ nhận biết tài khoản sau này.',
 	},
 	{
 		title: 'Xác nhận OTP',

@@ -73,7 +73,8 @@ POST /v1/client/banks
   "accountNumber": "24550721",
   "accountName": "PHAM THANH DANH",
   "mobile": "0858838502",
-  "identity": "012345678901"
+  "identity": "012345678901",
+  "nickname": "Shop online"
 }
 ```
 
@@ -89,6 +90,7 @@ POST /v1/client/banks
 | `mobile`        | string | Có             | Số điện thoại đăng ký với ngân hàng                                      |
 | `identity`      | string | Có             | CCCD cho tài khoản cá nhân và hộ kinh doanh VPBank, hoặc mã số thuế cho các loại doanh nghiệp/hộ kinh doanh khác |
 | `acbUserId`     | string | Theo điều kiện | Tên đăng nhập ACB OneBiz cho tài khoản doanh nghiệp và hộ kinh doanh ACB |
+| `nickname`      | string | Không          | Tên gợi nhớ tùy chọn, chỉ hiển thị trong dashboard của bạn (tối đa 50 ký tự) |
 
 Sacombank hỗ trợ `personal-account` và `business-household-account`.
 Shinhan hỗ trợ `personal-account` và `business-account`.
@@ -200,6 +202,7 @@ GET /v1/client/banks
       "bankShortName": "MBB",
       "accountNumber": "24550721",
       "accountName": "PHAM THANH DANH",
+      "nickname": "Shop online",
       "vaNumber": "DANH001",
       "status": "ACTIVE",
       "manualActivationPending": false,
@@ -234,6 +237,7 @@ GET /v1/client/banks/:publicId
     "bankShortName": "MBB",
     "accountNumber": "24550721",
     "accountName": "PHAM THANH DANH",
+    "nickname": "Shop online",
     "vaNumber": "DANH001",
     "status": "ACTIVE",
     "manualActivationPending": false
@@ -287,7 +291,42 @@ Endpoint chuyển trạng thái tài khoản giữa `ACTIVE` và `INACTIVE`.
 
 `newStatus` là `1` khi tài khoản hoạt động và `0` khi đã tắt. Không thể đổi trạng thái tài khoản đang chờ kích hoạt.
 
-## 8. Ngắt kết nối tài khoản ngân hàng
+## 8. Cập nhật tên gợi nhớ ngân hàng
+
+```bash
+PATCH /v1/client/banks/:publicId
+```
+
+Đặt tên gợi nhớ tùy chọn cho tài khoản đã liên kết để bạn phân biệt các tài khoản trong dashboard. Gửi chuỗi rỗng để xóa. Tên gợi nhớ chỉ hiển thị trong dashboard của bạn và không bao giờ gửi cho khách hàng.
+
+### Request body
+
+```json
+{
+  "nickname": "Shop online"
+}
+```
+
+### Response
+
+```json
+{
+  "status": true,
+  "message": "Cập nhật tên gợi nhớ thành công",
+  "bank": {
+    "publicId": "bnk_abc123",
+    "bankName": "MB Bank",
+    "bankShortName": "MBB",
+    "accountNumber": "24550721",
+    "accountName": "PHAM THANH DANH",
+    "nickname": "Shop online",
+    "vaNumber": "DANH001",
+    "status": "ACTIVE"
+  }
+}
+```
+
+## 9. Ngắt kết nối tài khoản ngân hàng
 
 ```bash
 DELETE /v1/client/banks/:publicId
@@ -308,7 +347,7 @@ Tài khoản được ngắt kết nối ngay, trừ khi ngân hàng yêu cầu 
 
 Không thể ngắt kết nối tài khoản đang chờ kích hoạt thủ công cho đến khi ApiPay xử lý xong yêu cầu.
 
-## 9. Xác nhận ngắt kết nối ngân hàng
+## 10. Xác nhận ngắt kết nối ngân hàng
 
 ```bash
 POST /v1/client/banks/:publicId/confirm-delete

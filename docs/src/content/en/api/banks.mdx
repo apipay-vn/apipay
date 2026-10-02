@@ -73,7 +73,8 @@ POST /v1/client/banks
   "accountNumber": "24550721",
   "accountName": "PHAM THANH DANH",
   "mobile": "0858838502",
-  "identity": "012345678901"
+  "identity": "012345678901",
+  "nickname": "Shop online"
 }
 ```
 
@@ -89,6 +90,7 @@ POST /v1/client/banks
 | `mobile`        | string | Yes         | Phone number registered with the bank                                    |
 | `identity`      | string | Yes         | Citizen ID for personal accounts and VPBank household accounts, or tax code for other business/household types |
 | `acbUserId`     | string | Conditional | ACB OneBiz username for ACB business and household business accounts     |
+| `nickname`      | string | No          | Optional memo name shown only in your dashboard (max 50 characters)      |
 
 Sacombank accepts `personal-account` and `business-household-account`.
 Shinhan accepts `personal-account` and `business-account`.
@@ -200,6 +202,7 @@ GET /v1/client/banks
       "bankShortName": "MBB",
       "accountNumber": "24550721",
       "accountName": "PHAM THANH DANH",
+      "nickname": "Shop online",
       "vaNumber": "DANH001",
       "status": "ACTIVE",
       "manualActivationPending": false,
@@ -234,6 +237,7 @@ GET /v1/client/banks/:publicId
     "bankShortName": "MBB",
     "accountNumber": "24550721",
     "accountName": "PHAM THANH DANH",
+    "nickname": "Shop online",
     "vaNumber": "DANH001",
     "status": "ACTIVE",
     "manualActivationPending": false
@@ -287,7 +291,42 @@ The endpoint switches the linked account between `ACTIVE` and `INACTIVE`.
 
 `newStatus` is `1` for active and `0` for inactive. Accounts waiting for activation cannot be toggled.
 
-## 8. Disconnect a bank account
+## 8. Update a bank nickname
+
+```bash
+PATCH /v1/client/banks/:publicId
+```
+
+Sets an optional memo name for a linked account so you can tell accounts apart in the dashboard. Send a blank string to clear it. The nickname is shown only in your dashboard and is never sent to customers.
+
+### Request body
+
+```json
+{
+  "nickname": "Shop online"
+}
+```
+
+### Response
+
+```json
+{
+  "status": true,
+  "message": "Cập nhật tên gợi nhớ thành công",
+  "bank": {
+    "publicId": "bnk_abc123",
+    "bankName": "MB Bank",
+    "bankShortName": "MBB",
+    "accountNumber": "24550721",
+    "accountName": "PHAM THANH DANH",
+    "nickname": "Shop online",
+    "vaNumber": "DANH001",
+    "status": "ACTIVE"
+  }
+}
+```
+
+## 9. Disconnect a bank account
 
 ```bash
 DELETE /v1/client/banks/:publicId
@@ -308,7 +347,7 @@ The account is disconnected immediately unless the bank requires OTP confirmatio
 
 Accounts waiting for manual activation cannot be disconnected until ApiPay finishes processing the request.
 
-## 9. Confirm bank disconnection
+## 10. Confirm bank disconnection
 
 ```bash
 POST /v1/client/banks/:publicId/confirm-delete

@@ -627,11 +627,24 @@ After payment is confirmed, your plan activates immediately.
 
 1. Go to **Settings → Subscription**
 2. Select a higher quota plan
-3. Complete payment
-4. Changes take effect immediately
-5. The selected term becomes your default renewal term
+3. Choose how to apply the change:
+   - **Continue the current cycle** — keep your used quota, pay only the difference (default)
+   - **Start a fresh cycle** — pay the **full** new-plan price, your quota restarts at 0, and the unused value of your old plan is credited to prepaid balance
+4. Complete payment
+5. Changes take effect immediately
+6. The selected term becomes your default renewal term
 
 While a paid quota plan is active, you can only move to a **higher** quota. Same-size switches and downgrades are blocked until the current cycle ends.
+
+### Cancelling Your Plan
+
+1. Go to **Settings → Subscription → Cancel subscription**
+2. Choose an option:
+   - **Cancel at period end** — keep access until the end of the period you paid for, then auto-renewal stops
+   - **Cancel now** — access ends immediately and the unused value is credited to your prepaid balance
+3. Confirm
+
+Cancelling **never affects your bank connections**. Refunds are always **prepaid balance credit, never cash**, and cover only the **unused** portion of what you actually paid — consumed quota and overage fees are not refunded.
 
 ### Switching from a Legacy Plan
 
@@ -645,7 +658,7 @@ If you are still on an older bank-slot plan (BASIC, STARTER, PRO, TEAM, and simi
 - **Term discounts** — 6 months saves 5%, and 12 months saves 10%
 - **Effective monthly price** — Shown at checkout so you can compare the real cost per month
 - **Invoices** — All invoices are available in **Settings → Invoices**, each showing the billing term
-- **No refunds** — No refunds are provided for used or partial billing periods
+- **No cash refunds** — No cash refunds are provided for used or partial billing periods. When you cancel, the unused value of what you paid is credited to your prepaid balance (it cannot be withdrawn as cash).
 
 ### Renewal Process
 
@@ -793,7 +806,8 @@ Every quota plan, including **free**, supports connecting multiple banks at the 
 In the ApiPay Dashboard, the **Banks** section is accessible from the sidebar:
 
 - **Banks** (`/banks`) — View all connected accounts, add new ones, view transactions per bank
-- Each bank row shows status, account type, and actions
+- Each bank row shows the memo name (nickname), status, account type, and actions
+- You can set a **memo name** (nickname) on each account to tell them apart; it is visible only in your dashboard
 
 > For step-by-step instructions on connecting a bank, see the [Connect Banks guide](/en/connect-banks).
 
@@ -1415,6 +1429,7 @@ Fill in the required fields. The fields shown depend on which bank you selected.
 | **Account Name**   | Your account holder name, written in CAPITAL LETTERS without accents |
 | **Account Number** | Your bank account number                                             |
 | **Phone Number**   | The phone number registered with your bank                           |
+| **Memo Name**      | Optional nickname for this account in your dashboard (max 50 characters) |
 
 #### ACB — Personal Account
 
@@ -1582,6 +1597,7 @@ Once your bank is linked successfully:
 - The bank account appears in your **Banks** list with an **Active** status
 - You can view transaction history filtered by that bank
 - You can toggle the bank on/off using the status toggle
+- You can rename the account with a memo name to recognize it at a glance
 - ApiPay automatically registers a webhook to receive real-time transaction notifications
 
 ---
@@ -1597,6 +1613,17 @@ Once your bank is linked successfully:
    - Bank name and logo
    - Status (Active / Inactive)
    - Transaction history
+
+### Rename a Connected Bank
+
+Give a bank account a memo name so it is easy to recognize in your list:
+
+1. Go to **Banks**
+2. Click the **...** (more) menu on the right side of the bank row
+3. Select **Edit nickname**
+4. Enter a name (up to 50 characters) and save. Leave it blank to clear the name
+
+The memo name is shown only in your dashboard; customers never see it.
 
 ### Toggle Bank Status
 
@@ -4745,7 +4772,8 @@ POST /v1/client/banks
   "accountNumber": "24550721",
   "accountName": "PHAM THANH DANH",
   "mobile": "0858838502",
-  "identity": "012345678901"
+  "identity": "012345678901",
+  "nickname": "Shop online"
 }
 ```
 
@@ -4761,6 +4789,7 @@ POST /v1/client/banks
 | `mobile`        | string | Yes         | Phone number registered with the bank                                    |
 | `identity`      | string | Yes         | Citizen ID for personal accounts and VPBank household accounts, or tax code for other business/household types |
 | `acbUserId`     | string | Conditional | ACB OneBiz username for ACB business and household business accounts     |
+| `nickname`      | string | No          | Optional memo name shown only in your dashboard (max 50 characters)      |
 
 Sacombank accepts `personal-account` and `business-household-account`.
 Shinhan accepts `personal-account` and `business-account`.
@@ -4872,6 +4901,7 @@ GET /v1/client/banks
       "bankShortName": "MBB",
       "accountNumber": "24550721",
       "accountName": "PHAM THANH DANH",
+      "nickname": "Shop online",
       "vaNumber": "DANH001",
       "status": "ACTIVE",
       "manualActivationPending": false,
@@ -4906,6 +4936,7 @@ GET /v1/client/banks/:publicId
     "bankShortName": "MBB",
     "accountNumber": "24550721",
     "accountName": "PHAM THANH DANH",
+    "nickname": "Shop online",
     "vaNumber": "DANH001",
     "status": "ACTIVE",
     "manualActivationPending": false
@@ -4959,7 +4990,42 @@ The endpoint switches the linked account between `ACTIVE` and `INACTIVE`.
 
 `newStatus` is `1` for active and `0` for inactive. Accounts waiting for activation cannot be toggled.
 
-## 8. Disconnect a bank account
+## 8. Update a bank nickname
+
+```bash
+PATCH /v1/client/banks/:publicId
+```
+
+Sets an optional memo name for a linked account so you can tell accounts apart in the dashboard. Send a blank string to clear it. The nickname is shown only in your dashboard and is never sent to customers.
+
+### Request body
+
+```json
+{
+  "nickname": "Shop online"
+}
+```
+
+### Response
+
+```json
+{
+  "status": true,
+  "message": "Cập nhật tên gợi nhớ thành công",
+  "bank": {
+    "publicId": "bnk_abc123",
+    "bankName": "MB Bank",
+    "bankShortName": "MBB",
+    "accountNumber": "24550721",
+    "accountName": "PHAM THANH DANH",
+    "nickname": "Shop online",
+    "vaNumber": "DANH001",
+    "status": "ACTIVE"
+  }
+}
+```
+
+## 9. Disconnect a bank account
 
 ```bash
 DELETE /v1/client/banks/:publicId
@@ -4980,7 +5046,7 @@ The account is disconnected immediately unless the bank requires OTP confirmatio
 
 Accounts waiting for manual activation cannot be disconnected until ApiPay finishes processing the request.
 
-## 9. Confirm bank disconnection
+## 10. Confirm bank disconnection
 
 ```bash
 POST /v1/client/banks/:publicId/confirm-delete

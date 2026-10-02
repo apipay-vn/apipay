@@ -54,7 +54,7 @@ const OTP_STEPS: FlowStep[] = [
 	},
 	{
 		title: 'Enter account details',
-		body: 'Fill in your account number and the related details shown on screen.',
+		body: 'Fill in your account number and the related details shown on screen. You can also add an optional memo name (Tên gợi nhớ) to recognize the account later.',
 	},
 	{
 		title: 'Confirm OTP',
