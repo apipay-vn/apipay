@@ -79,6 +79,26 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.31.0',
+    date: '2026-10-13',
+    features: [
+      'Open the bank app from the payment page — on a phone, customers tap their bank and the bank app opens with the account number, amount, and transfer memo already filled in. Works with BIDV, ACB, VietinBank, OCB, MB Bank, VPBank, and Sacombank. The same links are available through the API (List Bank Apps and Create Bank App Link) for your own checkout page.',
+      'VIB business accounts now connect online, with no manual activation.',
+      'Payment speaker settings — adjust speed, volume, and delay before speaking, choose whether the bank name is read first, and preview the voice with any demo amount before you start.',
+      'Share bank QR — share or download the QR image of a linked bank account directly from the dashboard.',
+    ],
+    fixes: [
+      'Real-time notifications, Live Test, and the activity log now show the bank name instead of a bank code, and the payment speaker plays the bank introduction again.',
+      'Renewal invoices on quota plans no longer include extra usage that was already charged to your balance.',
+    ],
+    improvements: [
+      'Your current plan card now shows plan details and how many days or months are left, and the usage card shows used and remaining transactions with clear colour cues. The recent invoices card has a cleaner layout.',
+      'Transactions, payment requests, and bank accounts show a clear message with a Retry button if they fail to load, and lists across the dashboard use the same pagination with 10 rows per page.',
+      'Webhook URLs must point to your own server; ApiPay addresses are no longer accepted as webhook destinations.',
+      'A seasonal Halloween look for the ApiPay mascot.',
+    ],
+  },
+  {
     version: '1.30.0',
     date: '2026-10-02',
     features: [
@@ -689,6 +709,26 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.31.0',
+    date: '2026-10-13',
+    features: [
+      'Mở app ngân hàng từ trang thanh toán — trên điện thoại, khách bấm chọn ngân hàng và app ngân hàng mở ra với số tài khoản, số tiền và nội dung chuyển khoản đã điền sẵn. Hỗ trợ BIDV, ACB, VietinBank, OCB, MB Bank, VPBank và Sacombank. Các link này cũng có qua API (Danh sách app ngân hàng và Tạo link mở app ngân hàng) cho trang thanh toán riêng của bạn.',
+      'Tài khoản doanh nghiệp VIB giờ kết nối trực tuyến, không cần kích hoạt thủ công.',
+      'Cài đặt loa thanh toán — điều chỉnh tốc độ, âm lượng, thời gian chờ trước khi đọc, chọn đọc tên ngân hàng trước, và nghe thử giọng đọc với số tiền bất kỳ trước khi bắt đầu.',
+      'Chia sẻ QR ngân hàng — chia sẻ hoặc tải ảnh QR của tài khoản ngân hàng đã liên kết ngay trong dashboard.',
+    ],
+    fixes: [
+      'Thông báo thời gian thực, Live Test và nhật ký hoạt động giờ hiển thị tên ngân hàng thay vì mã ngân hàng, và loa thanh toán đọc lại lời giới thiệu ngân hàng.',
+      'Hóa đơn gia hạn của gói hạn mức không còn tính lại phần sử dụng vượt mức đã trừ vào số dư.',
+    ],
+    improvements: [
+      'Thẻ gói hiện tại hiển thị chi tiết gói và số ngày hoặc số tháng còn lại; thẻ sử dụng hiển thị số giao dịch đã dùng và còn lại với màu sắc rõ ràng. Thẻ hóa đơn gần đây có bố cục gọn hơn.',
+      'Giao dịch, payment link và tài khoản ngân hàng hiển thị thông báo rõ ràng kèm nút Thử lại khi không tải được; các danh sách trong dashboard dùng chung kiểu phân trang với 10 dòng mỗi trang.',
+      'URL webhook phải trỏ đến máy chủ của bạn; địa chỉ của ApiPay không còn được chấp nhận làm đích webhook.',
+      'Giao diện Halloween theo mùa cho linh vật ApiPay.',
+    ],
+  },
   {
     version: '1.30.0',
     date: '2026-10-02',
