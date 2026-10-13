@@ -3627,6 +3627,64 @@ GET /v1/payment-requests/:publicId/qr-image
 
 ---
 
+## List Bank Apps
+
+List the bank apps a customer can open with the transfer already filled in (account, amount, content). Public, no API key. Returns an empty list when the payment request is not `ACTIVE` and for sandbox (`test_pr_*`) requests.
+
+```bash
+GET /v1/payment-requests/:publicId/bank-apps
+```
+
+### Response
+
+```json
+{
+  "data": [
+    {"bankBin": "970418", "bankCode": "BIDV", "name": "BIDV"},
+    {"bankBin": "970416", "bankCode": "ACB", "name": "ACB"},
+    {"bankBin": "970415", "bankCode": "ICB", "name": "VietinBank"},
+    {"bankBin": "970448", "bankCode": "OCB", "name": "OCB"},
+    {"bankBin": "970422", "bankCode": "MB", "name": "MB Bank"},
+    {"bankBin": "970432", "bankCode": "VPB", "name": "VPBank"},
+    {"bankBin": "970403", "bankCode": "STB", "name": "Sacombank"}
+  ],
+  "statusCode": 200
+}
+```
+
+---
+
+## Create Bank App Link
+
+Create a link that opens the chosen bank app with the transfer filled in. Open it on the customer's phone (for example `window.location.assign(url)`). Public, no API key. The ApiPay payment page shows these buttons on mobile automatically.
+
+```bash
+POST /v1/payment-requests/:publicId/bank-apps/link
+```
+
+### Request Body
+
+| Field     | Type   | Required | Description                            |
+| --------- | ------ | -------- | -------------------------------------- |
+| `bankBin` | string | Yes      | `bankBin` from **List Bank Apps**      |
+
+### Response
+
+```json
+{
+  "data": {
+    "url": "<bank app link>"
+  },
+  "statusCode": 201
+}
+```
+
+After the customer finishes in the bank app, they return to the payment page. Opening the link does **not** confirm payment: rely on the `transaction.in` webhook (or payment request status) for the final result.
+
+Errors: `400` when `bankBin` is not in the list or the payment request is not `ACTIVE`; `404` when the payment request does not exist or is a sandbox request.
+
+---
+
 ## Cancel Payment Link
 
 Cancel an active payment request.

@@ -323,6 +323,64 @@ GET /v1/payment-requests/:publicId/qr-image
 
 ---
 
+## Danh sách app ngân hàng
+
+Lấy danh sách app ngân hàng mà khách có thể mở với thông tin chuyển khoản điền sẵn (số tài khoản, số tiền, nội dung). Công khai, không cần API key. Trả về danh sách rỗng khi payment request không còn `ACTIVE` và với request sandbox (`test_pr_*`).
+
+```bash
+GET /v1/payment-requests/:publicId/bank-apps
+```
+
+### Response
+
+```json
+{
+  "data": [
+    {"bankBin": "970418", "bankCode": "BIDV", "name": "BIDV"},
+    {"bankBin": "970416", "bankCode": "ACB", "name": "ACB"},
+    {"bankBin": "970415", "bankCode": "ICB", "name": "VietinBank"},
+    {"bankBin": "970448", "bankCode": "OCB", "name": "OCB"},
+    {"bankBin": "970422", "bankCode": "MB", "name": "MB Bank"},
+    {"bankBin": "970432", "bankCode": "VPB", "name": "VPBank"},
+    {"bankBin": "970403", "bankCode": "STB", "name": "Sacombank"}
+  ],
+  "statusCode": 200
+}
+```
+
+---
+
+## Tạo link mở app ngân hàng
+
+Tạo link mở app ngân hàng đã chọn với thông tin chuyển khoản điền sẵn. Mở link trên điện thoại của khách (ví dụ `window.location.assign(url)`). Công khai, không cần API key. Trang thanh toán ApiPay tự hiển thị các nút này trên di động.
+
+```bash
+POST /v1/payment-requests/:publicId/bank-apps/link
+```
+
+### Request Body
+
+| Tham số   | Kiểu   | Bắt buộc | Mô tả                                       |
+| --------- | ------ | -------- | ------------------------------------------- |
+| `bankBin` | string | Có       | `bankBin` lấy từ **Danh sách app ngân hàng** |
+
+### Response
+
+```json
+{
+  "data": {
+    "url": "<link mở app ngân hàng>"
+  },
+  "statusCode": 201
+}
+```
+
+Sau khi khách thao tác xong trong app ngân hàng, khách được đưa về trang thanh toán. Mở link **không** xác nhận đã thanh toán: dùng webhook `transaction.in` (hoặc trạng thái payment request) để biết kết quả cuối cùng.
+
+Lỗi: `400` khi `bankBin` không có trong danh sách hoặc payment request không còn `ACTIVE`; `404` khi payment request không tồn tại hoặc là request sandbox.
+
+---
+
 ## Hủy Payment Link
 
 Hủy một payment request đang hoạt động.
