@@ -199,6 +199,89 @@
         }
       }
     },
+    "/v1/payment-requests/{id}/bank-apps": {
+      "get": {
+        "tags": [
+          "Payment Requests"
+        ],
+        "summary": "List bank apps (public)",
+        "description": "Bank apps the customer can open with the transfer prefilled. No API key required. Empty when the payment request is not ACTIVE and for sandbox (`test_pr_*`) requests.",
+        "operationId": "listBankApps",
+        "security": [],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Payment request public ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of `{bankBin, bankCode, name}`"
+          },
+          "404": {
+            "description": "Payment request not found"
+          }
+        }
+      }
+    },
+    "/v1/payment-requests/{id}/bank-apps/link": {
+      "post": {
+        "tags": [
+          "Payment Requests"
+        ],
+        "summary": "Create bank app link (public)",
+        "description": "Returns a link that opens the chosen bank app with account, amount and content prefilled. No API key required. Opening the link does not confirm payment; use the payment webhook for the final status. After the bank app, the customer returns to the payment page.",
+        "operationId": "createBankAppLink",
+        "security": [],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Payment request public ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "bankBin"
+                ],
+                "properties": {
+                  "bankBin": {
+                    "type": "string",
+                    "description": "`bankBin` from the bank-apps list",
+                    "example": "970418"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "`{url}`"
+          },
+          "400": {
+            "description": "Unsupported bank, or payment request not ACTIVE"
+          },
+          "404": {
+            "description": "Payment request not found, or sandbox request"
+          }
+        }
+      }
+    },
     "/v1/commerce/payment-links/{publicId}": {
       "get": {
         "tags": ["Commerce"],
