@@ -201,7 +201,7 @@ export const BANKS: Bank[] = [
 		fullName: 'Ngân hàng TMCP Quốc tế Việt Nam',
 		searchNames: ['vib', 'quốc tế việt nam'],
 		accountTypes: ['personal', 'household', 'business'],
-		modes: {personal: 'otp', household: 'otp', business: 'manual'},
+		modes: {personal: 'otp', household: 'otp', business: 'otp'},
 	},
 ];
 
