@@ -331,21 +331,35 @@ Lấy danh sách app ngân hàng mà khách có thể mở với thông tin chuy
 GET /v1/payment-requests/:publicId/bank-apps
 ```
 
+### Query Parameters
+
+| Tham số    | Kiểu   | Bắt buộc | Mô tả                                                                                                                  |
+| ---------- | ------ | -------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `platform` | string | —        | `ios` hoặc `android`. Trả thêm các app deeplink VietQR cho nền tảng đó, nằm sau các app điền sẵn (xem bên dưới) |
+
 ### Response
 
 ```json
 {
   "data": [
-    {"bankBin": "970418", "bankCode": "BIDV", "name": "BIDV"},
-    {"bankBin": "970416", "bankCode": "ACB", "name": "ACB"},
-    {"bankBin": "970415", "bankCode": "ICB", "name": "VietinBank"},
-    {"bankBin": "970448", "bankCode": "OCB", "name": "OCB"},
-    {"bankBin": "970422", "bankCode": "MB", "name": "MB Bank"},
-    {"bankBin": "970432", "bankCode": "VPB", "name": "VPBank"},
-    {"bankBin": "970403", "bankCode": "STB", "name": "Sacombank"}
+    {"bankBin": "970418", "bankCode": "BIDV", "name": "BIDV", "autofill": true},
+    {"bankBin": "970416", "bankCode": "ACB", "name": "ACB", "autofill": true},
+    {"bankBin": "970415", "bankCode": "ICB", "name": "VietinBank", "autofill": true},
+    {"bankBin": "970448", "bankCode": "OCB", "name": "OCB", "autofill": true},
+    {"bankBin": "970422", "bankCode": "MB", "name": "MB Bank", "autofill": true},
+    {"bankBin": "970432", "bankCode": "VPB", "name": "VPBank", "autofill": true},
+    {"bankBin": "970403", "bankCode": "STB", "name": "Sacombank", "autofill": true}
   ],
   "statusCode": 200
 }
+```
+
+Mỗi phần tử có `autofill`: `true` khi app ngân hàng mở ra với giao dịch đã điền sẵn. Phần tử có `bankBin` được mở qua **Tạo link mở app ngân hàng**.
+
+Khi truyền `platform`, danh sách có thêm các app deeplink VietQR (`dl.vietqr.io`). Các phần tử này có sẵn `url` thay cho `bankBin`: mở thẳng trên điện thoại, không cần gọi thêm API. Phần lớn chỉ mở app ngân hàng, không điền sẵn giao dịch (`autofill: false`).
+
+```json
+{"name": "Techcombank Mobile", "logoUrl": "https://cdn.vietqr.io/bank-app-icon/tcb-ios.webp", "autofill": false, "url": "https://dl.vietqr.io/pay?app=tcb&ba=..."}
 ```
 
 ---

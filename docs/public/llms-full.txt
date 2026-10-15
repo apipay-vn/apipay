@@ -764,7 +764,8 @@ Notes:
 - **Shinhan Bank** supports Personal (automatic) and Business (manual activation).
 - **BIDV** and **VietinBank** Business require manual activation; Household Business uses the online flow.
 - **MB Bank** Personal, Business, and Household Business are fully online. Household Business is sent to the bank as a personal account.
-- **OCB** and **VIB** Business require manual activation. Personal and Household Business are fully online.
+- **OCB** Business requires manual activation. Personal and Household Business are fully online.
+- **VIB**: all account types are fully online. Business is sent to the bank as a household business account.
 - **Sacombank** Household Business uses the online flow.
 - **PGBank** and **Co-opBank**: all account types are online, with no manual activation.
 - **ACB** Business and Household Business connect online and link the original account number. They use an ACB OneBiz username. ApiPay does not issue a separate virtual account.
@@ -777,7 +778,7 @@ After connecting, a bank account has one of these statuses:
 
 - **Active** — fully operational, receiving payments
 - **Pending** — OTP verified but final confirmation in progress
-- **Activation Requested** — manual activation queued (OCB/VIB Business, VPBank/BIDV/VietinBank/Shinhan Business, Vietcombank Business/Household, and every MSB or TPBank account type)
+- **Activation Requested** — manual activation queued (OCB Business, VPBank/BIDV/VietinBank/Shinhan Business, Vietcombank Business/Household, and every MSB or TPBank account type)
 - **Inactive** — temporarily disabled; payments won't be routed here
 
 ## Managing Multiple Banks
@@ -1378,8 +1379,8 @@ Before linking a bank account, make sure you have:
 - **Vietcombank**: supports Business and Household Business only (all manual activation)
 - **MSB**: Personal, Business, and Household Business all require manual activation. Business accounts must enable MSB Merchant at a branch. Do not edit the referral code.
 - **TPBank**: Personal, Business, and Household Business all require manual activation. The virtual account appears as a sub-account of the original account.
-- **OCB**/**VIB** Business, **VPBank**/**BIDV**/**VietinBank**/**Shinhan Bank** Business, **Vietcombank** Business/Household, and every **MSB** or **TPBank** account type: manual activation
-- **ACB** Business/Household, **MB Bank** (all types), **PGBank**, **Co-opBank**, and Household Business for **BIDV**, **VietinBank**, **Sacombank**, **VIB**, and **OCB**: fully online, no manual activation. **ACB** Business/Household link the original account number.
+- **OCB** Business, **VPBank**/**BIDV**/**VietinBank**/**Shinhan Bank** Business, **Vietcombank** Business/Household, and every **MSB** or **TPBank** account type: manual activation
+- **ACB** Business/Household, **MB Bank** (all types), **VIB** (all types), **PGBank**, **Co-opBank**, and Household Business for **BIDV**, **VietinBank**, **Sacombank**, and **OCB**: fully online, no manual activation. **ACB** Business/Household link the original account number.
 
 ---
 
@@ -1414,7 +1415,7 @@ Per-bank availability:
 
 > **VietinBank note:** Transactions from VietinBank have no transfer content; contact support for more details.
 
-> **Manual activation.** OCB/VIB Business, VPBank/BIDV/VietinBank/Shinhan Business, Vietcombank Business/Household, and every MSB or TPBank account type use activation requests. You'll see **Activation Requested** until they complete. ACB, MB (all types), PGBank, Co-opBank, and Household Business for BIDV, VietinBank, Sacombank, VIB, and OCB are fully online.
+> **Manual activation.** OCB Business, VPBank/BIDV/VietinBank/Shinhan Business, Vietcombank Business/Household, and every MSB or TPBank account type use activation requests. You'll see **Activation Requested** until they complete. ACB, MB (all types), VIB (all types), PGBank, Co-opBank, and Household Business for BIDV, VietinBank, Sacombank, and OCB are fully online.
 
 Click the card that matches your account type to continue.
 
@@ -1518,21 +1519,29 @@ No additional fields required beyond the base fields above.
 
 > **Note:** All PGBank account types (Personal, Business, Household Business) are processed fully online with no manual activation required.
 
-#### OCB / VIB — Household Business Account
+#### OCB — Household Business Account
 
 | Additional Field   | Description                                         |
 | ------------------ | --------------------------------------------------- |
 | **Tax Code (MST)** | Tax Identification Number of the household business |
 
-> **Note:** OCB and VIB Household Business accounts connect online. No manual activation.
+> **Note:** OCB Household Business accounts connect online. No manual activation.
 
-#### OCB / VIB — Business Account
+#### OCB — Business Account
 
 | Additional Field   | Description                              |
 | ------------------ | ---------------------------------------- |
 | **Tax Code (MST)** | Tax Identification Number of the company |
 
-> **Manual activation:** OCB and VIB Business connections are submitted for manual activation. ApiPay enables the account after the API contract is signed.
+> **Manual activation:** OCB Business connections are submitted for manual activation. ApiPay enables the account after the API contract is signed.
+
+#### VIB — Business / Household Business Account
+
+| Additional Field   | Description                                                    |
+| ------------------ | -------------------------------------------------------------- |
+| **Tax Code (MST)** | Tax Identification Number of the company or household business |
+
+> **Note:** VIB Business and Household Business accounts connect online with an OTP. No manual activation.
 
 #### BIDV / VietinBank / Shinhan Bank — Business Account
 
@@ -1652,7 +1661,7 @@ If you want to temporarily stop receiving payments on a specific bank:
 | OTP code incorrect                | Double-check that you're entering the code sent to your phone. Codes are 6 digits.                                                                                                    |
 | CCCD rejected                     | Make sure you enter exactly 12 digits without spaces or special characters.                                                                                                           |
 | Bank shows "Pending" status       | After linking, the bank should become Active within seconds. If it stays Pending, try refreshing the page.                                                                            |
-| Bank shows "Activation Requested" | This is expected for manual-activation flows (OCB/VIB Business, VPBank/BIDV/VietinBank/Shinhan Business, Vietcombank Business/Household, every MSB account type). ApiPay will contact you to complete activation. |
+| Bank shows "Activation Requested" | This is expected for manual-activation flows (OCB Business, VPBank/BIDV/VietinBank/Shinhan Business, Vietcombank Business/Household, every MSB account type). ApiPay will contact you to complete activation. |
 | Account number already linked     | Each bank account can only be linked once. If you see this error, the account may already be connected to another ApiPay account.                                                     |
 | Account type not available        | Sacombank does not support Business accounts; Vietcombank does not support Personal accounts.                                                                                           |
 
@@ -3635,21 +3644,35 @@ List the bank apps a customer can open with the transfer already filled in (acco
 GET /v1/payment-requests/:publicId/bank-apps
 ```
 
+### Query Parameters
+
+| Parameter  | Type   | Required | Description                                                                                                        |
+| ---------- | ------ | -------- | ------------------------------------------------------------------------------------------------------------------ |
+| `platform` | string | —        | `ios` or `android`. Also lists VietQR deeplink apps for that platform after the prefilled bank apps (see below) |
+
 ### Response
 
 ```json
 {
   "data": [
-    {"bankBin": "970418", "bankCode": "BIDV", "name": "BIDV"},
-    {"bankBin": "970416", "bankCode": "ACB", "name": "ACB"},
-    {"bankBin": "970415", "bankCode": "ICB", "name": "VietinBank"},
-    {"bankBin": "970448", "bankCode": "OCB", "name": "OCB"},
-    {"bankBin": "970422", "bankCode": "MB", "name": "MB Bank"},
-    {"bankBin": "970432", "bankCode": "VPB", "name": "VPBank"},
-    {"bankBin": "970403", "bankCode": "STB", "name": "Sacombank"}
+    {"bankBin": "970418", "bankCode": "BIDV", "name": "BIDV", "autofill": true},
+    {"bankBin": "970416", "bankCode": "ACB", "name": "ACB", "autofill": true},
+    {"bankBin": "970415", "bankCode": "ICB", "name": "VietinBank", "autofill": true},
+    {"bankBin": "970448", "bankCode": "OCB", "name": "OCB", "autofill": true},
+    {"bankBin": "970422", "bankCode": "MB", "name": "MB Bank", "autofill": true},
+    {"bankBin": "970432", "bankCode": "VPB", "name": "VPBank", "autofill": true},
+    {"bankBin": "970403", "bankCode": "STB", "name": "Sacombank", "autofill": true}
   ],
   "statusCode": 200
 }
+```
+
+Every item has `autofill`: `true` when the bank app opens with the transfer filled in. Items with `bankBin` are opened through **Create Bank App Link**.
+
+With `platform`, the list continues with VietQR deeplink apps (`dl.vietqr.io`). These items carry a ready `url` instead of `bankBin`: open it directly on the phone, no extra call. Most of them only open the bank app without filling in the transfer (`autofill: false`).
+
+```json
+{"name": "Techcombank Mobile", "logoUrl": "https://cdn.vietqr.io/bank-app-icon/tcb-ios.webp", "autofill": false, "url": "https://dl.vietqr.io/pay?app=tcb&ba=..."}
 ```
 
 ---
@@ -4903,7 +4926,7 @@ Submit the verification code to the confirm OTP endpoint.
 
 Manual activation applies to:
 
-- OCB and VIB business accounts
+- OCB business accounts
 - VPBank, BIDV, VietinBank, and Shinhan Bank business accounts
 - Vietcombank business and household business accounts
 - Every MSB account type (personal, business, and household business)
