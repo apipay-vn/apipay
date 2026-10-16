@@ -217,24 +217,11 @@
               "type": "string"
             },
             "description": "Payment request public ID"
-          },
-          {
-            "name": "platform",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "enum": [
-                "ios",
-                "android"
-              ]
-            },
-            "description": "Also list VietQR deeplink apps for this platform, after the prefilled bank apps"
           }
         ],
         "responses": {
           "200": {
-            "description": "List of `{bankBin, bankCode, name, autofill}` (open via Create Bank App Link); with `platform`, followed by VietQR apps `{name, logoUrl, autofill, url}` (open `url` directly)"
+            "description": "List of `{bankBin, bankCode, name}`"
           },
           "404": {
             "description": "Payment request not found"
