@@ -60,7 +60,7 @@ Bạn cần chuẩn bị:
 - Đối với **MB Bank**, **VIB**, **Sacombank**, **VPBank**, **PGBank**, **Shinhan Bank** Cá nhân, và **MB Bank** hoặc **VPBank** Hộ kinh doanh: Số CCCD (12 chữ số)
 - Đối với tài khoản Doanh nghiệp hoặc Hộ kinh doanh: Mã số thuế (MST) / CCCD của công ty/hộ kinh doanh
 - Đối với **ACB Doanh nghiệp**: Tên đăng nhập ACB OneBiz
-- **Vietcombank**: chỉ hỗ trợ Doanh nghiệp và Hộ kinh doanh (kích hoạt thủ công)
+- **Vietcombank**: Cá nhân xác thực trên ứng dụng; Doanh nghiệp và Hộ kinh doanh cần kích hoạt thủ công
 - **MSB**: Cá nhân, Doanh nghiệp và Hộ kinh doanh đều kích hoạt thủ công. Doanh nghiệp cần bật MSB Merchant tại chi nhánh. Không chỉnh sửa mã giới thiệu.
 - **TPBank**: Cá nhân, Doanh nghiệp và Hộ kinh doanh đều kích hoạt thủ công. Tài khoản ảo hiển thị dưới dạng tài khoản phụ của tài khoản gốc.
 - **OCB** Doanh nghiệp, **VPBank**/**BIDV**/**VietinBank**/**Shinhan Bank** Doanh nghiệp, **Vietcombank** Doanh nghiệp/Hộ kinh doanh, và mọi loại tài khoản **MSB** hoặc **TPBank**: kích hoạt thủ công
@@ -237,13 +237,13 @@ Không cần thêm trường nào ngoài các trường chung bên trên.
 >
 > **Lưu ý VietinBank:** Giao dịch từ VietinBank sẽ không có nội dung. Liên hệ hỗ trợ để biết thêm chi tiết.
 
-#### Vietcombank — Doanh nghiệp hoặc Hộ kinh doanh
+#### Vietcombank
 
 | Trường bổ sung       | Mô tả                                                    |
 | -------------------- | -------------------------------------------------------- |
 | **Mã số thuế / CCCD**| Mã số thuế của doanh nghiệp hoặc CCCD chủ hộ kinh doanh   |
 
-> **Kích hoạt thủ công:** Mọi tài khoản Vietcombank (Doanh nghiệp và Hộ kinh doanh) đều qua luồng kích hoạt thủ công. Tài khoản cá nhân không được hỗ trợ. ApiPay sẽ hỗ trợ xác minh và kích hoạt sau khi thiết lập hợp đồng API.
+Tài khoản cá nhân liên kết bằng cách xác thực trên ứng dụng Vietcombank. Tài khoản Doanh nghiệp và Hộ kinh doanh gửi yêu cầu kích hoạt thủ công; ApiPay sẽ xác minh và kích hoạt sau khi thiết lập hợp đồng API.
 
 #### MSB — Cá nhân, Doanh nghiệp hoặc Hộ kinh doanh
 

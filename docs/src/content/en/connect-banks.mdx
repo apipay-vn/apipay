@@ -60,7 +60,7 @@ Before linking a bank account, make sure you have:
 - For **MB Bank**, **VIB**, **Sacombank**, **VPBank**, **PGBank**, **Shinhan Bank** Personal, and **MB Bank** or **VPBank** Household Business: your CCCD/ID card number (12 digits)
 - For Business or Household Business accounts: your company/household Tax Code (MST) / CCCD
 - For **ACB Business**: an ACB OneBiz username
-- **Vietcombank**: supports Business and Household Business only (all manual activation)
+- **Vietcombank**: Personal uses in-app authorization; Business and Household Business require manual activation
 - **MSB**: Personal, Business, and Household Business all require manual activation. Business accounts must enable MSB Merchant at a branch. Do not edit the referral code.
 - **TPBank**: Personal, Business, and Household Business all require manual activation. The virtual account appears as a sub-account of the original account.
 - **OCB** Business, **VPBank**/**BIDV**/**VietinBank**/**Shinhan Bank** Business, **Vietcombank** Business/Household, and every **MSB** or **TPBank** account type: manual activation
@@ -237,13 +237,13 @@ No additional fields required beyond the base fields above.
 >
 > **VietinBank note:** Transactions from VietinBank have no transfer content; contact support for more details.
 
-#### Vietcombank — Business or Household Business Account
+#### Vietcombank
 
 | Additional Field   | Description                                                    |
 | ------------------ | -------------------------------------------------------------- |
 | **Tax Code / CCCD**| Tax Identification Number or Citizen ID of the business/household |
 
-> **Manual activation:** All Vietcombank connections (Business and Household Business) are submitted for manual activation. Personal accounts are not supported. ApiPay enables the account after verification and API contract setup.
+Personal accounts connect through authorization in the Vietcombank app. Business and Household Business accounts are submitted for manual activation. ApiPay enables them after verification and API contract setup.
 
 #### MSB — Personal, Business, or Household Business Account
 
