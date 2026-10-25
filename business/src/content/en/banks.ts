@@ -86,14 +86,38 @@ const MANUAL_STEPS: FlowStep[] = [
   },
 ];
 
+const APP_STEPS: FlowStep[] = [
+  DASHBOARD_STEP,
+  {
+    title: 'Select bank and account type',
+    body: 'Choose the bank and the account type you want to link.',
+  },
+  {
+    title: 'Enter account details',
+    body: 'Fill in your account number and the related details shown on screen.',
+  },
+  {
+    title: 'Approve in your bank app',
+    body: 'The dashboard shows a link or QR code. Open your bank app and confirm the link request.',
+  },
+  {
+    title: 'Done',
+    body: 'The dashboard updates once the bank confirms. The account becomes Active and is ready to receive funds.',
+  },
+];
+
 const FLOWS: Record<LinkMode, AccountFlow> = {
   otp: {steps: OTP_STEPS},
   manual: {steps: MANUAL_STEPS},
+  app: {steps: APP_STEPS},
 };
 
 export function getFlow(mode: LinkMode): AccountFlow {
   return FLOWS[mode];
 }
+
+const TPBANK_VA_NOTE = 'Virtual accounts (VA) appear as sub-accounts of the origin account.';
+const TPBANK_REMOVE_NOTE = 'An active TPBank account cannot be removed from the dashboard; turn the bank off or contact support.';
 
 export const BANK_NOTES: Record<string, Partial<Record<AccountType, string[]>>> = {
   msb: {
@@ -112,9 +136,12 @@ export const BANK_NOTES: Record<string, Partial<Record<AccountType, string[]>>> 
     ],
   },
   tpbank: {
-    personal: ['Virtual accounts (VA) appear as sub-accounts of the origin account.'],
-    household: ['Virtual accounts (VA) appear as sub-accounts of the origin account.'],
-    business: ['Virtual accounts (VA) appear as sub-accounts of the origin account.'],
+    personal: [TPBANK_VA_NOTE, TPBANK_REMOVE_NOTE],
+    household: [TPBANK_VA_NOTE, TPBANK_REMOVE_NOTE],
+    business: [TPBANK_VA_NOTE, TPBANK_REMOVE_NOTE],
+  },
+  vietcombank: {
+    personal: ['Scan the QR code or tap “Open Vietcombank” on the dashboard, then approve the request in the Vietcombank app.'],
   },
   vpbank: {
     business: ['Business accounts can link via NeoBiz or VA depending on the account configuration.'],

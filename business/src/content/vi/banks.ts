@@ -86,14 +86,38 @@ const MANUAL_STEPS: FlowStep[] = [
   },
 ];
 
+const APP_STEPS: FlowStep[] = [
+  DASHBOARD_STEP,
+  {
+    title: 'Chọn ngân hàng và loại tài khoản',
+    body: 'Chọn ngân hàng và loại tài khoản bạn muốn liên kết.',
+  },
+  {
+    title: 'Nhập thông tin tài khoản',
+    body: 'Điền số tài khoản (STK) và các thông tin liên quan theo hướng dẫn trên màn hình.',
+  },
+  {
+    title: 'Duyệt trên app ngân hàng',
+    body: 'Dashboard hiển thị liên kết hoặc mã QR. Mở app ngân hàng và xác nhận yêu cầu liên kết.',
+  },
+  {
+    title: 'Hoàn tất',
+    body: 'Dashboard tự cập nhật khi ngân hàng xác nhận. Tài khoản chuyển sang trạng thái Active và sẵn sàng nhận tiền.',
+  },
+];
+
 const FLOWS: Record<LinkMode, AccountFlow> = {
   otp: {steps: OTP_STEPS},
   manual: {steps: MANUAL_STEPS},
+  app: {steps: APP_STEPS},
 };
 
 export function getFlow(mode: LinkMode): AccountFlow {
   return FLOWS[mode];
 }
+
+const TPBANK_VA_NOTE = 'Tài khoản ảo (VA) hiển thị dưới dạng tài khoản phụ của tài khoản gốc.';
+const TPBANK_REMOVE_NOTE = 'Tài khoản TPBank đã kích hoạt không tự xoá được; hãy tắt ngân hàng hoặc liên hệ hỗ trợ.';
 
 export const BANK_NOTES: Record<string, Partial<Record<AccountType, string[]>>> = {
   msb: {
@@ -112,9 +136,12 @@ export const BANK_NOTES: Record<string, Partial<Record<AccountType, string[]>>> 
     ],
   },
   tpbank: {
-    personal: ['Tài khoản ảo (VA) hiển thị dưới dạng tài khoản phụ của tài khoản gốc.'],
-    household: ['Tài khoản ảo (VA) hiển thị dưới dạng tài khoản phụ của tài khoản gốc.'],
-    business: ['Tài khoản ảo (VA) hiển thị dưới dạng tài khoản phụ của tài khoản gốc.'],
+    personal: [TPBANK_VA_NOTE, TPBANK_REMOVE_NOTE],
+    household: [TPBANK_VA_NOTE, TPBANK_REMOVE_NOTE],
+    business: [TPBANK_VA_NOTE, TPBANK_REMOVE_NOTE],
+  },
+  vietcombank: {
+    personal: ['Quét mã QR hoặc bấm “Mở Vietcombank” trên dashboard, sau đó duyệt yêu cầu trong app Vietcombank.'],
   },
   vpbank: {
     business: ['Doanh nghiệp có thể liên kết qua NeoBiz hoặc VA tuỳ theo cấu hình tài khoản.'],
