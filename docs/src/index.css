@@ -3,7 +3,7 @@
 /* ===== Design Tokens ===== */
 @theme {
 	--font-sans: "Inter", system-ui, -apple-system, sans-serif;
-	--font-mono: "JetBrains Mono", ui-monospace, monospace;
+	--font-mono: "Source Code Pro", ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
 
 	/* Brand colors */
 	--color-primary-50: oklch(0.98 0 0);
@@ -87,7 +87,7 @@ html {
 }
 
 body {
-	font-family: var(--font-mono);
+	font-family: var(--font-sans);
 	background: var(--color-bg);
 	color: var(--color-text);
 	line-height: 1.7;
