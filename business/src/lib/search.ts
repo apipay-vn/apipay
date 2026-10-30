@@ -12,7 +12,7 @@ function buildSearchText(bank: Bank): string {
 		const tag = MODE_TAGS[mode];
 		return [mode, tag.vi, tag.en, tag.slug, type];
 	});
-	const settlementWords = generatesVa(bank.bin)
+	const settlementWords = bank.accountTypes.some(type => generatesVa(bank.bin, type))
 		? ['va', 'virtual account', 'tài khoản ảo']
 		: ['origin', 'tài khoản gốc'];
 	const parts = [

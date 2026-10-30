@@ -141,7 +141,10 @@ export const BANK_NOTES: Record<string, Partial<Record<AccountType, string[]>>> 
     business: [TPBANK_VA_NOTE, TPBANK_REMOVE_NOTE],
   },
   vietcombank: {
-    personal: ['Scan the QR code or tap “Open Vietcombank” on the dashboard, then approve the request in the Vietcombank app.'],
+    personal: [
+      'Scan the QR code or tap “Open Vietcombank” on the dashboard, then approve the request in the Vietcombank app.',
+      'After approval, ApiPay issues a virtual account (VA) number for this Personal account.',
+    ],
   },
   vpbank: {
     business: ['Business accounts can link via NeoBiz or VA depending on the account configuration.'],

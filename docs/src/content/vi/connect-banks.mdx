@@ -44,7 +44,7 @@ Sau khi kết nối thành công, tài khoản sẽ xuất hiện trong phần *
 | **PGBank**           |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào, Tài khoản ngân hàng |
 | **Shinhan Bank**     |   Có    |      Có      |    Không      | OpenBanking, Đồng bộ tiền vào, Tài khoản ảo (VA) |
 | **Co-opBank**        |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào, Tài khoản ảo (VA) |
-| **Vietcombank**      |  Không  |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào, Tài khoản ngân hàng |
+| **Vietcombank**      |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào, Tài khoản ảo (VA) cho Cá nhân |
 | **MSB**              |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào, Tài khoản ngân hàng |
 | **TPBank**           |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào, Tài khoản ngân hàng |
 
@@ -60,10 +60,10 @@ Bạn cần chuẩn bị:
 - Đối với **MB Bank**, **VIB**, **Sacombank**, **VPBank**, **PGBank**, **Shinhan Bank** Cá nhân, và **MB Bank** hoặc **VPBank** Hộ kinh doanh: Số CCCD (12 chữ số)
 - Đối với tài khoản Doanh nghiệp hoặc Hộ kinh doanh: Mã số thuế (MST) / CCCD của công ty/hộ kinh doanh
 - Đối với **ACB Doanh nghiệp**: Tên đăng nhập ACB OneBiz
-- **Vietcombank**: Cá nhân xác thực trên ứng dụng; Doanh nghiệp và Hộ kinh doanh cần kích hoạt thủ công
+- **Vietcombank**: Cá nhân xác thực trên ứng dụng và được cấp tài khoản ảo (VA); Doanh nghiệp và Hộ kinh doanh cần kích hoạt thủ công và dùng số tài khoản gốc
 - **MSB**: Cá nhân, Doanh nghiệp và Hộ kinh doanh đều kích hoạt thủ công. Doanh nghiệp cần bật MSB Merchant tại chi nhánh. Không chỉnh sửa mã giới thiệu.
-- **TPBank**: Cá nhân, Doanh nghiệp và Hộ kinh doanh đều kích hoạt thủ công. Tài khoản ảo hiển thị dưới dạng tài khoản phụ của tài khoản gốc.
-- **OCB** Doanh nghiệp, **VPBank**/**BIDV**/**VietinBank**/**Shinhan Bank** Doanh nghiệp, **Vietcombank** Doanh nghiệp/Hộ kinh doanh, và mọi loại tài khoản **MSB** hoặc **TPBank**: kích hoạt thủ công
+- **TPBank**: Cá nhân, Doanh nghiệp và Hộ kinh doanh xác thực trên ứng dụng ngân hàng. Tài khoản ảo hiển thị dưới dạng tài khoản phụ của tài khoản gốc.
+- **OCB** Doanh nghiệp, **VPBank**/**BIDV**/**VietinBank**/**Shinhan Bank** Doanh nghiệp, **Vietcombank** Doanh nghiệp/Hộ kinh doanh, và mọi loại tài khoản **MSB**: kích hoạt thủ công
 - **ACB** Doanh nghiệp/Hộ kinh doanh, **MB Bank** (mọi loại), **VIB** (mọi loại), **PGBank**, **Co-opBank**, và Hộ kinh doanh của **BIDV**, **VietinBank**, **Sacombank**, **OCB**: trực tuyến, không cần kích hoạt. **ACB** Doanh nghiệp/Hộ kinh doanh liên kết số tài khoản gốc.
 
 ---
@@ -98,7 +98,7 @@ Hỗ trợ theo từng ngân hàng:
 
 > **Lưu ý VietinBank:** Giao dịch từ VietinBank sẽ không có nội dung. Liên hệ hỗ trợ để biết thêm chi tiết.
 
-> **Kích hoạt thủ công.** OCB Doanh nghiệp, VPBank/BIDV/VietinBank/Shinhan Doanh nghiệp, Vietcombank Doanh nghiệp/Hộ kinh doanh, và mọi loại tài khoản MSB hoặc TPBank dùng yêu cầu kích hoạt. Trạng thái là **Yêu cầu kích hoạt**. ACB, MB (mọi loại), VIB (mọi loại), PGBank, Co-opBank, và Hộ kinh doanh của BIDV, VietinBank, Sacombank, OCB đều trực tuyến.
+> **Kích hoạt thủ công.** OCB Doanh nghiệp, VPBank/BIDV/VietinBank/Shinhan Doanh nghiệp, Vietcombank Doanh nghiệp/Hộ kinh doanh, và mọi loại tài khoản MSB dùng yêu cầu kích hoạt. Trạng thái là **Yêu cầu kích hoạt**. ACB, MB (mọi loại), VIB (mọi loại), PGBank, Co-opBank, TPBank, và Hộ kinh doanh của BIDV, VietinBank, Sacombank, OCB đều trực tuyến hoặc xác thực trên ứng dụng ngân hàng.
 
 Nhấn vào thẻ phù hợp với loại tài khoản của bạn để tiếp tục.
 
@@ -242,7 +242,7 @@ Không cần thêm trường nào ngoài các trường chung bên trên.
 | -------------------- | -------------------------------------------------------- |
 | **Mã số thuế / CCCD**| Mã số thuế của doanh nghiệp hoặc CCCD chủ hộ kinh doanh   |
 
-Tài khoản cá nhân liên kết bằng cách xác thực trên ứng dụng Vietcombank. Tài khoản Doanh nghiệp và Hộ kinh doanh gửi yêu cầu kích hoạt thủ công; ApiPay sẽ xác minh và kích hoạt sau khi thiết lập hợp đồng API.
+Tài khoản cá nhân liên kết bằng cách xác thực trên ứng dụng Vietcombank và được cấp số tài khoản ảo (VA). Tài khoản Doanh nghiệp và Hộ kinh doanh gửi yêu cầu kích hoạt thủ công và dùng số tài khoản gốc; ApiPay sẽ xác minh và kích hoạt sau khi thiết lập hợp đồng API.
 
 #### MSB — Cá nhân, Doanh nghiệp hoặc Hộ kinh doanh
 
@@ -258,7 +258,7 @@ Tài khoản cá nhân liên kết bằng cách xác thực trên ứng dụng V
 | -------------------- | -------------------------------------------------------- |
 | **CCCD / mã số thuế**| CCCD với tài khoản cá nhân, mã số thuế với doanh nghiệp hoặc hộ kinh doanh |
 
-> **Kích hoạt thủ công:** Mọi tài khoản TPBank đều qua luồng kích hoạt thủ công. ApiPay kích hoạt trong vòng 24 giờ. Tài khoản ảo hiển thị dưới dạng tài khoản phụ của tài khoản gốc.
+> **Xác thực trên ứng dụng:** Mọi tài khoản TPBank đều được duyệt trên ứng dụng TPBank. Tài khoản ảo hiển thị dưới dạng tài khoản phụ của tài khoản gốc.
 
 Sau khi điền đầy đủ các trường:
 

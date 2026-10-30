@@ -34,6 +34,8 @@ Base route:
 
 Dùng `GET /v1/client/banks/available` để lấy danh sách ngân hàng hiện có trước khi hiển thị bộ chọn ngân hàng.
 
+> **Tài khoản ảo:** Tài khoản Cá nhân của Vietcombank được cấp tài khoản ảo (VA); tài khoản Doanh nghiệp và Hộ kinh doanh dùng số tài khoản gốc. Danh sách ngân hàng trả về `generatesVa` trên từng entry trong `accountTypes` để client hiển thị đúng thông báo VA theo loại tài khoản.
+
 ## 1. Lấy danh sách ngân hàng khả dụng
 
 ```bash
@@ -154,9 +156,10 @@ Kích hoạt thủ công áp dụng cho:
 - Tài khoản doanh nghiệp của VPBank, BIDV, VietinBank và Shinhan Bank
 - Tài khoản doanh nghiệp và hộ kinh doanh của Vietcombank
 - Mọi loại tài khoản MSB (cá nhân, doanh nghiệp, hộ kinh doanh)
-- Mọi loại tài khoản TPBank (cá nhân, doanh nghiệp, hộ kinh doanh). Tài khoản ảo hiển thị dưới dạng tài khoản phụ của tài khoản gốc.
 
 ApiPay sẽ liên hệ chủ tài khoản để hoàn tất kích hoạt.
+
+TPBank dùng xác thực trên ứng dụng thay vì kích hoạt thủ công. Tài khoản ảo hiển thị dưới dạng tài khoản phụ của tài khoản gốc.
 
 ## 3. Xác nhận OTP
 

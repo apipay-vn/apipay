@@ -166,6 +166,7 @@ export const SUPPORTED_BANKS = [
 		bankName: "Vietcombank",
 		name: "Vietcombank — Ngân hàng TMCP Ngoại thương Việt Nam",
 		accountTypes: [
+			"personal-account",
 			"business-account",
 			"business-household-account",
 		] satisfies AccountType[],

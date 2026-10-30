@@ -76,6 +76,28 @@ export default class BanksAdd extends ApiKeyCommand {
 			const createdBank = result?.bank ?? result;
 			this.spinner.succeed("Bank account submitted!");
 
+			const authorizeLink = result?.deepLink ?? result?.authorizeLink;
+			if (result?.requiresAuthorize) {
+				console.log("");
+				kvLine("Bank", bankShortName);
+				kvLine("Type", accountType);
+				kvLine("Account", accountNumber);
+				kvLine("Name", accName);
+				kvLine("Public ID", createdBank?.publicId ?? "—");
+				kvLine("Status", createdBank?.status ?? "PENDING");
+				if (authorizeLink) {
+					console.log("");
+					info("Open this link or scan its QR code in your bank app to approve the account:");
+					console.log("");
+					console.log(`  ${chalk.cyan(authorizeLink)}`);
+				}
+				console.log("");
+				info(
+					"The account becomes ACTIVE after the bank confirms. If it stays pending, submit a support ticket instead of adding the bank again.",
+				);
+				return;
+			}
+
 			// Check if OTP is required
 			if (result?.OTP === 1) {
 				console.log("");

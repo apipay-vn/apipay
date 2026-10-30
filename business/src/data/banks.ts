@@ -45,8 +45,9 @@ export interface Bank {
 
 /**
  * Banks where ApiPay issues a virtual account (VA) on link.
- * Mirrors the bank policy used by the ApiPay dashboard: only these BINs get a
- * provider-generated VA. Every other bank settles to the origin account number.
+ * Mirrors the bank policy used by the ApiPay dashboard: these BINs get a
+ * provider-generated VA. Vietcombank personal accounts also get a VA; its
+ * business and household accounts settle to the origin account number.
  */
 export const VA_BANK_BINS = [
 	'970422', // MB Bank
@@ -59,7 +60,8 @@ export const VA_BANK_BINS = [
 	'970446', // Co-opBank
 ];
 
-export function generatesVa(bankBin: string): boolean {
+export function generatesVa(bankBin: string, accountType?: AccountType): boolean {
+	if (bankBin === '970436') return accountType === 'personal';
 	return VA_BANK_BINS.includes(bankBin);
 }
 

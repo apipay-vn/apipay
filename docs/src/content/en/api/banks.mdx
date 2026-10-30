@@ -34,6 +34,8 @@ Base route:
 
 Use `GET /v1/client/banks/available` to retrieve the live bank catalog before showing a bank picker.
 
+> **Virtual accounts:** Vietcombank Personal accounts receive a virtual account (VA); Vietcombank Business and Household Business accounts use the original account number. The live catalog exposes `generatesVa` on each entry in `accountTypes` so clients can show the right VA notice per account type.
+
 ## 1. List available banks
 
 ```bash
@@ -154,9 +156,10 @@ Manual activation applies to:
 - VPBank, BIDV, VietinBank, and Shinhan Bank business accounts
 - Vietcombank business and household business accounts
 - Every MSB account type (personal, business, and household business)
-- Every TPBank account type (personal, business, and household business). The virtual account appears as a sub-account of the original account.
 
 ApiPay contacts the account owner to complete activation.
+
+TPBank uses in-app authorization instead of manual activation. Its virtual account appears as a sub-account of the original account.
 
 ## 3. Confirm OTP
 

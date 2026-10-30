@@ -18,9 +18,6 @@ interface SettlementTableProps {
 }
 
 export function SettlementTable({bank, locale, t, activeType, onSelect}: SettlementTableProps) {
-	const isVa = generatesVa(bank.bin);
-	const method = isVa ? t.detail.settlementVa : t.detail.settlementOrigin;
-
 	return (
 		<div className="overflow-hidden rounded-lg border border-border bg-card">
 			<table className="w-full text-sm">
@@ -35,6 +32,7 @@ export function SettlementTable({bank, locale, t, activeType, onSelect}: Settlem
 						const meta = ACCOUNT_TYPES[type];
 						const supported = bank.accountTypes.includes(type);
 						const clickable = supported && Boolean(onSelect);
+						const method = generatesVa(bank.bin, type) ? t.detail.settlementVa : t.detail.settlementOrigin;
 
 						return (
 							<tr
