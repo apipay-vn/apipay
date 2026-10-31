@@ -79,6 +79,35 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.32.0',
+    date: '2026-10-31',
+    features: [
+      'Approve TPBank links in the TPBank app — every TPBank account type now connects by approving the request in the TPBank app instead of waiting for manual activation. The dashboard waits for your approval and activates the account automatically.',
+      'Vietcombank personal accounts — connect a Vietcombank personal account by approving it in the Vietcombank app (scan the QR code when you link from a computer). Personal accounts receive a virtual account number; business and household business accounts keep the original account number.',
+      'Sign out all devices — a new button in Security ends every signed-in session on your account at once. Changing or resetting your password, or turning on two-factor authentication, now also signs out existing sessions. API keys keep working.',
+      'Monthly renewal for Free and Pay-as-you-go plans — each time your monthly quota resets you receive a 0đ renewal invoice and an email with the next reset date.',
+      'Bank linking guide — the add-bank form shows a card that opens the selected bank’s step-by-step linking guide in your language.',
+      'Mobile app update — date ranges and filters for transactions and payment requests, bank logos, linking banks directly from the app (including TPBank and Vietcombank in-app approval), and a refreshed look with grouped settings.',
+    ],
+    fixes: [
+      'Monthly usage cycles now always renew on your plan’s start day instead of shifting one day later each month, and a paid plan’s last cycle ends on its expiry date.',
+      'Pay-as-you-go plans no longer get an expiry date, so service is never paused at the end of a term.',
+      'Mobile app: pending and unmatched transactions are no longer shown as Failed, and a bank waiting for in-app approval is no longer reported as linked.',
+      'Payment speaker: the Stop button works for every session again, and a stopped session’s live link no longer shows its QR code or transactions.',
+    ],
+    improvements: [
+      'Webhooks, API keys, notification channels, Google Sheets, plugin downloads, and payment requests now require at least one active bank account; until then these pages show a prompt to add a bank. You can still turn off or delete existing webhooks at any time.',
+      'Downloading the WooCommerce, WHMCS, or HostBill plugin asks for extra confirmation, because the package contains your secret key. Only the account owner can download it from the dashboard.',
+      'API key secrets are hidden in the key list and shown only after you confirm with Reveal.',
+      'Resending a webhook manually now includes the same Idempotency-Key and ApiPay-Delivery-Id headers as automatic deliveries, so your server can deduplicate it.',
+      'Webhook URLs that contain a username or password (for example https://user:pass@example.com) are no longer accepted.',
+      'Switching to a different plan now starts a new usage cycle with the full quota by default. Renewing your current plan keeps your existing cycle.',
+      'Payment speaker live links use longer, harder-to-guess IDs. Start a new session to get a new link.',
+      'Extra transactions on the Free plan are now 380đ each. Paid plan extra transactions stay at 350đ.',
+      'An active TPBank account cannot be deleted from the dashboard; turn it off instead, or contact support to remove it.',
+    ],
+  },
+  {
     version: '1.31.0',
     date: '2026-10-13',
     features: [
@@ -709,6 +738,35 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.32.0',
+    date: '2026-10-31',
+    features: [
+      'Duyệt liên kết TPBank trên ứng dụng TPBank — mọi loại tài khoản TPBank giờ kết nối bằng cách duyệt yêu cầu trên ứng dụng TPBank, không cần chờ kích hoạt thủ công. Dashboard chờ bạn duyệt và tự động kích hoạt tài khoản.',
+      'Tài khoản cá nhân Vietcombank — liên kết tài khoản cá nhân Vietcombank bằng cách duyệt trên ứng dụng Vietcombank (quét mã QR khi liên kết từ máy tính). Tài khoản cá nhân được cấp số tài khoản ảo; tài khoản doanh nghiệp và hộ kinh doanh vẫn dùng số tài khoản gốc.',
+      'Đăng xuất mọi thiết bị — nút mới trong mục Bảo mật kết thúc tất cả phiên đăng nhập của tài khoản cùng lúc. Đổi hoặc đặt lại mật khẩu, hay bật xác thực hai lớp, giờ cũng đăng xuất các phiên hiện có. API key vẫn hoạt động bình thường.',
+      'Gia hạn hằng tháng cho gói Miễn phí và Trả theo lượt — mỗi lần hạn mức tháng được làm mới, bạn nhận hóa đơn gia hạn 0đ và email kèm ngày làm mới tiếp theo.',
+      'Hướng dẫn liên kết ngân hàng — form thêm ngân hàng có thẻ mở hướng dẫn liên kết từng bước của ngân hàng đã chọn, theo ngôn ngữ của bạn.',
+      'Cập nhật ứng dụng di động — chọn khoảng ngày và bộ lọc cho giao dịch và payment link, logo ngân hàng, liên kết ngân hàng ngay trong ứng dụng (gồm duyệt trên ứng dụng TPBank và Vietcombank), cùng giao diện mới với cài đặt được nhóm gọn gàng.',
+    ],
+    fixes: [
+      'Chu kỳ sử dụng hằng tháng giờ luôn làm mới vào ngày bắt đầu gói, không còn lùi thêm một ngày mỗi tháng; chu kỳ cuối của gói trả phí kết thúc đúng ngày hết hạn.',
+      'Gói Trả theo lượt không còn bị gán ngày hết hạn, nên dịch vụ không bị tạm dừng khi hết kỳ.',
+      'Ứng dụng di động: giao dịch đang chờ và chưa khớp không còn hiển thị là Thất bại; ngân hàng đang chờ duyệt trên ứng dụng không còn bị báo là đã liên kết.',
+      'Loa thanh toán: nút Dừng hoạt động lại với mọi phiên, và link trực tiếp của phiên đã dừng không còn hiển thị mã QR hay giao dịch.',
+    ],
+    improvements: [
+      'Webhook, API key, kênh thông báo, Google Sheets, tải plugin và payment link giờ yêu cầu ít nhất một tài khoản ngân hàng đang hoạt động; trước đó các trang này hiển thị lời nhắc thêm ngân hàng. Bạn vẫn có thể tắt hoặc xóa webhook hiện có bất cứ lúc nào.',
+      'Tải plugin WooCommerce, WHMCS hoặc HostBill yêu cầu xác nhận thêm vì gói tải về chứa secret key của bạn. Chỉ chủ tài khoản mới tải được từ dashboard.',
+      'Secret của API key được ẩn trong danh sách và chỉ hiển thị sau khi bạn xác nhận Hiện.',
+      'Gửi lại webhook thủ công giờ kèm header Idempotency-Key và ApiPay-Delivery-Id giống lần gửi tự động, để máy chủ của bạn loại trùng.',
+      'URL webhook chứa tên đăng nhập hoặc mật khẩu (ví dụ https://user:pass@example.com) không còn được chấp nhận.',
+      'Chuyển sang gói khác giờ mặc định bắt đầu chu kỳ sử dụng mới với đầy đủ hạn mức. Gia hạn gói hiện tại vẫn giữ chu kỳ đang dùng.',
+      'Link trực tiếp của loa thanh toán dùng mã dài hơn, khó đoán hơn. Bắt đầu phiên mới để nhận link mới.',
+      'Giao dịch vượt mức của gói Miễn phí giờ là 380đ mỗi giao dịch. Giao dịch vượt mức của gói trả phí vẫn là 350đ.',
+      'Tài khoản TPBank đang hoạt động không thể xóa từ dashboard; hãy tắt tài khoản, hoặc liên hệ hỗ trợ để gỡ bỏ.',
+    ],
+  },
   {
     version: '1.31.0',
     date: '2026-10-13',
