@@ -534,7 +534,7 @@ The **effective monthly price** is lower for discounted 6-month and 12-month ter
 
 - At 80% and 100% of included monthly quota, ApiPay sends usage notices so you can top up or upgrade before extra usage starts.
 - After 100%, successful extra transactions are deducted from your **prepaid balance** at your plan’s rate. Service is not interrupted when you exceed quota.
-- The free plan uses **350 VND** per extra transaction. Paid plans use that plan’s effective rate (plan price ÷ included tx).
+- The free plan uses **380 VND** per extra transaction. Paid plans use that plan’s effective rate (plan price ÷ included tx).
 - Keep enough prepaid balance for extra usage. Failed transactions are never charged.
 
 ### What's Included in Paid Plans
@@ -552,7 +552,7 @@ The **effective monthly price** is lower for discounted 6-month and 12-month ter
 
 - 60 successful transactions/month
 - Connect multiple bank accounts (same as paid quota plans)
-- Extra usage at 350 VND/transaction from prepaid balance
+- Extra usage at 380 VND/transaction from prepaid balance
 - Same product features as paid plans: webhooks, VietQR, Commerce, Payment Speaker, custom domains
 - Does not expire and does not auto-renew — stay on free until you upgrade
 
@@ -590,7 +590,7 @@ The **effective monthly price** is lower for discounted 6-month and 12-month ter
 
 The free plan activates immediately. No bank transfer is required.
 
-> **Note:** Each phone number can activate the free plan on one account. An account cannot switch to free while a paid term is still active. After that term ends and the renewal is unpaid, the account can activate free. Free overage stays 350 VND per transaction and does not keep the paid plan's included quota or lower rate.
+> **Note:** Each phone number can activate the free plan on one account. An account cannot switch to free while a paid term is still active. After that term ends and the renewal is unpaid, the account can activate free. Free overage stays 380 VND per transaction and does not keep the paid plan's included quota or lower rate.
 
 ## Purchasing a Paid Plan
 
