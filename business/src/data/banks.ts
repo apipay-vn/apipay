@@ -208,10 +208,27 @@ export const BANKS: Bank[] = [
 	},
 ];
 
-export const LOGO_BASE_URL = 'https://api.vietqr.io/img';
+export const BANK_SQUARE_LOGOS: Record<string, string> = {
+	ACB: '/banks-square/acb-icon.webp',
+	BIDV: '/banks-square/bidv-icon.webp',
+	MB: '/banks-square/mbbank-icon.webp',
+	MBB: '/banks-square/mbbank-icon.webp',
+	OCB: '/banks-square/ocb-icon.webp',
+	CTG: '/banks-square/vietinbank-icon.webp',
+	ICB: '/banks-square/vietinbank-icon.webp',
+	VIB: '/banks-square/vib-icon.png',
+	VPB: '/banks-square/vpbank-icon.webp',
+	STB: '/banks-square/sacombank-icon.webp',
+	PGB: '/banks-square/pgbank-icon.png',
+	SHBVN: '/banks-square/shinhanbank-icon.png',
+	COOPBANK: '/banks-square/Co-opbank-icon.png',
+	VCB: '/banks-square/vietcombank-icon.png',
+	MSB: '/banks-square/msb-icon.png',
+	TPB: '/banks-square/tpbank-icon.webp',
+};
 
 export function getLogoUrl(bank: Bank): string {
-	return `${LOGO_BASE_URL}/${bank.code}.png`;
+	return BANK_SQUARE_LOGOS[bank.code];
 }
 
 export function findBankBySlug(slug: string | undefined): Bank | undefined {
