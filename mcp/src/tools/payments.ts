@@ -39,7 +39,7 @@ export function registerPaymentsTools(server: McpServer, client: ApiClient): voi
         expiresAt: z
           .string()
           .optional()
-          .describe("Expiration ISO 8601 date-time string. Omit for no expiry."),
+          .describe("Expiration ISO 8601 date-time string. Defaults to 90 days after creation."),
         redirectUrl: z
           .string()
           .optional()
