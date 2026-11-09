@@ -79,6 +79,34 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.33.0',
+    date: '2026-11-09',
+    features: [
+      'Bank nicknames everywhere — transactions, payment requests, webhooks, and bank pickers now show the nickname you gave each bank account. Search by nickname or full account number, and bank pickers become searchable when you have many accounts.',
+      'Setup guide on Overview — a short guide walks you through linking a bank, creating a webhook, your first payment request, and your first API key, and shows how far along you are.',
+      'Stores (beta) — Stores is back in the sidebar under Integrations and on the Integrations page.',
+      'Agribank and HDBank are now listed as Coming soon. Shinhan is marked Maintenance for new links; Shinhan accounts you already linked keep working.',
+      'Dashboard realtime setting — a new notification setting turns live pop-ups and automatic chart refresh on or off when a transaction arrives. Turn it off if your account receives many transactions.',
+      'Easier two-factor codes — authenticator codes are entered in six separate boxes. Pasting a code fills every box, and sign-in submits automatically after the sixth digit.',
+    ],
+    fixes: [
+      'The payment page shows the expiry date only when the payment request expires within a week.',
+      'Role dialogs now scroll properly, and long names or emails no longer overflow on phones.',
+      'Closing the browser notification prompt now hides it for 7 days.',
+    ],
+    improvements: [
+      'Payment requests created without an expiry date now expire after 90 days.',
+      'Payment request content must contain at least 2 letters or digits, so payments can be matched reliably.',
+      'Payment received alerts in Telegram, Slack, Lark, and Discord are limited to 20 per minute per account, so busy accounts do not flood your channels. Email summaries still include every transaction.',
+      'The dashboard now waits up to 10 minutes while you approve a Vietcombank or TPBank link in the bank app.',
+      'The Integrations page is grouped into Connect & payments and Commerce & platforms.',
+      'Sandbox mode hides MCP, Commerce, and the usage card, which only apply to live accounts.',
+      'CLI sign-in approval links now expire after 5 minutes, and the approval page shows which device and network made the request.',
+      'Your profile phone number must be a valid Vietnamese mobile number.',
+      'The Overview page loads faster for accounts with many transactions.',
+    ],
+  },
+  {
     version: '1.32.0',
     date: '2026-10-31',
     features: [
@@ -738,6 +766,34 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.33.0',
+    date: '2026-11-09',
+    features: [
+      'Tên gợi nhớ ngân hàng ở mọi nơi — giao dịch, payment link, webhook và ô chọn ngân hàng giờ hiển thị tên gợi nhớ bạn đặt cho từng tài khoản. Tìm kiếm theo tên gợi nhớ hoặc số tài khoản đầy đủ; ô chọn ngân hàng có thêm ô tìm kiếm khi bạn có nhiều tài khoản.',
+      'Hướng dẫn thiết lập trên Tổng quan — hướng dẫn ngắn dẫn bạn qua các bước liên kết ngân hàng, tạo webhook, tạo payment link đầu tiên và tạo API key đầu tiên, kèm tiến độ đã hoàn thành.',
+      'Cửa hàng (beta) — mục Cửa hàng trở lại thanh bên, nằm trong nhóm Tích hợp và trên trang Tích hợp.',
+      'Agribank và HDBank đã có trong danh sách với nhãn Sắp ra mắt. Shinhan được gắn nhãn Bảo trì cho liên kết mới; tài khoản Shinhan đã liên kết vẫn hoạt động bình thường.',
+      'Cài đặt Realtime trên dashboard — tùy chọn thông báo mới cho phép bật hoặc tắt thông báo bật lên và tự động làm mới biểu đồ khi có giao dịch. Nên tắt nếu tài khoản của bạn nhận nhiều giao dịch.',
+      'Nhập mã xác thực hai lớp dễ hơn — mã từ ứng dụng xác thực được nhập vào sáu ô riêng. Dán mã sẽ điền đủ các ô, và đăng nhập tự gửi khi nhập xong chữ số thứ sáu.',
+    ],
+    fixes: [
+      'Trang thanh toán chỉ hiển thị ngày hết hạn khi payment link hết hạn trong vòng một tuần.',
+      'Hộp thoại vai trò giờ cuộn đúng, và tên hoặc email dài không còn tràn khung trên điện thoại.',
+      'Đóng lời nhắc bật thông báo trình duyệt giờ ẩn lời nhắc trong 7 ngày.',
+    ],
+    improvements: [
+      'Payment link tạo không kèm ngày hết hạn giờ tự hết hạn sau 90 ngày.',
+      'Nội dung payment link phải có ít nhất 2 chữ cái hoặc chữ số để thanh toán được đối soát chính xác.',
+      'Thông báo nhận tiền qua Telegram, Slack, Lark và Discord giới hạn 20 tin mỗi phút cho mỗi tài khoản, để tài khoản nhiều giao dịch không làm tràn kênh của bạn. Email tổng hợp vẫn liệt kê đủ mọi giao dịch.',
+      'Dashboard giờ chờ tối đa 10 phút trong lúc bạn duyệt liên kết Vietcombank hoặc TPBank trên ứng dụng ngân hàng.',
+      'Trang Tích hợp được chia thành hai nhóm: Kết nối & thanh toán và Bán hàng & nền tảng.',
+      'Chế độ Sandbox ẩn MCP, Commerce và thẻ hạn mức sử dụng, vì các mục này chỉ dùng cho tài khoản thật.',
+      'Link duyệt đăng nhập CLI giờ hết hạn sau 5 phút, và trang duyệt hiển thị thiết bị và mạng đã gửi yêu cầu.',
+      'Số điện thoại trong hồ sơ phải là số di động Việt Nam hợp lệ.',
+      'Trang Tổng quan tải nhanh hơn với tài khoản có nhiều giao dịch.',
+    ],
+  },
   {
     version: '1.32.0',
     date: '2026-10-31',
