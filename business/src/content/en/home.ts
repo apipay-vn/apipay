@@ -11,7 +11,7 @@ export const home = {
 	},
 	card: {
 		title: 'Bank linking flow',
-		description: 'See linking guides for 14 banks, per account type (Personal / Household / Business).',
+		description: 'See linking guides for 16 banks, per account type (Personal / Household / Business).',
 		cta: 'View guide',
 		tag: 'Docs',
 	},

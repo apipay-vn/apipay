@@ -2,9 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://business.apipay.vn/vi</loc></url>
   <url><loc>https://business.apipay.vn/vi/banks</loc></url>
+  <url><loc>https://business.apipay.vn/vi/banks/agribank</loc></url>
   <url><loc>https://business.apipay.vn/vi/banks/acb</loc></url>
   <url><loc>https://business.apipay.vn/vi/banks/bidv</loc></url>
   <url><loc>https://business.apipay.vn/vi/banks/coopbank</loc></url>
+  <url><loc>https://business.apipay.vn/vi/banks/hdbank</loc></url>
   <url><loc>https://business.apipay.vn/vi/banks/mb</loc></url>
   <url><loc>https://business.apipay.vn/vi/banks/msb</loc></url>
   <url><loc>https://business.apipay.vn/vi/banks/ocb</loc></url>
@@ -18,9 +20,11 @@
   <url><loc>https://business.apipay.vn/vi/banks/vpbank</loc></url>
   <url><loc>https://business.apipay.vn/en</loc></url>
   <url><loc>https://business.apipay.vn/en/banks</loc></url>
+  <url><loc>https://business.apipay.vn/en/banks/agribank</loc></url>
   <url><loc>https://business.apipay.vn/en/banks/acb</loc></url>
   <url><loc>https://business.apipay.vn/en/banks/bidv</loc></url>
   <url><loc>https://business.apipay.vn/en/banks/coopbank</loc></url>
+  <url><loc>https://business.apipay.vn/en/banks/hdbank</loc></url>
   <url><loc>https://business.apipay.vn/en/banks/mb</loc></url>
   <url><loc>https://business.apipay.vn/en/banks/msb</loc></url>
   <url><loc>https://business.apipay.vn/en/banks/ocb</loc></url>

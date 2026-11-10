@@ -206,6 +206,27 @@ export const BANKS: Bank[] = [
 		accountTypes: ['personal', 'household', 'business'],
 		modes: {personal: 'otp', household: 'otp', business: 'otp'},
 	},
+	// Placeholders: generic manual steps until the Agribank and HDBank flows are confirmed.
+	{
+		slug: 'agribank',
+		code: 'VBA',
+		bin: '970405',
+		name: 'Agribank',
+		fullName: 'Ngân hàng Nông nghiệp và Phát triển Nông thôn Việt Nam',
+		searchNames: ['agribank', 'nông nghiệp', 'phát triển nông thôn'],
+		accountTypes: ['personal', 'household', 'business'],
+		modes: {personal: 'manual', household: 'manual', business: 'manual'},
+	},
+	{
+		slug: 'hdbank',
+		code: 'HDB',
+		bin: '970437',
+		name: 'HDBank',
+		fullName: 'Ngân hàng TMCP Phát triển TP. Hồ Chí Minh',
+		searchNames: ['hdbank', 'phát triển tp hồ chí minh', 'hd bank'],
+		accountTypes: ['personal', 'household', 'business'],
+		modes: {personal: 'manual', household: 'manual', business: 'manual'},
+	},
 ];
 
 export const BANK_SQUARE_LOGOS: Record<string, string> = {
@@ -225,6 +246,8 @@ export const BANK_SQUARE_LOGOS: Record<string, string> = {
 	VCB: '/banks-square/vietcombank-icon.png',
 	MSB: '/banks-square/msb-icon.png',
 	TPB: '/banks-square/tpbank-icon.webp',
+	VBA: '/banks-square/agribank-icon.png',
+	HDB: '/banks-square/hdbank-icon.png',
 };
 
 export function getLogoUrl(bank: Bank): string {

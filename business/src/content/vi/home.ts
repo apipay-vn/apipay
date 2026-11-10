@@ -11,7 +11,7 @@ export const home = {
 	},
 	card: {
 		title: 'Quy trình liên kết ngân hàng',
-		description: 'Xem hướng dẫn liên kết cho 14 ngân hàng, theo từng loại tài khoản (CN / HKD / DN).',
+		description: 'Xem hướng dẫn liên kết cho 16 ngân hàng, theo từng loại tài khoản (CN / HKD / DN).',
 		cta: 'Xem hướng dẫn',
 		tag: 'Tài liệu',
 	},

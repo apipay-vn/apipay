@@ -119,7 +119,11 @@ export function getFlow(mode: LinkMode): AccountFlow {
 const TPBANK_VA_NOTE = 'Tài khoản ảo (VA) hiển thị dưới dạng tài khoản phụ của tài khoản gốc.';
 const TPBANK_REMOVE_NOTE = 'Tài khoản TPBank đã kích hoạt không tự xoá được; hãy tắt ngân hàng hoặc liên hệ hỗ trợ.';
 
+const COMING_SOON_NOTE = 'Hướng dẫn chi tiết đang được cập nhật. Liên hệ support@apipay.vn để được hỗ trợ liên kết.';
+
 export const BANK_NOTES: Record<string, Partial<Record<AccountType, string[]>>> = {
+  agribank: {personal: [COMING_SOON_NOTE], household: [COMING_SOON_NOTE], business: [COMING_SOON_NOTE]},
+  hdbank: {personal: [COMING_SOON_NOTE], household: [COMING_SOON_NOTE], business: [COMING_SOON_NOTE]},
   msb: {
     personal: [
       'Không chỉnh sửa mã giới thiệu khi liên kết.',

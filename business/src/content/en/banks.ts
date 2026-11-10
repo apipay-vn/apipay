@@ -119,7 +119,11 @@ export function getFlow(mode: LinkMode): AccountFlow {
 const TPBANK_VA_NOTE = 'Virtual accounts (VA) appear as sub-accounts of the origin account.';
 const TPBANK_REMOVE_NOTE = 'An active TPBank account cannot be removed from the dashboard; turn the bank off or contact support.';
 
+const COMING_SOON_NOTE = 'A detailed guide is coming soon. Contact support@apipay.vn for help linking this bank.';
+
 export const BANK_NOTES: Record<string, Partial<Record<AccountType, string[]>>> = {
+  agribank: {personal: [COMING_SOON_NOTE], household: [COMING_SOON_NOTE], business: [COMING_SOON_NOTE]},
+  hdbank: {personal: [COMING_SOON_NOTE], household: [COMING_SOON_NOTE], business: [COMING_SOON_NOTE]},
   msb: {
     personal: [
       'Do not edit the referral code when linking.',
