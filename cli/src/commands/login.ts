@@ -39,7 +39,8 @@ export default class Login extends BaseCommand {
 		}),
 		password: Flags.string({
 			char: "p",
-			description: "Password for email+password login (CI/scripting)",
+			description:
+				"Password for email+password login. Without an authenticator app, the first login on a machine asks for a code sent by email, so run it once interactively before using it in CI.",
 		}),
 		"no-browser": Flags.boolean({
 			description: "Print the browser approval URL instead of opening it automatically",
