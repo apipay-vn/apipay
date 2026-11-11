@@ -32,6 +32,8 @@ export interface CliConfig {
 	dashboardUrl: string;
 	auth?: AuthConfig;
 	apiKey?: ApiKeyConfig;
+	/** Survives logout so this machine keeps skipping the emailed login code. */
+	trustedDeviceToken?: string;
 	setup: {
 		completedSteps: SetupStep[];
 	};
@@ -64,6 +66,9 @@ const schema = {
 			secretKey: {type: "string" as const},
 			name: {type: "string" as const},
 		},
+	},
+	trustedDeviceToken: {
+		type: "string" as const,
 	},
 	setup: {
 		type: "object" as const,
@@ -114,6 +119,14 @@ export function clearAuth(): void {
 export function isLoggedIn(): boolean {
 	const auth = getAuth();
 	return !!auth?.accessToken;
+}
+
+export function getTrustedDeviceToken(): string | undefined {
+	return getStore().get("trustedDeviceToken") as string | undefined;
+}
+
+export function setTrustedDeviceToken(token: string): void {
+	getStore().set("trustedDeviceToken", token);
 }
 
 /* ===== API Key helpers ===== */

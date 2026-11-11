@@ -1,13 +1,17 @@
+import {input} from "@inquirer/prompts";
 import {Flags} from "@oclif/core";
 import chalk from "chalk";
 import open from "open";
+import {ApiError} from "../lib/api-client.js";
 import {BaseCommand} from "../lib/base-command.js";
 import {
 	clearApiKey,
 	clearAuth,
 	getAuth,
+	getTrustedDeviceToken,
 	isLoggedIn,
 	setAuth,
+	setTrustedDeviceToken,
 } from "../lib/config.js";
 import {
 	info,
@@ -181,8 +185,18 @@ export default class Login extends BaseCommand {
 			const data = await this.api.post("/auth/login", {
 				emailOrUsername: email,
 				password,
+				twoFactorMode: "ticket",
+				deviceToken: getTrustedDeviceToken(),
 			});
-			const result = data?.data ?? data;
+			let result = data?.data ?? data;
+			if (result?.twoFactorRequired) {
+				this.spinner.stop();
+				result = await this.completeTwoFactor(result);
+				this.spinner.start("Logging in...");
+			}
+			if (result?.trustedDeviceToken) {
+				setTrustedDeviceToken(result.trustedDeviceToken);
+			}
 			const user = result?.user;
 			const tokens = result?.tokens;
 
@@ -214,6 +228,70 @@ export default class Login extends BaseCommand {
 			this.spinner.fail("Login failed");
 			this.handleError(error);
 		}
+	}
+
+	private async completeTwoFactor(challenge: {
+		challengeId: string;
+		methods?: string[];
+		emailHint?: string;
+	}): Promise<any> {
+		const emailOtp = challenge.methods?.[0] === "email_otp";
+		if (!process.stdin.isTTY) {
+			this.error(
+				emailOtp
+					? "This login needs the code we emailed. Run `apipay login` once in an interactive terminal to trust this machine."
+					: "This account has two-factor authentication. Run `apipay login` in an interactive terminal.",
+				{exit: 2},
+			);
+		}
+		info(
+			emailOtp
+				? `We emailed a 6-digit code to ${chalk.bold(challenge.emailHint ?? "your email")}.`
+				: "Enter the 6-digit code from your authenticator app.",
+		);
+
+		const maxTries = 3;
+		for (let tries = 0; tries < maxTries; ) {
+			const code = (
+				await input({
+					message: emailOtp ? "Code (press Enter to resend):" : "Code:",
+					validate: (value) => {
+						const v = value.trim().replace("-", "");
+						return (emailOtp && !v) || /^\d{6}$/.test(v) || "Enter the 6-digit code";
+					},
+				})
+			)
+				.trim()
+				.replace("-", "");
+
+			try {
+				if (!code) {
+					await this.api.post("/auth/two-factor/resend", {challengeId: challenge.challengeId});
+					info("New code sent.");
+					continue;
+				}
+				const data = await this.api.post("/auth/two-factor/verify", {
+					challengeId: challenge.challengeId,
+					token: code,
+				});
+				return data?.data ?? data;
+			} catch (error) {
+				if (error instanceof ApiError && error.message === "2fa_challenge_expired") {
+					this.error("The code expired. Run `apipay login` again.", {exit: 2});
+				}
+				if (error instanceof ApiError && error.message === "2fa_resend_cooldown") {
+					warn("Wait a minute before asking for another code.");
+					continue;
+				}
+				if (error instanceof ApiError && error.message === "2fa_resend_limit") {
+					warn("No more codes can be sent for this login.");
+					continue;
+				}
+				tries++;
+				warn(tries < maxTries ? "Invalid code, try again." : "Invalid code.");
+			}
+		}
+		this.error("Too many invalid codes. Run `apipay login` again.", {exit: 2});
 	}
 
 	private sleep(ms: number): Promise<void> {
