@@ -226,7 +226,7 @@ export function BankDetail() {
 										)}
 									>
 										{meta.short}
-										<span className="ml-1.5 font-normal opacity-80">{meta[locale]}</span>
+										<span className="ml-1.5 font-normal">{meta[locale]}</span>
 									</button>
 								);
 							})}

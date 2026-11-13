@@ -33,8 +33,8 @@ export function Layout() {
 		<div className="flex min-h-screen flex-col">
 			<header className="sticky top-3 z-40 mt-3 w-[calc(100%-1.5rem)] max-w-6xl self-center">
 				<div data-slot="site-header" aria-hidden className="pointer-events-none absolute inset-0 rounded-full" />
-				<div className="relative flex h-14 items-center justify-between gap-4 px-4 sm:px-5">
-					<Link to={localePath(locale)} className="flex items-center gap-2">
+				<div className="relative flex h-14 items-center justify-between gap-2 px-3 sm:gap-4 sm:px-5">
+					<Link to={localePath(locale)} className="flex items-center gap-1.5 sm:gap-2">
 						<LogoIcon className="h-6 w-6 text-foreground" />
 						<span className="font-mono text-base font-bold tracking-tight">{t.common.brand}</span>
 						<span className="rounded-full border border-border bg-muted px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-foreground">
@@ -63,7 +63,7 @@ export function Layout() {
 						})}
 					</nav>
 
-					<div className="flex items-center gap-2">
+					<div className="flex items-center gap-1 sm:gap-2">
 						<DarkModeToggle label={t.common.theme.toggle} />
 						<LocaleSwitcher locale={locale} />
 					</div>

@@ -22,7 +22,7 @@ export function BankCard({bank, locale, t, query = ''}: BankCardProps) {
 		<Link
 			to={localePath(locale, `/banks/${bank.slug}`)}
 			data-slot="card"
-			className="group flex flex-col gap-4 rounded-lg p-4 transition-transform hover:-translate-y-1"
+			className="group flex min-w-0 flex-col gap-4 rounded-lg p-4 transition-transform hover:-translate-y-1"
 		>
 			<div className="flex items-start gap-3">
 				<BankLogo bank={bank} className="h-14 w-14 shrink-0" />
@@ -54,7 +54,7 @@ export function BankCard({bank, locale, t, query = ''}: BankCardProps) {
 								key={type}
 								className={cn(
 									'rounded px-1.5 py-0.5 text-[10px] font-semibold',
-									supported ? 'bg-muted text-foreground' : 'text-muted-foreground/40 line-through'
+									supported ? 'bg-muted text-foreground' : 'text-muted-foreground/70 line-through'
 								)}
 							>
 								{meta.short}

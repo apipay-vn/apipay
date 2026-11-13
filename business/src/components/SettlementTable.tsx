@@ -51,7 +51,7 @@ export function SettlementTable({bank, locale, t, activeType, onSelect}: Settlem
 								</td>
 								<td className="px-4 py-3">
 									{supported ? (
-										<span className="inline-flex items-center rounded-full border border-border bg-muted px-2.5 py-0.5 text-xs font-semibold text-foreground">
+										<span className="inline-flex items-center rounded-full border border-border bg-muted px-2.5 py-0.5 text-xs font-semibold whitespace-nowrap text-foreground">
 											{method}
 										</span>
 									) : (
