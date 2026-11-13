@@ -1,58 +1,48 @@
 ---
 title: WHMCS
-description: Install and configure the ApiPay WHMCS payment gateway module.
+description: Install the ApiPay payment module for WHMCS.
 ---
 
 # WHMCS
 
-The ApiPay WHMCS module lets customers pay WHMCS invoices by VND bank transfer through an ApiPay hosted payment page. The ZIP downloaded from the dashboard is prefilled with your ApiPay API credentials, selected bank account, and optional custom domain.
+The ApiPay module lets customers pay WHMCS invoices by bank transfer through the ApiPay payment page. Invoices must be in VND.
 
 <Callout type="tip">
-Open **Integrations > WHMCS** in the dashboard to generate your prefilled module ZIP.
+Open **Integrations > Web App > WHMCS** in the dashboard to download the preconfigured module.
 
 [Open WHMCS in dashboard](https://my.apipay.vn/en/integrations/whmcs)
-
 </Callout>
 
 ## Before You Start
 
-- Create an API key in **Integrations > API Keys**.
-- Connect at least one active bank account in **Bank Accounts**.
-- Optional: verify a custom payment domain in **Dashboard Guide > Custom Domains**.
-- Make sure your WHMCS site can receive public HTTPS callbacks.
+- Create an API key in **Integrations > Web App > API Keys**.
+- Connect at least one account in **Banks**.
+- Optional: verify a [custom domain](/en/custom-domains) for the payment page.
 
 ## Download the Module
 
-1. In the ApiPay dashboard, open **Integrations > WHMCS**.
-2. Select the active bank account you want to use for invoice payments.
-3. Optionally select a verified custom domain for the hosted payment page.
-4. Download `apipay-whmcs.zip`.
+1. In the ApiPay dashboard, open **Integrations > Web App > WHMCS**.
+2. Select the bank account that receives payments and, optionally, a custom domain.
+3. Download `apipay-whmcs.zip`.
 
 ## Install in WHMCS
 
-1. Extract the ZIP into your WHMCS root folder.
-2. Confirm the files land under `modules/gateways/` and `modules/gateways/callback/`.
-3. Open **WHMCS Admin > System Settings > Payment Gateways**.
-4. Activate **ApiPay Gateway**.
-5. Review the prefilled API URL, Partner Code, Access Key, Secret Key, Bank Account ID, and optional custom domain.
-6. Save the gateway configuration.
+1. Extract the ZIP into your WHMCS root folder. The files land under `modules/gateways/` and `modules/gateways/callback/`.
+2. Open **WHMCS Admin > System Settings > Payment Gateways**.
+3. Activate **ApiPay Gateway**.
+4. Review the prefilled settings (no changes needed) and save.
 
 ## Test a Payment
 
-1. Create a test invoice in VND.
-2. Choose **ApiPay** as the payment method.
-3. Confirm that WHMCS redirects the customer to the ApiPay hosted payment page.
-4. Transfer the exact amount with the displayed content.
-5. After ApiPay confirms the transfer, the invoice is marked paid in WHMCS.
+1. Create an invoice and choose **ApiPay** as the payment method.
+2. Confirm the customer is redirected to the ApiPay payment page.
+3. Transfer the exact amount with the displayed content.
+4. Once the transfer succeeds, the invoice is marked paid in WHMCS.
 
 ## Troubleshooting
 
-If the invoice does not update, check:
+If an invoice does not update, check:
 
-- The WHMCS site is reachable over public HTTPS.
-- The ApiPay gateway is active in WHMCS.
-- The API key in WHMCS matches an active dashboard API key.
-- The selected bank account is active in ApiPay.
-- The invoice amount is in VND.
-- Firewall or security rules are not blocking WHMCS callback endpoints.
-- If you selected a custom domain, it is verified and active in ApiPay.
+- The WHMCS site is publicly reachable over HTTPS and no firewall or security rule blocks the callback.
+- The API key in WHMCS is still active in the dashboard.
+- If you use a custom domain, it is verified.

@@ -1,14 +1,14 @@
 ---
 title: MCP Server
-description: Connect ApiPay to AI assistants with the @apipay.vn/mcp Model Context Protocol server.
+description: Connect ApiPay to AI assistants with the @apipay.vn/mcp MCP server.
 ---
 
 # MCP Server
 
-`@apipay.vn/mcp` is a Model Context Protocol (MCP) server for ApiPay. It exposes tools over stdio so AI assistants (Claude, Cursor, Codex, Command Code, Grok Build, Gemini, Copilot, OpenCode, and others) can create sandbox payments, manage Commerce products and prices, list bank accounts and transactions, manage webhooks, and query metrics.
+`@apipay.vn/mcp` is the ApiPay Model Context Protocol (MCP) server. AI assistants (Claude, Cursor, Codex, Gemini, Copilot…) use it to create payments, manage products and prices, view bank accounts and transactions, manage webhooks, and read metrics.
 
 <Callout type="tip">
-Open **Integrations > MCP Server** in the dashboard for copy-paste client configs with your API keys.
+Open **Integrations > Web App > MCP Server** in the dashboard to copy a config with your API key filled in.
 
 [Open MCP Server in dashboard](https://my.apipay.vn/en/integrations/mcp)
 </Callout>
@@ -16,141 +16,98 @@ Open **Integrations > MCP Server** in the dashboard for copy-paste client config
 ## Prerequisites
 
 - Node.js `>=18.0.0`
-- An ApiPay account with API keys from the [ApiPay Dashboard](https://my.apipay.vn) (`ak_test_...` for sandbox or `ak_live_...` for production)
+- An API key from the [ApiPay dashboard](https://my.apipay.vn): `ak_test_...` for sandbox, a key with no prefix for production.
 
-## Authentication & Configuration
+## API Key
 
-The MCP server authenticates requests with Base64-encoded `accessKey:secretKey` (`Authorization: Bearer <base64>`).
+The server reads your API key from environment variables:
 
-Configuration is loaded in this order:
+- `APIPAY_ACCESS_KEY` — access key (`ak_test_...` for sandbox)
+- `APIPAY_SECRET_KEY` — secret key
+- `APIPAY_API_URL` — optional, defaults to `https://app.apipay.vn/v1`
 
-1. **Environment variables**
-   - `APIPAY_ACCESS_KEY` — merchant access key (`ak_test_...` or `ak_live_...`)
-   - `APIPAY_SECRET_KEY` — merchant secret key
-   - `APIPAY_API_URL` — optional base API URL (defaults to `https://app.apipay.vn/v1`)
-2. **CLI configuration fallback** — if environment variables are missing, the server reads `~/.config/apipay/config.json` (the file managed by `apipay login` or `apipay keys:create`).
-
-<Callout type="info">
-The server starts even if credentials are not set. Individual tools return an error asking you to set credentials if they are called while unauthenticated.
-</Callout>
+If these are not set, the server uses the API key saved by the ApiPay CLI (`apipay login`, then `apipay keys:create`).
 
 ## Client Setup
 
-All examples use the same stdio server: `npx -y @apipay.vn/mcp`, with `APIPAY_ACCESS_KEY` and `APIPAY_SECRET_KEY` passed as environment variables. Use test keys (`ak_test_...`) in sandbox mode.
+### JSON Config File
 
-<details>
-<summary>Amp</summary>
-
-Use the Amp CLI:
-
-```bash
-amp mcp add apipay -- npx -y @apipay.vn/mcp
+```json
+{
+  "mcpServers": {
+    "apipay": {
+      "command": "npx",
+      "args": ["-y", "@apipay.vn/mcp"],
+      "env": {
+        "APIPAY_ACCESS_KEY": "ak_test_your_access_key",
+        "APIPAY_SECRET_KEY": "your_secret_key"
+      }
+    }
+  }
+}
 ```
 
-</details>
+Use the JSON config above for these clients:
 
-<details>
-<summary>Claude Code</summary>
+| Client | Where to add it |
+| --- | --- |
+| Claude Desktop | `claude_desktop_config.json` (macOS: `~/Library/Application Support/Claude/`) |
+| Cursor | `.cursor/mcp.json` or **Cursor Settings > MCP** |
+| Windsurf | `.windsurf/mcp_config.json` |
+| Cline | `cline_mcp_settings.json` |
+| JetBrains AI Assistant | **Settings > Tools > AI Assistant > Model Context Protocol (MCP) > Add** |
+| Warp | **Settings > AI > Manage MCP Servers > + Add** |
 
-Use the Claude Code CLI to add the ApiPay MCP server:
+### CLI
 
 ```bash
+# Claude Code
 claude mcp add apipay --scope user \
   --env APIPAY_ACCESS_KEY=ak_test_your_access_key \
   --env APIPAY_SECRET_KEY=your_secret_key \
   -- npx -y @apipay.vn/mcp
-```
 
-</details>
-
-<details>
-<summary>Claude Desktop</summary>
-
-Add to `claude_desktop_config.json` (macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`):
-
-```json
-{
-  "mcpServers": {
-    "apipay": {
-      "command": "npx",
-      "args": ["-y", "@apipay.vn/mcp"],
-      "env": {
-        "APIPAY_ACCESS_KEY": "ak_test_your_access_key",
-        "APIPAY_SECRET_KEY": "your_secret_key"
-      }
-    }
-  }
-}
-```
-
-</details>
-
-<details>
-<summary>Cline</summary>
-
-Add to `cline_mcp_settings.json`:
-
-```json
-{
-  "mcpServers": {
-    "apipay": {
-      "command": "npx",
-      "args": ["-y", "@apipay.vn/mcp"],
-      "env": {
-        "APIPAY_ACCESS_KEY": "ak_test_your_access_key",
-        "APIPAY_SECRET_KEY": "your_secret_key"
-      }
-    }
-  }
-}
-```
-
-</details>
-
-<details>
-<summary>Codex</summary>
-
-Use the Codex CLI:
-
-```bash
+# Codex
 codex mcp add apipay \
   --env APIPAY_ACCESS_KEY=ak_test_your_access_key \
   --env APIPAY_SECRET_KEY=your_secret_key \
   -- npx -y @apipay.vn/mcp
-```
 
-</details>
+# Copilot CLI
+copilot mcp add apipay \
+  --env APIPAY_ACCESS_KEY=ak_test_your_access_key \
+  --env APIPAY_SECRET_KEY=your_secret_key \
+  -- npx -y @apipay.vn/mcp
 
-<details>
-<summary>Command Code</summary>
+# Gemini CLI (add -s user to use it in every project)
+gemini mcp add apipay \
+  -e APIPAY_ACCESS_KEY=ak_test_your_access_key \
+  -e APIPAY_SECRET_KEY=your_secret_key \
+  -- npx -y @apipay.vn/mcp
 
-Command Code uses the `cmd` CLI. Use the `--env` flag to pass the API keys:
+# Grok Build
+grok mcp add apipay \
+  -e APIPAY_ACCESS_KEY=ak_test_your_access_key \
+  -e APIPAY_SECRET_KEY=your_secret_key \
+  -- npx -y @apipay.vn/mcp
 
-```bash
+# Command Code
 cmd mcp add --transport stdio \
   --env APIPAY_ACCESS_KEY=ak_test_your_access_key \
   --env APIPAY_SECRET_KEY=your_secret_key \
   apipay -- npx -y @apipay.vn/mcp
 ```
 
-</details>
-
-<details>
-<summary>Copilot CLI</summary>
-
-Use the Copilot CLI (`--env` is repeatable):
+These CLIs do not pass the API key on the command line. Run `apipay login`, then `apipay keys:create` first:
 
 ```bash
-copilot mcp add apipay \
-  --env APIPAY_ACCESS_KEY=ak_test_your_access_key \
-  --env APIPAY_SECRET_KEY=your_secret_key \
-  -- npx -y @apipay.vn/mcp
+amp mcp add apipay -- npx -y @apipay.vn/mcp       # Amp
+devin mcp add apipay -- npx -y @apipay.vn/mcp     # Devin CLI
+droid mcp add apipay "npx -y @apipay.vn/mcp"      # Factory CLI
+qodercli mcp add apipay -- npx -y @apipay.vn/mcp  # Qoder CLI
 ```
 
-</details>
-
-<details>
-<summary>Copilot / VS Code</summary>
+### VS Code (Copilot)
 
 Add to `.vscode/mcp.json`:
 
@@ -170,94 +127,7 @@ Add to `.vscode/mcp.json`:
 }
 ```
 
-</details>
-
-<details>
-<summary>Cursor</summary>
-
-In Cursor Settings → Features → MCP, or in `.cursor/mcp.json`:
-
-```json
-{
-  "mcpServers": {
-    "apipay": {
-      "command": "npx",
-      "args": ["-y", "@apipay.vn/mcp"],
-      "env": {
-        "APIPAY_ACCESS_KEY": "ak_test_your_access_key",
-        "APIPAY_SECRET_KEY": "your_secret_key"
-      }
-    }
-  }
-}
-```
-
-</details>
-
-<details>
-<summary>Devin CLI</summary>
-
-```bash
-devin mcp add apipay -- npx -y @apipay.vn/mcp
-```
-
-</details>
-
-<details>
-<summary>Factory CLI</summary>
-
-```bash
-droid mcp add apipay "npx -y @apipay.vn/mcp"
-```
-
-</details>
-
-<details>
-<summary>Gemini CLI</summary>
-
-Project-wide:
-
-```bash
-gemini mcp add apipay \
-  -e APIPAY_ACCESS_KEY=ak_test_your_access_key \
-  -e APIPAY_SECRET_KEY=your_secret_key \
-  -- npx -y @apipay.vn/mcp
-```
-
-Globally (user scope):
-
-```bash
-gemini mcp add -s user apipay \
-  -e APIPAY_ACCESS_KEY=ak_test_your_access_key \
-  -e APIPAY_SECRET_KEY=your_secret_key \
-  -- npx -y @apipay.vn/mcp
-```
-
-</details>
-
-<details>
-<summary>Grok Build</summary>
-
-Grok Build uses the `grok` CLI. Use the `-e` flag to pass the API keys:
-
-```bash
-grok mcp add apipay \
-  -e APIPAY_ACCESS_KEY=ak_test_your_access_key \
-  -e APIPAY_SECRET_KEY=your_secret_key \
-  -- npx -y @apipay.vn/mcp
-```
-
-</details>
-
-<details>
-<summary>JetBrains AI Assistant</summary>
-
-Go to `Settings | Tools | AI Assistant | Model Context Protocol (MCP)` → `Add`, using the standard config above (server name `apipay`, command `npx -y @apipay.vn/mcp`, env vars `APIPAY_ACCESS_KEY` / `APIPAY_SECRET_KEY`).
-
-</details>
-
-<details>
-<summary>OpenCode</summary>
+### OpenCode
 
 Add to `opencode.json` (project) or `~/.config/opencode/opencode.json` (global):
 
@@ -277,108 +147,81 @@ Add to `opencode.json` (project) or `~/.config/opencode/opencode.json` (global):
 }
 ```
 
-</details>
-
-<details>
-<summary>Qoder CLI</summary>
-
-```bash
-qodercli mcp add apipay -- npx -y @apipay.vn/mcp
-```
-
-</details>
-
-<details>
-<summary>Warp</summary>
-
-Go to `Settings | AI | Manage MCP Servers` → `+ Add`, using the standard config above (server name `apipay`, command `npx -y @apipay.vn/mcp`, env vars `APIPAY_ACCESS_KEY` / `APIPAY_SECRET_KEY`).
-
-</details>
-
-<details>
-<summary>Windsurf</summary>
-
-Follow the Windsurf MCP configuration guide and add the server to `.windsurf/mcp_config.json`:
-
-```json
-{
-  "mcpServers": {
-    "apipay": {
-      "command": "npx",
-      "args": ["-y", "@apipay.vn/mcp"],
-      "env": {
-        "APIPAY_ACCESS_KEY": "ak_test_your_access_key",
-        "APIPAY_SECRET_KEY": "your_secret_key"
-      }
-    }
-  }
-}
-```
-
-</details>
-
 ## Available Tools
 
-The server registers 23 tools. MCP clients automatically prefix tool names with the server key `apipay` (for example `apipay_list_banks` in OpenCode, `mcp__apipay__list_banks` in Claude Code).
+### Connection
 
-### Connection & Verification
-
-- `self_test` — Validates API key configuration and returns connection status, key prefix, and bank summary counts.
+- `self_test` — Checks your API key and connection; returns the key prefix and a bank account summary.
 
 ### Banks
 
-- `list_banks` — Lists connected bank accounts for this merchant (returns `bankPublicId` values needed to create payments and webhooks).
+- `list_banks` — Lists connected bank accounts with the `bankPublicId` used to create payments and webhooks.
 
 ### Payment Requests
 
-- `create_payment` — Creates a payment link (requires `bankPublicId`; optional `amount` **or** `priceId`, plus `content`, `title`, `expiresAt`, `redirectUrl`). Resolve a lookup key with `list_prices` first, then pass `priceId`.
-- `list_payments` — Lists payment requests with optional filtering by status, search term, or date range.
-- `cancel_payment` — **(Destructive)** Cancels an `ACTIVE` payment request.
-- `simulate_payment` — Simulates payment for sandbox requests (`publicId` must start with `test_pr_`; triggers sandbox webhooks).
+- `create_payment` — Creates a payment link. Requires `bankPublicId` and either `amount` or `priceId` (not both); optional `content`, `title`, `expiresAt`, `redirectUrl`. Have a lookup key? Call `list_prices` to get the `priceId`.
+- `list_payments` — Lists payment requests, filtered by status, search term, or date range.
+- `cancel_payment` — Cancels an `ACTIVE` payment request.
+- `simulate_payment` — Simulates a sandbox payment (`publicId` starts with `test_pr_`) and sends a test webhook.
 
-### Commerce
+### Products & Prices
 
-- `list_products` — Lists Commerce products.
-- `get_product` — Gets a product with its prices. JSON may include `paymentLinkUrl` and `imageUrl` — copy that URL; there is no separate MCP tool for links or images.
-- `create_product` — Creates a product. Optional `defaultPriceData` creates the first price and makes it the default.
-- `update_product` — Updates name, description, archive/restore, or default price.
-- `list_prices` — Lists prices. Filter by `productId` or `lookupKey` to resolve a price id.
+- `list_products` — Lists products.
+- `get_product` — Gets a product with its prices.
+- `create_product` — Creates a product; optional `defaultPriceData` also creates its default price.
+- `update_product` — Updates name, description, archive/restore, or the default price.
+- `list_prices` — Lists prices, filtered by `productId` or `lookupKey`.
 - `get_price` — Gets a price by id.
-- `create_price` — Creates a price. Amounts cannot be edited later.
-- `update_price` — Updates nickname, lookup key, or archive/restore. Does not change `unitAmount`.
+- `create_price` — Creates a price. The amount cannot be edited later.
+- `update_price` — Updates nickname, lookup key, or archive/restore.
+- `delete_price` — Deletes an unused price. Prices already used for payments can only be archived.
+
+### Customers & Invoices
+
+- `list_commerce_customers` — Lists customers, searchable by name, email, or tax code.
+- `get_commerce_customer` — Gets a customer with recent payment requests and invoices.
+- `create_commerce_customer` — Creates a customer. Email must be unique.
+- `update_commerce_customer` — Updates customer details.
+- `delete_commerce_customer` — Deletes a customer with no payment requests or invoices.
+- `send_commerce_invoice` — Emails a payment link for a price to a customer.
+- `list_commerce_invoices` — Lists sales invoices, searchable by invoice number, buyer, or product name.
+- `get_commerce_invoice` — Gets one invoice in detail.
 
 ### Webhooks
 
-- `list_webhooks` — Lists registered webhook endpoints.
-- `create_webhook` — Registers a webhook URL for a connected bank account.
-- `update_webhook` — Updates the destination URL for a webhook.
-- `toggle_webhook` — Toggles a webhook between active and inactive.
-- `remove_webhook` — **(Destructive)** Permanently deletes a webhook.
-- `list_webhook_deliveries` — Lists webhook delivery attempts and status logs.
-- `resend_webhook` — Retries a failed webhook delivery (fires a real HTTP request to the destination).
+- `list_webhooks` — Lists registered webhooks.
+- `create_webhook` — Registers a webhook URL for a bank account.
+- `update_webhook` — Changes a webhook's URL.
+- `toggle_webhook` — Turns a webhook on or off.
+- `remove_webhook` — Deletes a webhook.
+- `list_webhook_deliveries` — Shows webhook delivery history.
+- `resend_webhook` — Resends a failed webhook.
 
 ### Metrics & Transactions
 
-- `get_overview` — Returns transaction totals, averages, success rates, and bank volume distribution.
-- `list_transactions` — Lists recent bank transactions with pagination, date, bank, and search filters.
+- `get_overview` — Transaction overview: totals, averages, success rate, and volume by bank.
+- `list_transactions` — Lists recent transactions, filtered by date, bank, or search term.
 
-## Typical Sandbox Workflow
+## Try It in Sandbox
 
-1. **Verify connection** — Call `self_test` to confirm the API key is active.
-2. **Find a connected bank** — Call `list_banks` to get a `bankPublicId`.
-3. **Create a product and price** (optional) — Call `create_product` with `defaultPriceData`, or `list_prices` with a `lookupKey` you already stored.
-4. **Create a payment request** — Call `create_payment` with `bankPublicId` and either `amount` (for example `"50000"`) or `priceId`. A `publicId` starting with `test_pr_...` is returned.
-5. **Simulate customer payment** — Call `simulate_payment` with `publicId: "test_pr_..."` to test settlement and webhook delivery.
-6. **Check history** — Call `list_webhook_deliveries` and `list_transactions` to verify the transaction was recorded.
+1. Call `self_test` to check your API key.
+2. Call `list_banks` to get a `bankPublicId`.
+3. Optional: call `create_product` with `defaultPriceData`, or `list_prices` with a `lookupKey` to get a `priceId`.
+4. Call `create_payment` with `bankPublicId` and either `amount` (for example `"100000"`) or `priceId`. A sandbox key returns a `publicId` like `test_pr_...`.
+5. Call `simulate_payment` with that `publicId` to simulate the customer paying.
+6. Call `list_webhook_deliveries` and `list_transactions` to check the result.
 
-See [Sandbox & Live Test](/en/sandbox) for more on sandbox keys and simulated payments.
+See also [Sandbox & Live Test](/en/sandbox).
 
-## Destructive Tools
+## Irreversible Actions
 
 <Callout type="danger">
-These operations permanently change state or send a real outbound request. Agents should confirm before running them:
+These tools delete data or send real requests and emails. Have your AI assistant confirm with you before running them:
 
 - `cancel_payment` — Cancels an active payment link.
-- `remove_webhook` — Deletes a registered webhook URL.
-- `resend_webhook` — Dispatches an HTTP request to the merchant webhook URL.
+- `delete_price` — Deletes a price.
+- `delete_commerce_customer` — Deletes a customer.
+- `send_commerce_invoice` — Emails a payment link to a customer.
+- `remove_webhook` — Deletes a webhook.
+- `resend_webhook` — Sends a real request to your webhook URL.
 </Callout>

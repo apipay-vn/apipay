@@ -1,38 +1,30 @@
 ---
 title: Sandbox & Live Test
-description: Kiểm thử thanh toán và webhook an toàn — không có giao dịch tiền thật
+description: Kiểm thử thanh toán và webhook mà không cần tiền thật
 ---
 
 # Sandbox & Live Test
 
-ApiPay cung cấp hai cách kiểm thử riêng biệt trước khi bạn đưa tích hợp vào vận hành thật:
+Có hai cách kiểm thử trước khi nhận tiền thật:
 
-- **Live Test** — gửi một giao dịch giả lập tới ngân hàng thật và webhook thật của bạn. Không có tiền thật nào được chuyển và dữ liệu production không bị ảnh hưởng.
-- **Sandbox** — môi trường tách biệt hoàn toàn với API key thử, tài khoản ngân hàng ảo và payment request thử.
+- **Live Test**: giả lập một giao dịch trên tài khoản ngân hàng thật của bạn và gửi tới webhook thật. Không có tiền chuyển đi, dữ liệu thật không bị ảnh hưởng.
+- **Sandbox**: môi trường riêng với khóa API thử nghiệm, ngân hàng thử nghiệm và yêu cầu thanh toán thử nghiệm.
 
-Cả hai đều dùng cùng cấu trúc payload và header HMAC `ApiPay-Signature` như production.
+Cả hai đều ký webhook bằng header `ApiPay-Signature` giống môi trường thật.
 
 ---
 
 ## Live Test
 
-Live Test giúp bạn kiểm tra webhook thật của mình một cách trọn vẹn mà không cần chờ giao dịch ngân hàng thực tế. Nó tạo một giao dịch giả lập, lưu riêng khỏi dữ liệu production và gửi đến mọi webhook áp dụng cho ngân hàng bạn chọn — webhook toàn cục cùng các webhook gắn với ngân hàng đó.
+Dùng Live Test để kiểm tra endpoint webhook thật mà không phải chờ một giao dịch ngân hàng. Cần gói dịch vụ đang hoạt động và ít nhất một tài khoản ngân hàng đã kết nối.
 
-Live Test yêu cầu gói dịch vụ đang hoạt động (miễn phí hoặc trả phí) và ít nhất một tài khoản ngân hàng live.
-
-### Chạy Live Test
-
-1. Mở **Sandbox** ở thanh bên trái và chắc chắn nút gạt **Sandbox** đang **tắt** (Live Test là chế độ mặc định).
-2. Chọn một tài khoản ngân hàng đang hoạt động.
-3. Nhập số tiền và nội dung chuyển khoản (không bắt buộc).
-4. Chọn đích nhận webhook — **Tất cả webhook đang bật** áp dụng cho ngân hàng đó (bao gồm webhook toàn cục), hoặc một webhook cụ thể.
-5. Nhấn **Tạo và kích hoạt**.
-
-ApiPay tạo giao dịch giả lập và gọi đến các webhook bạn chọn. Thẻ kết quả hiển thị payload cùng mã phản hồi và nội dung phản hồi của từng lần gửi.
+1. Mở **Chế độ Sandbox** trong dashboard, để nút gạt ở **Live Test**.
+2. Chọn tài khoản ngân hàng, nhập số tiền, nội dung và webhook nhận (tất cả webhook áp dụng cho ngân hàng đó, hoặc một webhook cụ thể).
+3. Nhấn **Tạo và kích hoạt**. Kết quả hiển thị payload cùng mã và nội dung phản hồi của từng webhook.
 
 ### Payload Live Test
 
-Payload của Live Test giống production, thêm hai trường `"sandbox": true` và `"liveTest": true`. Mã tham chiếu bắt đầu bằng `LVT-` nên không thể nhầm lẫn với giao dịch thật.
+Giống payload thật, thêm `"sandbox": true` và `"liveTest": true`. Mã tham chiếu bắt đầu bằng `LVT-`.
 
 ```json
 {
@@ -40,124 +32,118 @@ Payload của Live Test giống production, thêm hai trường `"sandbox": true
   "sandbox": true,
   "liveTest": true,
   "data": {
-    "transactionId": "clxyz...",
+    "transactionId": "clxyz123abc",
     "referenceCode": "LVT-1755298200000-A1B2C3D4",
     "amount": "50000",
     "type": "IN",
     "content": "LIVETEST-ORDER-001",
     "transactionDate": "2026-08-15T10:30:00.000Z",
-    "bankAccountPublicId": "bk_abcdef1234567890",
-    "gateway": "ACB",
-    "rawTransactionDate": "2026-08-15 10:30:00",
+    "bankAccountPublicId": "bnk_abc123",
+    "gateway": "970422",
     "vaNumber": null,
-    "accountNumber": "123456"
+    "accountNumber": "0123456789"
   }
 }
 ```
 
-### Nhận biết sự kiện Live Test
-
-Trong handler, kiểm tra `liveTest: true` để bỏ qua logic xử lý đơn hàng thật:
+Mọi sự kiện Live Test đều có `sandbox: true`, nên chỉ cần kiểm tra một cờ:
 
 ```javascript
-app.post('/webhooks/apipay', (req, res) => {
-  const {event, sandbox, liveTest, data} = req.body;
+app.post("/webhooks/apipay", express.raw({type: "*/*"}), (req, res) => {
+  // Xác thực chữ ký trước, xem trang Webhook
+  const {event, sandbox, data} = JSON.parse(req.body.toString("utf8"));
 
-  if (sandbox || liveTest) {
-    console.log('[test] nhận sự kiện giả lập:', event, data.referenceCode);
+  if (sandbox) {
+    console.log("[test] sự kiện thử nghiệm:", event);
     return res.status(200).json({received: true});
   }
 
-  // xử lý giao dịch thật
-  if (event === 'transaction.in') {
-    // xử lý đơn hàng...
+  if (event === "transaction.in") {
+    // Xử lý đơn hàng thật
   }
 
   res.status(200).json({received: true});
 });
 ```
 
-### Lịch sử Live Test
-
-Các lần chạy Live Test, giao dịch giả lập và log gửi webhook được lưu trong các bảng riêng, tách biệt với giao dịch và payment request production. Bạn có thể xóa lịch sử Live Test bất cứ lúc nào từ dashboard.
+Bạn có thể xóa lịch sử Live Test bất cứ lúc nào trong dashboard.
 
 ---
 
 ## Sandbox
 
-Sandbox Mode là môi trường kiểm thử riêng biệt và an toàn với API key thử, tài khoản ngân hàng ảo và payment request thử. Mọi thứ hoạt động giống production nhưng không có tiền thật nào được chuyển và dữ liệu live không bao giờ bị ảnh hưởng.
+Sandbox hoạt động như môi trường thật nhưng không có tiền thật và không chạm tới dữ liệu thật. Không cần gói trả phí, chỉ cần tài khoản đã xác minh.
 
-Không cần gói trả phí — chỉ cần tài khoản đã xác minh và đang hoạt động.
+1. Mở **Chế độ Sandbox** trong dashboard và gạt sang **Sandbox**. Dashboard lúc này chỉ hiển thị dữ liệu sandbox.
+2. Thêm ngân hàng sandbox, đăng ký webhook sandbox và tạo khóa API thử nghiệm.
+3. Gọi API như bình thường bằng khóa thử nghiệm, rồi giả lập thanh toán.
 
-### Bật Sandbox Mode
+| Tài nguyên | Nhận biết |
+| ---------- | --------- |
+| Khóa API thử nghiệm | `accessKey` bắt đầu bằng `ak_test_` |
+| Ngân hàng sandbox | `publicId` bắt đầu bằng `test_bank_` |
+| Yêu cầu thanh toán thử nghiệm | `publicId` bắt đầu bằng `test_pr_` |
+| Giao dịch sandbox | `publicId` bắt đầu bằng `test_txn_` |
 
-Vào **Sandbox** ở thanh bên trái và gạt nút chuyển sang **Sandbox**.
+### Giả lập thanh toán
 
-Khi bật, dashboard chỉ hiển thị dữ liệu sandbox. API key và dữ liệu live của bạn không bị ảnh hưởng.
+```bash
+POST /v1/payment-requests/:publicId/pay
+```
 
-### Môi trường kiểm thử
+Đánh dấu một yêu cầu thanh toán sandbox là đã trả và gửi webhook tới các webhook sandbox. Không cần xác thực, không có body. Chỉ nhận `publicId` bắt đầu bằng `test_pr_`; mã khác trả `400`.
 
-Sandbox dùng tài nguyên riêng, tách biệt với production:
+```bash
+curl -X POST https://app.apipay.vn/v1/payment-requests/test_pr_abc123/pay
+```
 
-- **API key thử** — tạo tại mục API Keys, bắt đầu bằng `ak_test_`
-- **Tài khoản ngân hàng ảo** — được tạo khi bạn thêm ngân hàng trong sandbox
-- **Payment request thử** — mã công khai bắt đầu bằng `test_pr_`
-- **Webhook và giao dịch sandbox** — tách biệt với bản live
+```json
+{
+  "data": {
+    "publicId": "test_pr_abc123",
+    "status": "COMPLETED",
+    "transaction": {
+      "publicId": "test_txn_a1b2c3d4e5f6a7b8",
+      "amount": "50000",
+      "content": "TEST-ORDER-001",
+      "sandbox": true
+    },
+    "sandbox": true
+  },
+  "statusCode": 201,
+  "timestamp": "2026-08-15T10:30:00.000Z"
+}
+```
 
-### Quy trình kiểm thử
+Bạn cũng có thể giả lập trong dashboard: tạo giao dịch thủ công ở trang **Giao dịch**, hoặc mở trang thanh toán của yêu cầu `test_pr_` và bấm nút thanh toán thử.
 
-1. Bật **Sandbox Mode**.
-2. Tạo API key thử (bắt đầu bằng `ak_test_`).
-3. Đăng ký webhook sandbox và tạo một payment request thử.
-4. Mô phỏng một giao dịch chuyển tiền.
-5. Kiểm tra log gửi webhook để xác nhận luồng hoạt động.
-6. Xóa lịch sử hoặc đặt lại sandbox bất cứ lúc nào.
+### Payload sandbox
 
-### Mô phỏng giao dịch
-
-Có hai cách:
-
-- **Trang Giao dịch** — dùng công cụ mô phỏng giao dịch sandbox để tạo giao dịch thủ công.
-- **Trang thanh toán** — mở payment request thử (`test_pr_`) và thanh toán bằng nút test.
-
-Cả hai cách đều gửi webhook tương ứng đến các webhook sandbox của bạn.
-
-### Kiểm tra delivery
-
-Mở log gửi webhook. Một lần gửi thành công xác nhận luồng sandbox hoạt động đúng — payload và chữ ký giống hệt production.
-
-#### Payload sandbox
-
-Payload webhook giống production, thêm trường `"sandbox": true` ở cấp cao nhất để handler phân biệt sự kiện test với sự kiện thật.
+Webhook sandbox gọn hơn payload thật và có `"sandbox": true`:
 
 ```json
 {
   "event": "transaction.in",
   "sandbox": true,
+  "created": "2026-08-15T10:30:00.000Z",
   "data": {
-    "transactionId": "clxyz...",
-    "referenceCode": "test_pr_...",
+    "publicId": "test_txn_a1b2c3d4e5f6a7b8",
     "amount": "50000",
-    "content": "ORDER-12345",
-    "transactionDate": "2026-05-14T10:30:00.000Z",
-    "bankAccountPublicId": "bk_abcdef1234567890",
-    "gateway": "APIPAY",
-    "rawTransactionDate": "2026-05-14 10:30:00",
-    "vaNumber": "999988887777",
-    "accountNumber": "0123456789"
+    "content": "TEST-ORDER-001",
+    "type": "IN",
+    "status": "SUCCESS"
   }
 }
 ```
 
 ### Xóa lịch sử và đặt lại
 
-- **Xóa lịch sử** — xóa payment request, giao dịch và log gửi trong sandbox. Ngân hàng, webhook và API key sandbox vẫn giữ nguyên.
-- **Đặt lại sandbox** — xóa toàn bộ tài nguyên sandbox: API key, ngân hàng, webhook và lịch sử. Sandbox Mode vẫn bật; ngân hàng ảo sẽ được tạo lại khi bạn dùng tiếp.
+- **Xóa lịch sử**: xóa yêu cầu thanh toán, giao dịch và lịch sử gửi webhook trong sandbox. Ngân hàng, webhook và khóa API sandbox vẫn giữ nguyên.
+- **Đặt lại sandbox**: xóa toàn bộ dữ liệu sandbox, gồm cả khóa API, ngân hàng và webhook.
 
 ---
 
 ## Mẹo
 
-- Dùng [Webhook.site](https://webhook.site) hoặc [ngrok](https://ngrok.com) để test với server local mà chưa cần deploy
-- Sandbox dùng API giống hệt production — chỉ cần đổi sang API key thử
-- Payment request thử có mã `test_pr_`, còn Live Test có mã tham chiếu bắt đầu bằng `LVT-`, giúp bạn luôn phân biệt được với bản live
+- Dùng [Webhook.site](https://webhook.site) hoặc [ngrok](https://ngrok.com) để nhận webhook trên máy của bạn.
+- Sandbox dùng cùng API với môi trường thật, chỉ khác khóa API.

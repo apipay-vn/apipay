@@ -1,229 +1,183 @@
 ---
 title: Quick Start
-description: Get started with ApiPay in 5 minutes
+description: Create your first payment link and receive a webhook with ApiPay
 ---
 
 # Quick Start
 
-Quick guide to integrate ApiPay into your system. You can start on the **free plan** (60 successful transactions/month, multiple bank accounts) — activate it at **Settings → Subscription**, then create an API key.
+Create your first payment request with the API and receive a webhook when the customer pays. You need an active [plan](/en/subscription) (the free plan works) and at least one [connected bank account](/en/connect-banks).
 
-## Step 1: Get API Key
+## Step 1: Get an API key
 
-Log in to [dashboard](https://my.apipay.vn), activate a plan if you have not yet, and create an API Key at **Integrations → API Keys**.
+In [my.apipay.vn](https://my.apipay.vn), open **Integrations → Web App → API Keys** and create a key. You get:
 
-You'll receive:
+- `accessKey`: identifies the API key.
+- `secretKey`: the secret, used on your server only.
 
-- `accessKey` - Public key to identify your account
-- `secretKey` - Private key to sign requests
+Every request sends `Authorization: Bearer <Auth>`, where `<Auth>` is `base64(accessKey:secretKey)`. See [Authentication](/en/api/authentication).
 
-> **Note:** `Authorization: Bearer <Auth>` with `<Auth>` is your credentials encoded in `base64(accessKey:secretKey)`. See [Authentication](/en/api/authentication) for details.
+## Step 2: Get your bank account ID
 
-## Step 2: Create Payment Link
+```bash
+curl https://app.apipay.vn/v1/client/banks \
+  -H "Authorization: Bearer <Auth>"
+```
 
-Call the API to create a payment link:
+Take the `publicId` of the receiving account from `data.message`, e.g. `bnk_abc123`. See [Bank Management](/en/api/banks).
+
+## Step 3: Create a payment request
 
 ```bash
 curl -X POST https://app.apipay.vn/v1/client/payment-requests \
-  -H "Content-Type: application/json" \
   -H "Authorization: Bearer <Auth>" \
+  -H "Content-Type: application/json" \
   -d '{
-    "bankPublicId": "your-bank-public-id",
+    "bankPublicId": "bnk_abc123",
     "amount": "100000",
     "content": "ORDER-12345"
   }'
 ```
 
-Response:
-
 ```json
 {
-	"data": {
-		"publicId": "APIPAYJSC69C3F00A3212",
-		"payUrl": "https://pay.apipay.vn/APIPAYJSC69C3F00A3212",
-		"qrUrl": "https://api.qrserver.com/...",
-		"bankCode": "MB",
-		"accountNumber": "0123456789",
-		"amount": "100000",
-		"content": "ORDER-12345"
-	},
-	"statusCode": 200,
-	"timestamp": "2026-08-12T14:27:45.000Z"
+  "data": {
+    "publicId": "APIPAYJSC69C3F00A3212",
+    "payUrl": "https://pay.apipay.vn/APIPAYJSC69C3F00A3212",
+    "qrUrl": "https://app.apipay.vn/v1/payment-requests/APIPAYJSC69C3F00A3212/qr-image",
+    "bankCode": "MB",
+    "accountNumber": "0123456789",
+    "amount": "100000",
+    "content": "ORDER-12345"
+  },
+  "statusCode": 201,
+  "timestamp": "2026-08-12T14:27:45.000Z"
 }
 ```
 
-## Step 3: Send to Customer
+Send `payUrl` to the customer (email, Zalo, your website...) or show the `qrUrl` image on your own page. The customer scans the QR with their banking app to pay.
 
-Send `payUrl` to your customer via:
+Selling the same price many times? Create a product and price in [Commerce](/en/commerce) and send `priceId` instead of `amount`.
 
-- Email/SMS
-- Chat (Zalo, Facebook, Telegram)
-- Your website
+## Step 4: Receive the webhook
 
-The customer will see a payment page with a QR Code to scan with their bank app.
-
-To reuse the same amount across many links, create a product and price in [Commerce](/en/commerce) and pass `priceId` instead of `amount`.
-
-## Step 4: Receive Notifications
-
-Configure a webhook URL in the dashboard to receive notifications when bank transactions are detected:
+Register a webhook URL under **Webhooks** in the dashboard. When money arrives, ApiPay sends:
 
 ```json
 {
-	"event": "transaction.in",
-	"data": {
-		"transactionId": "550e8400-e29b-41d4-a716-446655440000",
-		"referenceCode": "TX123456789",
-		"amount": "100000",
-		"content": "ORDER-12345",
-		"transactionDate": "2026-03-06T10:30:00Z",
-		"bankAccountPublicId": "bk_abcdef1234567890",
-		"gateway": "VCB",
-		"accountNumber": "0123456789"
-	}
+  "event": "transaction.in",
+  "data": {
+    "transactionId": "550e8400-e29b-41d4-a716-446655440000",
+    "referenceCode": "FT26081212345",
+    "amount": "100000",
+    "type": "IN",
+    "content": "ORDER-12345",
+    "transactionDate": "2026-08-12T10:30:00.000Z",
+    "bankAccountPublicId": "bnk_abc123",
+    "gateway": "970422",
+    "accountNumber": "0123456789",
+    "vaNumber": null
+  }
 }
 ```
 
-ApiPay sends `transaction.in` when a payment is detected. See [Webhooks](/en/api/webhooks) for the full payload and signature verification.
+Check the `ApiPay-Signature` header before processing: it is the HMAC-SHA256 (hex) of the **raw body**, signed with the webhook secret.
 
-## Test Your Integration
+```javascript
+import crypto from "node:crypto";
+import express from "express";
 
-Use sandbox mode to test the full flow without real money.
+const app = express();
 
-### 1. Use Test API Keys
+function isValidSignature(rawBody, signature, secret) {
+  const expected = Buffer.from(crypto.createHmac("sha256", secret).update(rawBody).digest("hex"), "hex");
+  const received = Buffer.from(String(signature || ""), "hex");
+  return received.length === expected.length && crypto.timingSafeEqual(received, expected);
+}
 
-Create a test API key in the dashboard (starts with `ak_test_`). The same production URL automatically routes to sandbox mode when you use a test key.
+app.post("/webhooks/apipay", express.raw({type: "*/*"}), (req, res) => {
+  if (!isValidSignature(req.body, req.headers["apipay-signature"], process.env.APIPAY_WEBHOOK_SECRET)) {
+    return res.status(401).json({error: "Invalid signature"});
+  }
 
-```bash
-# Encode your test credentials
-AUTH=$(echo -n "ak_test_abc123:secret_def456" | base64)
+  const {event, sandbox, data} = JSON.parse(req.body.toString("utf8"));
+  if (event === "transaction.in" && !sandbox) {
+    // Update the order using data.content and data.amount
+  }
+
+  res.status(200).json({received: true});
+});
+
+app.listen(3000);
 ```
 
-### 2. Create a Test Payment Request
+See [Webhooks](/en/api/webhooks#webhook-authentication) for the full payload and examples in other languages.
 
-```bash
-curl -X POST https://app.apipay.vn/v1/client/payment-requests \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $AUTH" \
-  -d '{
-    "bankPublicId": "test_bk_abc123",
-    "amount": "50000",
-    "content": "TEST-ORDER-001"
-  }'
-```
+## Test with sandbox
 
-### 3. Simulate Payment
+Run the whole flow without real money:
 
-Use the sandbox simulator to trigger a mock payment:
+1. Turn on **Sandbox Mode** in the dashboard, add a sandbox bank (`publicId` starts with `test_bank_`), then create a test API key (starts with `ak_test_`).
+2. Call the same API URL with the test key to create a payment request using the sandbox bank's `bankPublicId`.
+3. Simulate the customer paying, using the request's `publicId` (starts with `test_pr_`):
 
 ```bash
 curl -X POST https://app.apipay.vn/v1/payment-requests/test_pr_abc123/pay
 ```
 
-This endpoint is unauthenticated, takes no body, and only accepts sandbox public IDs (`test_pr_*`). Live IDs return 400.
+Sandbox webhooks include `"sandbox": true`. Always check this flag so you never fulfill a test order. See [Sandbox & Live Test](/en/sandbox).
 
-This triggers a webhook to your configured URL with `"sandbox": true` in the payload.
-
-### 4. Verify Webhook Signature
-
-```javascript
-const crypto = require('crypto');
-
-function verifyWebhook(payload, signature, secret) {
-  const expected = crypto
-    .createHmac('sha256', secret)
-    .update(payload)
-    .digest('hex');
-  return crypto.timingSafeEqual(
-    Buffer.from(signature, 'hex'),
-    Buffer.from(expected, 'hex')
-  );
-}
-
-// In your webhook handler:
-app.post('/webhooks/apipay', (req, res) => {
-  const signature = req.headers['apipay-signature'];
-  const isValid = verifyWebhook(JSON.stringify(req.body), signature, WEBHOOK_SECRET);
-
-  if (!isValid) return res.status(401).send('Invalid signature');
-
-  const {event, sandbox, data} = req.body;
-  if (sandbox) console.log('[test] Sandbox event:', event, data.referenceCode);
-
-  res.status(200).json({received: true});
-});
-```
-
-<Callout type="info">
-Sandbox webhooks include `"sandbox": true` in the payload. Always check this flag to avoid fulfilling test orders.
-</Callout>
-
-See [Sandbox & Live Test](/en/sandbox) for more testing options.
-
-## Code Examples
+## Create a payment request in code
 
 <CodeTabs>
 ```javascript
-const axios = require("axios");
-
 const API_BASE = "https://app.apipay.vn";
 const ACCESS_KEY = "your_access_key";
 const SECRET_KEY = "your_secret_key";
 
-async function createPaymentLink(bankPublicId, amount, content) {
-	// Create base64 auth string
-	const auth = Buffer.from(`${ACCESS_KEY}:${SECRET_KEY}`).toString("base64");
+async function createPaymentRequest(bankPublicId, amount, content) {
+  const auth = Buffer.from(`${ACCESS_KEY}:${SECRET_KEY}`).toString("base64");
 
-	const response = await axios.post(
-		`${API_BASE}/v1/client/payment-requests`,
-		{
-			bankPublicId,
-			amount,
-			content,
-		},
-		{
-			headers: {
-				Authorization: `Bearer ${auth}`,
-				"Content-Type": "application/json",
-			},
-		},
-	);
-	return response.data.data;
+  const response = await fetch(`${API_BASE}/v1/client/payment-requests`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${auth}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({bankPublicId, amount, content}),
+  });
+  const body = await response.json();
+  return body.data;
 }
 
-// Usage
-const payment = await createPaymentLink("bank-123", 100000, "ORDER-001");
-console.log("Payment URL:", payment.payUrl);
+async function main() {
+  const payment = await createPaymentRequest("bnk_abc123", "100000", "ORDER-001");
+  console.log("Payment link:", payment.payUrl);
+}
+
+main();
 ```
 
 ```python
-import requests
 import base64
+import requests
 
 API_BASE = 'https://app.apipay.vn'
 ACCESS_KEY = 'your_access_key'
 SECRET_KEY = 'your_secret_key'
 
-def create_payment_link(bank_public_id: str, amount: int, content: str):
-    # Create base64 auth string
-    auth = base64.b64encode(f'{ACCESS_KEY}:{SECRET_KEY}'.encode()).decode()
 
-    response = requests.post(
-        f'{API_BASE}/v1/client/payment-requests',
-        json={
-            'bankPublicId': bank_public_id,
-            'amount': amount,
-            'content': content
-        },
-        headers={
-            'Authorization': f'Bearer {auth}',
-            'Content-Type': 'application/json'
-        }
-    )
-    return response.json()['data']
+def create_payment_request(bank_public_id: str, amount: str, content: str):
+  auth = base64.b64encode(f'{ACCESS_KEY}:{SECRET_KEY}'.encode()).decode()
+  response = requests.post(
+    f'{API_BASE}/v1/client/payment-requests',
+    json={'bankPublicId': bank_public_id, 'amount': amount, 'content': content},
+    headers={'Authorization': f'Bearer {auth}'},
+  )
+  return response.json()['data']
 
-# Usage
-payment = create_payment_link('bank-123', 100000, 'ORDER-001')
-print(f"Payment URL: {payment['payUrl']}")
+
+payment = create_payment_request('bnk_abc123', '100000', 'ORDER-001')
+print('Payment link:', payment['payUrl'])
 ```
 
 ```php
@@ -231,37 +185,26 @@ print(f"Payment URL: {payment['payUrl']}")
 
 use Illuminate\Support\Facades\Http;
 
-$apiBase = 'https://app.apipay.vn';
-$accessKey = 'your_access_key';
-$secretKey = 'your_secret_key';
-
-function createPaymentLink(string $bankPublicId, int $amount, string $content): array
+function createPaymentRequest(string $bankPublicId, string $amount, string $content): array
 {
-    global $apiBase, $accessKey, $secretKey;
+  $auth = base64_encode('your_access_key:your_secret_key');
 
-    // Create base64 auth string
-    $auth = base64_encode("{$accessKey}:{$secretKey}");
+  $response = Http::withToken($auth)->post('https://app.apipay.vn/v1/client/payment-requests', [
+    'bankPublicId' => $bankPublicId,
+    'amount' => $amount,
+    'content' => $content,
+  ]);
 
-    $response = Http::withHeaders([
-        'Authorization' => "Bearer {$auth}",
-        'Content-Type'  => 'application/json',
-    ])->post("{$apiBase}/v1/client/payment-requests", [
-        'bankPublicId' => $bankPublicId,
-        'amount'       => $amount,
-        'content'      => $content,
-    ]);
-
-    return $response->json('data');
+  return $response->json('data');
 }
 
-// Usage
-$payment = createPaymentLink('bank-123', 100000, 'ORDER-001');
-echo 'Payment URL: ' . $payment['payUrl'];
+$payment = createPaymentRequest('bnk_abc123', '100000', 'ORDER-001');
+echo 'Payment link: ' . $payment['payUrl'];
 ```
 </CodeTabs>
 
-## Next Steps
+## Next steps
 
-- [API Reference](/en/api/payment-requests) - Full API endpoint details
-- [Webhooks](/en/api/webhooks) - Configure notifications
-- [Bank List](/en/api/banks) - Supported banks
+- [Payment Requests](/en/api/payment-requests): every endpoint
+- [Webhooks](/en/api/webhooks): setup and verification
+- [Bank Management](/en/api/banks): connect and manage accounts

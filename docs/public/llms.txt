@@ -5,14 +5,14 @@
 ## Getting Started
 
 - [Introduction](https://docs.apipay.vn/en/index): Integrate ApiPay into your system
-- [Quick Start](https://docs.apipay.vn/en/quickstart): Get started with ApiPay in 5 minutes
+- [Quick Start](https://docs.apipay.vn/en/quickstart): Create your first payment link and receive a webhook with ApiPay
 - [Onboarding](https://docs.apipay.vn/en/onboarding): Complete guide to getting started with ApiPay
 - [Subscription & Billing](https://docs.apipay.vn/en/subscription): Manage your ApiPay subscription and billing
 
 ## Banking & Payments
 
 - [Bank Accounts](https://docs.apipay.vn/en/banking): Connect and manage your Vietnamese bank accounts to receive payments via ApiPay
-- [Sandbox & Live Test](https://docs.apipay.vn/en/sandbox): Test payments and webhooks safely — no real money moves
+- [Sandbox & Live Test](https://docs.apipay.vn/en/sandbox): Test payments and webhooks without real money
 - [Dashboard Guide](https://docs.apipay.vn/en/dashboard): Navigate and use your ApiPay dashboard effectively
 - [Connect Banks](https://docs.apipay.vn/en/connect-banks): Link your Vietnamese bank account to start receiving payments via ApiPay
 - [Stores and Staff](https://docs.apipay.vn/en/stores-staff): Group your receiving accounts by store and give each team member access to only the payments they handle
@@ -24,21 +24,21 @@
 
 ## Integrations
 
-- [Web App](https://docs.apipay.vn/en/integrations/webapp): Integrate ApiPay into a custom web app with SDK-style JavaScript and Python helpers.
-- [WooCommerce](https://docs.apipay.vn/en/integrations/woocommerce): Install and configure the ApiPay WooCommerce payment gateway.
+- [Web App](https://docs.apipay.vn/en/integrations/webapp): Integrate ApiPay into your web app with JavaScript, Python, or PHP.
+- [WooCommerce](https://docs.apipay.vn/en/integrations/woocommerce): Install the ApiPay payment plugin for WooCommerce.
 - [Vibe Code](https://docs.apipay.vn/en/integrations/vibe-code): Generate an ApiPay integration prompt for AI coding assistants.
-- [MCP Server](https://docs.apipay.vn/en/integrations/mcp): Connect ApiPay to AI assistants with the @apipay.vn/mcp Model Context Protocol server.
-- [WHMCS](https://docs.apipay.vn/en/integrations/whmcs): Install and configure the ApiPay WHMCS payment gateway module.
-- [HostBill](https://docs.apipay.vn/en/integrations/hostbill): Install and configure the ApiPay HostBill payment gateway module.
+- [MCP Server](https://docs.apipay.vn/en/integrations/mcp): Connect ApiPay to AI assistants with the @apipay.vn/mcp MCP server.
+- [WHMCS](https://docs.apipay.vn/en/integrations/whmcs): Install the ApiPay payment module for WHMCS.
+- [HostBill](https://docs.apipay.vn/en/integrations/hostbill): Install the ApiPay payment module for HostBill.
 
 ## API Reference
 
-- [Authentication](https://docs.apipay.vn/en/api/authentication): API authentication guide
-- [Payment Requests](https://docs.apipay.vn/en/api/payment-requests): API for creating and managing payment links
-- [Commerce](https://docs.apipay.vn/en/api/commerce): Products, prices, reusable payment links, product images, and receipts
-- [Webhooks](https://docs.apipay.vn/en/api/webhooks): Receive real-time payment notifications
-- [Banks](https://docs.apipay.vn/en/api/banks): API for connecting and managing client bank accounts
-- [Metrics](https://docs.apipay.vn/en/api/metrics): API for retrieving transaction metrics and analytics
+- [Authentication](https://docs.apipay.vn/en/api/authentication): How to authenticate requests to the ApiPay API
+- [Payment Requests](https://docs.apipay.vn/en/api/payment-requests): Create and manage payment requests
+- [Commerce](https://docs.apipay.vn/en/api/commerce): Products, prices, reusable payment links, customers and receipts
+- [Webhooks](https://docs.apipay.vn/en/api/webhooks): Receive payment notifications by webhook
+- [Banks](https://docs.apipay.vn/en/api/banks): API for connecting and managing bank accounts
+- [Metrics](https://docs.apipay.vn/en/api/metrics): Look up transactions and summary figures
 
 ## Interactive API Reference
 

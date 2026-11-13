@@ -5,129 +5,57 @@ description: Turn any phone, tablet, or computer into a real-time bank transfer 
 
 # Payment Speaker
 
-**Payment Speaker** is a built-in, **100% free** feature in ApiPay that announces incoming bank transfers in real time using clear, natural voice audio.
+Payment Speaker reads the amount aloud every time a customer's transfer lands in your account. No special device needed: just open a link on a phone, tablet or computer with a speaker at your counter. It is included in every plan at no extra cost.
 
-Instead of spending millions of VND on dedicated hardware payment speakers, you can simply use an existing phone, tablet, or computer at the checkout counter and open the speaker session in any web browser.
-
----
-
-## Why use Payment Speaker?
-
-In busy retail, dining, and service environments, checking incoming bank transfers manually often causes friction:
-
-- **Rush hour bottleneck:** Cashiers and baristas are busy preparing orders and cannot constantly check banking apps or wait for SMS messages on the owner's phone.
-- **Counterfeit screenshot fraud:** Fraudsters can show fake transfer screenshots. Without real-time verification, stores risk product loss.
-- **Account security & privacy:** You don't need to install banking apps or share sensitive banking credentials with checkout staff.
-
-<Callout type="tip">
-**The ApiPay solution:** When a transfer arrives, the speaker plays a friendly *"Ting"* chime followed by a clear voice announcement with the exact amount and receiving bank. Staff can hear the confirmation immediately and fulfill orders with confidence.
-</Callout>
+Your cashier hears the announcement and knows the money has arrived, without holding the owner's phone or trusting a customer's screenshot.
 
 ---
 
-## Key Features
+## Setup
 
-| Feature | Practical Benefit |
-| :--- | :--- |
-| **100% Free** | Included with every active bank account on ApiPay — no hardware purchases or hidden fees. |
-| **Runs in Web Browser** | Works on any device with speakers and internet access (iPhone, Android, iPad, Android tablets, laptops, PCs). |
-| **Natural Regional Voices** | Multiple Vietnamese voice accents (Northern, Central, Southern, male and female) to suit your brand and region. |
-| **Multi-Session Support** | Run independent speaker sessions simultaneously for different bank accounts, counters, or branches. |
-| **Recent Transaction History** | Displays the last 10 transactions right on screen for instant visual cross-checking. |
-| **Integrated Receive QR Modal** | Cashiers can open the payment QR code on screen for customers to scan and pay on the spot. |
+1. Sign in at [my.apipay.vn](https://my.apipay.vn) and open **Integrations → Payment Speaker**.
+2. Under **Start New Session**, pick the bank account to get incoming-payment alerts for and choose a voice. Northern, Central and Southern accents are available, in male and female voices.
+3. Click **Start Session**, then copy the **Session URL**.
+4. Open that URL in a browser on the counter device.
+5. Tap the screen once so the browser allows sound.
 
----
+Under **Advanced settings** you can adjust speed, volume, the delay before speaking, and whether the bank name is read. Use **Try this voice** to preview.
 
-## Step-by-Step Setup
+Each bank runs at most one session. With several banks, start one session per bank. One session URL can be open on several devices at once.
 
-Setting up Payment Speaker takes less than a minute:
+The speaker screen has a button to show your QR code for customers to scan, and a list of recent transactions for quick checks.
 
-### Step 1: Open Payment Speaker in Dashboard
-
-1. Sign in to the [ApiPay Dashboard](https://my.apipay.vn).
-2. In the left sidebar, navigate to **Integrations** and select **Payment Speaker** (Loa thanh toán).
-
-### Step 2: Select Bank Account & Voice
-
-1. Under **Start new session**:
-   - **Bank Account:** Select the active bank account you want to monitor.
-   - **Voice:** Choose your preferred voice (e.g., *Ban Mai - Northern Female*, *Minh Quang - Southern Male*, *Gia Huy - Central Male*, etc.).
-2. Click **Start session**.
-
-<Callout type="info">
-Each bank account runs an independent speaker session. If you manage multiple bank accounts for different checkout counters, you can start a separate session for each account.
-</Callout>
-
-### Step 3: Open Session URL on Counter Device
-
-1. Once started, a unique **Session URL** is generated (e.g., `https://pay.apipay.vn/ting/abc123xyz`).
-2. Click **Copy** to copy the URL or send it to the device at the checkout counter (phone, tablet, POS terminal, or PC).
-3. Open the URL in the device's web browser (Safari, Chrome, etc.).
-4. **Important:** Tap or click anywhere on the speaker page once to grant audio playback permission to the browser.
+> **Keep the link private.** Anyone with the session URL can see incoming payments to that account. If the link leaks, stop the session and start a new one.
 
 ---
 
-## Speaker Screen Experience
+## Tips
 
-The speaker interface is clean, intuitive, and designed specifically for busy cashier desks:
-
-1. **Live Connection Indicator:**
-   - Visual pulsing waves animate when incoming payments arrive or when voice audio is playing.
-   - Central **"Test Audio" / Replay** button: Tap anytime to test speaker volume or replay the last announcement.
-2. **Receive QR Code Modal:**
-   - Tap **View QR Code** in the top bar to display the bank QR code on screen.
-   - Turn the tablet toward customers so they can scan and transfer instantly.
-3. **Recent Transactions List (Last 10):**
-   - Displays time, amount, and bank for recent transfers.
-   - Staff can quickly verify past transactions without calling the manager.
-4. **Customization & Display:**
-   - Toggle between Light and Dark mode for optimal viewing day and night.
-   - Switch between Vietnamese and English interface language.
+- **Use a dedicated device**: an old phone or tablet at the counter, plugged in, with the speaker page open.
+- **Pair a Bluetooth speaker** if your shop is noisy.
+- **Add to Home Screen** in Safari or Chrome to open the speaker page like an app.
 
 ---
 
-## Operational Tips for Store Owners
+## Managing sessions
 
-### 1. Repurpose spare phones or desk tablets
-Mount an older smartphone or tablet at the cashier counter, keep it plugged into power, and leave the Payment Speaker tab open.
-
-### 2. Connect a small Bluetooth speaker
-In noisy environments (coffee grinders, background music, busy retail stores), pair the device with a small Bluetooth speaker placed near the cashier station for crystal-clear sound.
-
-### 3. Add to Home Screen (PWA experience)
-In Safari (iOS) or Chrome (Android), tap **Add to Home Screen**. The speaker URL will launch full-screen like a dedicated app with a single tap.
-
-### 4. Safe staff delegation
-The speaker URL only broadcasts audio and displays transaction history for the selected bank account. Counter staff cannot access the admin Dashboard or view sensitive financial settings.
+The Payment Speaker page lists running sessions. Click **Stop Session** to end one, or **Stop All** to end every session on every device.
 
 ---
 
-## Managing Sessions in Dashboard
+## Frequently asked questions
 
-- **View Active Sessions:** See all currently running sessions along with the connected bank and chosen voice.
-- **Stop a Session:** Click **Stop session** next to any bank account when a shift ends.
-- **Stop All Sessions:** Click **Stop all** to immediately close all active speaker sessions across all devices.
+### Why do I have to tap the screen when I open the link?
 
----
+Browsers block websites from playing sound before you interact with the page. Tap once when you open it and every announcement plays automatically after that.
 
-## Frequently Asked Questions (FAQ)
+### What device do I need?
 
-### Is there any recurring subscription fee for Payment Speaker?
-No. Payment Speaker is completely free and included with your ApiPay account.
-
-### Do I need to buy dedicated speaker hardware?
-No. It runs entirely in your web browser on existing phones, tablets, laptops, or Android POS terminals.
-
-### Why do I need to tap the screen once when first opening the link?
-Modern web browsers (Chrome, Safari, Edge) require a single user gesture before allowing audio playback to prevent unsolicited background noise. After the first tap, all incoming transfer announcements will play automatically.
-
-### Can I open the same speaker link on multiple devices?
-Yes. You can open the same session URL on multiple devices across your store so staff in different areas can hear payments simultaneously.
+Any device with a speaker, an internet connection and a web browser: phone, tablet, computer or Android POS terminal.
 
 ---
 
-## Next Steps
+## Next steps
 
-- [Onboarding Guide](/en/onboarding) - Step-by-step account setup
-- [Bank Accounts](/en/banking) - Connect and manage bank accounts
-- [Dashboard Guide](/en/dashboard) - Explore all Dashboard features
+- [Connect Banks](/en/connect-banks)
+- [Dashboard Guide](/en/dashboard)

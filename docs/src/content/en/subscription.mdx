@@ -3,197 +3,95 @@ title: Subscription & Billing
 description: Manage your ApiPay subscription and billing
 ---
 
-# Subscription & Billing
+# Plans & billing
 
-Learn how to manage your ApiPay subscription and pricing.
+Choose a plan, pay and renew under **Pricing** in the sidebar at [my.apipay.vn](https://my.apipay.vn).
 
 ---
 
-## Plan Overview
+## Plans
 
-ApiPay uses a **Usage Quota Billing** model. The **free plan** includes 60 successful transactions/month. Paid tiers range from 200 to 500,000 transactions/month. Every quota plan, including free, supports connecting multiple bank accounts. Choose a **billing term** of 1, 3, 6 (5% discount), or 12 months (10% discount) at checkout. Listed prices are final checkout totals with no extra taxes added.
+ApiPay charges by the number of successful transactions per month. The **free plan** includes 60 transactions per month; paid plans range from 200 to 500,000. Every plan, including free, can connect multiple banks and has every feature: webhooks, VietQR, Commerce, Payment Speaker, custom domains.
 
-<Callout type="info">
-New accounts can **activate the free plan** from [Dashboard → Settings → Subscription](https://my.apipay.vn) with no payment. See [Activating the Free Plan](#activating-the-free-plan). The table below shows representative paid tiers; the full catalog of 23 paid plans is on [apipay.vn/pricing](https://apipay.vn/pricing).
-</Callout>
+Listed prices are the amount you pay, VAT included. See every plan at [apipay.vn/pricing](https://apipay.vn/pricing).
 
 <PricingTabs locale="en" />
 
-### Term Discounts
+### Term discounts
 
-| Term      | Discount | Example (QUOTA 1200 — 348,000 VND/month) |
-| --------- | -------- | ---------------------------------------- |
-| 1 month   | 0%       | 348,000 VND                              |
-| 3 months  | 0%       | 1,044,000 VND (348,000 VND/month)        |
-| 6 months  | 5%       | 1,983,600 VND (330,600 VND/month)        |
-| 12 months | 10%      | 3,758,400 VND (313,200 VND/month)        |
+You pick a term at checkout. Before you confirm, you see the total, the discount and the monthly equivalent.
 
-The **effective monthly price** is lower for discounted 6-month and 12-month terms. You'll see the subtotal, discount, and effective monthly price before confirming payment.
+| Term | Discount | Example (1,200-transaction plan, 348,000 VND/month) |
+|------|----------|-----------------------------------------------------|
+| 1 month | 0% | 348,000 VND |
+| 3 months | 0% | 1,044,000 VND |
+| 6 months | 5% | 1,983,600 VND (330,600 VND/month) |
+| 12 months | 10% | 3,758,400 VND (313,200 VND/month) |
 
-### Extra Usage
+### Going over your quota
 
-- At 80% and 100% of included monthly quota, ApiPay sends usage notices so you can top up or upgrade before extra usage starts.
-- After 100%, successful extra transactions are deducted from your **prepaid balance** at your plan’s rate. Service is not interrupted when you exceed quota.
-- The free plan uses **380 VND** per extra transaction. Paid plans use that plan’s effective rate (plan price ÷ included tx).
-- Keep enough prepaid balance for extra usage. Failed transactions are never charged.
-
-### What's Included in Paid Plans
-
-- ✅ Generous monthly transaction quotas with competitive per-tx economics
-- ✅ Multi-bank connection support
-- ✅ Real-time payment notifications (1s refresh)
-- ✅ Payment request VietQR-compatible, auto reconciliation
-- ✅ HMAC-secured webhook integrations
-- ✅ Customer payment pages & Commerce links
-- ✅ Transaction analytics & detailed reports
-- ✅ 24/7 technical support
-
-### What's Included in the Free Plan
-
-- 60 successful transactions/month
-- Connect multiple bank accounts (same as paid quota plans)
-- Extra usage at 380 VND/transaction from prepaid balance
-- Same product features as paid plans: webhooks, VietQR, Commerce, Payment Speaker, custom domains
-- Does not expire and does not auto-renew — stay on free until you upgrade
+- ApiPay alerts you at 80% and 100% of your monthly quota.
+- Transactions over the quota are charged to your **prepaid balance** at your plan's unit price. The free plan charges 380 VND per extra transaction.
+- Keep enough balance. When it runs out, you need to top up to keep using the service.
+- Failed transactions are never charged.
 
 ---
 
-## Choosing the Right Plan
+## Activate the free plan
 
-### Factors to Consider
+1. Sign in at [my.apipay.vn](https://my.apipay.vn) and fill in your phone number and address if asked.
+2. Open **Pricing**.
+3. Click **Activate free**.
 
-1. **Average Monthly Transaction Volume** - Use the free plan to validate a small setup, then pick a paid plan that matches or slightly exceeds your typical volume to unlock lower effective unit costs (down to 150 VND/tx).
-2. **Seasonal Peaks** - Keep enough prepaid balance for spikes; extra successful transactions are deducted at your plan’s rate.
-3. **Multi-Bank Architecture** - Every quota plan, including free, supports connecting multiple banks for multi-channel sales and reconciliation.
+The plan starts right away and never expires. Each phone number gets one free plan.
 
-### Recommendations by Scale
+## Buy or upgrade a paid plan
 
-| Scale / Business Type  | Recommended Plan | Included Tx/mo |
-| ---------------------- | ---------------- | -------------- |
-| Trial / first setup    | FREE             | 60 tx          |
-| Solo entrepreneur      | QUOTA 200        | 200 tx         |
-| Growing online store   | QUOTA 1200       | 1,200 tx       |
-| Web App / SaaS         | QUOTA 5000       | 5,000 tx       |
-| Large marketplace      | QUOTA 50000      | 50,000 tx      |
-| Enterprise (> 500k tx) | Enterprise       | Contact Sales  |
+1. Open **Pricing** and choose a quota plan.
+2. Choose a term.
+3. Pay with your **balance** or by **bank transfer** using the QR code. The plan activates as soon as ApiPay receives the money.
 
-> **Pro Tip:** You can upgrade anytime directly in the Dashboard. New plans activate immediately.
+When you upgrade mid-term, choose one of two options:
 
----
+- **Continue the current cycle** (default): keep the quota you have used and pay only the difference.
+- **Start a fresh cycle**: pay the full price of the new plan and the quota resets to 0. The unused value of your old plan is added to your balance.
 
-## Activating the Free Plan
+During a running term you can only move to a higher plan. To downgrade, wait until the term ends.
 
-1. Log in to [my.apipay.vn](https://my.apipay.vn)
-2. Complete your profile (phone number and address) if prompted
-3. Go to **Settings → Subscription**
-4. Click **Activate free** on the FREE plan
+## Top up your balance
 
-The free plan activates immediately. No bank transfer is required.
-
-> **Note:** Each phone number can activate the free plan on one account. An account cannot switch to free while a paid term is still active. After that term ends and the renewal is unpaid, the account can activate free. Free overage stays 380 VND per transaction and does not keep the paid plan's included quota or lower rate.
-
-## Purchasing a Paid Plan
-
-### Via Dashboard
-
-1. Log in to [my.apipay.vn](https://my.apipay.vn)
-2. Go to **Settings → Subscription**
-3. Browse available quota plans (or open the full list at [apipay.vn/pricing](https://apipay.vn/pricing))
-4. Click **Select Plan** on your choice
-5. Choose a billing term and complete payment
-
-### Payment Methods
-
-Currently, you can purchase plans via:
-
-- **Bank transfer** - Use the generated payment request and invoice to transfer to ApiPay
-
-After payment is confirmed, your plan activates immediately.
+In the **Balance** card, click **Top up**, choose an amount and pay by QR transfer. The balance updates automatically. Click **View balance history** to see every credit and debit.
 
 ---
 
-## Managing Your Subscription
+## Renewal
 
-### Viewing Current Plan
+- 3 days before your plan expires, ApiPay issues a renewal invoice for your last term, keeping its discount. You can change the term before paying.
+- Turn on **Auto-renew from balance** to have ApiPay pay renewal invoices from your balance. The balance must cover the whole invoice.
+- After the expiry date you get a 3-day grace period to pay. After that, the unpaid invoice is cancelled and the service is restricted.
 
-1. Navigate to **Settings → Subscription**
-2. Your current plan details are displayed at the top:
-   - Plan name
-   - Included monthly quota and usage
-   - Prepaid balance
-   - Price and renewal date (paid plans)
+All invoices are under **Invoices** in the sidebar.
 
-### Upgrading Your Plan
+## Cancel your plan
 
-1. Go to **Settings → Subscription**
-2. Select a higher quota plan
-3. Choose how to apply the change:
-   - **Continue the current cycle** — keep your used quota, pay only the difference (default)
-   - **Start a fresh cycle** — pay the **full** new-plan price, your quota restarts at 0, and the unused value of your old plan is credited to prepaid balance
-4. Complete payment
-5. Changes take effect immediately
-6. The selected term becomes your default renewal term
+In **Pricing**, open **Cancel subscription** and choose:
 
-While a paid quota plan is active, you can only move to a **higher** quota. Same-size switches and downgrades are blocked until the current cycle ends.
+- **Cancel at period end**: keep using the plan until the paid term ends, then it does not renew.
+- **Cancel now**: the plan ends immediately and unused value is not refunded.
 
-### Cancelling Your Plan
+Cancelling does not affect your connected banks.
 
-1. Go to **Settings → Subscription → Cancel subscription**
-2. Choose an option:
-   - **Cancel at period end** — keep access until the end of the period you paid for, then auto-renewal stops
-   - **Cancel now** — access ends immediately and the unused value is credited to your prepaid balance
-3. Confirm
+## Refunds
 
-Cancelling **never affects your bank connections**. Refunds are always **prepaid balance credit, never cash**, and cover only the **unused** portion of what you actually paid — consumed quota and overage fees are not refunded.
-
-### Switching from a Legacy Plan
-
-If you are still on an older bank-slot plan (BASIC, STARTER, PRO, TEAM, and similar), you can keep it until the current term expires. Those plans **do not auto-renew**. You can switch to a transaction quota plan now: unused value is applied to the quota you pick, and leftover credit is added to prepaid balance.
+ApiPay does not refund cash. Unused value goes to your balance only when you choose **Start a fresh cycle** while upgrading. Balance cannot be withdrawn as cash.
 
 ---
 
-## Billing Cycle
+## Need help?
 
-- **Flexible terms** — Choose 1, 3, 6, or 12 months at checkout
-- **Term discounts** — 6 months saves 5%, and 12 months saves 10%
-- **Effective monthly price** — Shown at checkout so you can compare the real cost per month
-- **Invoices** — All invoices are available in **Settings → Invoices**, each showing the billing term
-- **No cash refunds** — No cash refunds are provided for used or partial billing periods. When you cancel, the unused value of what you paid is credited to your prepaid balance (it cannot be withdrawn as cash).
+Email support@apipay.vn or click **Meet Appi** in the dashboard.
 
-### Renewal Process
+## Next steps
 
-1. ApiPay creates a renewal invoice 5 days before expiry using your last paid term (so you keep your discount)
-2. You can pay the draft invoice or switch to another term before payment
-3. Your plan extends after ApiPay confirms the bank transfer
-4. After the grace period, unpaid renewal invoices are cancelled and access may be restricted
-
----
-
-## Tips for Managing Costs
-
-### Optimize Your Plan
-
-1. **Start free** - Validate your bank connection and integration before scaling up
-2. **Track usage** - Monitor transaction usage and prepaid balance in the dashboard
-3. **Upgrade strategically** - Upgrade before predictable volume exceeds the free or current paid quota
-
-### Avoid Unexpected Charges
-
-1. **Keep prepaid balance funded** - Extra usage is deducted from balance as it happens
-2. **Remove unused banks** - If a bank account is inactive, consider removing it
-3. **Review invoices and balance history** - Check monthly invoices and credit-balance entries for accuracy
-
----
-
-## Need Help?
-
-- 📧 Email: support@apipay.vn
-- 💬 In-app chat (dashboard)
-- 📖 [API Documentation](/en/api/payment-requests)
-
----
-
-## Next Steps
-
-- [Onboarding Guide](/en/onboarding) - Get started from scratch
-- [Bank Account Management](/en/banking) - Connect and manage banks
+- [Getting Started](/en/onboarding)
+- [Bank Management](/en/banking)

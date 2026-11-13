@@ -5,7 +5,7 @@ description: Liên kết tài khoản ngân hàng Việt Nam để bắt đầu 
 
 # Cách kết nối ngân hàng
 
-Liên kết tài khoản ngân hàng Việt Nam vào ApiPay để nhận thanh toán chuyển khoản. Sau khi kết nối, ApiPay sẽ đồng bộ giao dịch và gửi webhook khi có tiền vào hoặc tiền ra.
+Kết nối tài khoản ngân hàng để ApiPay nhận diện tiền vào và báo cho bạn ngay khi khách chuyển khoản.
 
 <iframe
   width="100%"
@@ -17,358 +17,86 @@ Liên kết tài khoản ngân hàng Việt Nam vào ApiPay để nhận thanh t
   referrerpolicy="strict-origin-when-cross-origin"
   allowfullscreen
 ></iframe>
-
----
-
-## Tổng quan
-
-Việc kết nối ngân hàng trên ApiPay có 2 bước chính:
-
-1. **Chọn ngân hàng** và loại tài khoản (Cá nhân hoặc Doanh nghiệp)
-2. **Nhập thông tin tài khoản** và xác minh quyền sở hữu qua OTP
-
-Sau khi kết nối thành công, tài khoản sẽ xuất hiện trong phần **Ngân hàng** với trạng thái **Hoạt động**. Bạn có thể tạo yêu cầu thanh toán và nhận chuyển khoản sau ~1-2 giây.
-
-**Danh sách ngân hàng được hỗ trợ:**
-
-| Ngân hàng            | Cá nhân | Doanh nghiệp | Hộ kinh doanh | Tính năng                     |
-| -------------------- | :-----: | :----------: | :-----------: | ----------------------------- |
-| **ACB**              |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào, Tài khoản ngân hàng |
-| **MB Bank**          |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào, Tài khoản ảo (VA) |
-| **BIDV**             |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào, Tài khoản ảo (VA) |
-| **OCB**              |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào, Tài khoản ảo (VA) |
-| **VietinBank**      |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào, Tài khoản ngân hàng |
-| **VIB**              |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào, Tài khoản ảo (VA) |
-| **Sacombank**        |   Có    |    Không     |      Có       | OpenBanking, Đồng bộ tiền vào, Tài khoản ảo (VA) |
-| **VPBank**           |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào, Tài khoản ảo (VA) |
-| **PGBank**           |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào, Tài khoản ngân hàng |
-| **Shinhan Bank**     |   Có    |      Có      |    Không      | OpenBanking, Đồng bộ tiền vào, Tài khoản ảo (VA) |
-| **Co-opBank**        |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào, Tài khoản ảo (VA) |
-| **Vietcombank**      |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào, Tài khoản ảo (VA) cho Cá nhân |
-| **MSB**              |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào, Tài khoản ngân hàng |
-| **TPBank**           |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào, Tài khoản ngân hàng |
 
 ---
 
 ## Trước khi bắt đầu
 
-Bạn cần chuẩn bị:
-
-- Tài khoản ApiPay với **gói đang hoạt động** (miễn phí hoặc trả phí). Mọi gói hạn mức đều hỗ trợ kết nối nhiều ngân hàng.
-- Tài khoản ngân hàng Việt Nam đang hoạt động thuộc danh sách hỗ trợ bên trên
-- Số điện thoại đã đăng ký với ngân hàng (để xác minh OTP)
-- Đối với **MB Bank**, **VIB**, **Sacombank**, **VPBank**, **PGBank**, **Shinhan Bank** Cá nhân, và **MB Bank** hoặc **VPBank** Hộ kinh doanh: Số CCCD (12 chữ số)
-- Đối với tài khoản Doanh nghiệp hoặc Hộ kinh doanh: Mã số thuế (MST) / CCCD của công ty/hộ kinh doanh
-- Đối với **ACB Doanh nghiệp**: Tên đăng nhập ACB OneBiz
-- **Vietcombank**: Cá nhân xác thực trên ứng dụng và được cấp tài khoản ảo (VA); Doanh nghiệp và Hộ kinh doanh cần kích hoạt thủ công và dùng số tài khoản gốc
-- **MSB**: Cá nhân, Doanh nghiệp và Hộ kinh doanh đều kích hoạt thủ công. Doanh nghiệp cần bật MSB Merchant tại chi nhánh. Không chỉnh sửa mã giới thiệu.
-- **TPBank**: Cá nhân, Doanh nghiệp và Hộ kinh doanh xác thực trên ứng dụng ngân hàng. Tài khoản ảo hiển thị dưới dạng tài khoản phụ của tài khoản gốc.
-- **OCB** Doanh nghiệp, **VPBank**/**BIDV**/**VietinBank**/**Shinhan Bank** Doanh nghiệp, **Vietcombank** Doanh nghiệp/Hộ kinh doanh, và mọi loại tài khoản **MSB**: kích hoạt thủ công
-- **ACB** Doanh nghiệp/Hộ kinh doanh, **MB Bank** (mọi loại), **VIB** (mọi loại), **PGBank**, **Co-opBank**, và Hộ kinh doanh của **BIDV**, **VietinBank**, **Sacombank**, **OCB**: trực tuyến, không cần kích hoạt. **ACB** Doanh nghiệp/Hộ kinh doanh liên kết số tài khoản gốc.
+- Tài khoản ApiPay có gói đang hoạt động (miễn phí hoặc trả phí).
+- Số điện thoại bạn đã đăng ký với ngân hàng.
+- Giấy tờ theo loại tài khoản:
+  - **Cá nhân**: số CCCD 12 chữ số.
+  - **Doanh nghiệp** và **hộ kinh doanh**: mã số thuế. Riêng hộ kinh doanh MB Bank và VPBank nhập CCCD của chủ hộ.
+  - **ACB**: không cần CCCD hay mã số thuế. Tài khoản doanh nghiệp và hộ kinh doanh cần thêm Username ACB Onebiz.
 
 ---
 
-## Hướng dẫn từng bước
-
-### Bước 1: Chọn ngân hàng
-
-1. Đăng nhập vào [ApiPay Dashboard](https://dashboard.apipay.vn)
-2. Chọn **Ngân hàng** trên thanh bên
-3. Nhấn nút **Thêm ngân hàng** ở góc trên bên phải
-4. Trên trang **Liên kết tài khoản ngân hàng**, bạn sẽ thấy danh sách các ngân hàng được hỗ trợ
-5. Tìm ngân hàng của bạn trong bảng:
-   - Xem nhãn **Khuyến nghị** để biết các lựa chọn ưu tiên
-   - Xem **Loại tài khoản** để biết ngân hàng hỗ trợ Cá nhân, Doanh nghiệp hay cả hai
-   - Xem **Tính năng** để biết ngân hàng hỗ trợ những gì
-6. Nhấn **Kết nối** trên ngân hàng bạn chọn
-
-### Bước 2: Chọn loại tài khoản
-
-Hầu hết các ngân hàng hỗ trợ ba loại tài khoản. Chọn loại phù hợp:
-
-- **Cá nhân** — tài khoản ngân hàng cá nhân
-- **Doanh nghiệp** — tài khoản công ty
-- **Hộ kinh doanh** — tài khoản hộ kinh doanh
-
-Hỗ trợ theo từng ngân hàng:
-
-- **ACB**, **MB Bank**, **BIDV**, **OCB**, **VietinBank**, **VIB**, **VPBank**, **PGBank**, **Co-opBank**, **MSB**, **TPBank**, **Vietcombank** — Cá nhân, Doanh nghiệp, Hộ kinh doanh
-- **Shinhan Bank** — Cá nhân, Doanh nghiệp (không hỗ trợ Hộ kinh doanh)
-- **Sacombank** — Cá nhân, Hộ kinh doanh (chưa hỗ trợ Doanh nghiệp)
-
-> **Lưu ý VietinBank:** Giao dịch từ VietinBank sẽ không có nội dung. Liên hệ hỗ trợ để biết thêm chi tiết.
-
-> **Kích hoạt thủ công.** OCB Doanh nghiệp, VPBank/BIDV/VietinBank/Shinhan Doanh nghiệp, Vietcombank Doanh nghiệp/Hộ kinh doanh, và mọi loại tài khoản MSB dùng yêu cầu kích hoạt. Trạng thái là **Yêu cầu kích hoạt**. ACB, MB (mọi loại), VIB (mọi loại), PGBank, Co-opBank, TPBank, và Hộ kinh doanh của BIDV, VietinBank, Sacombank, OCB đều trực tuyến hoặc xác thực trên ứng dụng ngân hàng.
-
-Nhấn vào thẻ phù hợp với loại tài khoản của bạn để tiếp tục.
-
-### Bước 3: Nhập thông tin tài khoản
-
-Điền các trường bắt buộc. Mỗi ngân hàng có thể yêu cầu thông tin khác nhau.
-
-#### Trường chung cho tất cả ngân hàng
-
-| Trường            | Mô tả                                    |
-| ----------------- | ---------------------------------------- |
-| **Chủ tài khoản** | Tên chủ tài khoản, viết IN HOA không dấu |
-| **Số tài khoản**  | Số tài khoản ngân hàng của bạn           |
-| **Số điện thoại** | Số điện thoại đã đăng ký với ngân hàng   |
-| **Tên gợi nhớ**   | Tên gợi nhớ tùy chọn cho tài khoản này trong dashboard (tối đa 50 ký tự) |
-
-#### ACB — Tài khoản cá nhân
-
-Không cần thêm trường nào ngoài các trường chung bên trên.
-
-#### ACB — Doanh nghiệp / Hộ kinh doanh
-
-| Trường bổ sung               | Mô tả                            |
-| ---------------------------- | -------------------------------- |
-| **Tên đăng nhập ACB OneBiz** | Tên đăng nhập ACB OneBiz của bạn |
-
-> **Lưu ý:** ACB Doanh nghiệp và Hộ kinh doanh liên kết số tài khoản gốc và chạy online. ApiPay không cấp số tài khoản ảo riêng.
-
-#### MB Bank — Cá nhân / Hộ kinh doanh
-
-| Trường bổ sung | Mô tả                                         |
-| -------------- | --------------------------------------------- |
-| **CCCD**       | Số CCCD 12 chữ số của bạn (Căn cước công dân) |
-
-> **Lưu ý:** Tài khoản MB Bank Cá nhân, Doanh nghiệp và Hộ kinh doanh đều trực tuyến, không cần kích hoạt thủ công. Hộ kinh doanh được gửi sang ngân hàng như tài khoản cá nhân.
-
-#### MB Bank — Tài khoản doanh nghiệp
-
-| Trường bổ sung       | Mô tả                      |
-| -------------------- | -------------------------- |
-| **Mã số thuế (MST)** | Mã số thuế của công ty bạn |
-
-#### BIDV — Tài khoản cá nhân
-
-| Trường bổ sung      | Mô tả                             |
-| ------------------- | --------------------------------- |
-| **CCCD**            | Số CCCD 12 chữ số                 |
-| **Email tài khoản** | Địa chỉ email đã đăng ký với BIDV |
-
-#### OCB — Tài khoản cá nhân
-
-Không cần thêm trường nào ngoài các trường chung bên trên.
-
-#### VIB — Tài khoản cá nhân
-
-| Trường bổ sung | Mô tả             |
-| -------------- | ----------------- |
-| **CCCD**       | Số CCCD 12 chữ số |
-
-#### Sacombank (STB) — Tài khoản cá nhân
-
-| Trường bổ sung | Mô tả             |
-| -------------- | ----------------- |
-| **CCCD**       | Số CCCD 12 chữ số |
-
-#### Sacombank (STB) — Hộ kinh doanh
-
-| Trường bổ sung       | Mô tả                        |
-| -------------------- | ---------------------------- |
-| **Mã số thuế (MST)** | Mã số thuế của hộ kinh doanh |
-
-> **Lưu ý Sacombank:** Sacombank hiện chưa hỗ trợ tài khoản Doanh nghiệp. Cá nhân và Hộ kinh doanh kết nối trực tuyến.
-
-#### VPBank — Cá nhân / Hộ kinh doanh
-
-| Trường bổ sung | Mô tả             |
-| -------------- | ----------------- |
-| **CCCD**       | Số CCCD 12 chữ số |
-
-> **Lưu ý:** Tài khoản VPBank Cá nhân và Hộ kinh doanh đều trực tuyến, không cần kích hoạt thủ công.
-
-#### VPBank — Doanh nghiệp
-
-| Trường bổ sung       | Mô tả                  |
-| -------------------- | ---------------------- |
-| **Mã số thuế (MST)** | Mã số thuế của công ty |
-
-> **Kích hoạt thủ công:** VPBank Doanh nghiệp dùng yêu cầu kích hoạt.
-
-#### PGBank — Tài khoản cá nhân
-
-| Trường bổ sung | Mô tả             |
-| -------------- | ----------------- |
-| **CCCD**       | Số CCCD 12 chữ số |
-
-#### PGBank — Doanh nghiệp / Hộ kinh doanh
-
-| Trường bổ sung       | Mô tả                                     |
-| -------------------- | ----------------------------------------- |
-| **Mã số thuế (MST)** | Mã số thuế của công ty hoặc hộ kinh doanh |
-
-> **Lưu ý:** Tất cả loại tài khoản PGBank (Cá nhân, Doanh nghiệp, Hộ kinh doanh) đều trực tuyến, không cần kích hoạt thủ công.
-
-#### OCB — Hộ kinh doanh
-
-| Trường bổ sung       | Mô tả                        |
-| -------------------- | ---------------------------- |
-| **Mã số thuế (MST)** | Mã số thuế của hộ kinh doanh |
-
-> **Lưu ý:** OCB Hộ kinh doanh kết nối trực tuyến, không cần kích hoạt thủ công.
-
-#### OCB — Doanh nghiệp
-
-| Trường bổ sung       | Mô tả                  |
-| -------------------- | ---------------------- |
-| **Mã số thuế (MST)** | Mã số thuế của công ty |
-
-> **Kích hoạt thủ công:** OCB Doanh nghiệp dùng yêu cầu kích hoạt.
-
-#### VIB — Doanh nghiệp / Hộ kinh doanh
-
-| Trường bổ sung       | Mô tả                                     |
-| -------------------- | ----------------------------------------- |
-| **Mã số thuế (MST)** | Mã số thuế của công ty hoặc hộ kinh doanh |
-
-> **Lưu ý:** VIB Doanh nghiệp và Hộ kinh doanh kết nối trực tuyến bằng OTP, không cần kích hoạt thủ công.
-
-#### BIDV / VietinBank / Shinhan Bank — Doanh nghiệp
-
-| Trường bổ sung       | Mô tả                  |
-| -------------------- | ---------------------- |
-| **Mã số thuế (MST)** | Mã số thuế của công ty |
-
-> **Kích hoạt thủ công:** BIDV, VietinBank và Shinhan Bank Doanh nghiệp dùng yêu cầu kích hoạt.
->
-> **Lưu ý VietinBank:** Giao dịch từ VietinBank sẽ không có nội dung. Liên hệ hỗ trợ để biết thêm chi tiết.
-
-#### Vietcombank
-
-| Trường bổ sung       | Mô tả                                                    |
-| -------------------- | -------------------------------------------------------- |
-| **Mã số thuế / CCCD**| Mã số thuế của doanh nghiệp hoặc CCCD chủ hộ kinh doanh   |
-
-Tài khoản cá nhân liên kết bằng cách xác thực trên ứng dụng Vietcombank và được cấp số tài khoản ảo (VA). Tài khoản Doanh nghiệp và Hộ kinh doanh gửi yêu cầu kích hoạt thủ công và dùng số tài khoản gốc; ApiPay sẽ xác minh và kích hoạt sau khi thiết lập hợp đồng API.
-
-#### MSB — Cá nhân, Doanh nghiệp hoặc Hộ kinh doanh
-
-| Trường bổ sung       | Mô tả                                                    |
-| -------------------- | -------------------------------------------------------- |
-| **CCCD / mã số thuế**| CCCD với tài khoản cá nhân, mã số thuế với doanh nghiệp hoặc hộ kinh doanh |
-
-> **Kích hoạt thủ công:** Mọi tài khoản MSB đều qua luồng kích hoạt thủ công. Doanh nghiệp cần bật MSB Merchant tại chi nhánh trước. Không chỉnh sửa mã giới thiệu. Mỗi tài khoản chỉ liên kết một lần. ApiPay kích hoạt trong vòng 24 giờ.
-
-#### TPBank — Cá nhân, Doanh nghiệp hoặc Hộ kinh doanh
-
-| Trường bổ sung       | Mô tả                                                    |
-| -------------------- | -------------------------------------------------------- |
-| **CCCD / mã số thuế**| CCCD với tài khoản cá nhân, mã số thuế với doanh nghiệp hoặc hộ kinh doanh |
-
-> **Xác thực trên ứng dụng:** Mọi tài khoản TPBank đều được duyệt trên ứng dụng TPBank. Tài khoản ảo hiển thị dưới dạng tài khoản phụ của tài khoản gốc.
-
-Sau khi điền đầy đủ các trường:
-
-1. Đọc nội dung đồng ý về chính sách bảo mật và điều khoản sử dụng
-2. Tích chọn **Tôi đồng ý**
-3. Nhấn **Xác nhận** để tiếp tục
-
-Một cửa sổ xác nhận sẽ xuất hiện — kiểm tra lại thông tin và nhấn **Xác nhận** lần nữa.
-
-### Bước 4: Xác Minh qua OTP (Luồng trực tuyến)
-
-Với các kết nối trực tuyến, ngân hàng sẽ gửi **OTP (Mật khẩu dùng một lần)** đến số điện thoại đã đăng ký.
-
-1. Nhập mã OTP 6 chữ số vào ô nhập
-2. Nhấn **Xác nhận**
-3. Sau khi xác minh thành công, tài khoản ngân hàng sẽ được liên kết
-
-Nếu mã OTP không đúng, bạn sẽ thấy thông báo lỗi. Hãy nhập lại mã đúng và thử lại.
-
-> **Tài khoản kích hoạt thủ công bỏ qua OTP.** Luồng thủ công hiển thị **Yêu cầu kích hoạt** thay vì OTP.
+## Ngân hàng được hỗ trợ
+
+- **Tự động**: xác nhận bằng OTP ngân hàng gửi về điện thoại, dùng được ngay.
+- **Xác nhận trên app**: bạn duyệt liên kết trong app ngân hàng.
+- **Cần gửi yêu cầu kích hoạt**: bạn gửi thông tin, ApiPay sẽ liên hệ để kích hoạt, thường trong vòng 24 giờ.
+
+| Ngân hàng | Cá nhân | Doanh nghiệp | Hộ kinh doanh | Lưu ý |
+|-----------|---------|--------------|---------------|-------|
+| ACB | Tự động | Tự động | Tự động | |
+| BIDV | Tự động | Cần gửi yêu cầu kích hoạt | Tự động | |
+| Co-opBank | Tự động | Tự động | Tự động | |
+| MB Bank | Tự động | Tự động | Tự động | |
+| MSB | Cần gửi yêu cầu kích hoạt | Cần gửi yêu cầu kích hoạt | Cần gửi yêu cầu kích hoạt | Doanh nghiệp cần bật dịch vụ MSB Merchant tại chi nhánh trước |
+| OCB | Tự động | Cần gửi yêu cầu kích hoạt | Tự động | |
+| PGBank | Tự động | Tự động | Tự động | |
+| Sacombank | Tự động | Chưa hỗ trợ | Tự động | |
+| TPBank | Xác nhận trên app | Xác nhận trên app | Xác nhận trên app | |
+| VIB | Tự động | Tự động | Tự động | Cần bật **Nhận loa** trong app VIB Business trước khi liên kết |
+| Vietcombank | Xác nhận trên app | Cần gửi yêu cầu kích hoạt | Cần gửi yêu cầu kích hoạt | |
+| VietinBank | Tự động | Cần gửi yêu cầu kích hoạt | Tự động | Xem lưu ý bên dưới |
+| VPBank | Tự động | Cần gửi yêu cầu kích hoạt | Tự động | |
+| Shinhan Bank | Đang bảo trì | Đang bảo trì | Chưa hỗ trợ | Tạm thời chưa nhận liên kết mới |
+
+HDBank và Agribank sắp ra mắt.
+
+> **VietinBank:** Giao dịch chuyển vào tài khoản VietinBank không kèm nội dung, nên không đối soát được theo nội dung chuyển khoản.
+
+Với một số ngân hàng, ApiPay cấp cho bạn một số tài khoản ảo (VA) sau khi kết nối. Form kết nối sẽ báo trước nếu ngân hàng bạn chọn dùng tài khoản ảo. Khi đó khách cần chuyển vào đúng số tài khoản ảo này.
 
 ---
 
-## Sau khi liên kết
+## Các bước kết nối
 
-Sau khi liên kết ngân hàng thành công:
+1. Đăng nhập [my.apipay.vn](https://my.apipay.vn), mở **Ngân hàng** trên thanh bên và nhấn **Thêm ngân hàng**.
+2. Chọn ngân hàng và nhấn **Kết nối**.
+3. Chọn loại tài khoản: **Cá nhân**, **Doanh nghiệp** hoặc **Hộ kinh doanh**. Mỗi loại có nhãn **Tự động** hoặc **Cần chờ duyệt**.
+4. Điền thông tin:
+   - Tên chủ tài khoản (hoặc tên công ty), viết hoa không dấu
+   - Số tài khoản
+   - Số điện thoại đã đăng ký với ngân hàng
+   - CCCD, mã số thuế hoặc Username ACB Onebiz, tùy ngân hàng và loại tài khoản
+   - Tên gợi nhớ (tùy chọn, chỉ bạn thấy trong dashboard)
+5. Tích **Tôi đã đọc và đồng ý với các điều khoản trên**, rồi nhấn **Xác nhận** (hoặc **Gửi yêu cầu** nếu cần kích hoạt).
+6. Hoàn tất theo hướng dẫn trên màn hình:
+   - **Tự động**: nhập mã OTP ngân hàng gửi về điện thoại.
+   - **Xác nhận trên app**: mở app ngân hàng để duyệt. Với Vietcombank, bạn có thể quét mã QR hiện trên màn hình.
+   - **Cần gửi yêu cầu kích hoạt**: không cần OTP. Ngân hàng hiện ở trạng thái **Đang chờ** cho đến khi ApiPay kích hoạt.
 
-- Tài khoản ngân hàng xuất hiện trong danh sách **Ngân hàng** với trạng thái **Hoạt động**
-- Bạn có thể xem lịch sử giao dịch được lọc theo ngân hàng đó
-- Bạn có thể bật/tắt ngân hàng bằng công tắc trạng thái
-- Bạn có thể đổi tên tài khoản bằng tên gợi nhớ để dễ nhận biết
-- ApiPay tự động đăng ký webhook để nhận thông báo giao dịch
-
----
-
-## Quản lý ngân hàng đã kết nối
-
-### Xem chi tiết ngân hàng
-
-1. Vào mục **Ngân hàng** trên thanh bên
-2. Nhấn vào một dòng ngân hàng để xem chi tiết:
-   - Tên chủ tài khoản
-   - Số tài khoản (một phần bị ẩn)
-   - Tên và logo ngân hàng
-   - Trạng thái (Hoạt động / Không hoạt động)
-   - Lịch sử giao dịch
-
-### Đổi tên gợi nhớ ngân hàng
-
-Đặt tên gợi nhớ cho tài khoản ngân hàng để dễ nhận biết trong danh sách:
-
-1. Vào mục **Ngân hàng**
-2. Nhấn vào menu **...** (thêm) ở phía bên phải của dòng ngân hàng
-3. Chọn **Đổi tên gợi nhớ**
-4. Nhập tên (tối đa 50 ký tự) và lưu. Để trống để xóa tên
-
-Tên gợi nhớ chỉ hiển thị trong dashboard của bạn; khách hàng không bao giờ thấy.
-
-### Bật/tắt trạng thái ngân hàng
-
-Nếu muốn tạm ngừng nhận thanh toán qua một ngân hàng:
-
-1. Vào mục **Ngân hàng**
-2. Tìm ngân hàng bạn muốn thay đổi
-3. Nhấn **công tắc** trong cột Thao tác
-4. Trạng thái thay đổi giữa **Hoạt động** và **Không hoạt động**
-
-### Xóa ngân hàng đã kết nối
-
-1. Vào mục **Ngân hàng**
-2. Nhấn vào menu **...** (thêm) ở phía bên phải của dòng ngân hàng
-3. Chọn **Xóa ngân hàng**
-4. Xác nhận bằng OTP (gửi đến số điện thoại đã đăng ký)
-5. Ngân hàng sẽ được xóa khỏi tài khoản
+Khi kết nối xong, tài khoản xuất hiện trong mục **Ngân hàng** với trạng thái **Hoạt động**. Bạn có thể bắt đầu tạo yêu cầu thanh toán. Để đổi tên gợi nhớ, tạm tắt hoặc xóa ngân hàng, xem [Quản lý ngân hàng](/vi/banking).
 
 ---
 
 ## Xử lý sự cố
 
-| Sự cố                                    | Giải pháp                                                                                                                                            |
-| ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Không nhận được OTP                      | Kiểm tra số điện thoại đã nhập có khớp với số đăng ký ở ngân hàng không. Chờ một chút rồi thử lại.                                                   |
-| Mã OTP không đúng                        | Kiểm tra kỹ mã bạn nhập, gồm 6 chữ số.                                                                                                               |
-| CCCD bị từ chối                          | Hãy nhập đúng 12 chữ số, không có khoảng trắng hay ký tự đặc biệt.                                                                                   |
-| Ngân hàng hiển thị trạng thái "Đang chờ" | Sau khi liên kết, ngân hàng thường chuyển sang Hoạt động trong vài giây. Nếu vẫn Đang chờ, hãy tải lại trang.                                        |
-| Ngân hàng hiển thị "Yêu cầu kích hoạt"   | Đây là trạng thái bình thường cho luồng thủ công (OCB Doanh nghiệp, VPBank/BIDV/VietinBank/Shinhan Doanh nghiệp, Vietcombank Doanh nghiệp/Hộ kinh doanh, mọi loại tài khoản MSB). ApiPay sẽ liên hệ kích hoạt. |
-| Số tài khoản đã được liên kết            | Mỗi tài khoản ngân hàng chỉ có thể liên kết một lần. Nếu thấy lỗi này, tài khoản có thể đã được liên kết với tài khoản ApiPay khác.                  |
-| Loại tài khoản không khả dụng            | Sacombank không hỗ trợ Doanh nghiệp.                                                                                                                   |
-
----
-
-## Video hướng dẫn
-
-Xem video hướng dẫn từng bước:
-
-<iframe
-  width="100%"
-  height="315"
-  src="https://www.youtube.com/embed/hstBeBMvwUM?si=LhJBZAJZheZORspg"
-  title="Hướng dẫn kết nối ngân hàng trên ApiPay"
-  frameborder="0"
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-  referrerpolicy="strict-origin-when-cross-origin"
-  allowfullscreen
-></iframe>
+| Sự cố | Cách xử lý |
+|-------|-----------|
+| Không nhận được OTP | Kiểm tra số điện thoại có đúng số đã đăng ký với ngân hàng không, chờ một chút rồi thử lại. |
+| CCCD bị từ chối | Nhập đúng 12 chữ số, không có khoảng trắng hay ký tự đặc biệt. |
+| VIB báo chưa đăng ký nhận loa | Mở app VIB Business, chọn **Nhận loa**, rồi quay lại ApiPay liên kết. |
+| Đã kết nối nhưng ngân hàng chưa hoạt động | Đừng thêm lại ngân hàng. Gửi yêu cầu hỗ trợ qua **Liên hệ → Yêu cầu hỗ trợ**. |
+| Số tài khoản đã được liên kết | Mỗi tài khoản ngân hàng chỉ liên kết được một lần. Có thể tài khoản này đã gắn với một tài khoản ApiPay khác. |
 
 ---
 
 ## Bước tiếp theo
 
-- [Tạo payment request đầu tiên](/vi/onboarding) — Bắt đầu nhận thanh toán với ngân hàng đã kết nối
-- [Thiết lập webhook](/vi/api/webhooks) — Nhận thông báo khi có thanh toán
-- [Tên miền riêng](/vi/custom-domains) — Dùng tên miền của bạn cho trang thanh toán
+- [Tạo yêu cầu thanh toán đầu tiên](/vi/onboarding)
+- [Thiết lập webhook](/vi/api/webhooks)
+- [Tên miền riêng](/vi/custom-domains)

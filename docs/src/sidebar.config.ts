@@ -9,9 +9,9 @@ export interface SidebarItem {
 
 export const viSidebarConfig: SidebarItem[] = [
   {label: 'Giới thiệu', href: '/vi'},
-  {label: 'Quick Start', href: '/vi/quickstart'},
+  {label: 'Bắt đầu nhanh', href: '/vi/quickstart'},
   {label: 'Hướng dẫn bắt đầu', href: '/vi/onboarding'},
-  {label: 'Đăng ký & Thanh toán', href: '/vi/subscription'},
+  {label: 'Gói dịch vụ & thanh toán', href: '/vi/subscription'},
   {label: 'Quản lý ngân hàng', href: '/vi/banking'},
   {label: 'Sandbox & Live Test', href: '/vi/sandbox'},
   {

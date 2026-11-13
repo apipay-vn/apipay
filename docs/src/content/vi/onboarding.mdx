@@ -5,154 +5,74 @@ description: Thiết lập ApiPay và nhận thanh toán đầu tiên
 
 # Hướng dẫn bắt đầu
 
-Chào mừng bạn đến với ApiPay. Trang này đưa bạn đi từ bước tạo tài khoản đến lúc nhận thanh toán đầu tiên.
+ApiPay giúp bạn nhận chuyển khoản ngân hàng và biết ngay khi có tiền vào. Bạn kết nối ngân hàng, tạo yêu cầu thanh toán và nhận thông báo qua webhook. Giá minh bạch, xem tại [apipay.vn/pricing](https://apipay.vn/pricing).
 
-## Vì sao chọn ApiPay?
+Năm bước để nhận thanh toán đầu tiên:
 
-ApiPay giúp doanh nghiệp Việt Nam nhận chuyển khoản ngân hàng qua API. Không cần quy trình phức tạp, không phí ẩn theo từng giao dịch. Bạn chỉ cần kết nối ngân hàng, tạo payment request và nhận webhook khi có tiền vào.
-
-## Bạn sẽ làm gì?
-
-Dưới đây là các bước chính:
-
-1. **Đăng ký** - Tạo tài khoản ApiPay
-2. **Chọn gói dịch vụ** - Kích hoạt gói miễn phí hoặc chọn gói hạn mức trả phí
-3. **Kết nối ngân hàng** - Liên kết tài khoản ngân hàng Việt Nam
-4. **Thiết lập tích hợp** - Tạo API keys và webhook
-5. **Nhận thanh toán đầu tiên** - Tạo payment request đầu tiên
+1. Tạo tài khoản
+2. Kích hoạt gói dịch vụ
+3. Kết nối ngân hàng
+4. Tạo khóa API và webhook
+5. Tạo yêu cầu thanh toán đầu tiên
 
 ---
 
-## Bước 1: Đăng ký
+## Bước 1: Tạo tài khoản
 
-Truy cập [my.apipay.vn](https://my.apipay.vn) và nhấn **Đăng ký**.
+Truy cập [my.apipay.vn](https://my.apipay.vn) và nhấn **Đăng ký**. Bạn có thể đăng ký bằng email và mật khẩu, hoặc bằng tài khoản Google hay GitHub.
 
-Bạn có thể đăng ký bằng:
-
-- **Email & Mật khẩu** - Cách đăng ký quen thuộc
-- **Magic Link** - Đăng nhập qua email, không cần nhập mật khẩu
-
-### Mẹo khi đăng ký
-
-- Dùng **email doanh nghiệp** nếu có. Khách hàng sẽ tin tưởng hơn.
-- Chọn **mật khẩu mạnh** và bật 2FA sau khi đăng ký.
-- Điền sớm thông tin **doanh nghiệp**. Đây là thông tin khách thấy trên trang thanh toán.
+Sau khi đăng ký, nên bật xác thực hai lớp (2FA) hoặc thêm [passkey](/vi/passkeys) để bảo vệ tài khoản.
 
 ---
 
-## Bước 2: Chọn gói dịch vụ
+## Bước 2: Kích hoạt gói dịch vụ
 
-ApiPay có **gói miễn phí** để bắt đầu và các gói hạn mức trả phí theo khối lượng giao dịch thành công mỗi tháng.
-
-<Callout type="info">
-  Kích hoạt **FREE** tại **Cài đặt → Đăng ký** sau khi điền hồ sơ (số điện thoại và địa chỉ). Không cần thanh toán. Gói
-  trả phí bắt đầu từ 200 GD/tháng.
-</Callout>
+Mở **Bảng giá** trên thanh bên, điền số điện thoại và địa chỉ nếu được hỏi, rồi nhấn **Kích hoạt miễn phí**. Gói miễn phí không cần thanh toán. Bạn có thể nâng cấp lên gói trả phí bất kỳ lúc nào.
 
 <OnboardingPricingTable locale="vi" />
 
-Bảng trên là các gói đại diện. Xem [Đăng ký & Thanh toán](/vi/subscription) hoặc [apipay.vn/pricing](https://apipay.vn/pricing) để thấy đủ danh sách và cách tính cước vượt hạn mức.
-
-### Cách chọn
-
-**Bắt đầu nhỏ, rồi nâng cấp khi cần:**
-
-- Mới tích hợp: bắt đầu với FREE
-- Doanh nghiệp mới: QUOTA 200 hoặc QUOTA 400
-- Doanh nghiệp đang tăng trưởng: QUOTA 1200 hoặc QUOTA 2500
-- Doanh nghiệp có nhiều giao dịch: QUOTA 5000 trở lên
-
-Bạn có thể nâng cấp bất kỳ lúc nào trên dashboard. Trong chu kỳ gói hạn mức trả phí đang chạy, bạn chỉ có thể chuyển sang gói cao hơn.
-
-> **Mẹo:** Có nhiều tài khoản ngân hàng giúp phân bổ khối lượng thanh toán và giảm thời gian chờ trong giờ cao điểm.
+Chi tiết các gói và cách tính phí: [Gói dịch vụ và thanh toán](/vi/subscription).
 
 ---
 
-## Bước 3: Kết nối tài khoản ngân hàng
+## Bước 3: Kết nối ngân hàng
 
-Sau khi kích hoạt gói, hãy kết nối tài khoản ngân hàng Việt Nam. Đây là bước cần có để ApiPay ghi nhận giao dịch và gửi webhook. Mọi gói hạn mức, kể cả miễn phí, đều hỗ trợ kết nối nhiều tài khoản ngân hàng.
+1. Mở **Ngân hàng** trên thanh bên và nhấn **Thêm ngân hàng**.
+2. Chọn ngân hàng, loại tài khoản (cá nhân, doanh nghiệp hoặc hộ kinh doanh) và điền thông tin.
+3. Xác nhận bằng OTP hoặc trên app ngân hàng. Một số loại tài khoản cần gửi yêu cầu kích hoạt.
 
-### Ngân hàng được hỗ trợ
+Danh sách ngân hàng và hướng dẫn chi tiết: [Kết nối ngân hàng](/vi/connect-banks).
 
-ApiPay hỗ trợ các ngân hàng lớn tại Việt Nam:
-
-- ACB
-- MB Bank
-- BIDV
-- OCB
-- VietinBank
-- VIB
-- Sacombank (STB)
-- VPBank (VPB)
-- PGBank (PGB)
-- Shinhan Bank (SHBVN)
-- Co-opBank (COOPBANK)
-- Vietcombank (VCB)
-- MSB
-- TPBank (TPB)
-
-### Quy trình kết nối
-
-1. Vào **Cài đặt → Tài khoản ngân hàng**
-2. Nhấn **Thêm tài khoản ngân hàng**
-3. Chọn ngân hàng từ danh sách
-4. Nhập số tài khoản
-5. Xác minh bằng OTP gửi đến điện thoại đã đăng ký
-6. Tài khoản sẽ hoạt động sau khi xác minh
-
-> **Quan trọng:** Tài khoản ngân hàng phải mang tên doanh nghiệp của bạn (hoặc tên đại diện hợp lệ).
-
-<Callout type="tip">
-  **Tính năng miễn phí sẵn có:** Ngay sau khi tài khoản ngân hàng hoạt động, bạn có thể bật ngay tính năng **[Loa Thanh
-  Toán](/vi/payment-speaker)** để biến điện thoại/máy tính bảng tại quầy thành loa đọc tiền về realtime mà không cần mua
-  thiết bị riêng.
-</Callout>
+Khi ngân hàng đã hoạt động, bạn có thể bật [Loa thanh toán](/vi/payment-speaker) để nghe đọc tiền vào tại quầy.
 
 ---
 
-## Bước 4: Thiết lập tích hợp
+## Bước 4: Tạo khóa API và webhook
 
-### Lấy API Keys
+### Khóa API
 
-1. Vào **Tích hợp → API Keys**
-2. Nhấn **Tạo API Key mới**
-3. Đặt tên cho key (ví dụ: "Production", "Development")
-4. Sao chép và lưu keys ở nơi an toàn
+1. Mở **Tích hợp → Web App → API Keys**.
+2. Nhấn **Tạo API Key** và đặt tên cho khóa.
+3. Lưu `accessKey` và `secretKey` ở nơi an toàn. Không đưa `secretKey` vào code chạy trên trình duyệt hay app.
 
-Bạn sẽ nhận được:
+Cách dùng khóa khi gọi API: [Xác thực API](/vi/api/authentication).
 
-- `accessKey` - Định danh công khai
-- `secretKey` - Giữ bí mật!
+### Webhook
 
-Khi gọi API, dùng header `Authorization: Bearer <Auth>`, trong đó `<Auth>` là chuỗi `base64(accessKey:secretKey)`. Xem [Xác thực API](/vi/api/authentication) để biết chi tiết.
+1. Mở **Webhooks** trên thanh bên và nhấn **Tạo Webhook**.
+2. Nhập URL nhận thông báo của bạn và lưu.
 
-### Thiết lập webhook (khuyến nghị)
-
-Webhook giúp hệ thống của bạn biết khi có thanh toán:
-
-1. Vào **Cài đặt → Webhooks**
-2. Nhấn **Thêm Webhook**
-3. Nhập URL endpoint của bạn
-4. Lưu và kiểm tra
-
-Mặc định webhook mới nhận thông báo cho tất cả tài khoản ngân hàng hiện tại và trong tương lai. Bạn có thể giới hạn cho một số ngân hàng cụ thể khi thêm webhook.
+Webhook mới nhận thông báo cho mọi ngân hàng của bạn. Bạn có thể giới hạn cho một số ngân hàng khi tạo. Chi tiết: [Webhook](/vi/api/webhooks).
 
 ---
 
-## Bước 5: Tạo payment request đầu tiên
+## Bước 5: Tạo yêu cầu thanh toán đầu tiên
 
-### Qua Dashboard
+1. Mở **Yêu cầu thanh toán** và nhấn **Tạo liên kết**.
+2. Chọn ngân hàng, nhập số tiền và nội dung chuyển khoản.
+3. Sao chép link thanh toán và gửi cho khách.
 
-1. Vào **Yêu cầu thanh toán**
-2. Nhấn **Tạo yêu cầu thanh toán**
-3. Chọn tài khoản ngân hàng đã kết nối
-4. Nhập số tiền
-5. Thêm nội dung/tham chiếu thanh toán
-6. Nhấn **Tạo**
-
-Bạn sẽ nhận được link thanh toán để gửi cho khách.
-
-### Qua API
+Tạo bằng API:
 
 ```javascript
 const response = await fetch('https://app.apipay.vn/v1/client/payment-requests', {
@@ -171,33 +91,15 @@ const response = await fetch('https://app.apipay.vn/v1/client/payment-requests',
 const {
   data: {payUrl, qrUrl},
 } = await response.json();
-// Chia sẻ payUrl hoặc qrUrl với khách hàng
+// Gửi payUrl hoặc qrUrl cho khách
 ```
 
----
-
-## Mẹo triển khai
-
-### Để bắt đầu suôn sẻ
-
-1. **Test với số tiền nhỏ** - Tạo vài thanh toán 1.000 VND để kiểm tra luồng.
-2. **Bật Loa Thanh Toán tại quầy** - Mở link loa trên điện thoại/tablet quầy thu ngân để nghe thông báo tiền về tức thì.
-3. **Tạo webhook trước** - Tránh bỏ lỡ thông báo thanh toán.
-4. **Thiết lập redirect URL** - Đưa khách về website của bạn sau khi thanh toán.
-5. **Tùy chỉnh trang thanh toán** - Thêm tên và logo doanh nghiệp.
-
-### Để vận hành lâu dài
-
-1. **Dùng nhiều tài khoản ngân hàng** - Chia tải giữa các ngân hàng.
-2. **Theo dõi analytics giao dịch** - Xem xu hướng thanh toán trên dashboard.
-3. **Bật 2FA** - Thêm lớp bảo vệ cho tài khoản.
-4. **Giữ API keys an toàn** - Không đưa `secretKey` vào code phía client.
+Muốn thử toàn bộ luồng mà không cần chuyển tiền thật? Dùng [Sandbox](/vi/sandbox).
 
 ---
 
 ## Bước tiếp theo
 
-- [Loa Thanh Toán](/vi/payment-speaker) - Nghe thông báo chuyển khoản realtime tại quầy thu ngân
-- [Đăng ký & Thanh toán](/vi/subscription) - Quản lý gói và thanh toán
-- [Quản lý Ngân hàng](/vi/banking) - Kết nối và quản lý ngân hàng
-- [API Reference](/vi/api/payment-requests) - Chi tiết tích hợp kỹ thuật
+- [API yêu cầu thanh toán](/vi/api/payment-requests)
+- [Hướng dẫn Dashboard](/vi/dashboard)
+- [Gói dịch vụ và thanh toán](/vi/subscription)

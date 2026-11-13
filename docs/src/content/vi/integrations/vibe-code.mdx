@@ -1,57 +1,47 @@
 ---
 title: Vibe Code
-description: Tạo prompt tích hợp ApiPay cho AI coding assistant.
+description: Tạo prompt tích hợp ApiPay cho trợ lý lập trình AI.
 ---
 
 # Vibe Code
 
-Vibe Code tạo system prompt để dùng với AI coding assistant như Claude Code, Cursor và Antigravity. Prompt này hướng dẫn assistant thêm payment requests, chuyển hướng thanh toán và webhook ApiPay vào codebase của bạn.
+Vibe Code tạo sẵn prompt để dán vào trợ lý lập trình AI (Claude Code, Cursor…) giúp tích hợp ApiPay vào dự án: tạo yêu cầu thanh toán, chuyển khách đến trang thanh toán và nhận webhook.
 
 <Callout type="tip">
-Mở **Tích hợp > Vibe Code** trong dashboard để tạo prompt với tài khoản ngân hàng đã chọn.
+Mở **Tích hợp > Web App > Vibe Code** trong dashboard để tạo prompt.
 
 [Mở Vibe Code trong dashboard](https://my.apipay.vn/vi/integrations/vibe-code)
 </Callout>
 
 ## Trước khi bắt đầu
 
-- Tạo API key trong **Tích hợp > API Keys**.
-- Kết nối ít nhất một tài khoản ngân hàng đang hoạt động trong **Tài khoản ngân hàng**.
-- Xác định nơi app xử lý checkout, trang kết quả thanh toán và webhook routes.
+- Tạo khóa API trong **Tích hợp > Web App > API Keys**.
+- Kết nối ít nhất một tài khoản trong **Ngân hàng**.
 
 ## Tạo prompt
 
-1. Trong dashboard ApiPay, mở **Tích hợp > Vibe Code**.
-2. Chọn tài khoản ngân hàng đang hoạt động để dùng mặc định cho payment requests.
-3. Kiểm tra system prompt vừa tạo.
-4. Sao chép prompt và dán vào coding assistant của bạn.
-5. Cung cấp ApiPay `accessKey` và `secretKey` cho assistant qua environment variables hoặc local secrets.
+1. Trong dashboard ApiPay, mở **Tích hợp > Web App > Vibe Code**.
+2. Chọn tài khoản ngân hàng mặc định cho yêu cầu thanh toán.
+3. Sao chép prompt và dán vào trợ lý lập trình AI.
+4. Cung cấp `accessKey` và `secretKey` qua biến môi trường, không dán vào prompt hay mã nguồn.
 
-## Prompt bao gồm gì
+## Prompt hướng dẫn trợ lý
 
-Prompt sẽ yêu cầu assistant:
+- Đọc cấu trúc dự án và cách gọi API hiện có.
+- Tạo yêu cầu thanh toán qua API của ApiPay.
+- Chuyển khách đến `payUrl` trong kết quả trả về.
+- Thêm endpoint nhận webhook thanh toán.
 
-- Phân tích cấu trúc dự án và pattern API đang dùng.
-- Thêm xác thực ApiPay bằng credentials base64 `accessKey:secretKey`.
-- Tạo payment request qua ApiPay client API.
-- Chuyển khách đến `payUrl` trong response.
-- Thêm webhook handler để nhận thông báo thanh toán.
-- Giữ credentials trong environment variables, không đưa vào source code.
+## Kiểm tra sau khi tích hợp
 
-## Checklist triển khai
-
-Sau khi assistant chỉnh code, hãy kiểm tra:
-
-- Checkout flow tạo payment request với `bankPublicId` đã chọn.
-- Khách được chuyển sang trang thanh toán hosted của ApiPay.
-- Trang success hoặc result xử lý được redirect từ ApiPay.
-- Webhook endpoint trả HTTP 200 nhanh.
-- API credentials được lưu trong deployment secrets.
+- Bước thanh toán tạo yêu cầu thanh toán với `bankPublicId` đã chọn.
+- Khách được chuyển sang trang thanh toán của ApiPay.
+- Trang kết quả xử lý được khi khách quay lại từ ApiPay.
+- Endpoint webhook trả HTTP 200 ngay.
 
 ## Xử lý lỗi
 
-Nếu không thấy prompt mới, hãy kiểm tra:
+Nếu chưa tạo được prompt, hãy kiểm tra:
 
-- Bạn có ít nhất một tài khoản ngân hàng đang hoạt động.
-- Bạn đã tạo API key.
+- Đã tạo khóa API.
 - Tài khoản ngân hàng đã chọn vẫn tồn tại và đang hoạt động.

@@ -1,58 +1,48 @@
 ---
 title: HostBill
-description: Install and configure the ApiPay HostBill payment gateway module.
+description: Install the ApiPay payment module for HostBill.
 ---
 
 # HostBill
 
-The ApiPay HostBill module lets customers pay HostBill invoices by VND bank transfer through an ApiPay hosted payment page. The ZIP downloaded from the dashboard is prefilled with your ApiPay API credentials, selected bank account, and optional custom domain.
+The ApiPay module lets customers pay HostBill invoices by bank transfer through the ApiPay payment page. Invoices must be in VND.
 
 <Callout type="tip">
-Open **Integrations > HostBill** in the dashboard to generate your prefilled module ZIP.
+Open **Integrations > Web App > HostBill** in the dashboard to download the preconfigured module.
 
 [Open HostBill in dashboard](https://my.apipay.vn/en/integrations/hostbill)
-
 </Callout>
 
 ## Before You Start
 
-- Create an API key in **Integrations > API Keys**.
-- Connect at least one active bank account in **Bank Accounts**.
-- Optional: verify a custom payment domain in **Dashboard Guide > Custom Domains**.
-- Make sure your HostBill site can receive public HTTPS callbacks.
+- Create an API key in **Integrations > Web App > API Keys**.
+- Connect at least one account in **Banks**.
+- Optional: verify a [custom domain](/en/custom-domains) for the payment page.
 
 ## Download the Module
 
-1. In the ApiPay dashboard, open **Integrations > HostBill**.
-2. Select the active bank account you want to use for invoice payments.
-3. Optionally select a verified custom domain for the hosted payment page.
-4. Download `apipay-hostbill.zip`.
+1. In the ApiPay dashboard, open **Integrations > Web App > HostBill**.
+2. Select the bank account that receives payments and, optionally, a custom domain.
+3. Download `apipay-hostbill.zip`.
 
 ## Install in HostBill
 
-1. Extract the ZIP into your HostBill root folder.
-2. Confirm `apipay.php` is available to HostBill as a payment gateway module.
-3. Open **HostBill Admin > Payment Gateways**.
-4. Activate **ApiPay Gateway**.
-5. Review the prefilled API URL, Partner Code, Access Key, Secret Key, Bank Account ID, and optional custom domain.
-6. Save the gateway configuration.
+1. Extract the ZIP into your HostBill root folder. The ZIP contains the `apipay.php` module.
+2. Open **HostBill Admin > Payment Gateways**.
+3. Activate **ApiPay Gateway**.
+4. Review the prefilled settings (no changes needed) and save.
 
 ## Test a Payment
 
-1. Create a test invoice in VND.
-2. Choose **ApiPay** as the payment method.
-3. Confirm that HostBill redirects the customer to the ApiPay hosted payment page.
-4. Transfer the exact amount with the displayed content.
-5. After ApiPay confirms the transfer, the invoice is marked paid in HostBill.
+1. Create an invoice and choose **ApiPay** as the payment method.
+2. Confirm the customer is redirected to the ApiPay payment page.
+3. Transfer the exact amount with the displayed content.
+4. Once the transfer succeeds, the invoice is marked paid in HostBill.
 
 ## Troubleshooting
 
-If the invoice does not update, check:
+If an invoice does not update, check:
 
-- The HostBill site is reachable over public HTTPS.
-- The ApiPay gateway is active in HostBill.
-- The API key in HostBill matches an active dashboard API key.
-- The selected bank account is active in ApiPay.
-- The invoice amount is in VND.
-- Firewall or security rules are not blocking HostBill callback endpoints.
-- If you selected a custom domain, it is verified and active in ApiPay.
+- The HostBill site is publicly reachable over HTTPS and no firewall or security rule blocks the callback.
+- The API key in HostBill is still active in the dashboard.
+- If you use a custom domain, it is verified.

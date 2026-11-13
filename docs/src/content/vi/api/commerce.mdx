@@ -1,56 +1,41 @@
 ---
 title: Commerce API
-description: Sản phẩm, mức giá, link thanh toán dùng lại, ảnh sản phẩm, và biên lai
+description: Sản phẩm, mức giá, link thanh toán dùng lại, khách hàng và biên lai
 ---
 
 # Commerce API
 
-API Commerce để tạo sản phẩm và mức giá. Xác thực giống mọi endpoint `/v1/client/*`. Xem [Xác thực](/vi/api/authentication).
+Tạo sản phẩm và mức giá một lần, rồi tạo yêu cầu thanh toán bằng `priceId` thay cho `amount`. Mọi endpoint cần [xác thực](/vi/api/authentication). Có thể gọi thử trong [Tài liệu tương tác](/vi/api-reference).
 
-Khi đã có mức giá, tạo link thanh toán bằng `priceId` trên [Payment Requests](/vi/api/payment-requests). Có thể thử các lệnh này trong [Interactive Reference](/vi/api-reference).
-
-<Callout type="info">
-Khi tạo payment, gửi `priceId` **hoặc** `amount` — không gửi cả hai. Số tiền được ghi vào link một lần. Sửa sản phẩm hoặc mức giá sau đó không làm đổi các link đã tạo.
-</Callout>
+Mọi response được bọc trong `{"data": ..., "statusCode": 200, "timestamp": "..."}`. Với Commerce, kết quả nằm ở `data.data`; danh sách có thêm `data.pagination`.
 
 ## Endpoint
 
-Mọi path nằm dưới `/v1/client/commerce`.
+Các path dưới đây nằm sau `/v1/client/commerce`, trừ hai endpoint ảnh có path đầy đủ.
 
 | Method | Path | Mô tả |
 | ------ | ---- | ----- |
-| `POST` | `/products` | Tạo sản phẩm. `defaultPriceData` tùy chọn tạo mức giá đầu và đặt làm mặc định |
+| `POST` | `/products` | Tạo sản phẩm, có thể kèm mức giá mặc định |
 | `GET` | `/products` | Danh sách sản phẩm (`active`, `page`, `limit`) |
-| `GET` | `/products/:id` | Lấy sản phẩm kèm các mức giá |
-| `PATCH` | `/products/:id` | Cập nhật tên, mô tả, ảnh (`imageId`), lưu trữ/khôi phục, hoặc giá mặc định |
-| `POST` | `/prices` | Tạo mức giá. Mức giá đầu trên sản phẩm chưa có mặc định sẽ thành mặc định |
+| `GET` | `/products/:id` | Sản phẩm kèm các mức giá |
+| `PATCH` | `/products/:id` | Cập nhật sản phẩm |
+| `POST` | `/prices` | Tạo mức giá |
 | `GET` | `/prices` | Danh sách mức giá (`productId`, `lookupKey`, `active`, `page`, `limit`) |
-| `GET` | `/prices/:id` | Lấy một mức giá |
-| `PATCH` | `/prices/:id` | Cập nhật `active`, `nickname`, `lookupKey`. Không đổi `unitAmount` |
-| `DELETE` | `/prices/:id` | Xóa vĩnh viễn mức giá chưa dùng. Mức giá đã dùng thì phải lưu trữ |
-| `GET` | `/invoices` | Danh sách hóa đơn bán hàng (`search`, `page`, `limit`) |
-| `GET` | `/invoices/:id` | Chi tiết hóa đơn bán hàng kèm line items |
-| `GET` | `/invoices/:id/pdf` | Tải file PDF hóa đơn / biên lai bán hàng |
-| `PATCH` | `/invoices/:id` | Cập nhật thông tin người mua (`buyerName`, `buyerEmail`, `buyerTaxCode`, `buyerAddress`) |
-| `POST` | `/invoices/send` | Gửi yêu cầu thanh toán VietQR qua email cho khách hàng |
+| `GET` | `/prices/:id` | Một mức giá |
+| `PATCH` | `/prices/:id` | Cập nhật mức giá |
+| `DELETE` | `/prices/:id` | Xóa mức giá chưa từng được dùng |
+| `GET` | `/invoices` | Danh sách biên lai (`search`, `page`, `limit`) |
+| `GET` | `/invoices/:id` | Chi tiết biên lai |
+| `GET` | `/invoices/:id/pdf` | Tải PDF biên lai |
+| `PATCH` | `/invoices/:id` | Cập nhật thông tin người mua |
+| `POST` | `/invoices/send` | Gửi yêu cầu thanh toán qua email |
 | `GET` | `/customers` | Danh sách khách hàng (`search`, `page`, `limit`) |
-| `POST` | `/customers` | Tạo khách hàng mới (`name`, `email`, `taxCode`, `address`) |
-| `GET` | `/customers/:id` | Chi tiết khách hàng kèm danh sách thanh toán và hóa đơn liên kết |
-| `PATCH` | `/customers/:id` | Cập nhật thông tin khách hàng |
-| `DELETE` | `/customers/:id` | Xóa khách hàng (chỉ khi chưa có giao dịch hoặc hóa đơn liên kết) |
-
-Công khai (không cần auth), dùng bởi `pay.apipay.vn`:
-
-| Method | Path | Mô tả |
-| ------ | ---- | ----- |
-| `GET` | `/v1/commerce/payment-links/:publicId` | Tên sản phẩm, số tiền, và branding merchant của link thanh toán dùng lại |
-| `POST` | `/v1/commerce/payment-links/:publicId/checkout` | Thu thập thông tin người mua và tạo yêu cầu thanh toán một lần |
-| `PATCH` | `/v1/payment-requests/:cuid/customer` | Thu thập thông tin người mua trên yêu cầu thanh toán commerce đã có, trước khi họ trả |
-| `POST` | `/v1/client/media` | Tải ảnh (multipart `file` + `kind=commerce_product`). Cần auth |
-| `DELETE` | `/v1/client/media/:id` | Xóa ảnh bạn sở hữu. Cần auth |
-| `GET` | `/v1/media/:id` | Tải bytes ảnh công khai (trang thanh toán và dashboard dùng URL này) |
-
-Sản phẩm trả về `imageId` / `imageUrl`. Gắn ảnh: `POST /v1/client/media` rồi `PATCH /products/:id` với `imageId`. Gửi `imageId: null` để gỡ.
+| `POST` | `/customers` | Tạo khách hàng |
+| `GET` | `/customers/:id` | Chi tiết khách hàng |
+| `PATCH` | `/customers/:id` | Cập nhật khách hàng |
+| `DELETE` | `/customers/:id` | Xóa khách hàng |
+| `POST` | `/v1/client/media` | Tải ảnh sản phẩm |
+| `DELETE` | `/v1/client/media/:id` | Xóa ảnh |
 
 ---
 
@@ -60,35 +45,29 @@ Sản phẩm trả về `imageId` / `imageUrl`. Gắn ảnh: `POST /v1/client/me
 POST /v1/client/commerce/products
 ```
 
-### Request body
-
 | Tham số | Kiểu | Bắt buộc | Mô tả |
 | ------- | ---- | -------- | ----- |
-| `name` | string | **Có** | Tên sản phẩm (tối đa 200) |
-| `description` | string | — | Mô tả HTML tùy chọn (tối đa 10000). Cùng bộ thẻ với phiếu hỗ trợ |
-| `defaultPriceData` | object | — | Tạo mức giá đầu và đặt làm mặc định |
-| `defaultPriceData.unitAmount` | string | **Có** nếu gửi `defaultPriceData` | Số tiền VND (chuỗi số nguyên, 1–300000000) |
-| `defaultPriceData.lookupKey` | string | — | Mã ổn định bạn giữ trong app, ví dụ `pro-monthly` |
-| `defaultPriceData.nickname` | string | — | Tên nội bộ, khách không thấy |
-
-### Ví dụ
+| `name` | string | Có | Tên sản phẩm (tối đa 200 ký tự) |
+| `description` | string | Không | Mô tả bằng HTML cơ bản: `p`, `br`, `strong`, `em`, `u`, `s`, `a`, `ul`, `ol`, `li`, `blockquote`, `code`, `pre` (tối đa 10.000 ký tự) |
+| `defaultPriceData` | object | Không | Tạo mức giá đầu tiên và đặt làm mặc định |
+| `defaultPriceData.unitAmount` | string | Có, nếu gửi `defaultPriceData` | Số tiền VND, số nguyên từ 1 đến 300.000.000 |
+| `defaultPriceData.lookupKey` | string | Không | Mã do bạn đặt để tra cứu, ví dụ `pro-monthly` |
+| `defaultPriceData.nickname` | string | Không | Tên nội bộ, khách không thấy |
 
 ```bash
 curl -X POST https://app.apipay.vn/v1/client/commerce/products \
-  -H "Content-Type: application/json" \
   -H "Authorization: Bearer <Auth>" \
+  -H "Content-Type: application/json" \
   -d '{
-    "name": "Goi Pro",
-    "description": "Truy cap hang thang",
+    "name": "Gói Pro",
+    "description": "<p>Truy cập hằng tháng</p>",
     "defaultPriceData": {
       "unitAmount": "99000",
       "lookupKey": "pro-monthly",
-      "nickname": "Gia ra mat"
+      "nickname": "Giá ra mắt"
     }
   }'
 ```
-
-### Response
 
 ```json
 {
@@ -96,8 +75,8 @@ curl -X POST https://app.apipay.vn/v1/client/commerce/products \
     "status": true,
     "data": {
       "id": "cml8x1abc0000prod0000000",
-      "name": "Goi Pro",
-      "description": "Truy cap hang thang",
+      "name": "Gói Pro",
+      "description": "<p>Truy cập hằng tháng</p>",
       "active": true,
       "imageId": null,
       "imageUrl": null,
@@ -109,32 +88,50 @@ curl -X POST https://app.apipay.vn/v1/client/commerce/products \
         "unitAmount": "99000",
         "currency": "VND",
         "lookupKey": "pro-monthly",
-        "nickname": "Gia ra mat",
+        "nickname": "Giá ra mắt",
         "active": true,
         "paymentLinkUrl": "https://pay.apipay.vn/p/plA2B3C4D5E6F7"
       },
-      "activePriceCount": 1,
-      "prices": [
-        {
-          "id": "cml8x1abc0000price0000000",
-          "productId": "cml8x1abc0000prod0000000",
-          "publicId": "plA2B3C4D5E6F7",
-          "unitAmount": "99000",
-          "currency": "VND",
-          "lookupKey": "pro-monthly",
-          "nickname": "Gia ra mat",
-          "active": true,
-          "paymentLinkUrl": "https://pay.apipay.vn/p/plA2B3C4D5E6F7"
-        }
-      ]
+      "activePriceCount": 1
     }
   },
-  "statusCode": 200,
+  "statusCode": 201,
   "timestamp": "2026-09-04T10:00:00.000Z"
 }
 ```
 
-Response nằm trong `data`. Danh sách nằm trong `data.data`, phân trang trong `data.pagination`.
+Ví dụ lược bỏ `prices`: danh sách mọi mức giá của sản phẩm, cùng cấu trúc với `defaultPrice`.
+
+## Cập nhật sản phẩm
+
+```bash
+PATCH /v1/client/commerce/products/:id
+```
+
+| Tham số | Kiểu | Bắt buộc | Mô tả |
+| ------- | ---- | -------- | ----- |
+| `name` | string | Không | Tên sản phẩm |
+| `description` | string \| null | Không | Mô tả HTML. Gửi `null` để xóa |
+| `active` | boolean | Không | `false` để lưu trữ, `true` để khôi phục |
+| `defaultPriceId` | string \| null | Không | Một mức giá đang hoạt động của sản phẩm này. Gửi `null` để bỏ |
+| `imageId` | string \| null | Không | `id` ảnh từ `POST /v1/client/media`. Gửi `null` để gỡ |
+
+Sửa sản phẩm không làm thay đổi các yêu cầu thanh toán đã tạo.
+
+## Tải ảnh sản phẩm
+
+```bash
+POST /v1/client/media
+```
+
+Gửi `multipart/form-data` với `file` (PNG, JPEG hoặc WebP) và `kind=commerce_product`. Dùng `id` trả về làm `imageId` khi cập nhật sản phẩm.
+
+```bash
+curl -X POST https://app.apipay.vn/v1/client/media \
+  -H "Authorization: Bearer <Auth>" \
+  -F "kind=commerce_product" \
+  -F "file=@product.png"
+```
 
 ---
 
@@ -144,62 +141,32 @@ Response nằm trong `data`. Danh sách nằm trong `data.data`, phân trang tro
 POST /v1/client/commerce/prices
 ```
 
-Số tiền không sửa được sau khi tạo. Muốn đổi giá thì tạo mức giá mới và lưu trữ mức cũ.
-
-### Request body
-
 | Tham số | Kiểu | Bắt buộc | Mô tả |
 | ------- | ---- | -------- | ----- |
-| `productId` | string | **Có** | Sản phẩm chứa mức giá này |
-| `unitAmount` | string | **Có** | Số tiền VND (chuỗi số nguyên, 1–300000000) |
-| `lookupKey` | string | — | Mã ổn định, duy nhất trên tài khoản. Tra sau bằng `GET /prices?lookupKey=` |
-| `nickname` | string | — | Tên nội bộ |
-| `transferLookupKey` | boolean | — | Nếu `true`, chuyển `lookupKey` khỏi mức giá đang giữ mã đó thay vì báo lỗi |
-
-### Ví dụ
+| `productId` | string | Có | Sản phẩm chứa mức giá |
+| `unitAmount` | string | Có | Số tiền VND, số nguyên từ 1 đến 300.000.000 |
+| `lookupKey` | string | Không | Mã tra cứu, không trùng trong tài khoản |
+| `nickname` | string | Không | Tên nội bộ |
+| `transferLookupKey` | boolean | Không | `true` để lấy `lookupKey` từ mức giá đang giữ mã đó thay vì báo lỗi |
 
 ```bash
 curl -X POST https://app.apipay.vn/v1/client/commerce/prices \
-  -H "Content-Type: application/json" \
   -H "Authorization: Bearer <Auth>" \
+  -H "Content-Type: application/json" \
   -d '{
     "productId": "cml8x1abc0000prod0000000",
     "unitAmount": "199000",
     "lookupKey": "pro-yearly",
-    "nickname": "Theo nam"
+    "nickname": "Theo năm"
   }'
 ```
 
-Nếu sản phẩm chưa có giá mặc định, mức giá này trở thành mặc định.
-
----
-
-## Tìm mức giá theo lookup key
+Nếu sản phẩm chưa có giá mặc định, mức giá này trở thành mặc định. Tìm lại mức giá theo mã tra cứu:
 
 ```bash
 curl "https://app.apipay.vn/v1/client/commerce/prices?lookupKey=pro-monthly" \
   -H "Authorization: Bearer <Auth>"
 ```
-
-Lấy `id` trả về làm `priceId` khi tạo thanh toán.
-
----
-
-## Cập nhật sản phẩm
-
-```bash
-PATCH /v1/client/commerce/products/:id
-```
-
-| Tham số | Kiểu | Mô tả |
-| ------- | ---- | ----- |
-| `name` | string | Tên sản phẩm |
-| `description` | string \| null | HTML. Gửi `null` để xóa |
-| `active` | boolean | `false` lưu trữ, `true` khôi phục |
-| `defaultPriceId` | string \| null | Phải là mức giá đang hoạt động của sản phẩm này. Gửi `null` để xóa |
-| `imageId` | string \| null | Id ảnh từ `POST /v1/client/media`. Gửi `null` để gỡ |
-
----
 
 ## Cập nhật mức giá
 
@@ -207,14 +174,14 @@ PATCH /v1/client/commerce/products/:id
 PATCH /v1/client/commerce/prices/:id
 ```
 
-| Tham số | Kiểu | Mô tả |
-| ------- | ---- | ----- |
-| `active` | boolean | `false` lưu trữ, `true` khôi phục |
-| `nickname` | string \| null | Gửi `null` để xóa |
-| `lookupKey` | string \| null | Gửi `null` để xóa |
-| `transferLookupKey` | boolean | Chuyển `lookupKey` từ mức giá đang giữ mã đó |
+| Tham số | Kiểu | Bắt buộc | Mô tả |
+| ------- | ---- | -------- | ----- |
+| `active` | boolean | Không | `false` để lưu trữ, `true` để khôi phục |
+| `nickname` | string \| null | Không | Gửi `null` để xóa |
+| `lookupKey` | string \| null | Không | Gửi `null` để xóa |
+| `transferLookupKey` | boolean | Không | Lấy `lookupKey` từ mức giá đang giữ mã đó |
 
----
+Không thể sửa `unitAmount`. Muốn đổi giá, tạo mức giá mới rồi lưu trữ mức cũ. Mức giá đã lưu trữ không dùng để tạo yêu cầu thanh toán mới; yêu cầu đã tạo vẫn giữ số tiền cũ.
 
 ## Xóa mức giá
 
@@ -222,85 +189,58 @@ PATCH /v1/client/commerce/prices/:id
 DELETE /v1/client/commerce/prices/:id
 ```
 
-Xóa vĩnh viễn mức giá chưa từng dùng trên yêu cầu thanh toán. Nếu đó là giá mặc định của sản phẩm, mặc định sẽ bị gỡ. Mức giá đã có thanh toán trả về `409` — hãy lưu trữ bằng `PATCH`.
-
-Không nhận `unitAmount`. Mức giá đã lưu trữ không dùng để tạo link mới. Link tạo trước đó vẫn giữ mức giá lúc tạo (`commercePriceId` trên payment request).
+Chỉ xóa được mức giá chưa từng dùng cho yêu cầu thanh toán nào. Mức giá đã dùng trả `409`; hãy lưu trữ bằng `PATCH`.
 
 ---
 
-## Tạo thanh toán từ mức giá
+## Tạo yêu cầu thanh toán từ mức giá
+
+Gửi `priceId` thay cho `amount` (không gửi cả hai). Số tiền lấy từ mức giá; nếu bỏ `title`, ApiPay dùng tên sản phẩm. `customer` không bắt buộc, dùng để điền sẵn thông tin người mua trên biên lai.
 
 ```bash
 curl -X POST https://app.apipay.vn/v1/client/payment-requests \
-  -H "Content-Type: application/json" \
   -H "Authorization: Bearer <Auth>" \
-  -d '{
-    "bankPublicId": "bank_abc123",
-    "priceId": "cml8x1abc0000price0000000",
-    "content": "DONHANG-001"
-  }'
-```
-
-Số tiền thanh toán lấy từ `unitAmount` của mức giá. Nếu bỏ `title`, hệ thống dùng tên sản phẩm. Bạn cũng có thể truyền thông tin khách hàng `customer` tùy chọn để tự động điền vào hóa đơn bán hàng:
-
-```bash
-curl -X POST https://app.apipay.vn/v1/client/payment-requests \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer <Auth>" \
   -d '{
-    "bankPublicId": "bank_abc123",
+    "bankPublicId": "bnk_abc123",
     "priceId": "cml8x1abc0000price0000000",
     "content": "DONHANG-001",
     "customer": {
-      "name": "Nguyen Van A",
-      "email": "customer@example.com",
-      "taxCode": "0101234567",
-      "address": "123 Le Loi, Ben Nghe, Q.1, TP.HCM"
+      "name": "Nguyễn Văn A",
+      "email": "customer@example.com"
     }
   }'
 ```
 
-Xem [Payment Requests](/vi/api/payment-requests) cho response đầy đủ và [Webhook](/vi/api/webhooks) cho payload khi khách trả.
+Xem [Yêu cầu thanh toán](/vi/api/payment-requests) cho response và [Webhook](/vi/api/webhooks) cho payload khi khách trả.
 
-Mỗi mức giá còn có `paymentLinkUrl` dùng lại (`https://pay.apipay.vn/p/{publicId}`). Chia sẻ URL đó thay vì tạo payment request cho từng khách. Trang thanh toán thu thập họ tên và email, rồi tạo yêu cầu thanh toán mới. Sau thanh toán live, PDF biên lai được gửi tới email người mua.
+Mỗi mức giá còn có `paymentLinkUrl`, một link thanh toán dùng lại được. Chia sẻ link này thay vì tạo yêu cầu thanh toán cho từng khách: khách nhập họ tên, email rồi nhận mã QR riêng.
 
 ---
 
-## Hóa đơn bán hàng (Receipts)
+## Biên lai
 
-Khi một yêu cầu thanh toán (chế độ Live) gắn với `commercePriceId` hoàn thành thanh toán, hệ thống tự động tạo một hóa đơn bán hàng (`CommerceInvoice`) đã thanh toán với định dạng số `CINV-YYYYMM-XXXX`.
+Khi khách trả qua link hoặc yêu cầu thanh toán tạo từ mức giá, ApiPay tạo biên lai số `CINV-YYYYMM-XXXX` và gửi PDF tới email người mua nếu có (chỉ với giao dịch thật).
 
 <Callout type="warning">
-**Lưu ý**: Hóa đơn bán hàng Commerce là biên lai ghi nhận thanh toán thương mại của người bán cấp cho khách hàng. Đây **không phải hóa đơn GTGT** (*"Đây không phải hóa đơn GTGT / This is not an official VAT invoice"*).
+Biên lai ghi nhận thanh toán giữa bạn và khách hàng, **không phải hóa đơn GTGT**.
 </Callout>
 
-### Danh sách hóa đơn
+### Danh sách biên lai
 
 ```bash
-GET /v1/client/commerce/invoices?search=CINV-202609&page=1&limit=20
+GET /v1/client/commerce/invoices
 ```
 
-| Query parameter | Kiểu | Mô tả |
-| --------------- | ---- | ----- |
-| `search` | string | Tìm kiếm theo số hóa đơn, tên người mua, email, hoặc tên sản phẩm |
-| `page` | number | Trang (mặc định: 1) |
-| `limit` | number | Số lượng mỗi trang (mặc định: 20, tối đa: 100) |
+| Tham số | Kiểu | Bắt buộc | Mô tả |
+| ------- | ---- | -------- | ----- |
+| `search` | string | Không | Tìm theo số biên lai, tên hoặc email người mua, tên sản phẩm |
+| `page` | number | Không | Trang, mặc định `1` |
+| `limit` | number | Không | Số mục mỗi trang, mặc định `20`, tối đa `100` |
 
-### Chi tiết hóa đơn
+### Chi tiết và PDF
 
-```bash
-GET /v1/client/commerce/invoices/:id
-```
-
-Trả về thông tin chi tiết hóa đơn gồm bên bán, bên mua, tổng tiền và các dòng sản phẩm/dịch vụ (`lineItems`).
-
-### Tải file PDF hóa đơn
-
-```bash
-GET /v1/client/commerce/invoices/:id/pdf
-```
-
-Trả về file nhị phân `application/pdf`, tên file tải về gợi ý `apipay-cinv-{invoiceNumber}.pdf`.
+`GET /invoices/:id` trả về bên bán, bên mua, tổng tiền và `lineItems`. `GET /invoices/:id/pdf` trả về file `application/pdf`.
 
 ### Cập nhật thông tin người mua
 
@@ -308,49 +248,32 @@ Trả về file nhị phân `application/pdf`, tên file tải về gợi ý `ap
 PATCH /v1/client/commerce/invoices/:id
 ```
 
-Cập nhật thông tin người mua trên hóa đơn đã phát hành:
+| Tham số | Kiểu | Bắt buộc | Mô tả |
+| ------- | ---- | -------- | ----- |
+| `buyerName` | string | Không | Tên người mua |
+| `buyerEmail` | string | Không | Email người mua |
+| `buyerTaxCode` | string | Không | Mã số thuế |
+| `buyerAddress` | string | Không | Địa chỉ |
 
-```bash
-curl -X PATCH https://app.apipay.vn/v1/client/commerce/invoices/cml8x1abc0000inv0000000 \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer <Auth>" \
-  -d '{
-    "buyerName": "Nguyen Van A",
-    "buyerEmail": "buyer@example.com",
-    "buyerTaxCode": "0101234567",
-    "buyerAddress": "123 Le Loi, Q.1, TP.HCM"
-  }'
-```
-
----
-
-## Gửi hóa đơn (Send invoice)
+### Gửi yêu cầu thanh toán qua email
 
 ```bash
 POST /v1/client/commerce/invoices/send
 ```
 
-Tạo một yêu cầu thanh toán kèm mã VietQR và gửi link qua email cho khách hàng. Sau khi khách thanh toán thành công, hóa đơn biên lai điện tử (`CINV-*`) sẽ tự động được tạo và gửi lại qua email cho khách.
-
-<Callout type="warning">
-Đây là yêu cầu thanh toán bằng mã VietQR, không phải hóa đơn điện tử GTGT theo Nghị định 123/2020/NĐ-CP. Endpoint này bị giới hạn 20 yêu cầu/phút.
-</Callout>
-
-### Request body
+Tạo yêu cầu thanh toán VietQR và gửi link qua email cho khách. Khi khách trả xong, biên lai được tạo và gửi lại cho khách. Gửi quá nhiều trong thời gian ngắn sẽ nhận `429`.
 
 | Tham số | Kiểu | Bắt buộc | Mô tả |
 | ------- | ---- | -------- | ----- |
-| `priceId` | string | **Có** | ID của mức giá sản phẩm Commerce đang hoạt động |
-| `customerId` | string | Tùy chọn* | ID khách hàng hiện có. Cần gửi `customerId` hoặc `customer` |
-| `customer` | object | Tùy chọn* | Thông tin khách hàng mới (`name`, `email` bắt buộc; `taxCode`, `address` tùy chọn) |
-| `expiresAt` | string | — | Thời hạn thanh toán (định dạng ISO 8601) |
-
-### Ví dụ
+| `priceId` | string | Có | Mức giá đang hoạt động |
+| `customerId` | string | Một trong hai | Khách hàng đã có |
+| `customer` | object | Một trong hai | Khách hàng mới: `name`, `email` bắt buộc; `taxCode`, `address` không bắt buộc |
+| `expiresAt` | string | Không | Hạn thanh toán, định dạng ISO 8601 |
 
 ```bash
 curl -X POST https://app.apipay.vn/v1/client/commerce/invoices/send \
-  -H "Content-Type: application/json" \
   -H "Authorization: Bearer <Auth>" \
+  -H "Content-Type: application/json" \
   -d '{
     "customerId": "cml8x1abc0000cust000000",
     "priceId": "cml8x1abc0000price0000000"
@@ -359,27 +282,7 @@ curl -X POST https://app.apipay.vn/v1/client/commerce/invoices/send \
 
 ---
 
-## Khách hàng (Customers)
-
-### Danh sách khách hàng
-
-```bash
-GET /v1/client/commerce/customers
-```
-
-| Tham số | Kiểu | Mô tả |
-| ------- | ---- | ----- |
-| `search` | string | Tìm kiếm theo tên, email hoặc mã số thuế |
-| `page` | number | Trang (mặc định: 1) |
-| `limit` | number | Số lượng mỗi trang (mặc định: 20, tối đa: 100) |
-
-### Chi tiết khách hàng
-
-```bash
-GET /v1/client/commerce/customers/:id
-```
-
-Trả về chi tiết khách hàng kèm danh sách các yêu cầu thanh toán và hóa đơn gần nhất liên kết với khách hàng.
+## Khách hàng
 
 ### Tạo khách hàng
 
@@ -389,18 +292,16 @@ POST /v1/client/commerce/customers
 
 | Tham số | Kiểu | Bắt buộc | Mô tả |
 | ------- | ---- | -------- | ----- |
-| `name` | string | **Có** | Tên khách hàng (tối đa 200 ký tự) |
-| `email` | string | **Có** | Email khách hàng (tối đa 200 ký tự, duy nhất cho mỗi tài khoản) |
-| `taxCode` | string | — | Mã số thuế (tối đa 50 ký tự) |
-| `address` | string | — | Địa chỉ khách hàng (tối đa 500 ký tự, bắt buộc nếu có `taxCode`) |
+| `name` | string | Có | Tên khách hàng (tối đa 200 ký tự) |
+| `email` | string | Có | Email, không trùng trong tài khoản (tối đa 200 ký tự) |
+| `taxCode` | string | Không | Mã số thuế (tối đa 50 ký tự) |
+| `address` | string | Không | Địa chỉ (tối đa 500 ký tự), bắt buộc khi có `taxCode` |
 
-### Cập nhật khách hàng
+`PATCH /customers/:id` nhận cùng các trường. Đổi `email` sang email của khách hàng khác trả `409`.
 
-```bash
-PATCH /v1/client/commerce/customers/:id
-```
+### Danh sách và chi tiết
 
-Cập nhật thông tin khách hàng. Nếu thay đổi `email` sang một email đã thuộc về khách hàng khác của bạn, API trả về lỗi `409 Conflict`.
+`GET /customers` nhận `search` (tên, email hoặc mã số thuế), `page`, `limit`. `GET /customers/:id` trả thêm các yêu cầu thanh toán và biên lai gần nhất của khách.
 
 ### Xóa khách hàng
 
@@ -408,5 +309,4 @@ Cập nhật thông tin khách hàng. Nếu thay đổi `email` sang một email
 DELETE /v1/client/commerce/customers/:id
 ```
 
-Xóa vĩnh viễn khách hàng. Nếu khách hàng đã có yêu cầu thanh toán hoặc hóa đơn liên kết, API trả về lỗi `409 Conflict`.
-
+Khách hàng đã có yêu cầu thanh toán hoặc biên lai trả `409`.

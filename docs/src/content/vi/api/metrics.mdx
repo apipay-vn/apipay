@@ -1,269 +1,114 @@
 ---
 title: Metrics API
-description: API lấy số liệu thống kê giao dịch
+description: Tra cứu giao dịch và số liệu tổng quan
 ---
 
 # Metrics API
 
-API dùng để lấy số liệu thống kê và phân tích giao dịch.
+Tra cứu giao dịch đã nhận và số liệu tổng quan. Mọi request cần header `Authorization: Bearer <Auth>` (xem [Xác thực API](/vi/api/authentication)).
 
-## Tổng quan
+## Bộ lọc thời gian
 
-Lấy tổng quan giao dịch, gồm tổng tiền, số lượng và giá trị trung bình.
+Các endpoint dưới đây nhận cùng bộ lọc thời gian:
 
-```bash
-GET /v1/client/metrics/overview
-```
-
-### Headers
-
-| Header | Mô tả |
-|--------|--------|
-| `Authorization` | `Bearer <Auth>` |
-
-### Query Parameters
-
-| Tham số | Kiểu | Bắt buộc | Mô tả |
-|---------|------|----------|--------|
-| `period` | string | — | Khoảng thời gian: `today`, `yesterday`, `this_week`, `last_week`, `this_month`, `last_month`, `last_3_months`, `last_6_months`, `this_year`, `custom` |
-| `dateFrom` | string | — | Ngày bắt đầu, hiểu theo ngày lịch Việt Nam (UTC+7), chấp nhận ISO 8601 |
-| `dateTo` | string | — | Ngày kết thúc, hiểu theo ngày lịch Việt Nam (UTC+7), bao gồm cả ngày này, chấp nhận ISO 8601 |
-| `search` | string | — | Tìm theo mã tham chiếu, nội dung, số tài khoản, tên ngân hàng, mã ngân hàng hoặc số VA |
-
-### Response
-
-```json
-{
-  "data": {
-    "totalIn": 5000000,
-    "totalOut": 0,
-    "totalTransactions": 50,
-    "averageAmount": 115000,
-    "successRate": 90,
-    "byBank": [
-      {
-        "bankName": "MB",
-        "accountNumber": "0123456789",
-        "totalIn": 3000000,
-        "countIn": 30,
-        "totalOut": 0,
-        "countOut": 0
-      }
-    ]
-  }
-}
-```
-
----
-
-## Time Series
-
-Lấy dữ liệu theo thời gian để vẽ biểu đồ.
-
-```bash
-GET /v1/client/metrics/time-series
-```
-
-### Query Parameters
-
-| Tham số | Kiểu | Bắt buộc | Mô tả |
-|---------|------|----------|--------|
-| `period` | string | — | Khoảng thời gian |
-| `dateFrom` | string | — | Ngày bắt đầu, hiểu theo ngày lịch Việt Nam (UTC+7), chấp nhận ISO 8601 |
-| `dateTo` | string | — | Ngày kết thúc, hiểu theo ngày lịch Việt Nam (UTC+7), bao gồm cả ngày này, chấp nhận ISO 8601 |
-| `granularity` | string | — | Độ chi tiết: `daily`, `weekly`, `monthly` |
-
-### Response
-
-```json
-{
-  "data": [
-    {
-      "date": "2026-03-01",
-      "totalIn": 1000000,
-      "totalOut": 0,
-      "count": 10
-    },
-    {
-      "date": "2026-03-02",
-      "totalIn": 1500000,
-      "totalOut": 0,
-      "count": 15
-    }
-  ]
-}
-```
-
----
-
-## Giao dịch trong ngày
-
-Lấy giao dịch theo từng giờ trong một ngày theo giờ Việt Nam.
-
-```bash
-GET /v1/client/metrics/hourly-transactions
-```
-
-### Query Parameters
-
-| Tham số | Kiểu | Bắt buộc | Mô tả |
-|---------|------|----------|--------|
-| `date` | string | — | Ngày dạng `YYYY-MM-DD`, hiểu theo múi giờ `Asia/Ho_Chi_Minh`. Mặc định là hôm nay tại Việt Nam. |
-| `status` | string[] | — | Lọc theo trạng thái giao dịch: `SUCCESS`, `FAILED`, `PENDING` |
-| `bankPublicId` | string[] | — | Lọc theo một hoặc nhiều public ID tài khoản ngân hàng đã liên kết |
-
-### Response
-
-```json
-{
-  "data": [
-    {
-      "hour": 0,
-      "label": "00:00",
-      "SUCCESS_amount": 2500000,
-      "SUCCESS_count": 5,
-      "FAILED_amount": 0,
-      "FAILED_count": 0,
-      "PENDING_amount": 100000,
-      "PENDING_count": 1,
-      "total_amount": 2600000,
-      "total_count": 6
-    },
-    {
-      "hour": 1,
-      "label": "01:00",
-      "SUCCESS_amount": 0,
-      "SUCCESS_count": 0,
-      "FAILED_amount": 0,
-      "FAILED_count": 0,
-      "PENDING_amount": 0,
-      "PENDING_count": 0,
-      "total_amount": 0,
-      "total_count": 0
-    }
-  ]
-}
-```
-
----
-
-## Phân bố theo ngân hàng
-
-Lấy tỷ trọng giao dịch theo ngân hàng. Mặc định xếp hạng theo số lượng giao dịch.
-
-```bash
-GET /v1/client/metrics/bank-distribution
-```
-
-### Query Parameters
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `period` | string | — | Khoảng thời gian: `today`, `yesterday`, `this_week`, `last_week`, `this_month`, `last_month`, `last_3_months`, `last_6_months`, `this_year`, `custom` |
-| `dateFrom` | string | — | Ngày bắt đầu, hiểu theo ngày lịch Việt Nam (UTC+7), chấp nhận ISO 8601 |
-| `dateTo` | string | — | Ngày kết thúc, hiểu theo ngày lịch Việt Nam (UTC+7), bao gồm cả ngày này, chấp nhận ISO 8601 |
-| `page` | integer | — | Số trang (mặc định `1`) |
-| `limit` | integer | — | Số bản ghi mỗi trang (mặc định `10`, tối đa `50`) |
-| `sortBy` | string | — | Tiêu chí xếp hạng: `transactionCount` (mặc định, số lượng) hoặc `totalIn` (số tiền) |
-
-### Response
-
-```json
-{
-  "data": [
-    {
-      "bankCode": "MB",
-      "bankName": "MB Bank",
-      "accountNumber": "0123456789",
-      "accountName": "NGUYEN VAN A",
-      "totalIn": 2000000,
-      "totalOut": 0,
-      "transactionCount": 20
-    }
-  ]
-}
-```
-
----
-
-## Biểu đồ phân bố số tiền
-
-Lấy dữ liệu phân bố số tiền giao dịch.
-
-```bash
-GET /v1/client/metrics/amount-histogram
-```
-
-### Response
-
-```json
-{
-  "data": [
-    { "range": "0-100K", "countIn": 10, "countOut": 0 },
-    { "range": "100K-500K", "countIn": 25, "countOut": 0 },
-    { "range": "500K-1M", "countIn": 10, "countOut": 0 },
-    { "range": "1M-5M", "countIn": 5, "countOut": 0 },
-    { "range": "5M-10M", "countIn": 1, "countOut": 0 },
-    { "range": "10M+", "countIn": 0, "countOut": 0 }
-  ]
-}
-```
-
----
+| Tham số    | Kiểu   | Bắt buộc | Mô tả                                                                                                           |
+| ---------- | ------ | -------- | --------------------------------------------------------------------------------------------------------------- |
+| `period`   | string | Không    | `today`, `yesterday`, `this_week`, `last_week`, `this_month`, `last_month`, `last_3_months`, `last_6_months`, `this_year`, `custom` |
+| `dateFrom` | string | Không    | Từ ngày, dạng `YYYY-MM-DD` (giờ Việt Nam). Dùng với `period=custom`                                              |
+| `dateTo`   | string | Không    | Đến hết ngày, dạng `YYYY-MM-DD` (giờ Việt Nam). Dùng với `period=custom`                                         |
 
 ## Danh sách giao dịch
-
-Lấy danh sách giao dịch, có phân trang.
 
 ```bash
 GET /v1/client/metrics/transactions
 ```
 
-### Query Parameters
+Ngoài bộ lọc thời gian:
 
-| Tham số | Kiểu | Bắt buộc | Mô tả |
-|---------|------|----------|--------|
-| `period` | string | — | Khoảng thời gian |
-| `dateFrom` | string | — | Ngày bắt đầu, hiểu theo ngày lịch Việt Nam (UTC+7), chấp nhận ISO 8601 |
-| `dateTo` | string | — | Ngày kết thúc, hiểu theo ngày lịch Việt Nam (UTC+7), bao gồm cả ngày này, chấp nhận ISO 8601 |
-| `search` | string | — | Tìm theo mã tham chiếu, nội dung, số tài khoản, tên ngân hàng, mã ngân hàng hoặc số VA |
-| `accountNumber` | string | — | Lọc theo số tài khoản hoặc số VA |
-| `bankPublicId` | string[] | — | Lọc theo một hoặc nhiều public ID tài khoản ngân hàng đã liên kết |
-| `page` | number | — | Số trang (mặc định: 1) |
-| `limit` | number | — | Số item trên mỗi trang (mặc định: 20, tối đa: 100) |
-| `sortBy` | string | — | Sắp xếp theo: `transactionDate`, `amount`, `createdAt` |
-| `sortOrder` | string | — | Thứ tự sắp xếp: `asc`, `desc` |
+| Tham số         | Kiểu     | Bắt buộc | Mô tả                                                        |
+| --------------- | -------- | -------- | ------------------------------------------------------------ |
+| `search`        | string   | Không    | Tìm theo mã tham chiếu, nội dung, số tài khoản hoặc số VA    |
+| `bankPublicId`  | string[] | Không    | Lọc theo tài khoản ngân hàng. Truyền nhiều lần để lọc nhiều  |
+| `accountNumber` | string   | Không    | Lọc theo số tài khoản hoặc số VA                             |
+| `sortBy`        | string   | Không    | `transactionDate` (mặc định), `amount` hoặc `createdAt`      |
+| `sortOrder`     | string   | Không    | `desc` (mặc định) hoặc `asc`                                 |
+| `page`          | number   | Không    | Mặc định `1`                                                 |
+| `limit`         | number   | Không    | Mặc định `20`, tối đa `100`                                  |
 
-### Response
+```bash
+curl -G https://app.apipay.vn/v1/client/metrics/transactions \
+  -H "Authorization: Bearer <Auth>" \
+  --data-urlencode "period=today" \
+  --data-urlencode "search=ORDER-12345"
+```
 
 ```json
 {
   "data": {
     "data": [
       {
-        "id": "txn_abc123",
+        "id": "550e8400-e29b-41d4-a716-446655440000",
         "amount": "100000",
         "type": "IN",
-        "content": "ORDER-001",
-        "referenceCode": "TX123456789",
-        "transactionDate": "2026-03-06T10:05:00Z",
+        "content": "ORDER-12345",
+        "referenceCode": "FT26081212345",
+        "transactionDate": "2026-08-12T10:30:00.000Z",
         "status": "SUCCESS",
-        "createdAt": "2026-03-06T10:00:00Z",
+        "createdAt": "2026-08-12T10:30:02.000Z",
         "bankAccount": {
           "bankShortName": "MB",
           "bankName": "MB Bank",
           "accountNumber": "0123456789",
-          "vaNumber": "VA123456789",
-          "accountName": "NGUYEN VAN A"
+          "accountName": "NGUYEN VAN A",
+          "vaNumber": null
         }
       }
     ],
-    "meta": {
-      "total": 50,
-      "page": 1,
-      "limit": 20,
-      "totalPages": 3
-    }
-  }
+    "meta": {"total": 50, "page": 1, "limit": 20, "totalPages": 3}
+  },
+  "statusCode": 200,
+  "timestamp": "2026-08-12T10:35:00.000Z"
 }
 ```
+
+## Chi tiết giao dịch
+
+`id` là `transactionId` trong [webhook](/vi/api/webhooks). Response giống một phần tử trong danh sách giao dịch.
+
+```bash
+GET /v1/client/metrics/transactions/:id
+```
+
+## Tổng quan
+
+Tổng tiền vào, số giao dịch và giá trị trung bình trong khoảng thời gian đã chọn.
+
+```bash
+GET /v1/client/metrics/overview
+```
+
+```bash
+curl -G https://app.apipay.vn/v1/client/metrics/overview \
+  -H "Authorization: Bearer <Auth>" \
+  --data-urlencode "period=this_month"
+```
+
+```json
+{
+  "data": {
+    "totalIn": 5000000,
+    "totalTransactions": 50,
+    "averageAmount": 100000,
+    "comparison": null
+  },
+  "statusCode": 200,
+  "timestamp": "2026-08-12T10:35:00.000Z"
+}
+```
+
+| Trường              | Kiểu           | Mô tả                                                    |
+| ------------------- | -------------- | -------------------------------------------------------- |
+| `totalIn`           | number         | Tổng tiền vào (VND)                                      |
+| `totalTransactions` | number         | Số giao dịch                                             |
+| `averageAmount`     | number         | Giá trị trung bình mỗi giao dịch (VND)                   |
+| `comparison`        | object \| null | So sánh với kỳ trước. Chỉ có khi `period=this_month`     |

@@ -11,32 +11,36 @@ ApiPay giúp bạn nhận thanh toán chuyển khoản ngân hàng qua API. Bạ
 
 ## Tính năng chính
 
-- **Tạo liên kết thanh toán** qua QR Code hoặc thông tin chuyển khoản
+- **Link thanh toán** có mã QR và thông tin chuyển khoản
 - **Tự động xác nhận** khi tiền vào tài khoản
-- **Loa Thanh Toán miễn phí** - Đọc thông báo tiền về realtime tại quầy thu ngân trên mọi thiết bị
-- **Webhook notifications** - Nhận thông báo thanh toán gần như ngay lập tức
-- **Nhiều ngân hàng** - Hỗ trợ ACB, MB Bank, BIDV, OCB, VietinBank, VIB, Sacombank, VPBank, PGBank, Shinhan Bank, Co-opBank, Vietcombank, MSB và TPBank
-- **Không phí phần trăm** - Giao dịch thành công tính vào hạn mức; giao dịch thất bại không bị tính phí
-- **Gói miễn phí** - Bắt đầu với 60 giao dịch thành công/tháng, rồi nâng cấp gói hạn mức từ 200 đến 500.000 GD/tháng. Mọi gói hạn mức đều hỗ trợ kết nối nhiều ngân hàng.
+- **Webhook** báo kết quả thanh toán về hệ thống của bạn gần như ngay lập tức
+- **Loa Thanh Toán miễn phí**: đọc thông báo tiền về tại quầy, trên mọi thiết bị
+- **Nhiều ngân hàng**: xem [danh sách ngân hàng hỗ trợ](/vi/connect-banks)
+- **Không thu phí theo phần trăm**: chỉ giao dịch thành công được tính vào hạn mức
+- **Gói miễn phí** để bắt đầu, nâng cấp theo hạn mức khi cần. Xem [Bảng giá](https://apipay.vn/pricing)
 
 ## Cách hoạt động
 
-1. **Tạo payment link** bằng API hoặc Dashboard
-2. **Gửi link cho khách** - Khách quét QR hoặc chuyển khoản
-3. **ApiPay ghi nhận giao dịch** - Hệ thống khớp giao dịch với payment request
-4. **Nhận webhook & thông báo loa** - Hệ thống nhận webhook và loa tại quầy đọc thông báo tiền về tức thì
+1. **Tạo link thanh toán** bằng API hoặc dashboard.
+2. **Gửi link cho khách**: khách quét QR hoặc chuyển khoản.
+3. **ApiPay ghi nhận giao dịch** và khớp với yêu cầu thanh toán.
+4. **Bạn nhận webhook**, loa tại quầy đọc thông báo tiền về.
 
 ## Bắt đầu
 
-- **Mới dùng ApiPay?** Xem [Hướng dẫn bắt đầu](/vi/onboarding) để thiết lập tài khoản và nhận thanh toán đầu tiên
-- **Đã có tài khoản?** Mở [Quick Start](/vi/quickstart) để tích hợp API trong vài phút
+- **Mới dùng ApiPay?** Xem [Hướng dẫn bắt đầu](/vi/onboarding) để thiết lập tài khoản và nhận thanh toán đầu tiên.
+- **Đã có tài khoản?** Mở [Bắt đầu nhanh](/vi/quickstart) để tích hợp API trong vài phút.
 
 ## Tài liệu hướng dẫn
 
-| Hướng dẫn                                | Mô tả                                  |
-| ---------------------------------------- | -------------------------------------- |
-| [Hướng dẫn bắt đầu](/vi/onboarding)      | Thiết lập tài khoản từ đầu             |
-| [Loa Thanh Toán](/vi/payment-speaker)    | Biến điện thoại, máy tính bảng thành loa đọc tiền về realtime |
-| [Đăng ký & Thanh toán](/vi/subscription) | Quản lý gói và thanh toán |
-| [Quản lý Ngân hàng](/vi/banking)         | Kết nối và quản lý tài khoản ngân hàng |
-| [Commerce](/vi/commerce)                 | Sản phẩm, mức giá, link dùng lại và biên lai |
+| Hướng dẫn | Mô tả |
+| --------- | ----- |
+| [Hướng dẫn bắt đầu](/vi/onboarding) | Thiết lập tài khoản từ đầu |
+| [Bắt đầu nhanh](/vi/quickstart) | Tạo yêu cầu thanh toán đầu tiên bằng API |
+| [Yêu cầu thanh toán](/vi/api/payment-requests) | Tạo và quản lý yêu cầu thanh toán qua API |
+| [Webhook](/vi/api/webhooks) | Nhận và xác thực thông báo thanh toán |
+| [Sandbox & Live Test](/vi/sandbox) | Kiểm thử mà không cần tiền thật |
+| [Quản lý ngân hàng](/vi/banking) | Kết nối và quản lý tài khoản ngân hàng |
+| [Loa Thanh Toán](/vi/payment-speaker) | Biến điện thoại, máy tính bảng thành loa đọc tiền về |
+| [Gói dịch vụ & thanh toán](/vi/subscription) | Quản lý gói và thanh toán |
+| [Commerce](/vi/commerce) | Sản phẩm, mức giá, link dùng lại và biên lai |

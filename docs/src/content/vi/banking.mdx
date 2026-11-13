@@ -5,123 +5,35 @@ description: Kết nối và quản lý tài khoản ngân hàng Việt Nam đ�
 
 # Quản lý tài khoản ngân hàng
 
-Tài khoản ngân hàng là nơi khách chuyển tiền cho bạn. Khi kết nối ngân hàng vào ApiPay, hệ thống có thể ghi nhận giao dịch và gửi webhook gần như ngay lập tức.
-
----
+Tài khoản ngân hàng là nơi khách chuyển tiền cho bạn. Chưa kết nối ngân hàng nào? Xem [Kết nối ngân hàng](/vi/connect-banks).
 
 ## Cách hoạt động
 
-Khi khách hàng chuyển tiền vào tài khoản ngân hàng đã liên kết, ApiPay sẽ:
+Khi khách chuyển tiền vào tài khoản đã kết nối, ApiPay:
 
-1. **Phát hiện** khoản chuyển vào qua Open Banking API
-2. **Đối chiếu** khoản chuyển với yêu cầu thanh toán tương ứng
-3. **Thông báo** cho hệ thống của bạn qua webhook
+1. Ghi nhận khoản tiền vào.
+2. Đối chiếu với yêu cầu thanh toán tương ứng.
+3. Báo cho bạn qua webhook, kênh thông báo hoặc Loa thanh toán.
 
-Nhờ vậy, bạn không cần đối soát thủ công cho từng đơn hàng.
+Bạn không cần đối soát thủ công từng đơn. Mọi gói, kể cả gói miễn phí, đều kết nối được nhiều ngân hàng.
 
----
+## Trạng thái
 
-## Ngân hàng được hỗ trợ
+- **Hoạt động**: đang nhận thanh toán bình thường.
+- **Đang chờ**: đang hoàn tất kết nối, thường xong trong vài giây. Tài khoản cần gửi yêu cầu kích hoạt sẽ ở trạng thái này cho đến khi ApiPay kích hoạt.
+- **Không hoạt động**: bạn đã tạm tắt tài khoản, ApiPay không nhận thanh toán qua tài khoản này.
 
-| Ngân hàng            | Mã   | Cá nhân | Doanh nghiệp | Hộ kinh doanh | Tính năng chính               |
-| -------------------- | ---- | :-----: | :----------: | :-----------: | ----------------------------- |
-| **ACB**              | ACB  |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào, Tài khoản ngân hàng |
-| **MB Bank**          | MBB  |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào, Tài khoản ảo (VA) |
-| **BIDV**             | BIDV |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào, Tài khoản ảo (VA) |
-| **OCB**              | OCB  |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào, Tài khoản ảo (VA) |
-| **VietinBank**      | ICB  |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào, Tài khoản ngân hàng |
-| **VIB**              | VIB  |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào, Tài khoản ảo (VA) |
-| **Sacombank**        | STB  |   Có    |    Không     |      Có       | OpenBanking, Đồng bộ tiền vào, Tài khoản ảo (VA) |
-| **VPBank**           | VPB  |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào, Tài khoản ảo (VA) |
-| **PGBank**           | PGB  |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào, Tài khoản ngân hàng |
-| **Shinhan Bank**     | SHBVN|   Có    |      Có      |    Không      | OpenBanking, Đồng bộ tiền vào, Tài khoản ảo (VA) |
-| **Co-opBank**        | COOPBANK | Có   |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào, Tài khoản ảo (VA) |
-| **Vietcombank**      | VCB  |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào, Tài khoản ảo (VA) cho Cá nhân |
-| **MSB**              | MSB  |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào, Tài khoản ngân hàng |
-| **TPBank**           | TPB  |   Có    |      Có      |      Có       | OpenBanking, Đồng bộ tiền vào, Tài khoản ngân hàng |
+## Thao tác thường dùng
 
----
+Mở **Ngân hàng** trên thanh bên. Mỗi dòng có công tắc trạng thái và menu **...**:
 
-## Các khái niệm quan trọng
-
-### Loại tài khoản
-
-Khi kết nối ngân hàng, bạn sẽ chọn giữa:
-
-- **Cá nhân** — tài khoản cá nhân
-- **Doanh nghiệp** — tài khoản công ty
-- **Hộ kinh doanh** — tài khoản hộ kinh doanh
-
-Lưu ý:
-
-- **Vietcombank** tài khoản Cá nhân xác thực trên ứng dụng ngân hàng và được cấp tài khoản ảo (VA); tài khoản Doanh nghiệp và Hộ kinh doanh cần kích hoạt thủ công và dùng số tài khoản gốc.
-- **Sacombank** không hỗ trợ tài khoản Doanh nghiệp; dùng Cá nhân hoặc Hộ kinh doanh.
-- **VietinBank** giao dịch từ ngân hàng sẽ không có nội dung; liên hệ hỗ trợ để biết thêm chi tiết. Doanh nghiệp cần kích hoạt thủ công.
-- **VPBank** hỗ trợ Cá nhân và Hộ kinh doanh (tự động) và Doanh nghiệp (kích hoạt thủ công).
-- **Shinhan Bank** hỗ trợ Cá nhân (tự động) và Doanh nghiệp (kích hoạt thủ công).
-- **BIDV** và **VietinBank** Doanh nghiệp cần kích hoạt thủ công; Hộ kinh doanh chạy online.
-- **MB Bank** Cá nhân, Doanh nghiệp và Hộ kinh doanh đều online. Hộ kinh doanh được gửi sang ngân hàng như tài khoản cá nhân.
-- **OCB** Doanh nghiệp cần kích hoạt thủ công. Cá nhân và Hộ kinh doanh chạy online.
-- **VIB**: mọi loại tài khoản chạy online. Doanh nghiệp được gửi sang ngân hàng dưới dạng hộ kinh doanh.
-- **Sacombank** Hộ kinh doanh chạy online.
-- **PGBank** và **Co-opBank**: tất cả loại tài khoản đều online, không cần kích hoạt thủ công.
-- **ACB** Doanh nghiệp và Hộ kinh doanh liên kết số tài khoản gốc, chạy online, dùng tên đăng nhập ACB OneBiz. ApiPay không cấp số tài khoản ảo riêng.
-- **MSB**: Cá nhân, Doanh nghiệp và Hộ kinh doanh đều kích hoạt thủ công. Doanh nghiệp cần bật MSB Merchant tại chi nhánh trước khi liên kết. Không chỉnh sửa mã giới thiệu. Mỗi tài khoản chỉ liên kết một lần.
-- **TPBank**: Cá nhân, Doanh nghiệp và Hộ kinh doanh xác thực trên ứng dụng ngân hàng. Tài khoản ảo hiển thị dưới dạng tài khoản phụ của tài khoản gốc.
-
-### Trạng thái
-
-Sau khi kết nối, tài khoản ngân hàng sẽ có một trong các trạng thái:
-
-- **Hoạt động** — đang nhận thanh toán bình thường
-- **Đang chờ** — OTP đã xác minh nhưng đang chờ xác nhận cuối cùng
-- **Yêu cầu kích hoạt** — chờ kích hoạt thủ công (OCB Doanh nghiệp, VPBank/BIDV/VietinBank/Shinhan Doanh nghiệp, Vietcombank Doanh nghiệp/Hộ kinh doanh, và mọi loại tài khoản MSB)
-- **Không hoạt động** — tạm thời tắt; thanh toán sẽ không được chuyển đến đây
-
-## Quản lý nhiều ngân hàng
-
-### Vì sao nên kết nối nhiều ngân hàng?
-
-- **Nhiều lựa chọn hơn** — Khách có thể chuyển qua ngân hàng quen thuộc.
-- **Chia tải tốt hơn** — Giao dịch được phân bổ qua nhiều tài khoản.
-- **Có phương án dự phòng** — Nếu một ngân hàng gặp sự cố, bạn vẫn còn ngân hàng khác.
-- **Tăng hạn mức vận hành** — Một số ngân hàng có giới hạn giao dịch mỗi ngày.
-
-Mọi gói hạn mức, kể cả **gói miễn phí**, đều hỗ trợ kết nối nhiều ngân hàng cùng lúc.
-
-### Gợi ý cấu hình
-
-| Quy mô     | Khuyến nghị                    |
-| ---------- | ------------------------------ |
-| Thấp       | 1-2 ngân hàng                  |
-| Trung bình | 3-5 ngân hàng                  |
-| Cao        | Nhiều ngân hàng được hỗ trợ    |
-
----
-
-## Điều hướng dashboard
-
-Trong ApiPay Dashboard, bạn mở phần **Ngân hàng** từ thanh sidebar:
-
-- **Ngân hàng** (`/banks`) — Xem tất cả tài khoản đã kết nối, thêm mới, xem giao dịch theo ngân hàng
-- Mỗi dòng ngân hàng hiển thị tên gợi nhớ, trạng thái, loại tài khoản và các thao tác
-- Bạn có thể đặt **tên gợi nhớ** cho mỗi tài khoản để dễ phân biệt; chỉ hiển thị trong dashboard của bạn
-
-> Xem [Kết nối ngân hàng](/vi/connect-banks) nếu bạn cần hướng dẫn từng bước.
-
----
-
-## Bảo Mật
-
-- **Dùng tài khoản doanh nghiệp** — Nên nhận tiền vào tài khoản mang tên doanh nghiệp.
-- **Giới hạn quyền truy cập** — Chỉ người được phân quyền mới nên quản lý ngân hàng.
-- **Theo dõi giao dịch** — Kiểm tra lịch sử giao dịch thường xuyên.
-- **Bật 2FA** — Thêm lớp bảo vệ cho tài khoản dashboard.
-
----
+- **Bật/tắt**: gạt công tắc để tạm ngừng hoặc tiếp tục nhận thanh toán.
+- **Xem giao dịch**: các giao dịch của riêng tài khoản này.
+- **Đổi tên gợi nhớ**: tối đa 50 ký tự, chỉ bạn thấy trong dashboard.
+- **Xóa ngân hàng**: gỡ tài khoản khỏi ApiPay.
 
 ## Tài liệu liên quan
 
-- [Hướng dẫn kết nối ngân hàng](/vi/connect-banks) — Liên kết tài khoản ngân hàng từng bước
-- [API Reference: Ngân hàng](/vi/api/banks) — Quản lý ngân hàng qua API
-- [Thiết lập webhook](/vi/api/webhooks) — Nhận thông báo thanh toán gần như ngay lập tức
+- [Kết nối ngân hàng](/vi/connect-banks)
+- [API ngân hàng](/vi/api/banks)
+- [Webhook](/vi/api/webhooks)

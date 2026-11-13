@@ -5,433 +5,220 @@ description: Nhận thông báo thanh toán qua webhook
 
 # Webhooks
 
-Webhook giúp hệ thống của bạn nhận thông báo khi có sự kiện thanh toán.
+Khi có tiền vào tài khoản ngân hàng đã kết nối, ApiPay gửi một request `POST` có chữ ký đến URL của bạn. Webhook tương đương với **IPN** ở các cổng thanh toán khác.
 
-> **Lưu ý cho lập trình viên đã dùng cổng thanh toán khác:** Webhook của ApiPay tương đương với khái niệm **IPN** (Instant Payment Notification) mà nhiều cổng thanh toán sử dụng. Luồng hoạt động giống nhau: đăng ký URL, nhận `POST` có chữ ký khi phát sinh giao dịch, và trả HTTP `200` để xác nhận.
+Tích hợp gồm 3 bước:
+
+1. Đăng ký URL nhận webhook và lưu `secret`.
+2. Kiểm tra header `ApiPay-Signature` trên mỗi request.
+3. Trả mã `2xx`, rồi cập nhật đơn hàng.
 
 ## Đăng ký webhook
 
-Bạn có thể tạo webhook URL trong dashboard tại **Cài đặt → Webhooks**, hoặc tạo bằng API.
-
-Mặc định webhook là **toàn cục (global)**: nó gửi cho **tất cả tài khoản ngân hàng hiện tại và trong tương lai**. Bạn có thể thu hẹp phạm vi nếu cần:
-
-- **Một ngân hàng (legacy)** — truyền `bankPublicId` để gắn webhook vào một ngân hàng đã kết nối. Vẫn được hỗ trợ cho các client cũ.
-- **Danh sách ngân hàng đã chọn** — truyền `bankPublicIds: ["bnk_a", "bnk_b"]` để chỉ gửi cho các ngân hàng đó. Ngân hàng kết nối sau này **không** tự động được thêm vào.
-- **Không ngân hàng nào** — truyền `bankPublicIds: []` để tạo webhook đã chọn nhưng hiện không khớp ngân hàng nào.
+Tạo webhook trong dashboard tại mục **Webhooks**, hoặc gọi API:
 
 ```bash
 POST /v1/client/webhooks
 ```
 
-### Request Body
+| Tham số          | Kiểu     | Bắt buộc | Mô tả                                                                  |
+| ---------------- | -------- | -------- | ---------------------------------------------------------------------- |
+| `webhookUrl`     | string   | Có       | URL nhận webhook (nên dùng HTTPS)                                      |
+| `bankPublicIds`  | string[] | Không    | Chỉ nhận giao dịch của các ngân hàng này. Bỏ trống để nhận tất cả, kể cả ngân hàng kết nối sau |
+| `isActive`       | boolean  | Không    | Bật hoặc tắt webhook. Mặc định `true`                                  |
+| `timeoutSeconds` | integer  | Không    | Thời gian chờ mỗi lần gửi, từ `5` đến `10` giây. Mặc định `10`         |
+| `extraHeader`    | object   | Không    | Header gửi kèm, dạng `{"name": "X-Api-Key", "value": "..."}`. Tên phải bắt đầu bằng `X-` |
 
-| Tham số          | Kiểu     | Bắt buộc | Mô tả                                                                                                                    |
-| ---------------- | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------ |
-| `webhookUrl`     | string   | **✓ Có** | HTTPS URL để nhận webhook                                                                                                |
-| `bankPublicId`   | string   | Không    | Legacy: gắn vào một tài khoản ngân hàng theo public ID                                                                   |
-| `bankPublicIds`  | string[] | Không    | Danh sách ngân hàng được chọn. Bỏ trống (và không có `bankPublicId`) = tất cả ngân hàng; `[]` = không khớp ngân hàng nào |
-| `isActive`       | boolean  | Không    | Tạo webhook ở trạng thái bật hoặc tắt (mặc định `true`)                                                                  |
-| `timeoutSeconds` | integer  | Không    | Timeout mỗi lần gửi, 5–10 giây (mặc định `10`)                                                                           |
-| `extraHeader`    | object   | Không    | Header tùy chọn `{name, value}`. `name` phải bắt đầu bằng `X-`                                                           |
-
-> Không gửi đồng thời `bankPublicId` và `bankPublicIds`. API sẽ từ chối trừ khi chúng mô tả cùng một ngân hàng.
-
-`timeoutSeconds` phải là số nguyên từ `5` đến `10`. Tham số này chỉ quy định thời gian ApiPay chờ endpoint của bạn ở mỗi lần gửi — lịch thử lại không đổi (xem [Retry policy](#retry-policy)).
-
-### Response
+```bash
+curl -X POST https://app.apipay.vn/v1/client/webhooks \
+  -H "Authorization: Bearer <Auth>" \
+  -H "Content-Type: application/json" \
+  -d '{"webhookUrl": "https://your-domain.com/webhooks/apipay"}'
+```
 
 ```json
 {
   "data": {
-    "message": "Tạo webhook thành công",
     "id": "wh_abc123",
-    "bankPublicId": null,
     "webhookUrl": "https://your-domain.com/webhooks/apipay",
     "secret": "a1b2c3d4..."
-  }
+  },
+  "statusCode": 201,
+  "timestamp": "2026-08-12T14:27:45.000Z"
 }
 ```
 
-`bankPublicId` là `null` với webhook toàn cục và webhook theo danh sách. Hãy lưu `secret`; khóa này dùng để kiểm tra `ApiPay-Signature`.
+Lưu `secret` ở phía server. Bạn dùng khóa này để kiểm tra chữ ký.
 
-## Quản lý webhooks
+## Quản lý webhook
 
-| Endpoint                                             | Mô tả                                                        |
-| ---------------------------------------------------- | ------------------------------------------------------------ |
-| `GET /v1/client/webhooks`                            | Danh sách webhook (`page`, `limit`)                          |
-| `PATCH /v1/client/webhooks/:id`                      | Cập nhật URL, trạng thái, phạm vi ngân hàng, timeout, header |
-| `PATCH /v1/client/webhooks/:id/toggle`               | Bật hoặc tắt webhook                                         |
-| `DELETE /v1/client/webhooks/:id`                     | Xóa webhook                                                  |
-| `GET /v1/client/webhooks/:id/history`                | Xem lịch sử gửi (`page`, `limit`)                            |
-| `POST /v1/client/webhooks/history/:historyId/resend` | Gửi lại một lần gửi thất bại                                 |
-| `GET /v1/client/webhooks/deliveries`                 | Xem lịch sử gửi webhook trên production, kèm bộ lọc          |
+| Endpoint                                             | Mô tả                                                    |
+| ---------------------------------------------------- | -------------------------------------------------------- |
+| `GET /v1/client/webhooks`                            | Danh sách webhook (`page`, `limit`)                      |
+| `PATCH /v1/client/webhooks/:id`                      | Cập nhật các trường như khi tạo. Gửi `null` để về mặc định |
+| `PATCH /v1/client/webhooks/:id/toggle`               | Bật hoặc tắt webhook                                     |
+| `DELETE /v1/client/webhooks/:id`                     | Xóa webhook                                              |
+| `GET /v1/client/webhooks/deliveries`                 | Lịch sử gửi webhook                                      |
+| `POST /v1/client/webhooks/history/:historyId/resend` | Gửi lại một lần gửi thất bại                             |
 
-### Cập nhật webhook
+## Sự kiện `transaction.in`
 
-```bash
-PATCH /v1/client/webhooks/:id
-```
-
-| Tham số          | Kiểu             | Mô tả                                                                                               |
-| ---------------- | ---------------- | --------------------------------------------------------------------------------------------------- |
-| `webhookUrl`     | string           | HTTPS URL mới                                                                                       |
-| `isActive`       | boolean          | Bật hoặc tắt webhook                                                                                |
-| `bankPublicIds`  | string[] \| null | Danh sách ngân hàng. `null` = tất cả ngân hàng; `[]` = không ngân hàng nào; mảng = các ngân hàng đó |
-| `timeoutSeconds` | integer \| null  | Timeout gửi 5–10. `null` đưa về mặc định `10`                                                       |
-| `extraHeader`    | object \| null   | Header `{name, value}` tùy chọn. `null` để tắt                                                      |
-
-Bỏ qua một trường để giữ nguyên, hoặc truyền `null` để đưa trường đó về mặc định:
-
-```json
-PATCH /v1/client/webhooks/wh_abc123
-{
-  "bankPublicIds": null,
-  "timeoutSeconds": null,
-  "extraHeader": null
-}
-```
-
-Đặt `bankPublicIds` sẽ thay thế liên kết một ngân hàng (legacy). Muốn đưa webhook về lại một ngân hàng legacy, hãy xóa và tạo lại với `bankPublicId`.
-
-### Response của danh sách
-
-`GET /v1/client/webhooks` trả về mỗi webhook kèm phạm vi hiệu lực và cấu hình nâng cao:
-
-| Trường          | Kiểu           | Mô tả                                                              |
-| --------------- | -------------- | ------------------------------------------------------------------ |
-| `bankAccountId` | number \| null | Liên kết một ngân hàng legacy; `null` với webhook toàn cục/đã chọn |
-| `bankAccount`   | object \| null | Ngân hàng đã gắn khi `scope` là `bank`                             |
-| `scope`         | string         | `all`, `selected`, hoặc `bank`                                     |
-| `selectedBanks` | array          | Danh sách ngân hàng đã chọn khi `scope` là `selected`              |
-| `configs`       | object         | `{bankPublicIds, timeoutSeconds, extraHeader}`                     |
-
-`configs.bankPublicIds` là `null` khi webhook áp dụng cho tất cả ngân hàng. `configs.timeoutSeconds` luôn phản ánh giá trị hiệu lực (mặc định `10`).
-
-<span id="delivery-log"></span>
-
-## Lịch sử gửi (Delivery Log)
-
-Lịch sử gửi webhook cho bạn xem lại mọi lần ApiPay gửi webhook trong môi trường production. Bạn có thể mở mục này từ **tab Lịch sử gửi** trên trang **Cài đặt → Webhooks** trong dashboard.
-
-### Bộ lọc
-
-| Bộ lọc      | Mô tả                                           |
-| ----------- | ----------------------------------------------- |
-| Khoảng ngày | Lọc theo ngày gửi                               |
-| Ngân hàng   | Lọc theo tài khoản ngân hàng                    |
-| Webhook     | Lọc theo endpoint cụ thể                        |
-| Trạng thái  | `SUCCESS` (thành công) hoặc `FAILED` (thất bại) |
-
-### Chi tiết bản ghi
-
-Mỗi bản ghi trong Lịch sử gửi bao gồm:
-
-- **Thời gian** — Thời điểm gửi webhook
-- **Endpoint** — URL webhook đã gửi đến
-- **Ngân hàng** — Tài khoản ngân hàng liên quan
-- **Trạng thái** — Thành công hoặc thất bại, kèm mã phản hồi HTTP
-- **Số lần thử lại** — Số lần hệ thống đã thử gửi lại
-- **Mã tham chiếu** — Mã giao dịch liên quan
-- **Số tiền** — Số tiền giao dịch
-
-Nhấn vào một bản ghi để xem đầy đủ **nội dung phản hồi** (response body) từ server của bạn và **payload** mà ApiPay đã gửi.
-
-### Gửi lại
-
-Trong Lịch sử gửi, bạn có thể gửi lại ngay một webhook thất bại mà không cần rời khỏi trang.
-
-### API
-
-Truy vấn lịch sử gửi bằng API:
-
-```bash
-GET /v1/client/webhooks/deliveries
-```
-
-**Tham số truy vấn:**
-
-| Tham số         | Kiểu   | Mô tả                                            |
-| --------------- | ------ | ------------------------------------------------ |
-| `page`          | number | Số trang (mặc định: 1)                           |
-| `limit`         | number | Số bản ghi mỗi trang (mặc định: 20, tối đa: 100) |
-| `webhookId`     | string | Lọc theo ID webhook                              |
-| `bankAccountId` | number | Lọc theo tài khoản ngân hàng                     |
-| `status`        | string | `SUCCESS` hoặc `FAILED`                          |
-| `dateFrom`      | string | Từ ngày (YYYY-MM-DD, theo ngày lịch Việt Nam UTC+7) |
-| `dateTo`        | string | Đến ngày (YYYY-MM-DD, bao gồm cả ngày này, theo ngày lịch Việt Nam UTC+7) |
-
-**Phản hồi:**
-
-```json
-{
-  "data": {
-    "status": true,
-    "statusCode": 200,
-    "timestamp": "2026-08-12T14:27:45.000Z",
-    "data": [
-      {
-        "id": "del_abc123",
-        "clientWebhookId": "wh_xyz789",
-        "transactionId": "txn_abc456",
-        "status": "SUCCESS",
-        "responseCode": 200,
-        "responseBody": "{\"received\": true}",
-        "payload": {
-          "event": "transaction.in",
-          "data": {
-            "amount": "100000",
-            "referenceCode": "ORDER-12345"
-          }
-        },
-        "retryCount": 0,
-        "createdAt": "2026-05-17T10:30:00.000Z",
-        "clientWebhook": {
-          "id": "wh_xyz789",
-          "webhookUrl": "https://your-domain.com/webhooks/apipay",
-          "bankAccount": {
-            "bankShortName": "VCB",
-            "accountNumber": "1234567890"
-          }
-        },
-        "transaction": {
-          "id": "txn_abc456",
-          "amount": "100000",
-          "referenceCode": "ORDER-12345"
-        }
-      }
-    ],
-    "pagination": {
-      "page": 1,
-      "limit": 20,
-      "total": 150,
-      "totalPages": 8
-    }
-  }
-}
-```
-
-## Sự kiện (Events)
-
-### transaction.in
-
-Khi có tiền vào tài khoản ngân hàng của bạn.
+ApiPay gửi sự kiện này khi có tiền vào tài khoản.
 
 ```json
 {
   "event": "transaction.in",
   "data": {
     "transactionId": "550e8400-e29b-41d4-a716-446655440000",
-    "referenceCode": "TX123456789",
+    "referenceCode": "FT26081212345",
     "amount": "100000",
+    "type": "IN",
     "content": "ORDER-12345",
-    "transactionDate": "2024-03-20T10:30:00.000Z",
-    "bankAccountPublicId": "bk_abcdef1234567890",
-    "gateway": "VCB",
-    "rawTransactionDate": "2024-03-20 10:30:00",
-    "vaNumber": "999988887777",
-    "accountNumber": "0123456789"
+    "transactionDate": "2026-08-12T10:30:00.000Z",
+    "bankAccountPublicId": "bnk_abc123",
+    "gateway": "970422",
+    "accountNumber": "0123456789",
+    "vaNumber": null
   }
 }
 ```
 
-### Trường dữ liệu
+| Trường                     | Kiểu           | Mô tả                                                       |
+| -------------------------- | -------------- | ----------------------------------------------------------- |
+| `event`                    | string         | Tên sự kiện                                                 |
+| `data.transactionId`       | string         | Mã giao dịch ApiPay. Dùng làm khóa chống xử lý trùng        |
+| `data.referenceCode`       | string         | Mã tham chiếu của ngân hàng                                 |
+| `data.amount`              | string         | Số tiền (VND)                                               |
+| `data.type`                | string         | `IN` (tiền vào)                                             |
+| `data.content`             | string         | Nội dung chuyển khoản                                       |
+| `data.transactionDate`     | string         | Thời điểm giao dịch (ISO 8601)                              |
+| `data.bankAccountPublicId` | string         | Tài khoản ngân hàng nhận tiền                               |
+| `data.gateway`             | string         | Mã BIN ngân hàng, ví dụ `970422` (MB)                       |
+| `data.accountNumber`       | string         | Số tài khoản nhận tiền                                      |
+| `data.vaNumber`            | string \| null | Số tài khoản ảo, nếu có                                     |
 
-| Trường                     | Kiểu   | Mô tả                                                      |
-| -------------------------- | ------ | ---------------------------------------------------------- |
-| `event`                    | string | Tên sự kiện                                                |
-| `data.transactionId`       | string | ID giao dịch nội bộ (UUID)                                 |
-| `data.referenceCode`       | string | Mã tham chiếu giao dịch ngân hàng                          |
-| `data.amount`              | string | Số tiền giao dịch (VND) dưới dạng chuỗi                    |
-| `data.content`             | string | Nội dung giao dịch                                         |
-| `data.transactionDate`     | string | Thời gian giao dịch (ISO 8601)                             |
-| `data.bankAccountPublicId` | string | Public ID của tài khoản ngân hàng                          |
-| `data.gateway`             | string | Mã ngân hàng (VD: ACB, MBB, BIDV, OCB, ICB, VIB, STB, VPB) |
-| `data.rawTransactionDate`  | string | Ngày giao dịch gốc từ ngân hàng                            |
-| `data.vaNumber`            | string | Số tài khoản ảo (tùy chọn)                                 |
-| `data.accountNumber`       | string | Số tài khoản người gửi/nhận                                |
+Đối chiếu đơn hàng theo `amount` và `content`. Ngân hàng có thể thêm ký tự vào trước hoặc sau nội dung, nên hãy kiểm tra `data.content` có **chứa** nội dung của [yêu cầu thanh toán](/vi/api/payment-requests) hay không, không phân biệt hoa thường.
 
-## Webhook sandbox
+## Xác thực webhook
 
-Khi dùng test key (`ak_test_*`), payload webhook có thêm cờ `sandbox`:
+Mỗi request có header `ApiPay-Signature`: chữ ký HMAC-SHA256 (hex) của **body gốc**, ký bằng `secret` của webhook. Tính chữ ký trên body thô nhận được, không trên JSON đã parse lại.
 
-```json
-{
-  "event": "transaction.in",
-  "sandbox": true,
-  "data": {
-    "transactionId": "550e8400-e29b-41d4-a716-446655440000",
-    "referenceCode": "TX123456789",
-    "amount": "50000",
-    "content": "TEST-ORDER-001",
-    "transactionDate": "2026-08-15T10:30:00.000Z",
-    "bankAccountPublicId": "test_bk_abc123",
-    "gateway": "MB",
-    "accountNumber": "0123456789"
-  }
-}
-```
-
-Luôn kiểm tra cờ `sandbox` để không fulfill đơn thử nghiệm:
-
+<CodeTabs>
 ```javascript
-app.post('/webhooks/apipay', (req, res) => {
-  const {event, sandbox, data} = req.body;
+const crypto = require("crypto");
+const express = require("express");
 
-  if (sandbox) {
-    console.log('[sandbox] Test event:', event, data.referenceCode);
-    return res.status(200).json({received: true});
+const app = express();
+
+function isValidSignature(rawBody, signature, secret) {
+  const expected = Buffer.from(crypto.createHmac("sha256", secret).update(rawBody).digest("hex"), "hex");
+  const received = Buffer.from(String(signature || ""), "hex");
+  return received.length === expected.length && crypto.timingSafeEqual(received, expected);
+}
+
+app.post("/webhooks/apipay", express.raw({type: "*/*"}), (req, res) => {
+  if (!isValidSignature(req.body, req.headers["apipay-signature"], process.env.APIPAY_WEBHOOK_SECRET)) {
+    return res.status(401).json({error: "Invalid signature"});
   }
 
-  if (event === 'transaction.in') {
-    // Xử lý giao dịch thật...
+  const {event, sandbox, data} = JSON.parse(req.body.toString("utf8"));
+
+  if (event === "transaction.in" && !sandbox) {
+    // Cập nhật đơn hàng theo data.content và data.amount
   }
 
   res.status(200).json({received: true});
 });
 ```
 
-Xem [Sandbox & Live Test](/vi/sandbox) để biết thêm.
-
-## Xác thực webhook
-
-Tất cả webhook requests đều có header `ApiPay-Signature` để bạn xác thực.
-
-Chữ ký HMAC luôn được bật và không bị ảnh hưởng bởi bất kỳ cấu hình nào ở trên — `ApiPay-Signature` được gửi trong mọi lần gửi. `extraHeader` là header bổ sung, độc lập và không thay thế hay làm thay đổi chữ ký.
-
-<CodeTabs>
-```javascript
-const crypto = require("crypto");
-
-function verifyWebhookSignature(rawBody, signature, secretKey) {
-  const expectedSignature = crypto.createHmac("sha256", secretKey).update(rawBody).digest("hex");
-  const expected = Buffer.from(expectedSignature, "hex");
-  const received = Buffer.from(String(signature || ""), "hex");
-
-  // timingSafeEqual throws on length mismatch, so guard first.
-  return received.length === expected.length && crypto.timingSafeEqual(received, expected);
-}
-
-// Sử dụng trong Express
-app.post("/webhook", express.raw({type: "*/*"}), (req, res) => {
-  const signature = req.headers["apipay-signature"];
-  const payload = req.body; // raw Buffer, exactly as sent
-
-  if (!verifyWebhookSignature(payload, signature, process.env.WEBHOOK_SECRET)) {
-    return res.status(401).json({error: "Invalid signature"});
-  }
-
-  const {event, data} = JSON.parse(payload.toString("utf8"));
-
-    if (event === "transaction.in") {
-    	console.log("Tiền vào:", data.amount);
-    	console.log("Mã tham chiếu:", data.referenceCode);
-    	console.log("Nội dung:", data.content);
-    	// Cập nhật đơn hàng trong database của bạn
-    }
-
-    res.status(200).json({received: true});
-
-});
-
-```
-
 ```python
-import hmac
 import hashlib
+import hmac
+import json
+import os
 
-def verify_webhook_signature(payload: str, signature: str, secret_key: str) -> bool:
-    expected_signature = hmac.new(
-        secret_key.encode(),
-        payload.encode(),
-        hashlib.sha256
-    ).hexdigest()
+from flask import Flask, request
 
-    return hmac.compare_digest(signature, expected_signature)
+app = Flask(__name__)
 
-# Sử dụng trong Flask
-@app.route('/webhook', methods=['POST'])
-def handle_webhook():
-    signature = request.headers.get('ApiPay-Signature')
-    payload = request.get_data(as_text=True)
 
-    if not verify_webhook_signature(payload, signature, WEBHOOK_SECRET):
-        return {'error': 'Invalid signature'}, 401
+def is_valid_signature(raw_body: bytes, signature: str, secret: str) -> bool:
+    expected = hmac.new(secret.encode(), raw_body, hashlib.sha256).hexdigest()
+    return hmac.compare_digest(expected, signature or "")
 
-    data = request.get_json()
-    event = data.get('event')
 
-    if event == 'transaction.in':
-        print(f"Tiền vào: {data['data']['amount']}")
-        print(f"Mã tham chiếu: {data['data']['referenceCode']}")
-        print(f"Nội dung: {data['data']['content']}")
-        # Cập nhật đơn hàng
-    return {'received': True}, 200
+@app.post("/webhooks/apipay")
+def apipay_webhook():
+    raw_body = request.get_data()
+    if not is_valid_signature(raw_body, request.headers.get("ApiPay-Signature"), os.environ["APIPAY_WEBHOOK_SECRET"]):
+        return {"error": "Invalid signature"}, 401
+
+    payload = json.loads(raw_body)
+    if payload["event"] == "transaction.in" and not payload.get("sandbox"):
+        pass  # Cập nhật đơn hàng theo payload["data"]["content"] và ["amount"]
+
+    return {"received": True}, 200
 ```
 
 ```php
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
+$rawBody = file_get_contents('php://input');
+$signature = $_SERVER['HTTP_APIPAY_SIGNATURE'] ?? '';
+$expected = hash_hmac('sha256', $rawBody, getenv('APIPAY_WEBHOOK_SECRET'));
 
-function verifyWebhookSignature(string $payload, string $signature, string $secretKey): bool
-{
-    $expectedSignature = hash_hmac('sha256', $payload, $secretKey);
-
-    return hash_equals($expectedSignature, $signature);
+if (!hash_equals($expected, $signature)) {
+  http_response_code(401);
+  exit;
 }
 
-// Usage in Laravel route
-Route::post('/webhook', function (Request $request) {
-    $signature = $request->header('ApiPay-Signature');
-    $payload = $request->getContent();
+$payload = json_decode($rawBody, true);
 
-    if (!verifyWebhookSignature($payload, $signature, config('services.apipay.webhook_secret'))) {
-        return response()->json(['error' => 'Invalid signature'], 401);
-    }
+if ($payload['event'] === 'transaction.in' && empty($payload['sandbox'])) {
+  // Cập nhật đơn hàng theo $payload['data']['content'] và ['amount']
+}
 
-    $data = $request->json()->all();
-    $event = $data['event'] ?? null;
-
-    if ($event === 'transaction.in') {
-        logger('Money received: ' . $data['data']['amount']);
-        logger('Reference: ' . $data['data']['referenceCode']);
-        logger('Content: ' . $data['data']['content']);
-        // Update order in your database
-    }
-
-    return response()->json(['received' => true]);
-});
+http_response_code(200);
+echo json_encode(['received' => true]);
 ```
-
 </CodeTabs>
 
-## Retry policy
+## Thử lại
 
-- Lần 0: Ngay lập tức
+ApiPay coi lần gửi là thành công khi endpoint trả mã `2xx` trong thời gian `timeoutSeconds`. Nếu thất bại, ApiPay thử lại 3 lần: sau 5 giây, 20 giây và 1 phút. Sau đó bạn có thể gửi lại thủ công từ dashboard hoặc qua API.
 
-Nếu webhook delivery thất bại, hệ thống sẽ thử gửi lại:
+Một sự kiện có thể đến nhiều lần, nên chỉ xử lý mỗi `data.transactionId` một lần.
 
-- Lần 1: Sau 5 giây
-- Lần 2: Sau 20 giây
-- Lần 3: Sau 1 phút
+## Webhook sandbox
 
-Sau 3 lần retry thất bại, webhook sẽ không được gửi nữa.
+Khi dùng khóa thử nghiệm (`ak_test_*`), payload có thêm `"sandbox": true`. Không giao hàng cho các sự kiện này. Xem [Sandbox & Live Test](/vi/sandbox).
 
-`timeoutSeconds` quy định thời gian tối đa cho mỗi lần thử trước khi bị coi là thất bại. Tham số này không làm thay đổi lịch thử lại hay số lần thử.
+## Lịch sử gửi
 
-## Test webhooks
+Xem lại các lần gửi trong dashboard (mục **Webhooks**, tab **Lịch sử gửi**) hoặc qua API:
 
-Dùng [Webhook.site](https://webhook.site) để test webhook trong quá trình development:
+```bash
+GET /v1/client/webhooks/deliveries
+```
 
-1. Tạo URL test tại webhook.site
-2. Cấu hình webhook URL trong dashboard
-3. Tạo payment và hoàn thành thanh toán
-4. Xem request trên webhook.site
+| Tham số     | Kiểu   | Bắt buộc | Mô tả                                       |
+| ----------- | ------ | -------- | ------------------------------------------- |
+| `webhookId` | string | Không    | Lọc theo webhook                            |
+| `status`    | string | Không    | `SUCCESS` hoặc `FAILED`                     |
+| `dateFrom`  | string | Không    | Từ ngày, dạng `YYYY-MM-DD` (giờ Việt Nam)   |
+| `dateTo`    | string | Không    | Đến hết ngày, dạng `YYYY-MM-DD` (giờ Việt Nam) |
+| `page`      | number | Không    | Mặc định `1`                                |
+| `limit`     | number | Không    | Mặc định `20`, tối đa `100`                 |
 
-## Best practices
+Mỗi bản ghi có `status`, `responseCode`, `responseBody`, `payload` đã gửi và `retryCount`. Danh sách nằm ở `data.data`, phân trang ở `data.pagination`.
 
-1. **Luôn verify signature** trước khi xử lý webhook
-2. **Response nhanh** - Trả 200 ngay, rồi xử lý async
-3. **Idempotent** - Duplicate events không được làm cập nhật sai
-4. **Log events** - Ghi log để debug khi cần
+## Kiểm thử
+
+Dùng [Webhook.site](https://webhook.site) để xem request thật: tạo URL tạm, đăng ký làm webhook, rồi thanh toán thử trong [sandbox](/vi/sandbox).
+
+## Lưu ý
+
+- Luôn kiểm tra chữ ký trước khi xử lý.
+- Trả `2xx` ngay, để việc nặng chạy nền.
+- Chỉ xử lý mỗi `transactionId` một lần.
+- Bỏ qua sự kiện có `sandbox: true` khi giao hàng.

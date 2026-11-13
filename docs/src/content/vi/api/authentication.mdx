@@ -5,89 +5,67 @@ description: Cách xác thực request khi gọi ApiPay API
 
 # Xác thực API
 
-ApiPay dùng API keys để xác thực request. Các endpoint cần xác thực đều yêu cầu header `Authorization`.
-
-## Header Authorization
-
-Định dạng: `Authorization: Bearer <Auth>`
-
-Trong đó `<Auth>` là chuỗi base64 của `accessKey:secretKey`:
+Mọi endpoint `/v1/client/*` cần header `Authorization` tạo từ khóa API của bạn:
 
 ```
-base64(accessKey:secretKey)
+Authorization: Bearer base64(accessKey:secretKey)
 ```
 
-## Lấy API keys
+## Lấy khóa API
 
-1. Đăng nhập vào [dashboard](https://my.apipay.vn)
-2. Vào mục **Tích hợp → API Keys**
-3. Sao chép `accessKey` và `secretKey` của bạn
+Đăng nhập [my.apipay.vn](https://my.apipay.vn), vào **Tích hợp → Web App → API Keys** và tạo khóa mới. Bạn nhận được:
 
-## Key test và key live
+- `accessKey`: định danh khóa API.
+- `secretKey`: khóa bí mật. Chỉ dùng ở phía server, không đưa vào mã chạy trên trình duyệt hoặc ứng dụng di động.
 
-ApiPay hỗ trợ hai loại API key:
+## Khóa thử nghiệm và khóa thật
 
-| Loại key | Tiền tố | Mục đích |
-|----------|---------|----------|
-| **Test** | `ak_test_*` | Sandbox — không có tiền thật, webhook thử nghiệm |
-| **Live** | `ak_live_*` | Production — giao dịch thật |
+| Loại | Nhận biết | Mục đích |
+| ---- | --------- | -------- |
+| Thử nghiệm | `accessKey` bắt đầu bằng `ak_test_` | [Sandbox](/vi/sandbox), không có tiền thật |
+| Thật | Không có tiền tố | Giao dịch thật |
 
-Cùng một URL API (`https://app.apipay.vn`) phục vụ cả hai. Khi dùng test key, API tự chuyển sang sandbox.
-
-<Callout type="warning">
-Luôn thử với key `ak_test_*` trước. Giao dịch sandbox tách biệt khỏi dữ liệu production.
-</Callout>
+Cả hai dùng chung URL `https://app.apipay.vn`. Gọi bằng khóa thử nghiệm thì request chạy trong sandbox.
 
 ## Ví dụ
 
 <CodeTabs>
 ```javascript
-const axios = require("axios");
-
 const ACCESS_KEY = "your_access_key";
 const SECRET_KEY = "your_secret_key";
 
-// Tạo chuỗi auth base64
-const auth = Buffer.from(`${ACCESS_KEY}:${SECRET_KEY}`).toString("base64");
+async function main() {
+  const auth = Buffer.from(`${ACCESS_KEY}:${SECRET_KEY}`).toString("base64");
 
-const response = await axios.post(
-	"https://app.apipay.vn/v1/client/payment-requests",
-	{
-		bankPublicId: "bank_abc123",
-		amount: "100000",
-		content: "ORDER-001",
-	},
-	{
-		headers: {
-			Authorization: `Bearer ${auth}`,
-			"Content-Type": "application/json",
-		},
-	},
-);
+  const response = await fetch("https://app.apipay.vn/v1/client/payment-requests", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${auth}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({bankPublicId: "bnk_abc123", amount: "100000", content: "ORDER-001"}),
+  });
+  console.log(await response.json());
+}
+
+main();
 ```
 
 ```python
-import requests
 import base64
+import requests
 
 ACCESS_KEY = 'your_access_key'
 SECRET_KEY = 'your_secret_key'
 
-# Tạo chuỗi auth base64
 auth = base64.b64encode(f'{ACCESS_KEY}:{SECRET_KEY}'.encode()).decode()
 
 response = requests.post(
-    'https://app.apipay.vn/v1/client/payment-requests',
-    json={
-        'bankPublicId': 'bank_abc123',
-        'amount': '100000',
-        'content': 'ORDER-001'
-    },
-    headers={
-        'Authorization': f'Bearer {auth}',
-        'Content-Type': 'application/json'
-    }
+  'https://app.apipay.vn/v1/client/payment-requests',
+  json={'bankPublicId': 'bnk_abc123', 'amount': '100000', 'content': 'ORDER-001'},
+  headers={'Authorization': f'Bearer {auth}'},
 )
+print(response.json())
 ```
 
 ```php
@@ -98,26 +76,35 @@ use Illuminate\Support\Facades\Http;
 $accessKey = 'your_access_key';
 $secretKey = 'your_secret_key';
 
-// Tạo chuỗi auth base64
 $auth = base64_encode("{$accessKey}:{$secretKey}");
 
-$response = Http::withHeaders([
-    'Authorization' => "Bearer {$auth}",
-    'Content-Type' => 'application/json',
-])->post('https://app.apipay.vn/v1/client/payment-requests', [
-    'bankPublicId' => 'bank_abc123',
-    'amount' => '100000',
-    'content' => 'ORDER-001',
+$response = Http::withToken($auth)->post('https://app.apipay.vn/v1/client/payment-requests', [
+  'bankPublicId' => 'bnk_abc123',
+  'amount' => '100000',
+  'content' => 'ORDER-001',
 ]);
 ```
 
 ```bash
-# Mã hóa credentials: echo -n "accessKey:secretKey" | base64
-AUTH=$(echo -n "your_access_key:your_secret_key" | base64)
+AUTH=$(echo -n "your_access_key:your_secret_key" | base64 | tr -d "\n")
 
 curl -X POST https://app.apipay.vn/v1/client/payment-requests \
   -H "Authorization: Bearer $AUTH" \
   -H "Content-Type: application/json" \
-  -d '{"bankPublicId": "bank_abc123", "amount": "100000", "content": "ORDER-001"}'
+  -d '{"bankPublicId": "bnk_abc123", "amount": "100000", "content": "ORDER-001"}'
 ```
 </CodeTabs>
+
+## Lỗi xác thực
+
+Thiếu header, sai định dạng hoặc khóa không hợp lệ đều trả `401`:
+
+```json
+{
+  "statusCode": 401,
+  "timestamp": "2026-08-12T14:27:45.000Z",
+  "path": "/v1/client/payment-requests",
+  "method": "POST",
+  "message": "API Key không hợp lệ"
+}
+```

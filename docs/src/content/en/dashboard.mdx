@@ -5,319 +5,92 @@ description: Navigate and use your ApiPay dashboard effectively
 
 # Dashboard Guide
 
-Your ApiPay dashboard is your command center for managing payments, bank accounts, and integrations. This guide covers all key features.
+The ApiPay dashboard (my.apipay.vn) is where you manage banks, payments and integrations. This page shows where each task lives.
 
 ---
 
-## Dashboard Overview
+## Sidebar
 
-When you log in, you'll see the main dashboard with:
+| Group | Items |
+|-------|-------|
+| Overview | Overview, Transactions, Notifications, Pricing, Integrations, System Status |
+| Payment Gateway | Banks, Webhooks, Create QR Code, Payment Requests |
+| Integrations | Sandbox Mode, Notification Channels, Custom Domains, Payment Speaker, Stores, Web App (API Keys, Vibe Code, MCP Server, Commerce, WHMCS, WooCommerce, HostBill, Google Sheets) |
+| Account | Invoices, Affiliates, Settings (Account, Appearance, Help) |
+| Support | Documentation, Contact, Meet Appi |
 
-- **Sidebar Navigation** - Access all features
-- **Header** - Account info, notifications, settings
-- **Main Content Area** - Context-specific content
-
-### Key Sections
-
-| Section | Description |
-|---------|-------------|
-| Overview | Quick stats and recent activity |
-| Payment Requests | Create and manage payment links |
-| Transactions | View incoming payments |
-| Settings | Account, banks, webhooks, API keys |
+Press `Ctrl + K` (or `Cmd + K` on Mac) to jump to any page.
 
 ---
 
-## Navigation Guide
+## Overview
 
-### Sidebar Menu
-
-```
-📊 Overview
-   └─ Dashboard home with key metrics
-
-💳 Payment Requests
-   └─ Create and manage one-time payment links
-
-📈 Transactions
-   └─ View payment history and details
-
-🔊 Integrations
-   ├─ Commerce (Beta) — products, prices, reusable payment links
-   ├─ Payment Speaker (Real-time voice payment alerts)
-   ├─ Custom Domains
-   ├─ Notification Channels
-   ├─ API Keys
-   └─ E-commerce Plugins (WooCommerce, WHMCS,...)
-
-⚙️ Settings
-   ├─ Account Profile
-   ├─ Bank Accounts
-   ├─ Stores & Staff (Beta) — stores, team access, permissions, activity
-   ├─ Payment Settings
-   ├─ Webhooks
-   ├─ Subscription
-   ├─ Appearance
-   └─ Security & Passkeys
-```
-
----
-
-## Overview Page
-
-The overview page gives you a quick snapshot of your business:
-
-### Key Metrics
-
-1. **Total Revenue** - Sum of all successful payments
-2. **Transaction Count** - Number of successful transactions
-3. **This Month** - Revenue and count for current month
-4. **Average Transaction** - Average payment amount
-
-### Charts
-
-- **Transaction Timeline** - Visual representation of transactions over time
-- **Bank Distribution** - Which banks customers use most
-
-### Recent Activity
-
-- Latest transactions with status
-- Quick actions for common tasks
-
----
-
-## Payment Requests
-
-Create and manage payment links for your customers.
-
-### Creating a Payment Request
-
-1. Click **Create Payment Request**
-2. Fill in the form:
-   - **Bank** - Select a connected bank account
-   - **Amount** - Payment amount in VND
-   - **Content** - Reference text (e.g., order number)
-   - **Title** - (Optional) Payment description
-   - **Redirect URL** - Where to send customer after payment
-3. Click **Create**
-
-### Payment Request Features
-
-- **QR Code** - Automatically generated for scanning
-- **Payment Link** - Shareable URL for customers
-- **Copy to Clipboard** - Quick copy functionality
-- **Share Options** - Share via email, chat, etc.
-
-### Managing Payment Requests
-
-- **View Details** - Click to see full details
-- **Cancel** - Cancel unused payment requests
-- **Status** - PENDING, COMPLETED, EXPIRED, CANCELLED
-
----
-
-## Commerce
-
-Products and prices you sell. Copy one reusable link from a price.
-
-1. Open **Integrations → Commerce** (Beta) in the sidebar.
-2. Create a product. You can add the first price and image in the same form.
-3. On the product page, click **Copy payment link**. Paste the URL for customers (Zalo, Facebook). Each visitor enters their details, then scans a QR.
-4. **Create one-time payment** is still there if you already know the buyer.
-
-The default price is used when copying the link. Amounts on a price do not change — create a new price to charge a different amount. Details: [Commerce](/en/commerce). Marketing page: [apipay.vn/commerce](https://apipay.vn/commerce).
-
----
-
-## Stores and Staff
-
-If a team works with your payments, group your receiving accounts into stores and invite staff so each person sees only the payments they handle.
-
-1. Open **Settings → Stores** (Beta).
-2. Create a store and assign its receiving accounts.
-3. Add staff by email, set an initial password, and share it securely.
-4. Give them **Viewer**, **Cashier**, or a custom permission set.
-
-Each receiving account belongs to at most one store and can remain unassigned. The owner keeps bank linking, webhooks, API keys, and billing. Details: [Stores and Staff](/en/stores-staff).
+The first page after you sign in. It shows your active banks and webhooks, total transactions, total inflow, transaction charts over time and by bank, and your most recent transactions.
 
 ---
 
 ## Transactions
 
-View all incoming payments and their details.
+Every transaction on your connected banks, with date, bank, amount, content and status.
 
-### Transaction List
-
-| Column | Description |
-|--------|-------------|
-| Date | When payment was received |
-| Reference | Payment content/reference |
-| Amount | Payment amount |
-| Bank | Which bank was used |
-| Status | Transaction status |
-
-### Filtering & Search
-
-- Filter by date range
-- Filter by status
-- Search by reference or amount
-
-### Transaction Details
-
-Click any transaction to see:
-- Full transaction ID
-- Bank account used
-- Payment timestamp
-- Associated payment request
+- Search by reference or content, filter by bank and status.
+- Click a transaction to see its details.
+- Export a date range to CSV or Google Sheets.
 
 ---
 
-## Integrations & Tools
+## Payment requests
 
-### Payment Speaker
+Create a payment link with a QR code to send to your customer.
 
-Turn any phone, tablet, or laptop into a real-time voice announcement speaker without buying expensive hardware:
+1. Open **Payment Requests** and click **Create Link**.
+2. Pick a bank, enter the amount and transfer content. Title, redirect URL and custom domain are optional.
+3. Copy the link and send it to your customer.
 
-1. Go to **Integrations → Payment Speaker**
-2. Select the bank account to monitor and choose your preferred voice
-3. Click **Start session** and copy the session URL to open on your counter device
+Each request is **Active**, **Completed**, **Expired** or **Deleted** (cancelled). To set a default title and redirect URL, click **Payment Page** at the top of the page.
 
-See the full [Payment Speaker Guide](/en/payment-speaker) for details.
-
-### Custom Domains
-
-Branded payment domains (e.g., `pay.yourbrand.vn`) reinforce customer trust and brand credibility. See [Custom Domains Guide](/en/custom-domains).
+Creating them through the API? See the [Payment Requests API](/en/api/payment-requests).
 
 ---
 
-## Settings
+## Banks and webhooks
 
-### Account Profile
-
-Manage your personal and business information:
-
-- **Email** - Your login email
-- **Name** - Display name
-- **Business Name** - Appears on payment page
-- **Tax Code** - For invoicing
-- **Business Address** - Registered address
-
-### Bank Accounts
-
-- View connected banks
-- Add/remove bank accounts
-- Toggle account status
-
-See [Bank Account Management](/en/banking) for details.
-
-### Payment Settings
-
-- **Default Redirect URL** - Where customers go after payment
-- **Default Title** - Default description for payments
-
-### API Keys
-
-Create and manage API keys for integration:
-
-1. Click **Create New Key**
-2. Name your key
-3. Copy and store securely
-4. Use in API requests
-
-> **Important:** Store your secret key securely. It cannot be retrieved after creation.
-
-### Webhooks
-
-Configure webhook endpoints for real-time notifications:
-
-1. Add webhook URL
-2. Select event types
-3. Test the endpoint
-4. Monitor delivery history
-
-See [Webhook Documentation](/en/api/webhooks) for technical details.
-
-### Subscription
-
-View and manage your plan:
-
-- Activate the **free plan** (60 tx/month) or pick a paid quota
-- Current plan, included usage, and prepaid balance
-- Upgrade to a higher quota anytime
-- Billing history and renewal date (paid plans)
-
-See [Subscription Guide](/en/subscription) for plan and billing details.
-
-### Appearance
-
-Customize the payment page your customers see:
-
-- **Merchant Name** - Your business name
-- **Merchant Logo** - Upload your logo
-- **Theme** - Light/dark mode
-
-### Security
-
-Protect your account:
-
-- **Passkeys** — Register a passkey (Face ID, fingerprint, or device passkey) to sign in without a password. See [Passkeys](/en/passkeys) for details.
-- **Two-Factor Authentication (2FA)** — Enable TOTP-based 2FA
-- **Change Password** — Update your password
-- **Login History** — View recent logins
+- **Banks**: connect accounts, set a nickname, turn an account on or off. See [Connect Banks](/en/connect-banks) and [Bank Management](/en/banking).
+- **Webhooks**: add a URL that receives transaction notifications, view the delivery log and resend when needed. See [Webhooks](/en/api/webhooks).
 
 ---
 
-## Quick Actions
+## Integrations
 
-### Common Tasks
-
-| Task | Where to Find |
-|------|---------------|
-| Create payment | Payment Requests → Create |
-| Open Payment Speaker | Integrations → Payment Speaker |
-| Check revenue | Overview |
-| Add bank | Settings → Bank Accounts |
-| Get API key | Integrations → API Keys |
-| Configure webhook | Settings → Webhooks |
-| Add a store or staff | Settings → Stores |
-
----
-
-## Keyboard Shortcuts
-
-- `Ctrl/Cmd + K` - Quick search
-- `Ctrl/Cmd + N` - New payment request
+| Item | Use it to |
+|------|-----------|
+| Sandbox Mode | Test your integration without moving real money. See [Sandbox](/en/sandbox) |
+| Notification Channels | Get transaction alerts on Telegram, Slack, Discord, Lark or email |
+| Custom Domains | Serve the payment page on your own domain. See [Custom Domains](/en/custom-domains) |
+| Payment Speaker | Read incoming payments aloud at the counter. See [Payment Speaker](/en/payment-speaker) |
+| Stores | Group receiving accounts by store and invite staff. See [Stores and Staff](/en/stores-staff) |
+| Web App → API Keys | Create the API key your system uses to call ApiPay |
+| Web App → Commerce | Products, prices and reusable payment links. See [Commerce](/en/commerce) |
+| Web App → WHMCS, WooCommerce, HostBill, Google Sheets | Connect the platform you already use |
 
 ---
 
-## Tips & Tricks
+## Account
 
-### Efficient Workflow
-
-1. **Use quick search** - Find anything with Ctrl+K
-2. **Bookmark frequently used pages** - For quick access
-3. **Set up default payment settings** - Saves time on each request
-4. **Use Payment Speaker at checkout** - Hear payments instantly without switching screens
-
-### Staying Informed
-
-1. **Enable notifications** - Get alerts for important events
-2. **Check dashboard regularly** - Monitor transaction patterns
-3. **Review webhooks** - Ensure delivery is working
+- **Pricing**: pick a plan, see quota usage and renew. See [Plans and Billing](/en/subscription).
+- **Invoices**: invoices for your plan payments.
+- **Affiliates**: your referral code and commission. See [Affiliates](/en/affiliates).
+- **Settings → Account**: the **Profile** tab (name, phone, business details), **Security** (password, sign-in history, sign out of all devices) and **Credentials** (two-factor authentication, [passkeys](/en/passkeys)).
+- **Settings → Appearance**: light or dark theme, language, font and sidebar style.
 
 ---
 
-## Need Help?
+## Need help?
 
-- 📧 Email: support@apipay.vn
-- 💬 In-app chat
-- 📖 [API Documentation](/en/api/payment-requests)
+Open **Contact** in the sidebar for the Telegram and Zalo groups or a support ticket, or click **Meet Appi**. Email: support@apipay.vn.
 
----
+## Next steps
 
-## Next Steps
-
-- [Onboarding Guide](/en/onboarding) - Complete setup process
-- [Payment Speaker](/en/payment-speaker) - Hear real-time payment alerts at your counter
-- [Subscription Guide](/en/subscription) - Manage plans and billing
-- [Bank Account Management](/en/banking) - Connect and manage banks
+- [Getting Started](/en/onboarding)
+- [Connect Banks](/en/connect-banks)
+- [Plans and Billing](/en/subscription)

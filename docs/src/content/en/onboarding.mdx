@@ -3,153 +3,76 @@ title: Onboarding Guide
 description: Complete guide to getting started with ApiPay
 ---
 
-# Onboarding Guide
+# Getting Started
 
-Welcome to ApiPay! This guide will walk you through the complete process of setting up your account and start accepting payments.
+ApiPay lets you receive bank transfers and know the moment money arrives. You connect a bank, create payment requests and get notified by webhook. Transparent pricing, see [apipay.vn/pricing](https://apipay.vn/pricing).
 
-## Why ApiPay?
+Five steps to your first payment:
 
-ApiPay is a payment gateway that enables Vietnamese businesses to accept bank transfers through a simple API integration. No complex contracts, no hidden fees - just straightforward bank payment processing.
-
-## The Merchant Journey
-
-Here's what you'll accomplish:
-
-1. **Sign Up** - Create your merchant account
-2. **Choose a Plan** - Activate the free plan or pick a paid quota plan
-3. **Connect Banks** - Link your Vietnamese bank accounts
-4. **Configure Settings** - Set up webhooks and API keys
-5. **Start Accepting Payments** - Create your first payment request
+1. Create an account
+2. Activate a plan
+3. Connect a bank
+4. Create an API key and webhook
+5. Create your first payment request
 
 ---
 
-## Step 1: Sign Up
+## Step 1: Create an account
 
-Visit [my.apipay.vn](https://my.apipay.vn) and click **Sign Up**.
+Go to [my.apipay.vn](https://my.apipay.vn) and click **Sign Up**. Sign up with email and password, or with your Google or GitHub account.
 
-You can register using:
-
-- **Email & Password** - Traditional registration
-- **Magic Link** - Passwordless login via email
-
-### Best Practices for Registration
-
-- Use a **business email** - This establishes trust with your customers
-- Choose a **strong password** or enable 2FA after signup
-- Fill in your **business information** early - This appears on the payment page your customers see
+Once you are in, turn on two-factor authentication (2FA) or add a [passkey](/en/passkeys) to protect your account.
 
 ---
 
-## Step 2: Choose Your Plan
+## Step 2: Activate a plan
 
-ApiPay offers a **free starter plan** plus paid transaction-quota plans based on monthly successful transaction volume.
-
-<Callout type="info">
-Activate **FREE** from **Settings → Subscription** after you complete your profile (phone and address). No payment is required. Paid plans start at 200 tx/month.
-</Callout>
+Open **Pricing** in the sidebar, fill in your phone number and address if asked, then click **Activate free**. The free plan needs no payment. You can upgrade to a paid plan at any time.
 
 <OnboardingPricingTable locale="en" />
 
-The table shows representative tiers. See [Subscription & Billing](/en/subscription) or [apipay.vn/pricing](https://apipay.vn/pricing) for the full list and how extra usage is billed.
-
-### How to Choose
-
-**Start small and scale up:**
-
-- First integration: Start with FREE
-- New businesses: Start with QUOTA 200 or QUOTA 400
-- Growing businesses: QUOTA 1200 or QUOTA 2500
-- High-volume businesses: QUOTA 5000 or above
-
-You can upgrade anytime from the dashboard. While a paid quota plan is active, you can only move to a higher quota.
-
-> **Pro Tip:** Having multiple bank accounts helps distribute payment volume and reduces wait times during peak hours.
+Plan details and how charges work: [Plans and Billing](/en/subscription).
 
 ---
 
-## Step 3: Connect Your Bank Accounts
+## Step 3: Connect a bank
 
-After activating a plan, you'll connect your Vietnamese bank account(s). This is essential for receiving payments. Every quota plan, including free, supports connecting multiple bank accounts.
+1. Open **Banks** in the sidebar and click **Add Bank**.
+2. Pick your bank and account type (personal, business or household business) and fill in your details.
+3. Confirm with an OTP or in your bank's app. Some account types need an activation request.
 
-### Supported Banks
+Supported banks and the full walkthrough: [Connect Banks](/en/connect-banks).
 
-ApiPay supports the following major Vietnamese banks:
-
-- ACB
-- MB Bank
-- BIDV
-- OCB
-- VietinBank
-- VIB
-- Sacombank (STB)
-- VPBank (VPB)
-- PGBank (PGB)
-- Shinhan Bank (SHBVN)
-- Co-opBank (COOPBANK)
-- Vietcombank (VCB)
-- MSB
-- TPBank (TPB)
-
-### Connection Process
-
-1. Go to **Settings → Bank Accounts**
-2. Click **Add Bank Account**
-3. Select your bank from the list
-4. Enter your account number
-5. Verify with OTP sent to your registered phone
-6. Account becomes active after verification
-
-> **Important:** The bank account must be in your business name (or a legitimate representative name).
-
-<Callout type="tip">
-**Free Instant Feature:** Once your bank account is active, you can immediately use **[Payment Speaker](/en/payment-speaker)** to turn any phone or tablet at your counter into a real-time voice alert speaker without buying separate hardware.
-</Callout>
+Once your bank is active, you can turn on [Payment Speaker](/en/payment-speaker) to hear incoming payments at the counter.
 
 ---
 
-## Step 4: Configure Your Integration
+## Step 4: Create an API key and webhook
 
-### Get API Keys
+### API key
 
-1. Navigate to **Integrations → API Keys**
-2. Click **Create New Key**
-3. Name your key (e.g., "Production", "Development")
-4. Copy and store your keys securely
+1. Open **Integrations → Web App → API Keys**.
+2. Click **Generate API Key** and name it.
+3. Store the `accessKey` and `secretKey` somewhere safe. Never put the `secretKey` in browser or app code.
 
-You'll receive:
+How to use the key when calling the API: [API Authentication](/en/api/authentication).
 
-- `accessKey` - Public identifier
-- `secretKey` - Keep this private!
+### Webhook
 
-When calling the API, use `Authorization: Bearer <Auth>`, where `<Auth>` is `base64(accessKey:secretKey)`. See [Authentication](/en/api/authentication) for details.
+1. Open **Webhooks** in the sidebar and click **Create Webhook**.
+2. Enter your endpoint URL and save.
 
-### Set Up Webhooks (Optional but Recommended)
-
-Webhooks notify your system when payments occur:
-
-1. Go to **Settings → Webhooks**
-2. Click **Add Webhook**
-3. Enter your endpoint URL
-4. Save and test with the test button
-
-By default a new webhook receives notifications for all current and future bank accounts. You can optionally limit it to specific banks when adding it.
+A new webhook receives notifications for all your banks. You can limit it to specific banks when you create it. Details: [Webhooks](/en/api/webhooks).
 
 ---
 
-## Step 5: Create Your First Payment
+## Step 5: Create your first payment request
 
-### Via Dashboard
+1. Open **Payment Requests** and click **Create Link**.
+2. Pick a bank, enter the amount and transfer content.
+3. Copy the payment link and send it to your customer.
 
-1. Go to **Payment Requests**
-2. Click **Create Payment Request**
-3. Select a connected bank account
-4. Enter the amount
-5. Add payment content/reference
-6. Click **Create**
-
-You'll receive a payment link to share with your customer.
-
-### Via API
+Through the API:
 
 ```javascript
 const response = await fetch('https://app.apipay.vn/v1/client/payment-requests', {
@@ -165,34 +88,18 @@ const response = await fetch('https://app.apipay.vn/v1/client/payment-requests',
   }),
 });
 
-const {data: {payUrl, qrUrl}} = await response.json();
-// Share payUrl or qrUrl with your customer
+const {
+  data: {payUrl, qrUrl},
+} = await response.json();
+// Send payUrl or qrUrl to your customer
 ```
 
----
-
-## Best Practices
-
-### For a Smooth Start
-
-1. **Test with small amounts** - Create a few test payments of 1,000 VND to verify your setup works
-2. **Turn on Payment Speaker at checkout** - Open the speaker URL on a counter phone or tablet to hear payments immediately
-3. **Configure webhook first** - This ensures you never miss a payment notification
-4. **Set up redirect URL** - Automatically redirect customers back to your site after payment
-5. **Customize payment page** - Add your business name and logo for a professional experience
-
-### For Long-Term Success
-
-1. **Use multiple bank accounts** - Distribute volume across banks reduces congestion
-2. **Monitor transaction analytics** - Use the dashboard to track payment patterns
-3. **Enable 2FA** - Protect your account with two-factor authentication
-4. **Keep API keys secure** - Rotate keys periodically and never expose them in client-side code
+Want to test the whole flow without moving real money? Use [Sandbox](/en/sandbox).
 
 ---
 
-## Next Steps
+## Next steps
 
-- [Payment Speaker](/en/payment-speaker) - Hear real-time voice alerts for incoming bank transfers
-- [Subscription Guide](/en/subscription) - Manage plans and billing
-- [Bank Account Management](/en/banking) - Advanced banking features
-- [API Reference](/en/api/payment-requests) - Technical integration details
+- [Payment Requests API](/en/api/payment-requests)
+- [Dashboard Guide](/en/dashboard)
+- [Plans and Billing](/en/subscription)

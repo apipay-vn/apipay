@@ -5,93 +5,57 @@ description: Tạo sản phẩm, sao chép link thanh toán dùng lại, thu th�
 
 # Commerce
 
-Commerce là nơi bạn quản lý sản phẩm và mức giá. Tạo link thanh toán từ một mức giá để khách mua cùng mặt hàng đều chuyển đúng số tiền.
+Commerce giúp bạn bán hàng bằng một link thanh toán dùng lại. Bạn tạo sản phẩm và mức giá một lần, rồi gửi cùng một link cho mọi khách. Mỗi khách mở link sẽ nhập thông tin của mình, quét mã QR và nhận biên lai qua email.
 
-Bạn làm việc này trên dashboard (**Tích hợp → Commerce**, Beta) hoặc qua [Commerce API](/vi/api/commerce). Tạo link thanh toán vẫn dùng [Payment Requests API](/vi/api/payment-requests) — gửi `priceId` thay vì tự nhập số tiền.
-
-<Callout type="tip">
-Mở **Tích hợp → Commerce** trong dashboard để tạo sản phẩm, thêm mức giá và thử một link thanh toán.
-
-[Mở Commerce trong dashboard](https://my.apipay.vn/vi/integrations/commerce)
-</Callout>
+Mở **Tích hợp → Web App → Commerce** (Beta) trên [my.apipay.vn](https://my.apipay.vn/vi/integrations/commerce).
 
 ## Cách hoạt động
 
-1. **Tạo sản phẩm** — mặt hàng bạn bán (ví dụ “Gói Pro”).
-2. **Thêm mức giá** — số tiền VND. Một sản phẩm có thể có nhiều mức giá (giá ra mắt, giá hiện tại, theo năm, …).
-3. **Chia sẻ link thanh toán** của mức giá — một URL, nhiều khách. Mỗi người mở link nhập họ tên và email, rồi quét QR mới.
-4. **Khách thanh toán** — quét QR hoặc chuyển khoản như bình thường.
-5. **Bạn nhận webhook** giống mọi thanh toán khác. Khách nhận PDF biên lai qua email.
+1. **Tạo sản phẩm**: mặt hàng bạn bán, ví dụ "Gói Pro".
+2. **Thêm mức giá**: số tiền bằng VND. Một sản phẩm có thể có nhiều mức giá, ví dụ theo tháng và theo năm.
+3. **Sao chép link thanh toán** và gửi cho khách. Một link dùng được cho nhiều người.
+4. **Khách thanh toán**: nhập họ tên và email, rồi quét mã QR. ApiPay tự tạo nội dung chuyển khoản riêng cho mỗi khách.
+5. **Bạn nhận thông báo** như mọi khoản thanh toán khác. Khách nhận biên lai qua email.
 
-```
-Sản phẩm  →  Mức giá  →  Link dùng lại  →  Thông tin người mua  →  QR  →  Thanh toán  →  Email biên lai + webhook
-```
+Đã biết người mua? Trên trang sản phẩm, chọn **Tạo thanh toán một lần**.
 
-Bạn vẫn có thể tạo thanh toán **một lần** từ mức giá (dashboard **Tạo thanh toán một lần**, hoặc `POST /v1/client/payment-requests` với `priceId`) khi đã biết người mua.
+## Giá mặc định và số tiền
 
-## Lookup key
-
-Lookup key là mã bạn tự đặt, ví dụ `pro-monthly`. Dùng để tìm lại mức giá:
-
-```bash
-GET /v1/client/commerce/prices?lookupKey=pro-monthly
-```
-
-Khi tạo thanh toán một lần, gửi `priceId` (id của mức giá), không gửi lookup key. Link thanh toán dùng lại dùng `paymentLinkUrl` / `publicId` trên mức giá.
-
-## Tên nội bộ
-
-Tên nội bộ (nickname) chỉ hiện với bạn trên dashboard. Khách không thấy trường này.
-
-## Giá mặc định
-
-Mỗi sản phẩm có một **giá mặc định**. Dashboard dùng giá này khi bạn bấm **Sao chép link thanh toán**. Khi gọi API tạo thanh toán một lần, gửi `priceId` của mức giá bạn muốn thu — API không tự lấy giá mặc định.
-
-- Mức giá đầu tiên được gán làm mặc định.
-- Thêm mức giá mới không đổi giá mặc định, trừ khi bạn chọn lại.
-
-## Số tiền không đổi
-
-Khi đã tạo mức giá, số tiền bị khóa. Muốn đổi giá thì tạo mức giá mới và lưu trữ mức cũ.
-
-Yêu cầu thanh toán một lần đã tạo giữ đúng số tiền lúc tạo. Sửa sản phẩm hay mức giá sau đó không làm đổi các yêu cầu đó. Link dùng lại luôn lấy số tiền hiện tại của mức giá cho **khách mới**. Lưu trữ mức giá để tạm dừng link.
-
-## Hóa đơn bán hàng (Receipts)
-
-Khi một yêu cầu thanh toán (chế độ Live) gắn với `priceId` được thanh toán thành công, ApiPay tự động tạo một hóa đơn bán hàng (`CommerceInvoice`) với số hóa đơn có định dạng `CINV-YYYYMM-XXXX`.
-
-- **Thông tin bên bán**: Thể hiện tên doanh nghiệp và thông tin liên hệ của bạn.
-- **Thông tin bên mua**: Thu thập trên trang thanh toán (họ tên + email bắt buộc; mã số thuế và địa chỉ tùy chọn), hoặc điền sẵn từ `customer` khi tạo thanh toán một lần. Có thể sửa sau trên dashboard.
-- **Tải file PDF**: Tải file hóa đơn / biên lai PDF (`apipay-cinv-*.pdf`) từ dashboard hoặc API. Sau thanh toán live, PDF cũng được gửi email cho người mua.
-- **Lưu ý pháp lý**: Hóa đơn bán hàng xác nhận thanh toán thương mại cho sản phẩm / dịch vụ. Đây không phải hóa đơn điện tử GTGT theo Nghị định 123/2020/NĐ-CP (*"Đây không phải hóa đơn GTGT / This is not an official VAT invoice"*).
+- Mỗi sản phẩm có một **giá mặc định**, dùng khi bạn nhấn **Sao chép link thanh toán**. Mức giá đầu tiên tự động là mặc định; bạn có thể chọn **Đặt làm mặc định** cho mức giá khác.
+- Số tiền của một mức giá không sửa được. Muốn đổi giá, tạo mức giá mới và **Lưu trữ** mức cũ. Lưu trữ mức giá cũng là cách tạm dừng link.
+- Yêu cầu thanh toán đã tạo giữ nguyên số tiền lúc tạo. Link dùng lại luôn áp dụng số tiền hiện tại cho khách mới.
+- Tên nội bộ và lookup key chỉ bạn thấy, khách không thấy.
 
 ## Ảnh sản phẩm
 
-Tải PNG, JPEG hoặc WebP (tối đa 3 MB) trên form tạo sản phẩm hoặc trang chi tiết. Ảnh hiện trên trang thanh toán; khách bấm để xem lớn. Xóa ảnh không xóa sản phẩm.
+Tải ảnh PNG, JPEG hoặc WebP (tối đa 3 MB) khi tạo sản phẩm hoặc trên trang chi tiết. Ảnh hiện trên trang thanh toán.
 
-## Nội dung chuyển khoản
+## Biên lai
 
-Khi khách mở link Commerce mà bạn không gửi `content`, ApiPay gắn nội dung CK duy nhất vào QR để mỗi giao dịch khớp đúng yêu cầu.
+Khi khách thanh toán thành công, ApiPay tự tạo biên lai, xem ở thẻ **Hóa đơn bán hàng**.
 
-## Khách hàng & Gửi hóa đơn
+- Biên lai ghi thông tin của bạn (bên bán) và của người mua: họ tên, email, cùng mã số thuế và địa chỉ nếu khách điền. Bạn có thể sửa thông tin người mua sau.
+- Nhấn **Tải hóa đơn PDF** để tải về. Khách cũng nhận bản PDF qua email.
+- Biên lai xác nhận khách đã thanh toán. Đây không phải hóa đơn điện tử giá trị gia tăng (GTGT).
 
-ApiPay tự động lưu danh bạ khách hàng (`CommerceCustomer`) khi người mua điền thông tin thanh toán sản phẩm Commerce. Bạn cũng có thể quản lý danh sách khách hàng trực tiếp trên tab **Khách hàng** trong dashboard hoặc qua API / MCP.
+## Khách hàng
 
-- **Định danh khách hàng**: Dựa trên email (chuẩn hóa chữ thường). Thông tin mới nhất từ thanh toán hoặc cập nhật sẽ được lưu.
-- **Gửi hóa đơn (Send invoice)**: Chọn một khách hàng và mức giá sản phẩm để gửi link thanh toán VietQR qua email.
-- **Lưu ý quan trọng**: Thao tác "Gửi hóa đơn" tạo một yêu cầu thanh toán kèm mã VietQR gửi qua email cho khách. Sau khi khách chuyển khoản thành công, hệ thống mới tự động tạo hóa đơn biên lai điện tử (`CINV-*`). Đây là yêu cầu thanh toán, không phải hóa đơn điện tử GTGT.
+Thẻ **Khách hàng** lưu người mua tự động khi họ thanh toán. Khách được nhận diện theo email. Bạn cũng có thể thêm, sửa hoặc xóa khách hàng tại đây.
 
-## Không có trong Commerce
+Nút **Gửi hóa đơn** gửi cho khách một email có link thanh toán và mã QR theo mức giá bạn chọn. Sau khi khách thanh toán, biên lai mới được tạo.
 
-- Giỏ hàng / chọn số lượng nhiều sản phẩm
-- Thu nợ tự động định kỳ từ tài khoản khách hàng
-- Hóa đơn điện tử GTGT / HDDT theo Nghị định 123/2020/NĐ-CP
+## Commerce chưa hỗ trợ
+
+- Giỏ hàng hoặc mua nhiều sản phẩm một lần
+- Tự động trừ tiền định kỳ từ tài khoản khách
+- Hóa đơn điện tử giá trị gia tăng
 
 ## Thử ngay
 
-1. Mở **Tích hợp → Commerce** và tạo sản phẩm (có thể thêm mức giá và ảnh ngay trong form).
-2. Trên trang sản phẩm, bấm **Sao chép link thanh toán** — hoặc thêm mức giá trước nếu bạn bỏ qua bước đó.
-3. Mở link, nhập họ tên và email, rồi thanh toán. Ở sandbox, tạo thanh toán một lần từ mức giá rồi mô phỏng.
-4. Trên giao dịch thực tế, khách nhận biên lai qua email. Bạn cũng xem được ở tab **Hóa đơn bán hàng**.
+1. Tạo một sản phẩm, thêm mức giá và ảnh ngay trong form.
+2. Nhấn **Sao chép link thanh toán**, mở link, nhập họ tên và email, rồi thanh toán.
+3. Xem biên lai ở thẻ **Hóa đơn bán hàng**.
 
-Cần chi tiết HTTP? Xem [Commerce API](/vi/api/commerce) hoặc thử gọi API trong [Interactive Reference](/vi/api-reference).
+Muốn thử không cần chuyển tiền thật? Bật [Sandbox](/vi/sandbox), tạo thanh toán một lần từ mức giá rồi mô phỏng thanh toán.
+
+Tích hợp bằng API? Xem [Commerce API](/vi/api/commerce) hoặc thử trong [Tài liệu tương tác](/vi/api-reference).

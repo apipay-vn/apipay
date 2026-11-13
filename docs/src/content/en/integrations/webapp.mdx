@@ -1,78 +1,57 @@
 ---
 title: Web App
-description: Integrate ApiPay into a custom web app with SDK-style JavaScript and Python helpers.
+description: Integrate ApiPay into your web app with JavaScript, Python, or PHP.
 ---
 
 # Web App
 
-Use the ApiPay client API from your own web app to create hosted payment requests, redirect customers to `payUrl`, and receive payment updates through redirects or webhooks.
-
-The examples below are SDK-style helpers you can copy into your server-side code. They do not require an installable ApiPay SDK package.
-
-<Callout type="tip">
-Open **Integrations > API Keys** in the dashboard to create credentials for your custom web app.
-
-[Open API Keys in dashboard](https://my.apipay.vn/en/integrations/api-keys)
-</Callout>
+Create a payment request on your server, redirect the customer to `payUrl`, then receive the result through a redirect or a webhook. No SDK required.
 
 ## Before You Start
 
-- Create an API key in **Integrations > API Keys**.
-- Connect at least one active bank account in **Bank Accounts**.
-- Store your `accessKey`, `secretKey`, and default `bankPublicId` in environment variables.
-- Never call ApiPay with secret credentials from browser-only code.
+- Create an API key in [**Integrations > Web App > API Keys**](https://my.apipay.vn/en/integrations/api-keys).
+- Connect at least one account in **Banks**.
+- Store `APIPAY_ACCESS_KEY`, `APIPAY_SECRET_KEY`, and `APIPAY_BANK_PUBLIC_ID` in environment variables.
+- Call ApiPay from your server only, never from the browser.
 
-## Helper
+## Create a Payment Request
+
+Copy into your server-side code.
 
 <CodeTabs>
 ```javascript
 const API_BASE = "https://app.apipay.vn";
 
-function apipayAuth(accessKey, secretKey) {
-	const token = Buffer.from(`${accessKey}:${secretKey}`).toString("base64");
-	return `Bearer ${token}`;
+const auth = Buffer.from(
+  `${process.env.APIPAY_ACCESS_KEY}:${process.env.APIPAY_SECRET_KEY}`,
+).toString("base64");
+
+async function createPayment(params) {
+  const response = await fetch(`${API_BASE}/v1/client/payment-requests`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${auth}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      bankPublicId: process.env.APIPAY_BANK_PUBLIC_ID,
+      ...params,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`ApiPay request failed: ${response.status}`);
+  }
+
+  const { data } = await response.json();
+  return data;
 }
 
-async function createApiPayPayment({
-	accessKey,
-	secretKey,
-	bankPublicId,
-	amount,
-	content,
-	title,
-	redirectUrl,
-}) {
-	const response = await fetch(`${API_BASE}/v1/client/payment-requests`, {
-		method: "POST",
-		headers: {
-			Authorization: apipayAuth(accessKey, secretKey),
-			"Content-Type": "application/json",
-		},
-		body: JSON.stringify({
-			bankPublicId,
-			amount,
-			content,
-			title,
-			redirectUrl,
-		}),
-	});
-
-	if (!response.ok) {
-		throw new Error(`ApiPay request failed: ${response.status}`);
-	}
-
-	const result = await response.json();
-	return result.data;
-}
-
-const payment = await createApiPayPayment({
-	accessKey: process.env.APIPAY_ACCESS_KEY,
-	secretKey: process.env.APIPAY_SECRET_KEY,
-	bankPublicId: process.env.APIPAY_BANK_PUBLIC_ID,
-	amount: "100000",
-	content: "ORDER-001",
-	title: "Payment for Order #001",
-	redirectUrl: "https://your-site.com/payment/result",
+const payment = await createPayment({
+  amount: "100000",
+  content: "ORDER-001",
+  title: "Payment for Order #001",
+  redirectUrl: "https://your-site.com/payment/result",
 });
 
 console.log(payment.payUrl);
@@ -81,53 +60,31 @@ console.log(payment.payUrl);
 ```python
 import base64
 import os
+
 import requests
 
 API_BASE = "https://app.apipay.vn"
+AUTH = base64.b64encode(
+  f"{os.environ['APIPAY_ACCESS_KEY']}:{os.environ['APIPAY_SECRET_KEY']}".encode()
+).decode()
 
 
-def apipay_auth(access_key: str, secret_key: str) -> str:
-    token = base64.b64encode(f"{access_key}:{secret_key}".encode()).decode()
-    return f"Bearer {token}"
+def create_payment(**params) -> dict:
+  response = requests.post(
+    f"{API_BASE}/v1/client/payment-requests",
+    json={"bankPublicId": os.environ["APIPAY_BANK_PUBLIC_ID"], **params},
+    headers={"Authorization": f"Bearer {AUTH}"},
+    timeout=15,
+  )
+  response.raise_for_status()
+  return response.json()["data"]
 
 
-def create_apipay_payment(
-    *,
-    access_key: str,
-    secret_key: str,
-    bank_public_id: str,
-    amount: str,
-    content: str,
-    title: str,
-    redirect_url: str,
-) -> dict:
-    response = requests.post(
-        f"{API_BASE}/v1/client/payment-requests",
-        json={
-            "bankPublicId": bank_public_id,
-            "amount": amount,
-            "content": content,
-            "title": title,
-            "redirectUrl": redirect_url,
-        },
-        headers={
-            "Authorization": apipay_auth(access_key, secret_key),
-            "Content-Type": "application/json",
-        },
-        timeout=15,
-    )
-    response.raise_for_status()
-    return response.json()["data"]
-
-
-payment = create_apipay_payment(
-    access_key=os.environ["APIPAY_ACCESS_KEY"],
-    secret_key=os.environ["APIPAY_SECRET_KEY"],
-    bank_public_id=os.environ["APIPAY_BANK_PUBLIC_ID"],
-    amount="100000",
-    content="ORDER-001",
-    title="Payment for Order #001",
-    redirect_url="https://your-site.com/payment/result",
+payment = create_payment(
+  amount="100000",
+  content="ORDER-001",
+  title="Payment for Order #001",
+  redirectUrl="https://your-site.com/payment/result",
 )
 
 print(payment["payUrl"])
@@ -136,71 +93,66 @@ print(payment["payUrl"])
 ```php
 <?php
 
-use Illuminate\Support\Facades\Http;
+const API_BASE = 'https://app.apipay.vn';
 
-$apiBase = 'https://app.apipay.vn';
-
-function apipayAuth(string $accessKey, string $secretKey): string
+function createPayment(array $params): array
 {
-    $token = base64_encode("{$accessKey}:{$secretKey}");
-    return "Bearer {$token}";
+  $auth = base64_encode(getenv('APIPAY_ACCESS_KEY') . ':' . getenv('APIPAY_SECRET_KEY'));
+
+  $ch = curl_init(API_BASE . '/v1/client/payment-requests');
+  curl_setopt_array($ch, [
+    CURLOPT_POST => true,
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_TIMEOUT => 15,
+    CURLOPT_HTTPHEADER => [
+      "Authorization: Bearer {$auth}",
+      'Content-Type: application/json',
+    ],
+    CURLOPT_POSTFIELDS => json_encode(['bankPublicId' => getenv('APIPAY_BANK_PUBLIC_ID')] + $params),
+  ]);
+
+  $body = curl_exec($ch);
+  $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+  if ($body === false || $status >= 400) {
+    throw new RuntimeException("ApiPay request failed: {$status}");
+  }
+
+  return json_decode($body, true)['data'];
 }
 
-function createApipayPayment(
-    string $accessKey,
-    string $secretKey,
-    string $bankPublicId,
-    string $amount,
-    string $content,
-    string $title,
-    string $redirectUrl,
-): array {
-    global $apiBase;
-
-    $response = Http::withHeaders([
-        'Authorization' => apipayAuth($accessKey, $secretKey),
-        'Content-Type'  => 'application/json',
-    ])->post("{$apiBase}/v1/client/payment-requests", [
-        'bankPublicId' => $bankPublicId,
-        'amount'       => $amount,
-        'content'      => $content,
-        'title'        => $title,
-        'redirectUrl'  => $redirectUrl,
-    ]);
-
-    if ($response->failed()) {
-        throw new \RuntimeException('ApiPay request failed: ' . $response->status());
-    }
-
-    return $response->json('data');
-}
-
-$payment = createApipayPayment(
-    accessKey: env('APIPAY_ACCESS_KEY'),
-    secretKey: env('APIPAY_SECRET_KEY'),
-    bankPublicId: env('APIPAY_BANK_PUBLIC_ID'),
-    amount: '100000',
-    content: 'ORDER-001',
-    title: 'Payment for Order #001',
-    redirectUrl: 'https://your-site.com/payment/result',
-);
+$payment = createPayment([
+  'amount' => '100000',
+  'content' => 'ORDER-001',
+  'title' => 'Payment for Order #001',
+  'redirectUrl' => 'https://your-site.com/payment/result',
+]);
 
 echo $payment['payUrl'];
 ```
 </CodeTabs>
 
-Redirect the customer to `payUrl` after your order is created.
+Response (trimmed):
 
-## Handle Payment Result
+```json
+{
+  "publicId": "APIPAYJSCAF9H23M74K",
+  "payUrl": "https://pay.apipay.vn/APIPAYJSCAF9H23M74K",
+  "redirectSecret": "a1b2c3d4e5f6..."
+}
+```
 
-When you send `redirectUrl`, ApiPay redirects the customer back to your site after payment with signed query parameters. Store the `redirectSecret` from the payment request response with your order so your result page can verify the return payload.
+Store `publicId` and `redirectSecret` with your order, then redirect the customer to `payUrl`.
 
-For server-to-server updates, register a webhook in **Integrations > Webhooks** and update your order status when your endpoint receives a matching payment event.
+## Handle the Payment Result
+
+**Redirect:** after payment, the customer returns to `redirectUrl` with `data` and `signature` query parameters. Verify them with `redirectSecret` before showing a paid state. See [Payment Requests API](/en/api/payment-requests).
+
+**Webhook:** open **Webhooks** in the dashboard to register an endpoint for payment notifications. Every webhook carries an `ApiPay-Signature` header for you to verify. See [Webhooks](/en/api/webhooks).
 
 ## Production Checklist
 
-- Generate unique `content` values for each order.
-- Store the ApiPay payment request ID and `redirectSecret` with your order.
-- Verify signed redirect payloads before showing a paid state.
-- Process webhooks idempotently so duplicate deliveries do not double-update an order.
-- Return HTTP 200 from webhook routes quickly, then process heavier work asynchronously.
+- Use a unique `content` value for each order.
+- Verify redirect and webhook signatures before marking an order paid.
+- Webhooks can arrive more than once; make sure each order is updated only once.
+- Return HTTP 200 from your webhook route right away and do heavy work in the background.

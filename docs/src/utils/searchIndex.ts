@@ -15,7 +15,7 @@ export const searchItems: SearchItem[] = [
     section: 'Tổng quan',
   },
   {
-    title: 'Quick Start',
+    title: 'Bắt đầu nhanh',
     description: 'Bắt đầu nhanh với ApiPay trong 5 phút',
     href: '/vi/quickstart',
     section: 'Hướng dẫn',
@@ -27,8 +27,8 @@ export const searchItems: SearchItem[] = [
     section: 'Hướng dẫn',
   },
   {
-    title: 'Đăng ký & Thanh toán',
-    description: 'Quản lý đăng ký và thanh toán ApiPay',
+    title: 'Gói dịch vụ & thanh toán',
+    description: 'Quản lý gói dịch vụ và thanh toán ApiPay',
     href: '/vi/subscription',
     section: 'Hướng dẫn',
   },

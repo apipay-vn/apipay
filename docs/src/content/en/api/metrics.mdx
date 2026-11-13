@@ -1,269 +1,114 @@
 ---
 title: Metrics API
-description: API for retrieving transaction metrics and analytics
+description: Look up transactions and summary figures
 ---
 
 # Metrics API
 
-API for retrieving transaction metrics and analytics data.
+Look up received transactions and summary figures. Every request needs the header `Authorization: Bearer <Auth>` (see [API Authentication](/en/api/authentication)).
 
-## Overview
+## Time filters
 
-Get an overview of your transaction metrics including totals, counts, and averages.
+The endpoints below accept the same time filters:
 
-```bash
-GET /v1/client/metrics/overview
-```
+| Parameter  | Type   | Required | Description                                                                                                     |
+| ---------- | ------ | -------- | --------------------------------------------------------------------------------------------------------------- |
+| `period`   | string | No       | `today`, `yesterday`, `this_week`, `last_week`, `this_month`, `last_month`, `last_3_months`, `last_6_months`, `this_year`, `custom` |
+| `dateFrom` | string | No       | From date, `YYYY-MM-DD` (Vietnam time). Use with `period=custom`                                                 |
+| `dateTo`   | string | No       | Through date, `YYYY-MM-DD` (Vietnam time). Use with `period=custom`                                              |
 
-### Headers
-
-| Header | Description |
-|--------|-------------|
-| `Authorization` | `Bearer <Auth>` |
-
-### Query Parameters
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `period` | string | — | Time period: `today`, `yesterday`, `this_week`, `last_week`, `this_month`, `last_month`, `last_3_months`, `last_6_months`, `this_year`, `custom` |
-| `dateFrom` | string | — | Start date, interpreted as a Vietnam (UTC+7) calendar day (ISO 8601 accepted) |
-| `dateTo` | string | — | End date, interpreted as a Vietnam (UTC+7) calendar day, inclusive (ISO 8601 accepted) |
-| `search` | string | — | Search by reference code, content, account number, bank name, bank code, or VA number |
-
-### Response
-
-```json
-{
-  "data": {
-    "totalIn": 5000000,
-    "totalOut": 0,
-    "totalTransactions": 50,
-    "averageAmount": 115000,
-    "successRate": 90,
-    "byBank": [
-      {
-        "bankName": "MB",
-        "accountNumber": "0123456789",
-        "totalIn": 3000000,
-        "countIn": 30,
-        "totalOut": 0,
-        "countOut": 0
-      }
-    ]
-  }
-}
-```
-
----
-
-## Time Series
-
-Get time series data for charts.
-
-```bash
-GET /v1/client/metrics/time-series
-```
-
-### Query Parameters
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `period` | string | — | Time period |
-| `dateFrom` | string | — | Start date, interpreted as a Vietnam (UTC+7) calendar day (ISO 8601 accepted) |
-| `dateTo` | string | — | End date, interpreted as a Vietnam (UTC+7) calendar day, inclusive (ISO 8601 accepted) |
-| `granularity` | string | — | Data granularity: `daily`, `weekly`, `monthly` |
-
-### Response
-
-```json
-{
-  "data": [
-    {
-      "date": "2026-03-01",
-      "totalIn": 1000000,
-      "totalOut": 0,
-      "count": 10
-    },
-    {
-      "date": "2026-03-02",
-      "totalIn": 1500000,
-      "totalOut": 0,
-      "count": 15
-    }
-  ]
-}
-```
-
----
-
-## Daily Transactions
-
-Get hourly transaction activity for a specific Vietnam date.
-
-```bash
-GET /v1/client/metrics/hourly-transactions
-```
-
-### Query Parameters
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `date` | string | — | Date in `YYYY-MM-DD` format, interpreted in the `Asia/Ho_Chi_Minh` timezone. Defaults to today in Vietnam. |
-| `status` | string[] | — | Filter by transaction status: `SUCCESS`, `FAILED`, `PENDING` |
-| `bankPublicId` | string[] | — | Filter by one or more linked bank public IDs |
-
-### Response
-
-```json
-{
-  "data": [
-    {
-      "hour": 0,
-      "label": "00:00",
-      "SUCCESS_amount": 2500000,
-      "SUCCESS_count": 5,
-      "FAILED_amount": 0,
-      "FAILED_count": 0,
-      "PENDING_amount": 100000,
-      "PENDING_count": 1,
-      "total_amount": 2600000,
-      "total_count": 6
-    },
-    {
-      "hour": 1,
-      "label": "01:00",
-      "SUCCESS_amount": 0,
-      "SUCCESS_count": 0,
-      "FAILED_amount": 0,
-      "FAILED_count": 0,
-      "PENDING_amount": 0,
-      "PENDING_count": 0,
-      "total_amount": 0,
-      "total_count": 0
-    }
-  ]
-}
-```
-
----
-
-## Bank Distribution
-
-Get transaction distribution by bank. Banks are ranked by transaction count by default.
-
-```bash
-GET /v1/client/metrics/bank-distribution
-```
-
-### Query Parameters
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `period` | string | — | Time period: `today`, `yesterday`, `this_week`, `last_week`, `this_month`, `last_month`, `last_3_months`, `last_6_months`, `this_year`, `custom` |
-| `dateFrom` | string | — | Start date, interpreted as a Vietnam (UTC+7) calendar day (ISO 8601 accepted) |
-| `dateTo` | string | — | End date, interpreted as a Vietnam (UTC+7) calendar day, inclusive (ISO 8601 accepted) |
-| `page` | integer | — | Page number (default `1`) |
-| `limit` | integer | — | Page size (default `10`, max `50`) |
-| `sortBy` | string | — | Ranking metric: `transactionCount` (default, quantity) or `totalIn` (amount) |
-
-### Response
-
-```json
-{
-  "data": [
-    {
-      "bankCode": "MB",
-      "bankName": "MB Bank",
-      "accountNumber": "0123456789",
-      "accountName": "NGUYEN VAN A",
-      "totalIn": 2000000,
-      "totalOut": 0,
-      "transactionCount": 20
-    }
-  ]
-}
-```
-
----
-
-## Amount Histogram
-
-Get amount distribution histogram.
-
-```bash
-GET /v1/client/metrics/amount-histogram
-```
-
-### Response
-
-```json
-{
-  "data": [
-    { "range": "0-100K", "countIn": 10, "countOut": 0 },
-    { "range": "100K-500K", "countIn": 25, "countOut": 0 },
-    { "range": "500K-1M", "countIn": 10, "countOut": 0 },
-    { "range": "1M-5M", "countIn": 5, "countOut": 0 },
-    { "range": "5M-10M", "countIn": 1, "countOut": 0 },
-    { "range": "10M+", "countIn": 0, "countOut": 0 }
-  ]
-}
-```
-
----
-
-## Transactions List
-
-Get paginated list of transactions.
+## List transactions
 
 ```bash
 GET /v1/client/metrics/transactions
 ```
 
-### Query Parameters
+In addition to the time filters:
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `period` | string | — | Time period |
-| `dateFrom` | string | — | Start date, interpreted as a Vietnam (UTC+7) calendar day (ISO 8601 accepted) |
-| `dateTo` | string | — | End date, interpreted as a Vietnam (UTC+7) calendar day, inclusive (ISO 8601 accepted) |
-| `search` | string | — | Search by reference code, content, account number, bank name, bank code, or VA number |
-| `accountNumber` | string | — | Filter by account number or VA number |
-| `bankPublicId` | string[] | — | Filter by one or more linked bank public IDs |
-| `page` | number | — | Page number (default: 1) |
-| `limit` | number | — | Items per page (default: 20, max: 100) |
-| `sortBy` | string | — | Sort field: `transactionDate`, `amount`, `createdAt` |
-| `sortOrder` | string | — | Sort order: `asc`, `desc` |
+| Parameter       | Type     | Required | Description                                                  |
+| --------------- | -------- | -------- | ------------------------------------------------------------ |
+| `search`        | string   | No       | Search by reference code, description, account or VA number  |
+| `bankPublicId`  | string[] | No       | Filter by bank account. Repeat to filter several             |
+| `accountNumber` | string   | No       | Filter by account or VA number                               |
+| `sortBy`        | string   | No       | `transactionDate` (default), `amount` or `createdAt`         |
+| `sortOrder`     | string   | No       | `desc` (default) or `asc`                                    |
+| `page`          | number   | No       | Default `1`                                                  |
+| `limit`         | number   | No       | Default `20`, max `100`                                      |
 
-### Response
+```bash
+curl -G https://app.apipay.vn/v1/client/metrics/transactions \
+  -H "Authorization: Bearer <Auth>" \
+  --data-urlencode "period=today" \
+  --data-urlencode "search=ORDER-12345"
+```
 
 ```json
 {
   "data": {
     "data": [
       {
-        "id": "txn_abc123",
+        "id": "550e8400-e29b-41d4-a716-446655440000",
         "amount": "100000",
         "type": "IN",
-        "content": "ORDER-001",
-        "referenceCode": "TX123456789",
-        "transactionDate": "2026-03-06T10:05:00Z",
+        "content": "ORDER-12345",
+        "referenceCode": "FT26081212345",
+        "transactionDate": "2026-08-12T10:30:00.000Z",
         "status": "SUCCESS",
-        "createdAt": "2026-03-06T10:00:00Z",
+        "createdAt": "2026-08-12T10:30:02.000Z",
         "bankAccount": {
           "bankShortName": "MB",
           "bankName": "MB Bank",
           "accountNumber": "0123456789",
-          "vaNumber": "VA123456789",
-          "accountName": "NGUYEN VAN A"
+          "accountName": "NGUYEN VAN A",
+          "vaNumber": null
         }
       }
     ],
-    "meta": {
-      "total": 50,
-      "page": 1,
-      "limit": 20,
-      "totalPages": 3
-    }
-  }
+    "meta": {"total": 50, "page": 1, "limit": 20, "totalPages": 3}
+  },
+  "statusCode": 200,
+  "timestamp": "2026-08-12T10:35:00.000Z"
 }
 ```
+
+## Get a transaction
+
+`id` is the `transactionId` from the [webhook](/en/api/webhooks). The response matches one item of the transaction list.
+
+```bash
+GET /v1/client/metrics/transactions/:id
+```
+
+## Overview
+
+Total received, transaction count and average amount for the selected period.
+
+```bash
+GET /v1/client/metrics/overview
+```
+
+```bash
+curl -G https://app.apipay.vn/v1/client/metrics/overview \
+  -H "Authorization: Bearer <Auth>" \
+  --data-urlencode "period=this_month"
+```
+
+```json
+{
+  "data": {
+    "totalIn": 5000000,
+    "totalTransactions": 50,
+    "averageAmount": 100000,
+    "comparison": null
+  },
+  "statusCode": 200,
+  "timestamp": "2026-08-12T10:35:00.000Z"
+}
+```
+
+| Field               | Type           | Description                                               |
+| ------------------- | -------------- | --------------------------------------------------------- |
+| `totalIn`           | number         | Total received (VND)                                      |
+| `totalTransactions` | number         | Transaction count                                         |
+| `averageAmount`     | number         | Average amount per transaction (VND)                      |
+| `comparison`        | object \| null | Comparison with the previous period. Only for `period=this_month` |

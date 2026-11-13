@@ -280,7 +280,7 @@ export const enReleases: ReleaseNote[] = withAnchors([
     ],
     fixes: [],
     improvements: [
-      'Commerce checkouts without a custom transfer memo now stamp a unique VietQR content code so two buyers of the same amount are not matched to the wrong request.',
+      'Each Commerce checkout now gets its own transfer content, so two buyers paying the same amount are never matched to the wrong order.',
     ],
   },
   {
@@ -385,7 +385,7 @@ export const enReleases: ReleaseNote[] = withAnchors([
     fixes: [],
     improvements: [
       'Smarter plan changes — when you switch plans mid-cycle, the remaining time on your current plan is credited toward your new plan, so you only pay for what you use.',
-      'Faster and more reliable transaction processing — payments and webhooks now run through a dedicated queue, improving delivery speed and reducing the chance of missed events during high-traffic periods.',
+      'Faster and more reliable transaction processing — payments and webhooks are delivered faster, with less chance of missed events during busy periods.',
       'More responsive webhook retries — failed webhook deliveries retry more quickly, helping your integrations stay in sync with less waiting.',
     ],
   },
@@ -676,7 +676,7 @@ export const enReleases: ReleaseNote[] = withAnchors([
     improvements: [
       'Replaced status pie chart with hourly transaction bar chart on overview pages for clearer daily breakdown',
       'Improved query performance for webhook delivery data',
-      'Better end-to-end tracking of notification delivery from queue to final status',
+      'Clearer delivery status for every notification',
     ],
   },
   {
@@ -691,7 +691,7 @@ export const enReleases: ReleaseNote[] = withAnchors([
       'Fixed notification rendering for special characters in transaction data',
     ],
     improvements: [
-      'Optimized notification queue processing for higher throughput',
+      'Notifications are sent faster',
       'Improved template rendering performance and memory usage',
     ],
   },
@@ -917,8 +917,8 @@ export const viReleases: ReleaseNote[] = withAnchors([
     version: '1.25.0',
     date: '2026-09-10',
     features: [
-      'Gói hạn mức giao dịch — bảng giá mới tính theo số giao dịch thành công mỗi tháng. Bắt đầu với gói miễn phí (60 GD/tháng) hoặc chọn gói trả phí từ 200 đến 500.000 GD/tháng. Mọi gói hạn mức đều hỗ trợ kết nối nhiều tài khoản ngân hàng.',
-      'Gói miễn phí — kích hoạt miễn phí tại Dashboard → Cài đặt → Đăng ký. Giao dịch vượt hạn mức là 350 VND/GD trừ từ số dư trả trước. Gói trả phí dùng đơn giá của gói đó, dịch vụ không bị gián đoạn khi vượt hạn mức.',
+      'Gói hạn mức giao dịch — bảng giá mới tính theo số giao dịch thành công mỗi tháng. Bắt đầu với gói miễn phí (60 giao dịch/tháng) hoặc chọn gói trả phí từ 200 đến 500.000 giao dịch/tháng. Mọi gói hạn mức đều hỗ trợ kết nối nhiều tài khoản ngân hàng.',
+      'Gói miễn phí — kích hoạt miễn phí tại Dashboard → Cài đặt → Đăng ký. Giao dịch vượt hạn mức là 350 VND/giao dịch trừ từ số dư trả trước. Gói trả phí dùng đơn giá của gói đó, dịch vụ không bị gián đoạn khi vượt hạn mức.',
     ],
     fixes: [],
     improvements: [
@@ -968,7 +968,7 @@ export const viReleases: ReleaseNote[] = withAnchors([
     ],
     fixes: [],
     improvements: [
-      'Checkout Commerce không gửi content thì gắn mã CK duy nhất trên QR, tránh khớp nhầm hai khách cùng số tiền.',
+      'Mỗi lượt thanh toán Commerce có nội dung chuyển khoản riêng, hai khách trả cùng số tiền không còn bị ghi nhận nhầm đơn.',
     ],
   },
   {
@@ -1073,7 +1073,7 @@ export const viReleases: ReleaseNote[] = withAnchors([
     fixes: [],
     improvements: [
       'Đổi gói thông minh hơn — khi đổi gói giữa chu kỳ, thời gian còn lại của gói hiện tại được tính vào gói mới, bạn chỉ trả tiền cho những gì đã sử dụng.',
-      'Xử lý giao dịch nhanh và ổn định hơn — thanh toán và webhook nay chạy qua hàng đợi riêng, tăng tốc độ gửi và giảm nguy cơ bỏ lỡ sự kiện trong thời điểm giao dịch cao.',
+      'Xử lý giao dịch nhanh và ổn định hơn — thanh toán và webhook được gửi nhanh hơn, ít bị bỏ lỡ sự kiện vào giờ cao điểm.',
       'Gửi lại webhook phản hồi nhanh hơn — các lần gửi webhook thất bại được thử lại nhanh chóng, giúp tích hợp của bạn luôn đồng bộ với ít thời gian chờ hơn.',
     ],
   },
@@ -1361,7 +1361,7 @@ export const viReleases: ReleaseNote[] = withAnchors([
     improvements: [
       'Thay biểu đồ tròn trạng thái bằng biểu đồ cột giao dịch theo giờ trên trang tổng quan',
       'Tăng tốc truy vấn dữ liệu gửi webhook',
-      'Theo dõi thông báo tốt hơn từ hàng đợi đến trạng thái cuối cùng',
+      'Theo dõi trạng thái gửi của từng thông báo rõ ràng hơn',
     ],
   },
   {
@@ -1372,7 +1372,7 @@ export const viReleases: ReleaseNote[] = withAnchors([
       'Nhãn thông báo rõ hơn cho các loại sự kiện mới',
     ],
     fixes: ['Gửi thông báo ổn định hơn trên tất cả kênh', 'Sửa lỗi hiển thị ký tự đặc biệt trong dữ liệu giao dịch'],
-    improvements: ['Tối ưu hàng đợi thông báo để xử lý nhanh hơn', 'Render mẫu nhanh hơn và dùng ít bộ nhớ hơn'],
+    improvements: ['Thông báo được gửi nhanh hơn', 'Render mẫu nhanh hơn và dùng ít bộ nhớ hơn'],
   },
   {
     version: '1.3',

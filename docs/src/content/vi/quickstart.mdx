@@ -1,196 +1,183 @@
 ---
-title: Quick Start
-description: Bắt đầu tích hợp nhanh với ApiPay trong 5 phút
+title: Bắt đầu nhanh
+description: Tạo link thanh toán đầu tiên và nhận webhook với ApiPay
 ---
 
-# Quick Start
+# Bắt đầu nhanh
 
-Trang này giúp bạn tạo payment link đầu tiên bằng API và nhận webhook khi có giao dịch. Bạn có thể bắt đầu với **gói miễn phí** (60 giao dịch thành công/tháng, kết nối nhiều ngân hàng) — kích hoạt tại **Cài đặt → Đăng ký**, rồi tạo API key.
+Tạo yêu cầu thanh toán đầu tiên bằng API và nhận webhook khi khách trả tiền. Bạn cần một [gói dịch vụ](/vi/subscription) đang hoạt động (gói miễn phí cũng được) và ít nhất một tài khoản ngân hàng đã [kết nối](/vi/connect-banks).
 
-## Bước 1: Lấy API Key
+## Bước 1: Lấy khóa API
 
-Đăng nhập vào [dashboard](https://my.apipay.vn), kích hoạt gói nếu chưa có, rồi tạo API Key tại mục **Tích hợp → API Keys**.
+Trong [my.apipay.vn](https://my.apipay.vn), vào **Tích hợp → Web App → API Keys** và tạo khóa mới. Bạn nhận được:
 
-Bạn sẽ nhận được:
+- `accessKey`: định danh khóa API.
+- `secretKey`: khóa bí mật, chỉ dùng ở phía server.
 
-- `accessKey` - Public key để định danh tài khoản
-- `secretKey` - Private key dùng để xác thực request
+Mọi request gửi header `Authorization: Bearer <Auth>`, với `<Auth>` là `base64(accessKey:secretKey)`. Xem [Xác thực API](/vi/api/authentication).
 
-> **Lưu ý:** Header `Authorization: Bearer <Auth>` dùng `<Auth>` là chuỗi `base64(accessKey:secretKey)`. Xem [Xác thực API](/vi/api/authentication) để biết chi tiết.
+## Bước 2: Lấy mã tài khoản ngân hàng
 
-## Bước 2: Tạo Payment Link
+```bash
+curl https://app.apipay.vn/v1/client/banks \
+  -H "Authorization: Bearer <Auth>"
+```
 
-Gọi API dưới đây để tạo link thanh toán:
+Lấy `publicId` của tài khoản nhận tiền trong `data.message`, ví dụ `bnk_abc123`. Xem [Quản lý ngân hàng](/vi/api/banks).
+
+## Bước 3: Tạo yêu cầu thanh toán
 
 ```bash
 curl -X POST https://app.apipay.vn/v1/client/payment-requests \
-  -H "Content-Type: application/json" \
   -H "Authorization: Bearer <Auth>" \
+  -H "Content-Type: application/json" \
   -d '{
-    "bankPublicId": "your-bank-public-id",
+    "bankPublicId": "bnk_abc123",
     "amount": "100000",
     "content": "ORDER-12345"
   }'
 ```
 
-Response mẫu:
-
 ```json
 {
-	"data": {
-		"publicId": "APIPAYJSC69C3F00A3212",
-		"payUrl": "https://pay.apipay.vn/APIPAYJSC69C3F00A3212",
-		"qrUrl": "https://api.qrserver.com/...",
-		"bankCode": "MB",
-		"accountNumber": "0123456789",
-		"amount": "100000",
-		"content": "ORDER-12345"
-	},
-	"statusCode": 200,
-	"timestamp": "2026-08-12T14:27:45.000Z"
+  "data": {
+    "publicId": "APIPAYJSC69C3F00A3212",
+    "payUrl": "https://pay.apipay.vn/APIPAYJSC69C3F00A3212",
+    "qrUrl": "https://app.apipay.vn/v1/payment-requests/APIPAYJSC69C3F00A3212/qr-image",
+    "bankCode": "MB",
+    "accountNumber": "0123456789",
+    "amount": "100000",
+    "content": "ORDER-12345"
+  },
+  "statusCode": 201,
+  "timestamp": "2026-08-12T14:27:45.000Z"
 }
 ```
 
-## Bước 3: Gửi cho khách hàng
+Gửi `payUrl` cho khách (email, Zalo, website...) hoặc hiển thị ảnh `qrUrl` ngay trên trang của bạn. Khách quét QR bằng ứng dụng ngân hàng để thanh toán.
 
-Gửi `payUrl` cho khách qua:
+Bán cùng một mức giá nhiều lần? Tạo sản phẩm và mức giá trong [Commerce](/vi/commerce) rồi gửi `priceId` thay cho `amount`.
 
-- Email/SMS
-- Chat (Zalo, Facebook, Telegram)
-- Website của bạn
+## Bước 4: Nhận webhook
 
-Khách sẽ thấy trang thanh toán có QR Code để quét bằng app ngân hàng.
-
-Muốn dùng lại cùng số tiền cho nhiều link, tạo sản phẩm và mức giá trong [Commerce](/vi/commerce) rồi gửi `priceId` thay vì `amount`.
-
-## Bước 4: Nhận thông báo
-
-Cấu hình webhook URL trong dashboard để nhận thông báo khi hệ thống ghi nhận giao dịch ngân hàng:
+Đăng ký URL webhook trong mục **Webhooks** của dashboard. Khi tiền vào tài khoản, ApiPay gửi:
 
 ```json
 {
-	"event": "transaction.in",
-	"data": {
-		"transactionId": "550e8400-e29b-41d4-a716-446655440000",
-		"referenceCode": "TX123456789",
-		"amount": "100000",
-		"content": "ORDER-12345",
-		"transactionDate": "2026-03-06T10:30:00Z",
-		"bankAccountPublicId": "bk_abcdef1234567890",
-		"gateway": "VCB",
-		"accountNumber": "0123456789"
-	}
+  "event": "transaction.in",
+  "data": {
+    "transactionId": "550e8400-e29b-41d4-a716-446655440000",
+    "referenceCode": "FT26081212345",
+    "amount": "100000",
+    "type": "IN",
+    "content": "ORDER-12345",
+    "transactionDate": "2026-08-12T10:30:00.000Z",
+    "bankAccountPublicId": "bnk_abc123",
+    "gateway": "970422",
+    "accountNumber": "0123456789",
+    "vaNumber": null
+  }
 }
 ```
 
-ApiPay gửi `transaction.in` khi phát hiện thanh toán. Xem [Webhook](/vi/api/webhooks) để biết đầy đủ payload và cách kiểm tra chữ ký.
+Kiểm tra header `ApiPay-Signature` trước khi xử lý: đó là HMAC-SHA256 (hex) của **body gốc**, ký bằng secret của webhook.
 
-## Kiểm thử tích hợp
+```javascript
+import crypto from "node:crypto";
+import express from "express";
 
-Dùng sandbox để chạy hết luồng mà không cần tiền thật.
+const app = express();
 
-### 1. Dùng test API key
+function isValidSignature(rawBody, signature, secret) {
+  const expected = Buffer.from(crypto.createHmac("sha256", secret).update(rawBody).digest("hex"), "hex");
+  const received = Buffer.from(String(signature || ""), "hex");
+  return received.length === expected.length && crypto.timingSafeEqual(received, expected);
+}
 
-Tạo test key trong dashboard (bắt đầu bằng `ak_test_`). Cùng URL production tự chuyển sang sandbox khi bạn dùng test key.
+app.post("/webhooks/apipay", express.raw({type: "*/*"}), (req, res) => {
+  if (!isValidSignature(req.body, req.headers["apipay-signature"], process.env.APIPAY_WEBHOOK_SECRET)) {
+    return res.status(401).json({error: "Invalid signature"});
+  }
 
-```bash
-AUTH=$(echo -n "ak_test_abc123:secret_def456" | base64)
+  const {event, sandbox, data} = JSON.parse(req.body.toString("utf8"));
+  if (event === "transaction.in" && !sandbox) {
+    // Cập nhật đơn hàng theo data.content và data.amount
+  }
+
+  res.status(200).json({received: true});
+});
+
+app.listen(3000);
 ```
 
-### 2. Tạo payment request thử nghiệm
+Xem [Webhook](/vi/api/webhooks#xác-thực-webhook) để biết đầy đủ payload và ví dụ cho ngôn ngữ khác.
 
-```bash
-curl -X POST https://app.apipay.vn/v1/client/payment-requests \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $AUTH" \
-  -d '{
-    "bankPublicId": "test_bk_abc123",
-    "amount": "50000",
-    "content": "TEST-ORDER-001"
-  }'
-```
+## Kiểm thử với sandbox
 
-### 3. Giả lập thanh toán
+Chạy toàn bộ luồng mà không cần tiền thật:
 
-Endpoint này không cần auth, không có body, và chỉ nhận public ID sandbox (`test_pr_*`). ID live sẽ trả 400.
+1. Bật **Chế độ Sandbox** trong dashboard, thêm ngân hàng sandbox (`publicId` bắt đầu bằng `test_bank_`) rồi tạo khóa API thử nghiệm (bắt đầu bằng `ak_test_`).
+2. Gọi cùng URL API bằng khóa thử nghiệm để tạo yêu cầu thanh toán với `bankPublicId` của ngân hàng sandbox.
+3. Giả lập khách thanh toán bằng `publicId` của yêu cầu (bắt đầu bằng `test_pr_`):
 
 ```bash
 curl -X POST https://app.apipay.vn/v1/payment-requests/test_pr_abc123/pay
 ```
 
-Webhook tới URL đã cấu hình sẽ có `"sandbox": true`.
+Webhook sandbox có `"sandbox": true`. Luôn kiểm tra cờ này để không giao hàng cho đơn thử nghiệm. Xem [Sandbox & Live Test](/vi/sandbox).
 
-<Callout type="info">
-Webhook sandbox có `"sandbox": true`. Luôn kiểm tra cờ này để không fulfill đơn thử nghiệm.
-</Callout>
-
-Xem [Sandbox & Live Test](/vi/sandbox) để biết thêm tùy chọn kiểm thử.
-
-## Ví dụ Code
+## Ví dụ tạo yêu cầu thanh toán
 
 <CodeTabs>
 ```javascript
-const axios = require("axios");
-
 const API_BASE = "https://app.apipay.vn";
 const ACCESS_KEY = "your_access_key";
 const SECRET_KEY = "your_secret_key";
 
-async function createPaymentLink(bankPublicId, amount, content) {
-	// Tạo chuỗi auth base64
-	const auth = Buffer.from(`${ACCESS_KEY}:${SECRET_KEY}`).toString("base64");
+async function createPaymentRequest(bankPublicId, amount, content) {
+  const auth = Buffer.from(`${ACCESS_KEY}:${SECRET_KEY}`).toString("base64");
 
-	const response = await axios.post(
-		`${API_BASE}/v1/client/payment-requests`,
-		{
-			bankPublicId,
-			amount,
-			content,
-		},
-		{
-			headers: {
-				Authorization: `Bearer ${auth}`,
-				"Content-Type": "application/json",
-			},
-		},
-	);
-	return response.data.data;
+  const response = await fetch(`${API_BASE}/v1/client/payment-requests`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${auth}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({bankPublicId, amount, content}),
+  });
+  const body = await response.json();
+  return body.data;
 }
 
-// Sử dụng
-const payment = await createPaymentLink("bank-123", 100000, "ORDER-001");
-console.log("Payment URL:", payment.payUrl);
+async function main() {
+  const payment = await createPaymentRequest("bnk_abc123", "100000", "ORDER-001");
+  console.log("Link thanh toán:", payment.payUrl);
+}
+
+main();
 ```
 
 ```python
-import requests
 import base64
+import requests
 
 API_BASE = 'https://app.apipay.vn'
 ACCESS_KEY = 'your_access_key'
 SECRET_KEY = 'your_secret_key'
 
-def create_payment_link(bank_public_id: str, amount: int, content: str):
-    # Tạo chuỗi auth base64
-    auth = base64.b64encode(f'{ACCESS_KEY}:{SECRET_KEY}'.encode()).decode()
 
-    response = requests.post(
-        f'{API_BASE}/v1/client/payment-requests',
-        json={
-            'bankPublicId': bank_public_id,
-            'amount': amount,
-            'content': content
-        },
-        headers={
-            'Authorization': f'Bearer {auth}',
-            'Content-Type': 'application/json'
-        }
-    )
-    return response.json()['data']
+def create_payment_request(bank_public_id: str, amount: str, content: str):
+  auth = base64.b64encode(f'{ACCESS_KEY}:{SECRET_KEY}'.encode()).decode()
+  response = requests.post(
+    f'{API_BASE}/v1/client/payment-requests',
+    json={'bankPublicId': bank_public_id, 'amount': amount, 'content': content},
+    headers={'Authorization': f'Bearer {auth}'},
+  )
+  return response.json()['data']
 
-# Sử dụng
-payment = create_payment_link('bank-123', 100000, 'ORDER-001')
-print(f"Payment URL: {payment['payUrl']}")
+
+payment = create_payment_request('bnk_abc123', '100000', 'ORDER-001')
+print('Link thanh toán:', payment['payUrl'])
 ```
 
 ```php
@@ -198,37 +185,26 @@ print(f"Payment URL: {payment['payUrl']}")
 
 use Illuminate\Support\Facades\Http;
 
-$apiBase = 'https://app.apipay.vn';
-$accessKey = 'your_access_key';
-$secretKey = 'your_secret_key';
-
-function createPaymentLink(string $bankPublicId, int $amount, string $content): array
+function createPaymentRequest(string $bankPublicId, string $amount, string $content): array
 {
-    global $apiBase, $accessKey, $secretKey;
+  $auth = base64_encode('your_access_key:your_secret_key');
 
-    // Create base64 auth string
-    $auth = base64_encode("{$accessKey}:{$secretKey}");
+  $response = Http::withToken($auth)->post('https://app.apipay.vn/v1/client/payment-requests', [
+    'bankPublicId' => $bankPublicId,
+    'amount' => $amount,
+    'content' => $content,
+  ]);
 
-    $response = Http::withHeaders([
-        'Authorization' => "Bearer {$auth}",
-        'Content-Type'  => 'application/json',
-    ])->post("{$apiBase}/v1/client/payment-requests", [
-        'bankPublicId' => $bankPublicId,
-        'amount'       => $amount,
-        'content'      => $content,
-    ]);
-
-    return $response->json('data');
+  return $response->json('data');
 }
 
-// Usage
-$payment = createPaymentLink('bank-123', 100000, 'ORDER-001');
-echo 'Payment URL: ' . $payment['payUrl'];
+$payment = createPaymentRequest('bnk_abc123', '100000', 'ORDER-001');
+echo 'Link thanh toán: ' . $payment['payUrl'];
 ```
 </CodeTabs>
 
 ## Tiếp theo
 
-- [API Reference](/vi/api/payment-requests) - Chi tiết các API endpoint
-- [Webhook](/vi/api/webhooks) - Cấu hình nhận thông báo
-- [Danh sách ngân hàng](/vi/api/banks) - Các ngân hàng được hỗ trợ
+- [Yêu cầu thanh toán](/vi/api/payment-requests): toàn bộ endpoint
+- [Webhook](/vi/api/webhooks): cấu hình và xác thực
+- [Quản lý ngân hàng](/vi/api/banks): kết nối và quản lý tài khoản

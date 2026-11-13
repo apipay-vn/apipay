@@ -1,548 +1,282 @@
 ---
 title: Payment Requests API
-description: API for creating and managing payment links
+description: Create and manage payment requests
 ---
 
 # Payment Requests API
 
-API for creating and managing payment links.
+Each payment request has a payment link (`payUrl`) and a bank-transfer QR code. The basic flow:
 
-## Create Payment Link
+1. Your server creates a payment request.
+2. Send the customer to `payUrl`, or show the `qrUrl` image on your own page.
+3. Receive the result through the `transaction.in` [webhook](/en/api/webhooks).
 
-Create a payment link using your connected bank account.
+Every request needs the header `Authorization: Bearer <Auth>`, where `<Auth>` is the base64 of `accessKey:secretKey`. See [API Authentication](/en/api/authentication). Successful responses have the shape `{"data": ..., "statusCode": ..., "timestamp": ...}`.
+
+## Create a payment request
 
 ```bash
 POST /v1/client/payment-requests
 ```
 
-### Headers
+| Parameter        | Type   | Required | Description                                                                                                  |
+| ---------------- | ------ | -------- | ------------------------------------------------------------------------------------------------------------ |
+| `bankPublicId`   | string | Yes      | Receiving account. Get it from the [Banks API](/en/api/banks)                                                |
+| `amount`         | string | No       | Amount in VND, max `300000000`. Omit to let the customer enter it. Do not send with `priceId`                |
+| `priceId`        | string | No       | A [Commerce](/en/api/commerce) price. The amount is taken from the price at creation time. Do not send with `amount` |
+| `content`        | string | No       | Transfer description, max 140 characters. ApiPay strips diacritics and special characters; match on the `content` in the response |
+| `title`          | string | No       | Title shown on the payment page                                                                              |
+| `expiresAt`      | string | No       | Expiry time (ISO 8601). Default 90 days                                                                      |
+| `redirectUrl`    | string | No       | Where the customer returns after paying. See [Verify the redirect](#verify-the-redirect)                     |
+| `customDomainId` | string | No       | Show the payment page on your [custom domain](/en/custom-domains)                                            |
+| `customer`       | object | No       | Buyer details when creating from `priceId`: `name`, `email`, `taxCode`, `address`                            |
 
-| Header          | Description        |
-| --------------- | ------------------ |
-| `Authorization` | `Bearer <Auth>`    |
-| `Content-Type`  | `application/json` |
-
-> **Note:** `<Auth>` is your credentials encoded in base64. See [Authentication](/en/api/authentication) for details.
-
-### Request Body
-
-| Parameter      | Type   | Required  | Description                                                                                                                                                                                                                           |
-| -------------- | ------ | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `bankPublicId` | string | **✓ Yes** | Public ID of your connected bank                                                                                                                                                                                                      |
-| `amount`       | string | —         | Amount in VND (integer string or number, max `300000000`). Returned as string or `null`. Leave empty to allow customer input. Do not send together with `priceId`                                                                     |
-| `priceId`      | string | —         | Commerce price id. Copies that price amount onto this link once. Editing a product or price later does not change this request. Do not send together with `amount`. See [Commerce API](/en/api/commerce)                             |
-| `content`      | string | —         | Transfer content (max 140 characters). If omitted on a `priceId` request, ApiPay adds a unique transfer memo                                                                                                                          |
-| `title`        | string | —         | Title displayed on payment page                                                                                                                                                                                                       |
-| `expiresAt`    | string | —         | Expiration time (ISO 8601). Defaults to 90 days after creation                                                                                                                                                                               |
-| `redirectUrl`    | string | —         | URL to redirect after payment completion. When payment completes, the system will redirect to this URL with a signed payload (`?data=<base64>&signature=<hmac>`) for verification. Leave empty to use merchant's default redirect URL |
-| `customDomainId` | string | —         | Verified custom domain ID to host the payment page. When provided, the returned `payUrl` will use this domain (e.g. `https://pay.yourdomain.com/...`). Leave empty to use default domain. See [Custom Domains](/en/custom-domains) |
-| `customer`       | object | —         | Optional buyer details on a one-time `priceId` payment (`name`, `email`, `taxCode`, `address`). Reusable payment-link checkout collects these on the pay page instead                                                                 |
-
-### Response
+```bash
+curl -X POST https://app.apipay.vn/v1/client/payment-requests \
+  -H "Authorization: Bearer <Auth>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "bankPublicId": "bnk_abc123",
+    "amount": "100000",
+    "content": "ORDER-12345",
+    "title": "Order 12345",
+    "redirectUrl": "https://your-domain.com/payment/result"
+  }'
+```
 
 ```json
 {
   "data": {
-    "publicId": "APIPAYJSC69C3F00A3212",
-    "payUrl": "https://pay.apipay.vn/APIPAYJSC69C3F00A3212",
-    "qrUrl": "https://api.qrserver.com/v1/create-qr-code?...",
+    "publicId": "APIPAYJSCAF9H23M74K",
+    "payUrl": "https://pay.apipay.vn/APIPAYJSCAF9H23M74K",
+    "qrUrl": "https://app.apipay.vn/v1/payment-requests/APIPAYJSCAF9H23M74K/qr-image",
     "bankCode": "MB",
     "accountNumber": "0123456789",
     "accountName": "NGUYEN VAN A",
     "amount": "100000",
     "content": "ORDER-12345",
-    "expiresAt": "2026-12-31T23:59:59Z",
-    "createdAt": "2026-03-06T10:00:00Z",
+    "expiresAt": "2026-11-10T10:00:00.000Z",
+    "createdAt": "2026-08-12T10:00:00.000Z",
     "redirectSecret": "a1b2c3d4e5f6..."
   },
-  "statusCode": 200,
-  "timestamp": "2026-08-12T14:27:45.000Z"
+  "statusCode": 201,
+  "timestamp": "2026-08-12T10:00:00.000Z"
 }
 ```
 
-### Example
+Store `redirectSecret` on your server to [verify the redirect](#verify-the-redirect).
+
+## Get a payment request
 
 ```bash
-curl -X POST https://app.apipay.vn/v1/client/payment-requests \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer <Auth>" \
-  -d '{
-    "bankPublicId": "bank_abc123",
-    "amount": "500000",
-    "content": "ORDER-001",
-    "title": "Payment for Order #001",
-    "redirectUrl": "https://yoursite.com/payment/result"
-  }'
+GET /v1/client/payment-requests/:publicId
 ```
-
-Create with a verified custom domain (the returned `payUrl` will use `https://pay.yourbrand.com/...`):
-
-```bash
-curl -X POST https://app.apipay.vn/v1/client/payment-requests \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer <Auth>" \
-  -d '{
-    "bankPublicId": "bank_abc123",
-    "amount": "500000",
-    "content": "ORDER-001",
-    "customDomainId": "cml8x1abc0000domain0000000"
-  }'
-```
-
-Create from a Commerce price (amount comes from the price; do not also send `amount`):
-
-```bash
-curl -X POST https://app.apipay.vn/v1/client/payment-requests \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer <Auth>" \
-  -d '{
-    "bankPublicId": "bank_abc123",
-    "priceId": "cml8x1abc0000price0000000",
-    "content": "ORDER-001"
-  }'
-```
-
----
-
-## Get Payment Link Info
-
-Get details of a payment request (including QR code).
-
-```bash
-GET /v1/payment-requests/:publicId
-```
-
-### Response
 
 ```json
 {
   "data": {
-    "publicId": "APIPAYJSC69C3F00A3212",
+    "publicId": "APIPAYJSCAF9H23M74K",
+    "status": "ACTIVE",
+    "payUrl": "https://pay.apipay.vn/APIPAYJSCAF9H23M74K",
+    "qrUrl": "https://app.apipay.vn/v1/payment-requests/APIPAYJSCAF9H23M74K/qr-image",
     "bankCode": "MB",
     "accountNumber": "0123456789",
     "accountName": "NGUYEN VAN A",
     "amount": "100000",
     "content": "ORDER-12345",
-    "title": "Payment for Order #123",
-    "status": "ACTIVE",
-    "qrUrl": "https://api.qrserver.com/...",
-    "expiresAt": "2026-12-31T23:59:59Z",
-    "createdAt": "2026-03-06T10:00:00Z",
-    "canChangeBank": true,
-    "bankChangedByCustomer": false,
-    "redirectUrl": "https://yoursite.com/payment/result",
-    "merchant": {
-      "name": "Store Name",
-      "logoUrl": "https://yoursite.com/logo.png",
-      "companyName": "Company ABC"
-    }
+    "title": "Order 12345",
+    "redirectUrl": "https://your-domain.com/payment/result",
+    "expiresAt": "2026-11-10T10:00:00.000Z",
+    "createdAt": "2026-08-12T10:00:00.000Z"
   },
   "statusCode": 200,
-  "timestamp": "2026-08-12T14:27:45.000Z"
+  "timestamp": "2026-08-12T10:05:00.000Z"
 }
 ```
 
 ### Status
 
-| Status      | Description         |
-| ----------- | ------------------- |
+| Status      | Description        |
+| ----------- | ------------------ |
 | `ACTIVE`    | Waiting for payment |
-| `COMPLETED` | Payment received    |
-| `EXPIRED`   | Expired             |
-| `CANCELLED` | Cancelled           |
+| `COMPLETED` | Paid               |
+| `EXPIRED`   | Expired            |
+| `CANCELLED` | Cancelled          |
 
----
-
-## List Payment Links
-
-Get list of payment requests you've created. Endpoints payload lives under top-level `data`; list endpoints therefore have `data.data` for rows.
+## List payment requests
 
 ```bash
 GET /v1/client/payment-requests
 ```
 
-### Headers
-
-| Header          | Description     |
-| --------------- | --------------- |
-| `Authorization` | `Bearer <Auth>` |
-
-### Response
-
-```json
-{
-  "data": {
-    "status": true,
-    "data": [
-      {
-        "publicId": "APIPAYJSC69C3F00A3212",
-        "bankCode": "MB",
-        "accountNumber": "0123456789",
-        "accountName": "NGUYEN VAN A",
-        "amount": "100000",
-        "content": "ORDER-001",
-        "title": "Payment for Order #001",
-        "status": "COMPLETED",
-        "expiresAt": "2026-12-31T23:59:59Z",
-        "redirectUrl": "https://yoursite.com/payment/result",
-        "commercePriceId": "cml8x1abc0000price0000000",
-        "createdAt": "2026-03-06T10:00:00Z"
-      }
-    ],
-    "pagination": {
-      "page": 1,
-      "limit": 20,
-      "total": 1,
-      "totalPages": 1
-    }
-  },
-  "statusCode": 200,
-  "timestamp": "2026-08-12T14:27:45.000Z"
-}
-```
-
-### Query Parameters
-
-| Parameter       | Type     | Required | Description                                            |
-| --------------- | -------- | -------- | ------------------------------------------------------ |
-| `page`          | number   | —        | Page number (default: `1`)                             |
-| `limit`         | number   | —        | Items per page (default: `20`, max: `100`)             |
-| `search`        | string   | —        | Search by public ID, content, title, or account number |
-| `status`        | string[] | —        | Filter by status: `ACTIVE`, `EXPIRED`, `COMPLETED`, `CANCELLED`. Can be passed multiple times |
-| `bankAccountId` | number   | —        | Filter by bank account ID                              |
-| `dateFrom`      | string   | —        | Filter by creation date from this day (Vietnam UTC+7)              |
-| `dateTo`        | string   | —        | Filter by creation date through this day, inclusive (Vietnam UTC+7) |
-
-### Status Filters
-
-The `status` query parameter accepts these values:
-
-| Status      | Description         |
-| ----------- | ------------------- |
-| `ACTIVE`    | Waiting for payment |
-| `COMPLETED` | Payment received    |
-| `EXPIRED`   | Expired             |
-| `CANCELLED` | Cancelled           |
-
-### Query Examples
-
-Get completed payment links:
+| Parameter  | Type     | Required | Description                                                    |
+| ---------- | -------- | -------- | -------------------------------------------------------------- |
+| `page`     | number   | No       | Default `1`                                                    |
+| `limit`    | number   | No       | Default `20`, max `100`                                        |
+| `search`   | string   | No       | Search by ID, description, title or account number             |
+| `status`   | string[] | No       | Filter by [status](#status). Repeat to filter several values   |
+| `dateFrom` | string   | No       | Created from date, `YYYY-MM-DD` (Vietnam time)                 |
+| `dateTo`   | string   | No       | Created through date, `YYYY-MM-DD` (Vietnam time)              |
 
 ```bash
 curl -G https://app.apipay.vn/v1/client/payment-requests \
   -H "Authorization: Bearer <Auth>" \
   --data-urlencode "status=COMPLETED" \
-  --data-urlencode "page=1" \
-  --data-urlencode "limit=20"
+  --data-urlencode "dateFrom=2026-08-01"
 ```
 
-Get active or expired payment links created in March 2026:
+The list is at `data.data`, pagination at `data.pagination` (`page`, `limit`, `total`, `totalPages`).
 
-```bash
-curl -G https://app.apipay.vn/v1/client/payment-requests \
-  -H "Authorization: Bearer <Auth>" \
-  --data-urlencode "status=ACTIVE" \
-  --data-urlencode "status=EXPIRED" \
-  --data-urlencode "dateFrom=2026-03-01" \
-  --data-urlencode "dateTo=2026-03-31"
-```
+## Cancel a payment request
 
----
-
-## Get QR Image
-
-Stream the ApiPay-branded QR PNG for a payment request.
-
-```bash
-GET /v1/payment-requests/:publicId/qr-image
-```
-
----
-
-## List Bank Apps
-
-List the bank apps a customer can open with the transfer already filled in (account, amount, content). Public, no API key. Returns an empty list when the payment request is not `ACTIVE` and for sandbox (`test_pr_*`) requests.
-
-```bash
-GET /v1/payment-requests/:publicId/bank-apps
-```
-
-### Response
-
-```json
-{
-  "data": [
-    {"bankBin": "970418", "bankCode": "BIDV", "name": "BIDV"},
-    {"bankBin": "970416", "bankCode": "ACB", "name": "ACB"},
-    {"bankBin": "970415", "bankCode": "ICB", "name": "VietinBank"},
-    {"bankBin": "970448", "bankCode": "OCB", "name": "OCB"},
-    {"bankBin": "970422", "bankCode": "MB", "name": "MB Bank"},
-    {"bankBin": "970432", "bankCode": "VPB", "name": "VPBank"},
-    {"bankBin": "970403", "bankCode": "STB", "name": "Sacombank"}
-  ],
-  "statusCode": 200
-}
-```
-
----
-
-## Create Bank App Link
-
-Create a link that opens the chosen bank app with the transfer filled in. Open it on the customer's phone (for example `window.location.assign(url)`). Public, no API key. The ApiPay payment page shows these buttons on mobile automatically.
-
-```bash
-POST /v1/payment-requests/:publicId/bank-apps/link
-```
-
-### Request Body
-
-| Field     | Type   | Required | Description                            |
-| --------- | ------ | -------- | -------------------------------------- |
-| `bankBin` | string | Yes      | `bankBin` from **List Bank Apps**      |
-
-### Response
-
-```json
-{
-  "data": {
-    "url": "<bank app link>"
-  },
-  "statusCode": 201
-}
-```
-
-After the customer finishes in the bank app, they return to the payment page. Opening the link does **not** confirm payment: rely on the `transaction.in` webhook (or payment request status) for the final result.
-
-Errors: `400` when `bankBin` is not in the list or the payment request is not `ACTIVE`; `404` when the payment request does not exist or is a sandbox request.
-
----
-
-## Cancel Payment Link
-
-Cancel an active payment request.
+Only `ACTIVE` requests can be cancelled. After cancelling, the status is `CANCELLED`.
 
 ```bash
 DELETE /v1/client/payment-requests/:publicId
 ```
 
-### Response
+## QR image
+
+Returns the bank-transfer QR code as a PNG. No API key needed, so you can use it directly in an `<img>` tag. This is the URL in the `qrUrl` field.
+
+```bash
+GET /v1/payment-requests/:publicId/qr-image
+```
+
+## List Bank Apps
+
+Use this when you build your own mobile payment page and want buttons that open a banking app with the transfer details prefilled. No API key needed. The ApiPay payment page already shows these buttons.
+
+```bash
+GET /v1/payment-requests/:publicId/bank-apps
+```
 
 ```json
 {
-  "data": {
-    "status": true,
-    "message": "Payment request cancelled"
-  },
-  "statusCode": 200,
-  "timestamp": "2026-08-12T14:27:45.000Z"
+  "data": [
+    {"bankBin": "970422", "bankCode": "MB", "name": "MB Bank"},
+    {"bankBin": "970416", "bankCode": "ACB", "name": "ACB"}
+  ],
+  "statusCode": 200
 }
 ```
 
-### Note
+The list is empty when the payment request is no longer `ACTIVE`.
 
-- Only payment requests with `ACTIVE` status can be cancelled
-- After cancellation, status will change to `CANCELLED`
-
----
-
-## Simulate Sandbox Payment
-
-Mark a sandbox payment request as paid. Unauthenticated; `{publicId}` must start with `test_pr_`. No request body.
+### Create a bank app link
 
 ```bash
-POST /v1/payment-requests/:publicId/pay
+POST /v1/payment-requests/:publicId/bank-apps/link
 ```
+
+| Parameter | Type   | Required | Description                         |
+| --------- | ------ | -------- | ----------------------------------- |
+| `bankBin` | string | Yes      | `bankBin` from the bank app list    |
+
+```json
+{
+  "data": {"url": "<bank app link>"},
+  "statusCode": 201
+}
+```
+
+Open `url` on the customer's phone, for example `window.location.assign(url)`. Opening the app does not mean the customer paid; use the webhook to confirm.
+
+## Simulate a sandbox payment
+
+Marks a sandbox payment request (`test_pr_*`) as paid, so you can test the webhook. Sandbox redirects are not signed. No API key, no body.
 
 ```bash
 curl -X POST https://app.apipay.vn/v1/payment-requests/test_pr_abc123/pay
 ```
 
-Live public IDs (for example `APIPAYJSC...`) return 400. See [Sandbox & Live Test](/en/sandbox).
+See [Sandbox & Live Test](/en/sandbox).
 
----
+## Verify the redirect
 
-## Signed Redirect URL Verification
-
-When you provide a `redirectUrl` when creating a payment request, after payment completion, customers will be redirected to your URL with a signed payload.
-
-### Redirect Format
-
-After payment completes, customers are redirected to:
+If you send `redirectUrl`, a customer who has paid returns to:
 
 ```
-https://yoursite.com/payment/result?data=<base64>&signature=<hmac>
+https://your-domain.com/payment/result?data=<base64url>&signature=<hmac>
 ```
 
-### Payload Structure
-
-The `data` parameter contains a base64-encoded JSON object:
+`data` is base64url-encoded JSON:
 
 ```json
 {
   "status": "success",
-  "transactionId": "txn_abc123",
+  "transactionId": "550e8400-e29b-41d4-a716-446655440000",
   "amount": "100000",
   "content": "ORDER-12345",
-  "timestamp": 1700000000
+  "timestamp": 1755000000000
 }
 ```
 
-Possible `status` values: `success`, `cancel`, `expired`
+`signature` is the HMAC-SHA256 (hex) of the decoded JSON string, signed with the `redirectSecret` of that payment request (each request has its own). `timestamp` is in milliseconds.
 
-### Verification Example
+When the customer cancels or the link expires, the URL only carries `?status=cancel` or `?status=expired`, with no signature. Treat it as not paid.
+
+The redirect is only for showing the result to the customer. Confirm the order with the webhook.
 
 <CodeTabs>
 ```javascript
-// Node.js example
-const crypto = require('crypto');
+const crypto = require("crypto");
 
-function verifyRedirectPayload(query, redirectSecret) {
-  // Decode the payload
-  const payloadJson = Buffer.from(query.data, 'base64url').toString('utf-8');
-  const payload = JSON.parse(payloadJson);
+// redirectSecret: the secret you stored with the order when creating the payment request
+function verifyRedirect({data, signature}, redirectSecret) {
+  const json = Buffer.from(String(data), "base64url").toString("utf8");
+  const expected = Buffer.from(crypto.createHmac("sha256", redirectSecret).update(json).digest("hex"), "hex");
+  const received = Buffer.from(String(signature || ""), "hex");
 
-  // Calculate expected signature
-  const expectedSignature = crypto.createHmac('sha256', redirectSecret).update(payloadJson).digest('hex');
-
-  // Compare the hex digests with a length guard (timingSafeEqual throws on length mismatch).
-  const expected = Buffer.from(expectedSignature, 'hex');
-  const received = Buffer.from(String(query.signature || ''), 'hex');
-  const isValid = received.length === expected.length && crypto.timingSafeEqual(received, expected);
-
-  if (!isValid) {
-    throw new Error('Invalid signature');
+  if (received.length !== expected.length || !crypto.timingSafeEqual(received, expected)) {
+    throw new Error("Invalid signature");
   }
-
-  return payload;
+  return JSON.parse(json);
 }
 
-// Express route handler
-app.get('/payment/result', (req, res) => {
-  const {data, signature} = req.query;
-  const redirectSecret = 'a1b2c3d4e5f6...'; // From payment request response
+app.get("/payment/result", async (req, res) => {
+  if (!req.query.data) return res.send("Not paid");
 
   try {
-    const payload = verifyRedirectPayload({data, signature}, redirectSecret);
-    console.log('Payment status:', payload.status);
-    console.log('Transaction ID:', payload.transactionId);
-    console.log('Amount:', payload.amount);
-
-    if (payload.status === 'success') {
-      // Process the payment
-      res.send('Payment successful!');
-    }
-  } catch (error) {
-    res.status(400).send('Invalid redirect');
+    const json = Buffer.from(String(req.query.data), "base64url").toString("utf8");
+    const order = await findOrderByContent(JSON.parse(json).content); // your own lookup
+    verifyRedirect(req.query, order.redirectSecret);
+    res.send("Payment successful");
+  } catch {
+    res.status(400).send("Invalid redirect");
   }
 });
 ```
 
 ```python
-import hmac
-import hashlib
 import base64
+import hashlib
+import hmac
 import json
 
-def verify_redirect_payload(query: dict, redirect_secret: str) -> dict:
-    # Decode the base64url-encoded payload
-    # Add padding if needed for standard base64 decoding
-    data = query['data']
-    padding = 4 - len(data) % 4
-    if padding != 4:
-        data += '=' * padding
-    payload_json = base64.urlsafe_b64decode(data).decode('utf-8')
-    payload = json.loads(payload_json)
 
-    # Calculate expected signature
-    expected_signature = hmac.new(
-        redirect_secret.encode(),
-        payload_json.encode(),
-        hashlib.sha256
-    ).hexdigest()
+def verify_redirect(data: str, signature: str, redirect_secret: str) -> dict:
+    padded = data + "=" * (-len(data) % 4)
+    payload_json = base64.urlsafe_b64decode(padded).decode("utf-8")
+    expected = hmac.new(redirect_secret.encode(), payload_json.encode(), hashlib.sha256).hexdigest()
 
-    # Use timing-safe comparison to prevent timing attacks
-    if not hmac.compare_digest(query['signature'], expected_signature):
-        raise ValueError('Invalid signature')
-
-    return payload
-
-# FastAPI route handler
-@app.get('/payment/result')
-def handle_redirect(data: str, signature: str):
-    redirect_secret = 'a1b2c3d4e5f6...'  # From payment request response
-
-    try:
-        payload = verify_redirect_payload({'data': data, 'signature': signature}, redirect_secret)
-        print(f"Payment status: {payload['status']}")
-        print(f"Transaction ID: {payload['transactionId']}")
-        print(f"Amount: {payload['amount']}")
-
-        if payload['status'] == 'success':
-            # Process the payment
-            return {'message': 'Payment successful'}
-    except ValueError:
-        from fastapi import HTTPException
-        raise HTTPException(status_code=400, detail='Invalid redirect')
+    if not hmac.compare_digest(expected, signature or ""):
+        raise ValueError("Invalid signature")
+    return json.loads(payload_json)
 ```
 
 ```php
 <?php
 
-use Illuminate\Http\Request;
-
-function verifyRedirectPayload(array $query, string $redirectSecret): array
+function verifyRedirect(string $data, string $signature, string $redirectSecret): array
 {
-    // Decode the base64url-encoded payload
-    $data = strtr($query['data'], '-_', '+/');
-    $payloadJson = base64_decode($data);
-    $payload = json_decode($payloadJson, true);
+  $json = base64_decode(strtr($data, '-_', '+/'));
+  $expected = hash_hmac('sha256', $json, $redirectSecret);
 
-    // Calculate expected signature
-    $expectedSignature = hash_hmac('sha256', $payloadJson, $redirectSecret);
-
-    // Use timing-safe comparison to prevent timing attacks
-    if (!hash_equals($query['signature'], $expectedSignature)) {
-        throw new \RuntimeException('Invalid signature');
-    }
-
-    return $payload;
+  if (!hash_equals($expected, $signature)) {
+    throw new RuntimeException('Invalid signature');
+  }
+  return json_decode($json, true);
 }
-
-// Laravel route handler
-Route::get('/payment/result', function (Request $request) {
-    $redirectSecret = 'a1b2c3d4e5f6...'; // From payment request response
-
-    try {
-        $payload = verifyRedirectPayload($request->query(), $redirectSecret);
-        \Log::info('Payment status: ' . $payload['status']);
-        \Log::info('Transaction ID: ' . $payload['transactionId']);
-        \Log::info('Amount: ' . $payload['amount']);
-
-        if ($payload['status'] === 'success') {
-            // Process the payment
-            return response('Payment successful!');
-        }
-    } catch (\RuntimeException $e) {
-        abort(400, 'Invalid redirect');
-    }
-});
 ```
 </CodeTabs>
-
-### Response Fields
-
-When creating a payment request, you receive:
-
-| Field                  | Description                                                                         |
-| ---------------------- | ----------------------------------------------------------------------------------- |
-| `redirectSecret`       | Secret key to verify signed redirect payloads. **Keep this secret!**                 |
-| `completedRedirectUrl` | Full signed redirect URL produced after payment completion. Treat the webhook as the source of truth and make your handler idempotent by `transactionId` — a completed signed URL can be replayed. |
-
-### Security Notes
-
-- **Always verify the signature** before processing the payment
-- Treat the signed redirect as a UX convenience only; confirm the payment with the webhook, and make your handler idempotent by `transactionId` (a completed signed URL can be replayed)
-- Use `timingSafeEqual` to prevent timing attacks
-- The `redirectSecret` is unique per payment request
-- Never expose `redirectSecret` in client-side code
-- Validate `status === 'success'` before fulfilling orders

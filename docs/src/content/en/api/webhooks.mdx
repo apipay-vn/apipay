@@ -1,437 +1,224 @@
 ---
 title: Webhooks
-description: Receive real-time payment notifications
+description: Receive payment notifications by webhook
 ---
 
 # Webhooks
 
-Webhooks allow you to receive real-time notifications when payment events occur.
+When money arrives in a connected bank account, ApiPay sends a signed `POST` request to your URL. Webhooks are the equivalent of **IPN** in other payment gateways.
 
-> **Note for developers coming from other gateways:** ApiPay webhooks are equivalent to what many payment gateways call **IPN** (Instant Payment Notification). The flow is the same: register a URL, receive a signed `POST` when a transaction occurs, and return HTTP `200` to acknowledge.
+Integration takes 3 steps:
 
-## Register Webhook
+1. Register a webhook URL and store its `secret`.
+2. Verify the `ApiPay-Signature` header on every request.
+3. Return a `2xx` status, then update the order.
 
-Configure a webhook URL in the dashboard at **Settings → Webhooks**, or create one with the API.
+## Register a webhook
 
-By default a webhook is **global**: it fires for **all current and future bank accounts**. You can optionally narrow its scope:
-
-- **Legacy single bank** — pass `bankPublicId` to bind the webhook to one existing bank. This is still supported for older clients.
-- **Selected banks** — pass `bankPublicIds: ["bnk_a", "bnk_b"]` to fire only for those banks. Banks connected later are **not** added automatically.
-- **Nothing** — pass `bankPublicIds: []` to create a selected webhook that currently matches no banks.
+Create a webhook in the dashboard under **Webhooks**, or call the API:
 
 ```bash
 POST /v1/client/webhooks
 ```
 
-### Request Body
+| Parameter        | Type     | Required | Description                                                              |
+| ---------------- | -------- | -------- | ------------------------------------------------------------------------ |
+| `webhookUrl`     | string   | Yes      | URL that receives webhooks (HTTPS recommended)                           |
+| `bankPublicIds`  | string[] | No       | Only receive transactions for these banks. Omit to receive all, including banks connected later |
+| `isActive`       | boolean  | No       | Enable or disable the webhook. Default `true`                            |
+| `timeoutSeconds` | integer  | No       | Wait time per delivery, `5` to `10` seconds. Default `10`                |
+| `extraHeader`    | object   | No       | Extra header to send, as `{"name": "X-Api-Key", "value": "..."}`. Name must start with `X-` |
 
-| Parameter        | Type     | Required  | Description                                                                                |
-| ---------------- | -------- | --------- | ------------------------------------------------------------------------------------------ |
-| `webhookUrl`     | string   | **✓ Yes** | HTTPS URL to receive webhook notifications                                                 |
-| `bankPublicId`   | string   | No        | Legacy: bind to a single bank account by public ID                                         |
-| `bankPublicIds`  | string[] | No        | Selected allowlist. Omit (with no `bankPublicId`) to cover all banks; `[]` matches nothing |
-| `isActive`       | boolean  | No        | Create the webhook active or inactive (default `true`)                                     |
-| `timeoutSeconds` | integer  | No        | Per-request delivery timeout, 5–10 seconds (default `10`)                                  |
-| `extraHeader`    | object   | No        | Optional `{name, value}` request header. `name` must start with `X-`                       |
-
-> Do not send `bankPublicId` and `bankPublicIds` together. The API rejects the request unless they describe the same single bank.
-
-`timeoutSeconds` must be an integer between `5` and `10`. It only controls how long ApiPay waits for your endpoint on each attempt — the retry schedule is unchanged (see [Retry Policy](#retry-policy)).
-
-### Response
+```bash
+curl -X POST https://app.apipay.vn/v1/client/webhooks \
+  -H "Authorization: Bearer <Auth>" \
+  -H "Content-Type: application/json" \
+  -d '{"webhookUrl": "https://your-domain.com/webhooks/apipay"}'
+```
 
 ```json
 {
   "data": {
-    "message": "Tạo webhook thành công",
     "id": "wh_abc123",
-    "bankPublicId": null,
     "webhookUrl": "https://your-domain.com/webhooks/apipay",
     "secret": "a1b2c3d4..."
-  }
+  },
+  "statusCode": 201,
+  "timestamp": "2026-08-12T14:27:45.000Z"
 }
 ```
 
-`bankPublicId` is `null` for global and selected webhooks. Keep `secret`; it is used to verify `ApiPay-Signature`.
+Store `secret` on your server. You use it to verify signatures.
 
-## Manage Webhooks
+## Manage webhooks
 
-| Endpoint                                             | Description                                              |
-| ---------------------------------------------------- | -------------------------------------------------------- |
-| `GET /v1/client/webhooks`                            | List registered webhooks (`page`, `limit`)               |
-| `PATCH /v1/client/webhooks/:id`                      | Update URL, active state, bank scope, timeout, or header |
-| `PATCH /v1/client/webhooks/:id/toggle`               | Enable or disable a webhook                              |
-| `DELETE /v1/client/webhooks/:id`                     | Delete a webhook                                         |
-| `GET /v1/client/webhooks/:id/history`                | View delivery history (`page`, `limit`)                  |
-| `POST /v1/client/webhooks/history/:historyId/resend` | Retry a failed delivery                                  |
-| `GET /v1/client/webhooks/deliveries`                 | View production delivery history with filters            |
+| Endpoint                                             | Description                                               |
+| ---------------------------------------------------- | --------------------------------------------------------- |
+| `GET /v1/client/webhooks`                            | List webhooks (`page`, `limit`)                           |
+| `PATCH /v1/client/webhooks/:id`                      | Update the same fields as create. Send `null` to reset one |
+| `PATCH /v1/client/webhooks/:id/toggle`               | Enable or disable a webhook                               |
+| `DELETE /v1/client/webhooks/:id`                     | Delete a webhook                                          |
+| `GET /v1/client/webhooks/deliveries`                 | Delivery history                                          |
+| `POST /v1/client/webhooks/history/:historyId/resend` | Resend a failed delivery                                  |
 
-### Update a webhook
+## Event `transaction.in`
 
-```bash
-PATCH /v1/client/webhooks/:id
-```
-
-| Parameter        | Type             | Description                                                          |
-| ---------------- | ---------------- | -------------------------------------------------------------------- |
-| `webhookUrl`     | string           | New HTTPS URL                                                        |
-| `isActive`       | boolean          | Enable or disable the webhook                                        |
-| `bankPublicIds`  | string[] \| null | Bank allowlist. `null` = all banks; `[]` = none; array = those banks |
-| `timeoutSeconds` | integer \| null  | Delivery timeout 5–10. `null` resets to `10`                         |
-| `extraHeader`    | object \| null   | Extra `{name, value}` header. `null` turns it off                    |
-
-Omit a field to leave it unchanged, or pass `null` to reset it to the default:
-
-```json
-PATCH /v1/client/webhooks/wh_abc123
-{
-  "bankPublicIds": null,
-  "timeoutSeconds": null,
-  "extraHeader": null
-}
-```
-
-Setting `bankPublicIds` replaces any legacy single-bank binding. To move a webhook back to a legacy single bank, delete it and recreate it with `bankPublicId`.
-
-### List response
-
-`GET /v1/client/webhooks` returns each webhook with its resolved scope and advanced configuration:
-
-| Field           | Type           | Description                                                     |
-| --------------- | -------------- | --------------------------------------------------------------- |
-| `bankAccountId` | number \| null | Legacy single-bank binding; `null` for global/selected webhooks |
-| `bankAccount`   | object \| null | The bound bank when `scope` is `bank`                           |
-| `scope`         | string         | `all`, `selected`, or `bank`                                    |
-| `selectedBanks` | array          | Resolved banks for the `selected` scope                         |
-| `configs`       | object         | `{bankPublicIds, timeoutSeconds, extraHeader}`                  |
-
-`configs.bankPublicIds` is `null` when the webhook covers all banks. `configs.timeoutSeconds` always echoes the effective value (default `10`).
-
-## Delivery Log
-
-The Delivery Log shows every webhook sent in production. Access it via the **Delivery Log tab** on the **Settings → Webhooks** page in the dashboard.
-
-### Filters
-
-| Filter     | Description                 |
-| ---------- | --------------------------- |
-| Date range | Filter by delivery date     |
-| Bank       | Filter by bank account      |
-| Webhook    | Filter by specific endpoint |
-| Status     | `SUCCESS` or `FAILED`       |
-
-### Per-record details
-
-Each delivery record includes:
-
-- **Timestamp** — When the webhook was sent
-- **Endpoint** — URL the webhook was sent to
-- **Bank** — Associated bank account
-- **Status** — Success/failure with HTTP response code
-- **Retry count** — Number of retry attempts made
-- **Reference** — Related transaction reference code
-- **Amount** — Transaction amount
-
-Click a record to view full details: the **response body** from your server and the full **payload** that was sent.
-
-### Resend
-
-From the Delivery Log, you can resend a failed webhook immediately — no need to navigate away.
-
-### API
-
-Query delivery history via API:
-
-```bash
-GET /v1/client/webhooks/deliveries
-```
-
-**Query parameters:**
-
-| Parameter       | Type   | Description                            |
-| --------------- | ------ | -------------------------------------- |
-| `page`          | number | Page number (default: 1)               |
-| `limit`         | number | Items per page (default: 20, max: 100) |
-| `webhookId`     | string | Filter by webhook ID                   |
-| `bankAccountId` | number | Filter by bank account                 |
-| `status`        | string | `SUCCESS` or `FAILED`                  |
-| `dateFrom`      | string | Start date (YYYY-MM-DD, Vietnam UTC+7 day) |
-| `dateTo`        | string | End date (YYYY-MM-DD, inclusive, Vietnam UTC+7 day) |
-
-**Response:**
-
-```json
-{
-  "data": {
-    "status": true,
-    "statusCode": 200,
-    "timestamp": "2026-08-12T14:27:45.000Z",
-    "data": [
-      {
-        "id": "del_abc123",
-        "clientWebhookId": "wh_xyz789",
-        "transactionId": "txn_abc456",
-        "status": "SUCCESS",
-        "responseCode": 200,
-        "responseBody": "{\"received\": true}",
-        "payload": {
-          "event": "transaction.in",
-          "data": {
-            "amount": "100000",
-            "referenceCode": "ORDER-12345"
-          }
-        },
-        "retryCount": 0,
-        "createdAt": "2026-05-17T10:30:00.000Z",
-        "clientWebhook": {
-          "id": "wh_xyz789",
-          "webhookUrl": "https://your-domain.com/webhooks/apipay",
-          "bankAccount": {
-            "bankShortName": "VCB",
-            "accountNumber": "1234567890"
-          }
-        },
-        "transaction": {
-          "id": "txn_abc456",
-          "amount": "100000",
-          "referenceCode": "ORDER-12345"
-        }
-      }
-    ],
-    "pagination": {
-      "page": 1,
-      "limit": 20,
-      "total": 150,
-      "totalPages": 8
-    }
-  }
-}
-```
-
-## Events
-
-### transaction.in
-
-When money is received into your bank account.
+ApiPay sends this event when money arrives in your account.
 
 ```json
 {
   "event": "transaction.in",
   "data": {
     "transactionId": "550e8400-e29b-41d4-a716-446655440000",
-    "referenceCode": "TX123456789",
+    "referenceCode": "FT26081212345",
     "amount": "100000",
+    "type": "IN",
     "content": "ORDER-12345",
-    "transactionDate": "2024-03-20T10:30:00.000Z",
-    "bankAccountPublicId": "bk_abcdef1234567890",
-    "gateway": "VCB",
-    "rawTransactionDate": "2024-03-20 10:30:00",
-    "vaNumber": "999988887777",
-    "accountNumber": "0123456789"
+    "transactionDate": "2026-08-12T10:30:00.000Z",
+    "bankAccountPublicId": "bnk_abc123",
+    "gateway": "970422",
+    "accountNumber": "0123456789",
+    "vaNumber": null
   }
 }
 ```
 
-### Data Fields
+| Field                      | Type           | Description                                                 |
+| -------------------------- | -------------- | ----------------------------------------------------------- |
+| `event`                    | string         | Event name                                                  |
+| `data.transactionId`       | string         | ApiPay transaction ID. Use it as your idempotency key       |
+| `data.referenceCode`       | string         | Bank reference code                                         |
+| `data.amount`              | string         | Amount (VND)                                                |
+| `data.type`                | string         | `IN` (incoming)                                             |
+| `data.content`             | string         | Transfer description                                        |
+| `data.transactionDate`     | string         | Transaction time (ISO 8601)                                 |
+| `data.bankAccountPublicId` | string         | Bank account that received the money                        |
+| `data.gateway`             | string         | Bank BIN, for example `970422` (MB)                         |
+| `data.accountNumber`       | string         | Receiving account number                                    |
+| `data.vaNumber`            | string \| null | Virtual account number, if any                              |
 
-| Field                      | Type   | Description                                               |
-| -------------------------- | ------ | --------------------------------------------------------- |
-| `event`                    | string | Event name                                                |
-| `data.transactionId`       | string | Internal transaction ID (UUID)                            |
-| `data.referenceCode`       | string | Bank transaction reference code                           |
-| `data.amount`              | string | Transaction amount in VND as decimal string               |
-| `data.content`             | string | Transaction content/memo                                  |
-| `data.transactionDate`     | string | Transaction timestamp (ISO 8601)                          |
-| `data.bankAccountPublicId` | string | Public ID of the bank account                             |
-| `data.gateway`             | string | Bank code (e.g., ACB, MBB, BIDV, OCB, ICB, VIB, STB, VPB) |
-| `data.rawTransactionDate`  | string | Original transaction date from bank                       |
-| `data.vaNumber`            | string | Virtual account number (optional)                         |
-| `data.accountNumber`       | string | Sender/receiver account number                            |
+Match the order by `amount` and `content`. Banks may add text before or after the description, so check whether `data.content` **contains** the content of your [payment request](/en/api/payment-requests), case-insensitively.
 
-## Sandbox Webhooks
+## Webhook authentication
 
-When using test keys (`ak_test_*`), webhook payloads include a `sandbox` flag:
+Every request carries an `ApiPay-Signature` header: the HMAC-SHA256 (hex) of the **raw body**, signed with the webhook `secret`. Compute it over the raw body you received, not over re-serialized JSON.
 
-```json
-{
-  "event": "transaction.in",
-  "sandbox": true,
-  "data": {
-    "transactionId": "550e8400-e29b-41d4-a716-446655440000",
-    "referenceCode": "TX123456789",
-    "amount": "50000",
-    "content": "TEST-ORDER-001",
-    "transactionDate": "2026-08-15T10:30:00.000Z",
-    "bankAccountPublicId": "test_bk_abc123",
-    "gateway": "MB",
-    "accountNumber": "0123456789"
-  }
-}
-```
-
-Always check the `sandbox` flag to avoid fulfilling test orders:
-
+<CodeTabs>
 ```javascript
-app.post('/webhooks/apipay', (req, res) => {
-  const {event, sandbox, data} = req.body;
+const crypto = require("crypto");
+const express = require("express");
 
-  if (sandbox) {
-    console.log('[sandbox] Test event:', event, data.referenceCode);
-    return res.status(200).json({received: true});
+const app = express();
+
+function isValidSignature(rawBody, signature, secret) {
+  const expected = Buffer.from(crypto.createHmac("sha256", secret).update(rawBody).digest("hex"), "hex");
+  const received = Buffer.from(String(signature || ""), "hex");
+  return received.length === expected.length && crypto.timingSafeEqual(received, expected);
+}
+
+app.post("/webhooks/apipay", express.raw({type: "*/*"}), (req, res) => {
+  if (!isValidSignature(req.body, req.headers["apipay-signature"], process.env.APIPAY_WEBHOOK_SECRET)) {
+    return res.status(401).json({error: "Invalid signature"});
   }
 
-  // Real transaction handling
-  if (event === 'transaction.in') {
-    // Fulfill order...
+  const {event, sandbox, data} = JSON.parse(req.body.toString("utf8"));
+
+  if (event === "transaction.in" && !sandbox) {
+    // Update the order using data.content and data.amount
   }
 
   res.status(200).json({received: true});
 });
 ```
 
-See [Sandbox & Live Test](/en/sandbox) for more details.
-
-## Webhook Authentication
-
-All webhook requests include an `ApiPay-Signature` header for verification.
-
-HMAC signing is always enabled and unchanged by any of the settings above — `ApiPay-Signature` is sent on every delivery. An `extraHeader` is an additional, independent header and does not replace or alter the signature.
-
-<CodeTabs>
-```javascript
-const crypto = require("crypto");
-
-function verifyWebhookSignature(rawBody, signature, secretKey) {
-  const expectedSignature = crypto.createHmac("sha256", secretKey).update(rawBody).digest("hex");
-  const expected = Buffer.from(expectedSignature, "hex");
-  const received = Buffer.from(String(signature || ""), "hex");
-
-  // timingSafeEqual throws on length mismatch, so guard first.
-  return received.length === expected.length && crypto.timingSafeEqual(received, expected);
-}
-
-// Usage in Express
-app.post("/webhook", express.raw({type: "*/*"}), (req, res) => {
-  const signature = req.headers["apipay-signature"];
-  const payload = req.body; // raw Buffer, exactly as sent
-
-  if (!verifyWebhookSignature(payload, signature, process.env.WEBHOOK_SECRET)) {
-    return res.status(401).json({error: "Invalid signature"});
-  }
-
-  // Process webhook
-  const {event, data} = JSON.parse(payload.toString("utf8"));
-
-    if (event === "transaction.in") {
-    	console.log("Money received:", data.amount);
-    	console.log("Reference:", data.referenceCode);
-    	console.log("Content:", data.content);
-    	// Update order in your database
-    }
-
-    res.status(200).json({received: true});
-
-});
-
-```
-
 ```python
-import hmac
 import hashlib
+import hmac
+import json
+import os
 
-def verify_webhook_signature(payload: str, signature: str, secret_key: str) -> bool:
-    expected_signature = hmac.new(
-        secret_key.encode(),
-        payload.encode(),
-        hashlib.sha256
-    ).hexdigest()
+from flask import Flask, request
 
-    return hmac.compare_digest(signature, expected_signature)
+app = Flask(__name__)
 
-# Usage in Flask
-@app.route('/webhook', methods=['POST'])
-def handle_webhook():
-    signature = request.headers.get('ApiPay-Signature')
-    payload = request.get_data(as_text=True)
 
-    if not verify_webhook_signature(payload, signature, WEBHOOK_SECRET):
-        return {'error': 'Invalid signature'}, 401
+def is_valid_signature(raw_body: bytes, signature: str, secret: str) -> bool:
+    expected = hmac.new(secret.encode(), raw_body, hashlib.sha256).hexdigest()
+    return hmac.compare_digest(expected, signature or "")
 
-    data = request.get_json()
-    event = data.get('event')
 
-    if event == 'transaction.in':
-        print(f"Money received: {data['data']['amount']}")
-        print(f"Reference: {data['data']['referenceCode']}")
-        print(f"Content: {data['data']['content']}")
-        # Update order
-    return {'received': True}, 200
+@app.post("/webhooks/apipay")
+def apipay_webhook():
+    raw_body = request.get_data()
+    if not is_valid_signature(raw_body, request.headers.get("ApiPay-Signature"), os.environ["APIPAY_WEBHOOK_SECRET"]):
+        return {"error": "Invalid signature"}, 401
+
+    payload = json.loads(raw_body)
+    if payload["event"] == "transaction.in" and not payload.get("sandbox"):
+        pass  # Update the order using payload["data"]["content"] and ["amount"]
+
+    return {"received": True}, 200
 ```
 
 ```php
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
+$rawBody = file_get_contents('php://input');
+$signature = $_SERVER['HTTP_APIPAY_SIGNATURE'] ?? '';
+$expected = hash_hmac('sha256', $rawBody, getenv('APIPAY_WEBHOOK_SECRET'));
 
-function verifyWebhookSignature(string $payload, string $signature, string $secretKey): bool
-{
-    $expectedSignature = hash_hmac('sha256', $payload, $secretKey);
-
-    return hash_equals($expectedSignature, $signature);
+if (!hash_equals($expected, $signature)) {
+  http_response_code(401);
+  exit;
 }
 
-// Usage in Laravel route
-Route::post('/webhook', function (Request $request) {
-    $signature = $request->header('ApiPay-Signature');
-    $payload = $request->getContent();
+$payload = json_decode($rawBody, true);
 
-    if (!verifyWebhookSignature($payload, $signature, config('services.apipay.webhook_secret'))) {
-        return response()->json(['error' => 'Invalid signature'], 401);
-    }
+if ($payload['event'] === 'transaction.in' && empty($payload['sandbox'])) {
+  // Update the order using $payload['data']['content'] and ['amount']
+}
 
-    $data = $request->json()->all();
-    $event = $data['event'] ?? null;
-
-    if ($event === 'transaction.in') {
-        logger('Money received: ' . $data['data']['amount']);
-        logger('Reference: ' . $data['data']['referenceCode']);
-        logger('Content: ' . $data['data']['content']);
-        // Update order in your database
-    }
-
-    return response()->json(['received' => true]);
-});
+http_response_code(200);
+echo json_encode(['received' => true]);
 ```
-
 </CodeTabs>
 
-## Retry Policy
+## Retries
 
-- Attempt 0: Immediately
+A delivery succeeds when your endpoint returns a `2xx` status within `timeoutSeconds`. On failure, ApiPay retries 3 times: after 5 seconds, 20 seconds and 1 minute. After that you can resend it from the dashboard or the API.
 
-If webhook delivery fails, the system will retry:
+An event can arrive more than once, so process each `data.transactionId` only once.
 
-- Attempt 1: After 5 seconds
-- Attempt 2: After 20 seconds
-- Attempt 3: After 1 minute
+## Sandbox webhooks
 
-After 3 failed retry attempts, the webhook will be considered failed and no further attempts will be made.
+With test keys (`ak_test_*`), the payload includes `"sandbox": true`. Do not fulfill orders for these events. See [Sandbox & Live Test](/en/sandbox).
 
-`timeoutSeconds` controls how long each attempt may take before it counts as a failure. It does not change the retry schedule or the number of attempts.
+## Delivery history
 
-## Testing Webhooks
+Review deliveries in the dashboard (**Webhooks**, **Delivery Log** tab) or by API:
 
-Use [Webhook.site](https://webhook.site) to test webhooks during development:
+```bash
+GET /v1/client/webhooks/deliveries
+```
 
-1. Create a test URL at webhook.site
-2. Configure the webhook URL in the dashboard
-3. Create a payment and complete the transaction
-4. View the request on webhook.site
+| Parameter   | Type   | Required | Description                                  |
+| ----------- | ------ | -------- | -------------------------------------------- |
+| `webhookId` | string | No       | Filter by webhook                            |
+| `status`    | string | No       | `SUCCESS` or `FAILED`                        |
+| `dateFrom`  | string | No       | From date, `YYYY-MM-DD` (Vietnam time)       |
+| `dateTo`    | string | No       | Through date, `YYYY-MM-DD` (Vietnam time)    |
+| `page`      | number | No       | Default `1`                                  |
+| `limit`     | number | No       | Default `20`, max `100`                      |
 
-## Best Practices
+Each record has `status`, `responseCode`, `responseBody`, the `payload` sent and `retryCount`. The list is at `data.data`, pagination at `data.pagination`.
 
-1. **Always verify signature** before processing webhook
-2. **Respond quickly** - Return 200 immediately, process asynchronously
-3. **Idempotent** - Handle duplicate events without errors
-4. **Log events** - Keep logs for debugging if needed
+## Testing
+
+Use [Webhook.site](https://webhook.site) to inspect real requests: create a temporary URL, register it as a webhook, then make a test payment in the [sandbox](/en/sandbox).
+
+## Checklist
+
+- Always verify the signature before processing.
+- Return `2xx` right away; do heavy work in the background.
+- Process each `transactionId` only once.
+- Ignore events with `sandbox: true` when fulfilling orders.

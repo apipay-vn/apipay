@@ -5,319 +5,92 @@ description: Cách dùng dashboard ApiPay để quản lý thanh toán, ngân h�
 
 # Hướng dẫn Dashboard
 
-Dashboard ApiPay là nơi bạn quản lý thanh toán, tài khoản ngân hàng và các tích hợp. Trang này tóm tắt những phần bạn sẽ dùng thường xuyên nhất.
+Dashboard ApiPay (my.apipay.vn) là nơi bạn quản lý ngân hàng, thanh toán và tích hợp. Trang này giúp bạn biết mỗi việc nằm ở đâu.
 
 ---
 
-## Tổng quan Dashboard
+## Thanh bên
 
-Sau khi đăng nhập, bạn sẽ thấy:
+| Nhóm | Mục |
+|------|-----|
+| Tổng quan | Tổng quan, Giao dịch, Thông báo, Bảng giá, Tích hợp, Trạng thái |
+| Cổng thanh toán | Ngân hàng, Webhooks, Tạo mã QR, Yêu cầu thanh toán |
+| Tích hợp | Chế độ Sandbox, Kênh thông báo, Tên miền riêng, Loa thanh toán, Cửa hàng, Web App (API Keys, Vibe Code, MCP Server, Commerce, WHMCS, WooCommerce, HostBill, Google Sheets) |
+| Tài khoản | Hóa đơn, Tiếp thị liên kết, Cài đặt (Tài khoản, Giao diện, Trợ giúp) |
+| Hỗ trợ | Tài liệu, Liên hệ, Chat với Appi |
 
-- **Thanh bên** - Mở các tính năng chính
-- **Header** - Thông tin tài khoản, thông báo, cài đặt
-- **Khu vực nội dung chính** - Nội dung của trang hiện tại
-
-### Các phần chính
-
-| Phần | Mô tả |
-|--------|-------------|
-| Tổng quan | Thống kê nhanh và hoạt động gần đây |
-| Yêu cầu thanh toán | Tạo và quản lý link thanh toán |
-| Giao dịch | Xem các giao dịch ngân hàng |
-| Cài đặt | Tài khoản, ngân hàng, webhook, API keys |
+Nhấn `Ctrl + K` (hoặc `Cmd + K` trên Mac) để tìm nhanh bất kỳ trang nào.
 
 ---
 
-## Điều hướng
+## Tổng quan
 
-### Menu thanh bên
-
-```
-📊 Tổng quan
-   └─ Trang chủ dashboard với các chỉ số chính
-
-💳 Yêu cầu thanh toán
-   └─ Tạo và quản lý link thanh toán một lần
-
-📈 Giao dịch
-   └─ Xem lịch sử và chi tiết thanh toán
-
-🔊 Tích hợp
-   ├─ Commerce (Beta) — sản phẩm, mức giá, link dùng lại
-   ├─ Loa thanh toán (Thông báo giọng nói tiền về realtime)
-   ├─ Tên miền riêng
-   ├─ Kênh thông báo
-   ├─ API Keys
-   └─ Plugin thương mại điện tử (WooCommerce, WHMCS,...)
-
-⚙️ Cài đặt
-   ├─ Hồ sơ tài khoản
-   ├─ Tài khoản ngân hàng
-   ├─ Cửa hàng & nhân viên (Beta) — cửa hàng, quyền nhân viên, phân quyền, hoạt động
-   ├─ Cài đặt thanh toán
-   ├─ Webhooks
-   ├─ Đăng ký
-   ├─ Giao diện
-   └─ Bảo mật & Passkey
-```
-
----
-
-## Trang Tổng Quan
-
-Trang tổng quan cho bạn cái nhìn nhanh về tình hình thanh toán:
-
-### Chỉ số chính
-
-1. **Tổng doanh thu** - Tổng tất cả thanh toán thành công
-2. **Số giao dịch** - Số giao dịch thành công
-3. **Tháng này** - Doanh thu và số giao dịch trong tháng
-4. **Giao dịch trung bình** - Giá trị trung bình của mỗi giao dịch
-
-### Biểu đồ
-
-- **Timeline giao dịch** - Giao dịch theo thời gian
-- **Phân bổ ngân hàng** - Ngân hàng được khách dùng nhiều nhất
-
-### Hoạt động gần đây
-
-- Giao dịch mới nhất với trạng thái
-- Thao tác nhanh cho các việc thường dùng
-
----
-
-## Yêu cầu thanh toán
-
-Tạo và quản lý link thanh toán cho khách hàng.
-
-### Tạo yêu cầu thanh toán
-
-1. Nhấn **Tạo yêu cầu thanh toán**
-2. Điền form:
-   - **Ngân hàng** - Chọn tài khoản ngân hàng đã kết nối
-   - **Số tiền** - Số tiền thanh toán bằng VND
-   - **Nội dung** - Mã hoặc ghi chú chuyển khoản (ví dụ: số đơn hàng)
-   - **Tiêu đề** - (Tùy chọn) Mô tả thanh toán
-   - **Redirect URL** - Nơi đưa khách về sau khi thanh toán
-3. Nhấn **Tạo**
-
-### Tính năng
-
-- **Mã QR** - Tạo sẵn để khách quét bằng app ngân hàng
-- **Link thanh toán** - URL có thể chia sẻ cho khách hàng
-- **Sao chép** - Sao chép nhanh link hoặc thông tin thanh toán
-- **Chia sẻ** - Chia sẻ qua email, chat, v.v.
-
-### Quản lý yêu cầu thanh toán
-
-- **Xem chi tiết** - Mở để xem đầy đủ thông tin
-- **Hủy** - Hủy yêu cầu thanh toán không còn dùng
-- **Trạng thái** - ĐANG CHỜ, HOÀN THÀNH, HẾT HẠN, ĐÃ HỦY
-
----
-
-## Commerce
-
-Sản phẩm và mức giá bạn bán. Sao chép một link dùng lại từ mức giá.
-
-1. Mở **Tích hợp → Commerce** (Beta) trên thanh bên.
-2. Tạo sản phẩm. Có thể thêm mức giá đầu và ảnh ngay trong form.
-3. Trên trang sản phẩm, bấm **Sao chép link thanh toán**. Dán URL cho khách (Zalo, Facebook). Mỗi người mở link nhập thông tin rồi quét QR.
-4. **Tạo thanh toán một lần** vẫn có nếu bạn đã biết người mua.
-
-Giá mặc định dùng khi sao chép link. Số tiền trên một mức giá không đổi — tạo mức giá mới nếu muốn thu khác. Chi tiết: [Commerce](/vi/commerce). Trang giới thiệu: [apipay.vn/commerce](https://apipay.vn/commerce).
-
----
-
-## Cửa hàng và nhân viên
-
-Nếu có một nhóm cùng làm việc với các khoản thanh toán, hãy nhóm tài khoản nhận tiền theo cửa hàng và mời nhân viên để mỗi người chỉ thấy phần thanh toán mình phụ trách.
-
-1. Mở **Cài đặt → Cửa hàng** (Beta).
-2. Tạo cửa hàng và thêm các tài khoản nhận tiền.
-3. Thêm nhân viên bằng email, đặt mật khẩu ban đầu và gửi an toàn.
-4. Gán **Người xem**, **Thu ngân** hoặc một nhóm quyền tùy chỉnh.
-
-Mỗi tài khoản nhận tiền thuộc tối đa một cửa hàng và có thể để ở trạng thái chưa phân. Chủ tài khoản vẫn quản lý việc liên kết ngân hàng, webhook, API key, gói dịch vụ và hóa đơn ApiPay. Chi tiết: [Cửa hàng và nhân viên](/vi/stores-staff).
+Trang đầu tiên sau khi đăng nhập. Bạn thấy số ngân hàng và webhook đang hoạt động, tổng giao dịch, tổng tiền vào, biểu đồ giao dịch theo thời gian và theo ngân hàng, cùng các giao dịch gần đây.
 
 ---
 
 ## Giao dịch
 
-Xem giao dịch ngân hàng và thông tin khớp thanh toán.
+Danh sách mọi giao dịch trên các ngân hàng đã kết nối, gồm ngày, ngân hàng, số tiền, nội dung và trạng thái.
 
-### Danh sách giao dịch
-
-| Cột | Mô tả |
-|--------|-------------|
-| Ngày | Thời điểm nhận giao dịch |
-| Tham chiếu | Nội dung hoặc mã thanh toán |
-| Số tiền | Số tiền thanh toán |
-| Ngân hàng | Ngân hàng nhận giao dịch |
-| Trạng thái | Trạng thái giao dịch |
-
-### Lọc & tìm kiếm
-
-- Lọc theo khoảng ngày
-- Lọc theo trạng thái
-- Tìm kiếm theo tham chiếu hoặc số tiền
-
-### Chi tiết giao dịch
-
-Nhấn bất kỳ giao dịch nào để xem:
-- ID giao dịch đầy đủ
-- Tài khoản ngân hàng liên quan
-- Thời gian thanh toán
-- Yêu cầu thanh toán liên quan
+- Tìm theo mã hoặc nội dung, lọc theo ngân hàng và trạng thái.
+- Nhấn vào một giao dịch để xem chi tiết.
+- Xuất giao dịch theo khoảng thời gian ra tệp CSV hoặc Google Sheets.
 
 ---
 
-## Tích hợp & Tiện ích
+## Yêu cầu thanh toán
 
-### Loa Thanh Toán (Payment Speaker)
+Tạo link thanh toán có mã QR để gửi cho khách.
 
-Biến điện thoại, máy tính bảng hoặc laptop thành loa đọc thông báo chuyển khoản tiền về tức thì mà không cần mua thiết bị chuyên dụng:
+1. Mở **Yêu cầu thanh toán** và nhấn **Tạo liên kết**.
+2. Chọn ngân hàng, nhập số tiền và nội dung chuyển khoản. Tiêu đề, URL chuyển hướng và tên miền riêng là tùy chọn.
+3. Sao chép link và gửi cho khách.
 
-1. Vào **Tích hợp → Loa thanh toán**
-2. Chọn tài khoản ngân hàng cần theo dõi và chọn giọng đọc tiếng Việt yêu thích
-3. Bấm **Bắt đầu phiên** và sao chép URL phiên mở trên thiết bị tại quầy thu ngân
+Mỗi yêu cầu có trạng thái **Hoạt động**, **Hoàn thành**, **Hết hạn** hoặc **Đã xóa** (đã hủy). Để đặt tiêu đề và URL chuyển hướng mặc định, nhấn **Trang thanh toán** ở đầu trang.
 
-Xem chi tiết tại [Hướng dẫn Loa Thanh Toán](/vi/payment-speaker).
-
-### Tên miền riêng
-
-Tùy chỉnh tên miền trang thanh toán (ví dụ: `pay.yourbrand.vn`) giúp tăng độ nhận diện và uy tín thương hiệu. Xem [Hướng dẫn Tên miền riêng](/vi/custom-domains).
+Muốn tạo bằng API? Xem [API yêu cầu thanh toán](/vi/api/payment-requests).
 
 ---
 
-## Cài đặt
+## Ngân hàng và webhook
 
-### Hồ sơ tài khoản
-
-Quản lý thông tin cá nhân và doanh nghiệp:
-
-- **Email** - Email đăng nhập
-- **Tên** - Tên hiển thị
-- **Tên doanh nghiệp** - Hiển thị trên trang thanh toán
-- **Mã số thuế** - Để xuất hóa đơn
-- **Địa chỉ doanh nghiệp** - Địa chỉ đăng ký
-
-### Tài khoản ngân hàng
-
-- Xem các ngân hàng đã kết nối
-- Thêm/xóa tài khoản ngân hàng
-- Bật/tắt trạng thái tài khoản
-
-Xem [Quản lý tài khoản ngân hàng](/vi/banking) để biết chi tiết.
-
-### Cài đặt thanh toán
-
-- **Redirect URL mặc định** - Nơi đưa khách về sau khi thanh toán
-- **Tiêu đề mặc định** - Mô tả mặc định cho thanh toán
-
-### API Keys
-
-Tạo và quản lý API keys để tích hợp:
-
-1. Nhấn **Tạo Key mới**
-2. Đặt tên cho key
-3. Sao chép và lưu ở nơi an toàn
-4. Dùng key trong API requests
-
-> **Quan trọng:** Hãy giữ `secretKey` an toàn. Sau khi tạo, bạn không thể xem lại key này.
-
-### Webhooks
-
-Tạo webhook endpoint để nhận thông báo gần như ngay lập tức:
-
-1. Thêm webhook URL
-2. Chọn loại sự kiện
-3. Test endpoint
-4. Theo dõi lịch sử gửi
-
-Xem [Tài liệu Webhook](/vi/api/webhooks) để biết chi tiết kỹ thuật.
-
-### Đăng ký
-
-Xem và quản lý gói của bạn:
-
-- Kích hoạt **gói miễn phí** (60 GD/tháng) hoặc chọn gói hạn mức trả phí
-- Gói hiện tại, hạn mức đã dùng và số dư trả trước
-- Nâng cấp lên hạn mức cao hơn bất kỳ lúc nào
-- Lịch sử thanh toán và ngày gia hạn (gói trả phí)
-
-Xem [Đăng ký & Thanh toán](/vi/subscription) để biết chi tiết gói và thanh toán.
-
-### Giao diện
-
-Tùy chỉnh trang thanh toán mà khách hàng nhìn thấy:
-
-- **Tên merchant** - Tên doanh nghiệp
-- **Logo merchant** - Logo hiển thị trên trang thanh toán
-- **Theme** - Chế độ sáng/tối
-
-### Bảo mật
-
-Bảo vệ tài khoản của bạn:
-
-- **Passkey** — Đăng ký passkey (Face ID, vân tay hoặc passkey trên thiết bị) để đăng nhập không cần mật khẩu. Xem [Passkey](/vi/passkeys) để biết chi tiết.
-- **Xác thực hai yếu tố (2FA)** — Bật 2FA dựa trên TOTP
-- **Đổi mật khẩu** — Cập nhật mật khẩu
-- **Lịch sử đăng nhập** — Xem các lần đăng nhập gần đây
+- **Ngân hàng**: kết nối, đặt tên gợi nhớ, bật hoặc tắt tài khoản. Xem [Kết nối ngân hàng](/vi/connect-banks) và [Quản lý ngân hàng](/vi/banking).
+- **Webhooks**: thêm URL nhận thông báo giao dịch, xem lịch sử gửi và gửi lại khi cần. Xem [Webhook](/vi/api/webhooks).
 
 ---
 
-## Thao tác nhanh
+## Tích hợp
 
-### Tác vụ thường dùng
-
-| Tác vụ | Nơi tìm |
-|------|------------|
-| Tạo thanh toán | Yêu cầu thanh toán → Tạo |
-| Mở loa thanh toán | Tích hợp → Loa thanh toán |
-| Kiểm tra doanh thu | Tổng quan |
-| Thêm ngân hàng | Cài đặt → Tài khoản ngân hàng |
-| Lấy API key | Tích hợp → API Keys |
-| Cấu hình webhook | Cài đặt → Webhooks |
-| Thêm cửa hàng hoặc nhân viên | Cài đặt → Cửa hàng |
-
----
-
-## Phím tắt
-
-- `Ctrl/Cmd + K` - Tìm kiếm nhanh
-- `Ctrl/Cmd + N` - Yêu cầu thanh toán mới
+| Mục | Dùng để |
+|-----|---------|
+| Chế độ Sandbox | Thử tích hợp mà không cần chuyển tiền thật. Xem [Sandbox](/vi/sandbox) |
+| Kênh thông báo | Nhận thông báo giao dịch qua Telegram, Slack, Discord, Lark hoặc email |
+| Tên miền riêng | Dùng tên miền của bạn cho trang thanh toán. Xem [Tên miền riêng](/vi/custom-domains) |
+| Loa thanh toán | Đọc to tiền vào tại quầy. Xem [Loa thanh toán](/vi/payment-speaker) |
+| Cửa hàng | Nhóm tài khoản nhận tiền theo cửa hàng và mời nhân viên. Xem [Cửa hàng và nhân viên](/vi/stores-staff) |
+| Web App → API Keys | Tạo khóa API để gọi ApiPay từ hệ thống của bạn |
+| Web App → Commerce | Sản phẩm, mức giá và link thanh toán dùng lại. Xem [Commerce](/vi/commerce) |
+| Web App → WHMCS, WooCommerce, HostBill, Google Sheets | Kết nối với nền tảng bạn đang dùng |
 
 ---
 
-## Mẹo
+## Tài khoản
 
-### Làm việc nhanh hơn
-
-1. **Dùng tìm kiếm nhanh** - Tìm nhanh bằng Ctrl+K
-2. **Đánh dấu trang hay dùng** - Mở lại nhanh hơn
-3. **Thiết lập mặc định thanh toán** - Tiết kiệm thời gian khi tạo yêu cầu mới
-4. **Bật Loa thanh toán tại quầy** - Nhận diện tiền về tức thì mà không cần chuyển màn hình
-
-### Theo dõi vận hành
-
-1. **Bật thông báo** - Nhận cảnh báo cho các sự kiện quan trọng
-2. **Kiểm tra dashboard thường xuyên** - Theo dõi xu hướng giao dịch
-3. **Xem lại webhooks** - Đảm bảo webhook vẫn gửi thành công
+- **Bảng giá**: chọn gói, xem hạn mức đã dùng và gia hạn. Xem [Gói dịch vụ và thanh toán](/vi/subscription).
+- **Hóa đơn**: hóa đơn các lần thanh toán gói dịch vụ.
+- **Tiếp thị liên kết**: mã giới thiệu và hoa hồng. Xem [Tiếp thị liên kết](/vi/affiliates).
+- **Cài đặt → Tài khoản**: thẻ **Hồ sơ** (tên, số điện thoại, thông tin doanh nghiệp), **Bảo mật** (mật khẩu, lịch sử đăng nhập, đăng xuất mọi thiết bị) và **Xác thực** (xác thực hai lớp, [passkey](/vi/passkeys)).
+- **Cài đặt → Giao diện**: chủ đề sáng hoặc tối, ngôn ngữ, phông chữ và kiểu thanh bên của dashboard.
 
 ---
 
 ## Cần hỗ trợ?
 
-- 📧 Email: support@apipay.vn
-- 💬 Chat trong app
-- 📖 [Tài liệu API](/vi/api/payment-requests)
-
----
+Mở **Liên hệ** trên thanh bên để vào nhóm Telegram, Zalo hoặc gửi yêu cầu hỗ trợ, hoặc nhấn **Chat với Appi**. Email: support@apipay.vn.
 
 ## Bước tiếp theo
 
-- [Hướng dẫn bắt đầu](/vi/onboarding) - Thiết lập tài khoản từ đầu
-- [Loa Thanh Toán](/vi/payment-speaker) - Nghe thông báo tiền về realtime tại quầy
-- [Đăng ký & Thanh toán](/vi/subscription) - Quản lý gói và thanh toán
-- [Quản lý Ngân hàng](/vi/banking) - Kết nối và quản lý ngân hàng
+- [Bắt đầu](/vi/onboarding)
+- [Kết nối ngân hàng](/vi/connect-banks)
+- [Gói dịch vụ và thanh toán](/vi/subscription)

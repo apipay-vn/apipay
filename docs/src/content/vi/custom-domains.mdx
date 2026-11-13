@@ -5,165 +5,72 @@ description: Sử dụng tên miền riêng của bạn cho trang thanh toán Ap
 
 # Tên miền riêng
 
-Dùng tên miền riêng của bạn (ví dụ: `pay.yourdomain.com`) cho trang thanh toán, thay vì tên miền mặc định của ApiPay. Khách sẽ thấy thương hiệu của bạn rõ hơn, còn bạn vẫn quản lý DNS trên tên miền của mình.
+Dùng tên miền của bạn (ví dụ `pay.yourdomain.com`) cho trang thanh toán thay vì tên miền mặc định của ApiPay, để khách thấy thương hiệu của bạn.
 
 <iframe width="100%" height="315" src="https://www.youtube.com/embed/VJzZ42J3OZY?si=LvdhsL7r_Gzf6UKG" title="Hướng Dẫn Cài Đặt Tên Miền Riêng" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
----
-
-## Tổng quan
-
-Khi bạn tạo yêu cầu thanh toán, ApiPay tạo một URL trang thanh toán. Mặc định URL dùng tên miền của ApiPay. Với tên miền riêng, bạn có thể đổi URL này sang tên miền phụ của mình.
-
-**Lợi ích chính:**
-- URL thanh toán dùng thương hiệu của bạn (`pay.yourdomain.com`)
-- Khách hàng nhìn thấy tên miền của bạn, tăng độ tin tưởng
-- Vẫn dùng được với các tính năng payment request hiện có
 
 ---
 
 ## Cần chuẩn bị
 
-Trước khi thiết lập, bạn cần có:
-
-- Một tên miền phụ mà bạn kiểm soát (ví dụ: `pay.yourdomain.com`, `checkout.yourdomain.com`)
-- Quyền truy cập vào nhà cung cấp DNS của bạn (ví dụ: GoDaddy, Cloudflare, Namecheap)
-- Tài khoản ApiPay với ít nhất một tài khoản ngân hàng đã kết nối
+- Một tên miền bạn quản lý. Nên dùng tên miền phụ như `pay.yourdomain.com` hoặc `checkout.yourdomain.com`.
+- Quyền sửa DNS ở nhà cung cấp tên miền (ví dụ Cloudflare, GoDaddy, Namecheap).
+- Ít nhất một ngân hàng đã kết nối.
 
 ---
 
-## Hướng dẫn từng bước
+## Các bước
 
-### Bước 1: Thêm tên miền trong Dashboard
+### Bước 1: Thêm tên miền
 
-1. Đăng nhập vào [ApiPay Dashboard](https://dashboard.apipay.vn)
-2. Vào **Tích hợp → Tên miền riêng**
-3. Nhập tên miền phụ của bạn (ví dụ: `pay.yourdomain.com`) vào ô nhập
-4. Nhấn **Thêm**
+1. Đăng nhập [my.apipay.vn](https://my.apipay.vn) và mở **Tích hợp → Tên miền riêng**.
+2. Nhập tên miền và nhấn **Thêm**.
 
-Hệ thống sẽ tạo mã xác minh và lưu tên miền với trạng thái **Chờ xác minh**.
+Tên miền xuất hiện trong danh sách với trạng thái **Đang chờ**.
 
-### Bước 2: Cấu hình bản ghi DNS
+### Bước 2: Thêm bản ghi DNS
 
-Bạn cần thêm hai bản ghi DNS ở nhà cung cấp tên miền.
+Thêm hai bản ghi sau ở nhà cung cấp tên miền. Ví dụ dưới đây dùng `pay.yourdomain.com`; nếu dùng tên miền gốc, nhập `@` vào ô Tên / Host.
 
-#### Bản ghi DNS 1: TXT Record (xác minh tên miền)
+| Loại | Tên / Host | Giá trị |
+|------|-----------|---------|
+| TXT | `pay` | `apipay-verification=<TOKEN>` |
+| A | `pay` | Địa chỉ IP máy chủ ApiPay |
 
-Bản ghi này cho ApiPay biết bạn sở hữu tên miền.
+- **Token**: trong danh sách tên miền, mở menu **...** và chọn **Sao chép Token**. Dán toàn bộ, gồm cả phần `apipay-verification=`.
+- **Địa chỉ IP**: sao chép trên thẻ hướng dẫn DNS trong trang Tên miền riêng.
 
-| Trường | Giá trị |
-|--------|---------|
-| Loại | TXT |
-| Tên / Host | `pay` (cho `pay.yourdomain.com`) hoặc `@` (cho tên miền gốc `yourdomain.com`) |
-| Giá trị | `apipay-verification=<TOKEN>` |
+### Bước 3: Xác minh
 
-Để lấy mã token:
-1. Vào **Tích hợp → Tên miền riêng** trong Dashboard
-2. Tìm tên miền của bạn trong bảng
-3. Nhấn vào menu **...** ở bên phải của hàng đó
-4. Nhấn **Sao chép Token**
+DNS thường cập nhật sau vài phút, đôi khi lâu hơn (tối đa 48 giờ).
 
-Dán toàn bộ mã, gồm cả `apipay-verification=`, vào giá trị của bản ghi TXT.
+- Muốn kiểm tra ngay: mở menu **...** của tên miền và chọn **Xác minh**.
+- Hoặc chờ: ApiPay tự kiểm tra định kỳ và gửi email khi xác minh xong.
 
-#### Bản ghi DNS 2: A Record (định tuyến truy cập)
+Khi xác minh thành công, tên miền chuyển sang **Đã xác minh**.
 
-Bản ghi này trỏ tên miền của bạn đến máy chủ ApiPay.
+Tên miền chưa xác minh sau 24 giờ sẽ chuyển sang không hoạt động và bạn nhận email hướng dẫn. Khi đó, xóa tên miền rồi thêm lại từ bước 1.
 
-| Trường | Giá trị |
-|--------|---------|
-| Loại | A |
-| Tên / Host | `pay` (cho tên miền phụ) hoặc `@` (cho tên miền gốc) |
-| Giá trị | `<SERVER_IP>` |
+### Bước 4: Dùng tên miền riêng
 
-Nhấn **Sao chép IP** trên thẻ hướng dẫn DNS trong Dashboard để sao chép địa chỉ IP của máy chủ.
+Khi tạo yêu cầu thanh toán, mở **Cài đặt nâng cao** và chọn tên miền của bạn. Link thanh toán sẽ dùng tên miền này.
 
-> **Quan trọng:** Với tên miền gốc (ví dụ: `yourdomain.com`), thêm bản ghi A có thể ảnh hưởng đến email (bản ghi MX). Nếu tên miền này đang dùng cho email, nên dùng tên miền phụ như `pay.yourdomain.com`.
-
-### Bước 3: Chờ DNS cập nhật
-
-DNS thường cập nhật sau vài phút, nhưng đôi khi có thể mất đến 48 giờ. Phần lớn nhà cung cấp DNS hoàn tất trong khoảng 5-15 phút.
-
-### Bước 4: Xác minh tên miền của bạn
-
-Bạn có hai lựa chọn:
-
-**Lựa chọn A — Xác minh thủ công:**
-
-1. Vào **Tích hợp → Tên miền riêng** trong Dashboard
-2. Tìm tên miền của bạn trong bảng (trạng thái sẽ là **Chờ xác minh**)
-3. Nhấn vào menu **...** ở bên phải của hàng đó
-4. Nhấn **Xác minh**
-
-ApiPay sẽ kiểm tra bản ghi TXT ngay. Nếu tìm thấy token, tên miền sẽ chuyển sang **Đã xác minh**.
-
-**Lựa chọn B — Xác minh tự động:**
-
-ApiPay tự kiểm tra bản ghi TXT của các tên miền chưa xác minh mỗi 15 phút. Nếu tìm thấy bản ghi đúng, hệ thống sẽ xác minh tên miền và gửi email báo thành công.
-
-### Bước 5: Dùng tên miền riêng
-
-Khi tên miền hiển thị nhãn **Đã xác minh** màu xanh trong Dashboard:
-
-#### Trong Dashboard
-
-1. Tạo yêu cầu thanh toán mới (hoặc chỉnh sửa yêu cầu hiện có)
-2. Trong form yêu cầu thanh toán, chọn tên miền riêng từ dropdown **Tên miền tùy chỉnh**
-3. Khi chia sẻ link thanh toán, URL sẽ dùng tên miền của bạn
-
-#### Qua API
-
-Truyền tham số `customDomainId` khi gọi `POST /v1/client/payment-requests`. `payUrl` trong kết quả trả về sẽ tự động dùng tên miền riêng của bạn.
-
-Bạn có thể sao chép **Domain ID** trực tiếp trên bảng danh sách hoặc từ menu thao tác **...** tại **Tích hợp → Tên miền riêng** trong Dashboard.
-
-```bash
-curl -X POST https://app.apipay.vn/v1/client/payment-requests \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer <Auth>" \
-  -d '{
-    "bankPublicId": "bank_abc123",
-    "amount": "500000",
-    "content": "THANHTOAN-001",
-    "customDomainId": "cml8x1abc0000domain0000000"
-  }'
-```
-
-Xem chi tiết tại [Payment Requests API](/vi/api/payment-requests).
+Tạo bằng API? Gửi `customDomainId` (sao chép bằng **Sao chép Domain ID** trong menu **...**). Xem [API yêu cầu thanh toán](/vi/api/payment-requests).
 
 ---
 
-## Xử lý sự cố DNS
+## Xử lý sự cố
 
-| Sự cố | Giải pháp |
+| Sự cố | Cách xử lý |
 |-------|-----------|
-| Xác minh thất bại ngay sau khi thêm bản ghi TXT | Chờ 5-15 phút để DNS cập nhật, sau đó thử lại |
-| Nút Xác minh không khả dụng | Đảm bảo trạng thái tên miền vẫn là **Chờ xác minh** và mã token còn tồn tại |
-| Xác minh tự động chưa chạy sau 15 phút | Dùng nút **Xác minh** trong Dashboard để kiểm tra ngay |
-| Trạng thái tên miền chuyển thành không hoạt động | Tên miền chưa được xác minh sau hơn 24 giờ. Xóa rồi thêm lại tên miền theo các bước trên |
-| Tên miền gốc làm lỗi email | Chuyển sang tên miền phụ (ví dụ: `pay.yourdomain.com`) thay vì dùng tên miền gốc |
-| Bản ghi TXT không tìm thấy | Kiểm tra kỹ tên và giá trị bản ghi. Mã token phải khớp chính xác, bao gồm `apipay-verification=` |
-
----
-
-## Tự động hết hạn
-
-Tên miền chưa xác minh sau hơn **24 giờ** sẽ tự chuyển sang **không hoạt động**. ApiPay sẽ gửi email kèm hướng dẫn.
-
-Để kích hoạt lại:
-1. Xóa tên miền không hoạt động khỏi Dashboard
-2. Thêm lại tên miền theo [Hướng dẫn từng bước](#hướng-dẫn-từng-bước) ở trên
-
----
-
-## Video hướng dẫn
-
-Xem video hướng dẫn thiết lập:
-
-<iframe width="100%" height="315" src="https://www.youtube.com/embed/VJzZ42J3OZY?si=LvdhsL7r_Gzf6UKG" title="Hướng Dẫn Cài Đặt Tên Miền Riêng" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+| Xác minh thất bại ngay sau khi thêm bản ghi | Chờ vài phút để DNS cập nhật rồi nhấn **Xác minh** lại. |
+| Không tìm thấy bản ghi TXT | Kiểm tra lại tên và giá trị bản ghi. Token phải khớp chính xác, gồm cả `apipay-verification=`. |
+| Không thấy nút **Xác minh** | Nút chỉ có khi tên miền còn ở trạng thái **Đang chờ**. |
+| Tên miền chuyển sang không hoạt động | Tên miền chưa được xác minh trong 24 giờ. Xóa rồi thêm lại. |
 
 ---
 
 ## Bước tiếp theo
 
-- [Tạo payment request đầu tiên](/vi/onboarding) — Bắt đầu nhận thanh toán với tên miền riêng
-- [Thiết lập webhook](/vi/api/webhooks) — Nhận thông báo thanh toán
+- [Tạo yêu cầu thanh toán đầu tiên](/vi/onboarding)
+- [Thiết lập webhook](/vi/api/webhooks)

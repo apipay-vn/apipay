@@ -5,13 +5,13 @@ description: Link your Vietnamese bank account to start receiving payments via A
 
 # How to Connect Banks
 
-Connect a Vietnamese bank account to your ApiPay dashboard to start receiving real-time bank transfer payments. Once linked, ApiPay automatically syncs incoming transactions and delivers payment notifications via webhook.
+Connect a bank account so ApiPay can detect incoming money and notify you as soon as a customer pays.
 
 <iframe
   width="100%"
   height="315"
   src="https://www.youtube.com/embed/hstBeBMvwUM?si=LhJBZAJZheZORspg"
-  title="How to Connect Banks on ApiPay"
+  title="How to connect a bank on ApiPay"
   frameborder="0"
   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
   referrerpolicy="strict-origin-when-cross-origin"
@@ -20,355 +20,83 @@ Connect a Vietnamese bank account to your ApiPay dashboard to start receiving re
 
 ---
 
-## Overview
+## Before you start
 
-Linking a bank account on ApiPay is a 2-step process:
-
-1. **Select your bank** and account type (Personal or Business)
-2. **Enter your account details** and verify ownership via OTP
-
-Once linked, your bank account appears in the **Banks** section of the dashboard with a status of **Active**. You can then create payment requests and receive transfers within 1-2 seconds.
-
-**Supported banks:**
-
-| Bank                 | Personal | Business | Household | Features                 |
-| -------------------- | :------: | :------: | :-------: | ------------------------ |
-| **ACB**              |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Bank account |
-| **MB Bank**          |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Virtual Account (VA) |
-| **BIDV**             |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Virtual Account (VA) |
-| **OCB**              |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Virtual Account (VA) |
-| **VietinBank**      |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Bank account |
-| **VIB**              |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Virtual Account (VA) |
-| **Sacombank**        |   Yes    |    No    |    Yes    | OpenBanking, Sync inward, Virtual Account (VA) |
-| **VPBank**           |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Virtual Account (VA) |
-| **PGBank**           |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Bank account |
-| **Shinhan Bank**     |   Yes    |   Yes    |    No     | OpenBanking, Sync inward, Virtual Account (VA) |
-| **Co-opBank**        |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Virtual Account (VA) |
-| **Vietcombank**      |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Virtual Account (VA) for Personal |
-| **MSB**              |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Bank account |
-| **TPBank**           |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Bank account |
+- An ApiPay account with an active plan (free or paid).
+- The phone number registered with your bank.
+- Documents by account type:
+  - **Personal**: your 12-digit CCCD (citizen ID) number.
+  - **Business** and **household business**: the tax code. Household businesses at MB Bank and VPBank enter the owner's CCCD instead.
+  - **ACB**: no CCCD or tax code. Business and household business accounts also need an ACB Onebiz username.
 
 ---
 
-## Prerequisites
+## Supported banks
 
-Before linking a bank account, make sure you have:
+- **Auto**: confirm with the OTP your bank sends to your phone, ready to use right away.
+- **Confirm in app**: you approve the link in your bank's app.
+- **Activation request**: you submit your details and ApiPay contacts you to activate, usually within 24 hours.
 
-- An ApiPay account with an **active plan** (free or paid). Every quota plan supports connecting multiple banks.
-- An active Vietnamese bank account from the supported list above
-- The phone number registered with your bank (for OTP verification)
-- For **MB Bank**, **VIB**, **Sacombank**, **VPBank**, **PGBank**, **Shinhan Bank** Personal, and **MB Bank** or **VPBank** Household Business: your CCCD/ID card number (12 digits)
-- For Business or Household Business accounts: your company/household Tax Code (MST) / CCCD
-- For **ACB Business**: an ACB OneBiz username
-- **Vietcombank**: Personal uses in-app authorization and receives a virtual account (VA); Business and Household Business require manual activation and settle to the original account number
-- **MSB**: Personal, Business, and Household Business all require manual activation. Business accounts must enable MSB Merchant at a branch. Do not edit the referral code.
-- **TPBank**: Personal, Business, and Household Business use in-app authorization. The virtual account appears as a sub-account of the original account.
-- **OCB** Business, **VPBank**/**BIDV**/**VietinBank**/**Shinhan Bank** Business, **Vietcombank** Business/Household, and every **MSB** account type: manual activation
-- **ACB** Business/Household, **MB Bank** (all types), **VIB** (all types), **PGBank**, **Co-opBank**, and Household Business for **BIDV**, **VietinBank**, **Sacombank**, and **OCB**: fully online, no manual activation. **ACB** Business/Household link the original account number.
+| Bank | Personal | Business | Household business | Notes |
+|------|----------|----------|--------------------|-------|
+| ACB | Auto | Auto | Auto | |
+| BIDV | Auto | Activation request | Auto | |
+| Co-opBank | Auto | Auto | Auto | |
+| MB Bank | Auto | Auto | Auto | |
+| MSB | Activation request | Activation request | Activation request | Businesses must enable MSB Merchant at a branch first |
+| OCB | Auto | Activation request | Auto | |
+| PGBank | Auto | Auto | Auto | |
+| Sacombank | Auto | Not supported | Auto | |
+| TPBank | Confirm in app | Confirm in app | Confirm in app | |
+| VIB | Auto | Auto | Auto | Turn on **Nhận loa** (payment speaker) in the VIB Business app before linking |
+| Vietcombank | Confirm in app | Activation request | Activation request | |
+| VietinBank | Auto | Activation request | Auto | See the note below |
+| VPBank | Auto | Activation request | Auto | |
+| Shinhan Bank | Maintenance | Maintenance | Not supported | Not accepting new links for now |
+
+HDBank and Agribank are coming soon.
+
+> **VietinBank:** Transfers into a VietinBank account arrive without their content, so they cannot be matched by transfer content.
+
+For some banks, ApiPay issues you a virtual account (VA) number after you connect. The connect form tells you in advance if your bank uses one. Customers must then pay into that virtual account number.
 
 ---
 
-## Step-by-Step Guide
-
-### Step 1: Select Your Bank
-
-1. Log in to the [ApiPay Dashboard](https://dashboard.apipay.vn)
-2. Navigate to **Banks** in the sidebar
-3. Click the **Add Bank** button in the top-right corner
-4. On the **Link Bank Account** page, you'll see a list of supported banks
-5. Find your bank in the table:
-   - Check the **Recommended** badge for the preferred options
-   - Look at **Account Types** — some banks support Personal, Business, or both
-   - Note the **Features** — each bank supports different capabilities
-6. Click **Connect** on your chosen bank
-
-### Step 2: Choose Account Type
-
-Most banks support three account types. Pick the one that matches your account:
-
-- **Personal** — for individual bank accounts
-- **Business** — for company bank accounts
-- **Household Business** — for household business (hộ kinh doanh) accounts
-
-Per-bank availability:
-
-- **ACB**, **MB Bank**, **BIDV**, **OCB**, **VietinBank**, **VIB**, **VPBank**, **PGBank**, **Co-opBank**, **MSB**, **TPBank**, **Vietcombank** — Personal, Business, Household Business
-- **Shinhan Bank** — Personal, Business (Household Business not supported)
-- **Sacombank** — Personal, Household Business (Business not supported)
-
-> **VietinBank note:** Transactions from VietinBank have no transfer content; contact support for more details.
-
-> **Manual activation.** OCB Business, VPBank/BIDV/VietinBank/Shinhan Business, Vietcombank Business/Household, and every MSB account type use activation requests. You'll see **Activation Requested** until they complete. ACB, MB (all types), VIB (all types), PGBank, Co-opBank, TPBank, and Household Business for BIDV, VietinBank, Sacombank, and OCB are fully online or use in-app authorization.
-
-Click the card that matches your account type to continue.
-
-### Step 3: Enter Account Information
-
-Fill in the required fields. The fields shown depend on which bank you selected.
-
-#### Fields for All Banks
-
-| Field              | Description                                                          |
-| ------------------ | -------------------------------------------------------------------- |
-| **Account Name**   | Your account holder name, written in CAPITAL LETTERS without accents |
-| **Account Number** | Your bank account number                                             |
-| **Phone Number**   | The phone number registered with your bank                           |
-| **Memo Name**      | Optional nickname for this account in your dashboard (max 50 characters) |
-
-#### ACB — Personal Account
-
-No additional fields required beyond the base fields above.
-
-#### ACB — Business / Household Business Account
-
-| Additional Field        | Description                    |
-| ----------------------- | ------------------------------ |
-| **ACB OneBiz Username** | Your ACB OneBiz login username |
-
-> **Note:** ACB Business and Household Business connect online and link the original account number. ApiPay does not issue a separate virtual account.
-
-#### MB Bank — Personal / Household Business Account
-
-| Additional Field          | Description                                             |
-| ------------------------- | ------------------------------------------------------- |
-| **CCCD / ID Card Number** | Your 12-digit CCCD number (Citizen Identification Card) |
-
-> **Note:** MB Bank Personal, Business, and Household Business accounts are processed fully online with no manual activation required. Household Business is sent to the bank as a personal account.
-
-#### MB Bank — Business Account
-
-| Additional Field   | Description                              |
-| ------------------ | ---------------------------------------- |
-| **Tax Code (MST)** | Your company's Tax Identification Number |
-
-#### BIDV — Personal Account
-
-| Additional Field          | Description                             |
-| ------------------------- | --------------------------------------- |
-| **CCCD / ID Card Number** | Your 12-digit CCCD number               |
-| **Account Email**         | Your email address registered with BIDV |
-
-#### OCB — Personal Account
-
-No additional fields required beyond the base fields above.
-
-#### VIB — Personal Account
-
-| Additional Field          | Description               |
-| ------------------------- | ------------------------- |
-| **CCCD / ID Card Number** | Your 12-digit CCCD number |
-
-#### Sacombank (STB) — Personal Account
-
-| Additional Field          | Description               |
-| ------------------------- | ------------------------- |
-| **CCCD / ID Card Number** | Your 12-digit CCCD number |
-
-#### Sacombank (STB) — Household Business Account
-
-| Additional Field   | Description                                         |
-| ------------------ | --------------------------------------------------- |
-| **Tax Code (MST)** | Tax Identification Number of the household business |
-
-> **Note for Sacombank:** Company (Business) accounts are not currently supported. Personal and Household Business connect online.
-
-#### VPBank — Personal / Household Business Account
-
-| Additional Field          | Description               |
-| ------------------------- | ------------------------- |
-| **CCCD / ID Card Number** | Your 12-digit CCCD number |
-
-> **Note:** VPBank Personal and Household Business accounts are processed fully online with no manual activation required.
-
-#### VPBank — Business Account
-
-| Additional Field   | Description                              |
-| ------------------ | ---------------------------------------- |
-| **Tax Code (MST)** | Your company's Tax Identification Number |
-
-> **Manual activation:** VPBank Business connections are submitted for manual activation. ApiPay enables the account after the API contract is signed.
-
-#### PGBank — Personal Account
-
-| Additional Field          | Description               |
-| ------------------------- | ------------------------- |
-| **CCCD / ID Card Number** | Your 12-digit CCCD number |
-
-#### PGBank — Business / Household Business Account
-
-| Additional Field   | Description                                                    |
-| ------------------ | -------------------------------------------------------------- |
-| **Tax Code (MST)** | Tax Identification Number of the company or household business |
-
-> **Note:** All PGBank account types (Personal, Business, Household Business) are processed fully online with no manual activation required.
-
-#### OCB — Household Business Account
-
-| Additional Field   | Description                                         |
-| ------------------ | --------------------------------------------------- |
-| **Tax Code (MST)** | Tax Identification Number of the household business |
-
-> **Note:** OCB Household Business accounts connect online. No manual activation.
-
-#### OCB — Business Account
-
-| Additional Field   | Description                              |
-| ------------------ | ---------------------------------------- |
-| **Tax Code (MST)** | Tax Identification Number of the company |
-
-> **Manual activation:** OCB Business connections are submitted for manual activation. ApiPay enables the account after the API contract is signed.
-
-#### VIB — Business / Household Business Account
-
-| Additional Field   | Description                                                    |
-| ------------------ | -------------------------------------------------------------- |
-| **Tax Code (MST)** | Tax Identification Number of the company or household business |
-
-> **Note:** VIB Business and Household Business accounts connect online with an OTP. No manual activation.
-
-#### BIDV / VietinBank / Shinhan Bank — Business Account
-
-| Additional Field   | Description                              |
-| ------------------ | ---------------------------------------- |
-| **Tax Code (MST)** | Tax Identification Number of the company |
-
-> **Manual activation:** BIDV, VietinBank, and Shinhan Bank Business connections are submitted for manual activation. ApiPay enables the account after the API contract is signed.
->
-> **VietinBank note:** Transactions from VietinBank have no transfer content; contact support for more details.
-
-#### Vietcombank
-
-| Additional Field   | Description                                                    |
-| ------------------ | -------------------------------------------------------------- |
-| **Tax Code / CCCD**| Tax Identification Number or Citizen ID of the business/household |
-
-Personal accounts connect through authorization in the Vietcombank app and receive a virtual account (VA) number. Business and Household Business accounts are submitted for manual activation and settle to the original account number. ApiPay enables them after verification and API contract setup.
-
-#### MSB — Personal, Business, or Household Business Account
-
-| Additional Field   | Description                                                    |
-| ------------------ | -------------------------------------------------------------- |
-| **CCCD / Tax Code**| Citizen ID for personal accounts, or tax code for business and household business |
-
-> **Manual activation:** Every MSB account type is submitted for manual activation. Business accounts must enable MSB Merchant at a bank branch first. Do not edit the referral code. Each account can be linked only once. ApiPay activates the account within 24 hours.
-
-#### TPBank — Personal, Business, or Household Business Account
-
-| Additional Field   | Description                                                    |
-| ------------------ | -------------------------------------------------------------- |
-| **CCCD / Tax Code**| Citizen ID for personal accounts, or tax code for business and household business |
-
-> **In-app authorization:** Every TPBank account type is approved in the TPBank app. The virtual account appears as a sub-account of the original account.
-
-After filling in all fields:
-
-1. Read the consent text about privacy policy and terms of use
-2. Check the **I agree** checkbox
-3. Click **Confirm** to proceed
-
-A confirmation modal will appear — review the details and click **Confirm** again.
-
-### Step 4: Verify with OTP (Online Flow)
-
-For online connections, an **OTP (One-Time Password)** is sent automatically to the phone number registered with your bank.
-
-1. Enter the 6-digit OTP code in the input field
-2. Click **Confirm**
-3. Once verified, your bank account is successfully linked
-
-If the OTP code is incorrect, you'll see an error message. Re-enter the correct code and try again.
-
-> **Manual activation accounts skip OTP.** Manual flows show **Activation Requested** instead of OTP.
-
----
-
-## After Linking
-
-Once your bank is linked successfully:
-
-- The bank account appears in your **Banks** list with an **Active** status
-- You can view transaction history filtered by that bank
-- You can toggle the bank on/off using the status toggle
-- You can rename the account with a memo name to recognize it at a glance
-- ApiPay automatically registers a webhook to receive real-time transaction notifications
-
----
-
-## Managing Your Connected Banks
-
-### View Bank Details
-
-1. Go to **Banks** in the sidebar
-2. Click on any bank row to see full details:
-   - Account holder name
-   - Account number (partially masked)
-   - Bank name and logo
-   - Status (Active / Inactive)
-   - Transaction history
-
-### Rename a Connected Bank
-
-Give a bank account a memo name so it is easy to recognize in your list:
-
-1. Go to **Banks**
-2. Click the **...** (more) menu on the right side of the bank row
-3. Select **Edit nickname**
-4. Enter a name (up to 50 characters) and save. Leave it blank to clear the name
-
-The memo name is shown only in your dashboard; customers never see it.
-
-### Toggle Bank Status
-
-If you want to temporarily stop receiving payments on a specific bank:
-
-1. Go to **Banks**
-2. Find the bank you want to toggle
-3. Click the **toggle switch** in the Actions column
-4. The status changes between **Active** and **Inactive**
-
-### Delete a Connected Bank
-
-1. Go to **Banks**
-2. Click the **...** (more) menu on the right side of the bank row
-3. Select **Delete Bank**
-4. Confirm with OTP (sent to your registered phone)
-5. The bank is removed from your account
+## Steps
+
+1. Sign in at [my.apipay.vn](https://my.apipay.vn), open **Banks** in the sidebar and click **Add Bank**.
+2. Pick your bank and click **Connect**.
+3. Choose the account type: **Personal**, **Business** or **Household business**. Each one is labeled **Auto** or **Needs approval**.
+4. Fill in:
+   - Account holder name (or company name), uppercase without accents
+   - Account number
+   - Phone number registered with the bank
+   - CCCD, tax code or ACB Onebiz username, depending on bank and account type
+   - Nickname (optional, only you see it in the dashboard)
+5. Tick **I have read and agree to the terms above**, then click **Confirm** (or **Submit request** if the account needs activation).
+6. Finish as shown on screen:
+   - **Auto**: enter the OTP your bank sends to your phone.
+   - **Confirm in app**: open your bank's app to approve. For Vietcombank you can scan the QR code shown on screen.
+   - **Activation request**: no OTP. The bank stays **Pending** until ApiPay activates it.
+
+Once connected, the account appears under **Banks** as **Active** and you can start creating payment requests. To rename, pause or remove a bank, see [Bank Management](/en/banking).
 
 ---
 
 ## Troubleshooting
 
-| Issue                             | Solution                                                                                                                                                                              |
-| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| OTP not received                  | Make sure the phone number you entered matches the number registered with your bank. Wait a moment and try again.                                                                     |
-| OTP code incorrect                | Double-check that you're entering the code sent to your phone. Codes are 6 digits.                                                                                                    |
-| CCCD rejected                     | Make sure you enter exactly 12 digits without spaces or special characters.                                                                                                           |
-| Bank shows "Pending" status       | After linking, the bank should become Active within seconds. If it stays Pending, try refreshing the page.                                                                            |
-| Bank shows "Activation Requested" | This is expected for manual-activation flows (OCB Business, VPBank/BIDV/VietinBank/Shinhan Business, Vietcombank Business/Household, every MSB account type). ApiPay will contact you to complete activation. |
-| Account number already linked     | Each bank account can only be linked once. If you see this error, the account may already be connected to another ApiPay account.                                                     |
-| Account type not available        | Sacombank does not support Business accounts.                                                                                                         |
+| Problem | What to do |
+|---------|-----------|
+| No OTP received | Check that the phone number matches the one registered with your bank, wait a moment and try again. |
+| CCCD rejected | Enter exactly 12 digits, with no spaces or special characters. |
+| VIB says the payment speaker is not registered | Open the VIB Business app, choose **Nhận loa**, then come back and link again. |
+| Connected but the bank is not active | Don't add the bank again. Send a ticket from **Contact → Tickets**. |
+| Account number already linked | Each bank account can only be linked once. It may already belong to another ApiPay account. |
 
 ---
 
-## Video Tutorial
+## Next steps
 
-Watch the complete step-by-step guide:
-
-<iframe
-  width="100%"
-  height="315"
-  src="https://www.youtube.com/embed/hstBeBMvwUM?si=LhJBZAJZheZORspg"
-  title="How to Connect Banks on ApiPay"
-  frameborder="0"
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-  referrerpolicy="strict-origin-when-cross-origin"
-  allowfullscreen
-></iframe>
-
----
-
-## Next Steps
-
-- [Create Your First Payment Request](/en/onboarding) — Start accepting payments with your connected bank
-- [Webhook Setup](/en/api/webhooks) — Get real-time notifications when you receive payments
-- [Custom Domains](/en/custom-domains) — Use your own domain for payment pages
+- [Create your first payment request](/en/onboarding)
+- [Set up webhooks](/en/api/webhooks)
+- [Custom Domains](/en/custom-domains)

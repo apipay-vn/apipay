@@ -1,615 +1,282 @@
 ---
 title: Payment Requests API
-description: API tạo và quản lý payment link
+description: Tạo và quản lý yêu cầu thanh toán
 ---
 
 # Payment Requests API
 
-API dùng để tạo và quản lý payment link.
+Mỗi yêu cầu thanh toán có một link thanh toán (`payUrl`) và mã QR chuyển khoản. Luồng cơ bản:
 
-## Tạo payment link
+1. Server của bạn tạo yêu cầu thanh toán.
+2. Chuyển khách đến `payUrl`, hoặc hiển thị ảnh `qrUrl` trên trang của bạn.
+3. Nhận kết quả qua [webhook](/vi/api/webhooks) `transaction.in`.
 
-Tạo link thanh toán bằng tài khoản ngân hàng đã kết nối.
+Mọi request cần header `Authorization: Bearer <Auth>`, trong đó `<Auth>` là base64 của `accessKey:secretKey`. Xem [Xác thực API](/vi/api/authentication). Response thành công có dạng `{"data": ..., "statusCode": ..., "timestamp": ...}`.
+
+## Tạo yêu cầu thanh toán
 
 ```bash
 POST /v1/client/payment-requests
 ```
 
-### Headers
+| Tham số          | Kiểu   | Bắt buộc | Mô tả                                                                                                        |
+| ---------------- | ------ | -------- | ------------------------------------------------------------------------------------------------------------ |
+| `bankPublicId`   | string | Có       | Tài khoản nhận tiền. Lấy từ [Banks API](/vi/api/banks)                                                       |
+| `amount`         | string | Không    | Số tiền VND, tối đa `300000000`. Bỏ trống để khách tự nhập. Không gửi cùng `priceId`                          |
+| `priceId`        | string | Không    | Mức giá [Commerce](/vi/api/commerce). Số tiền lấy theo mức giá tại thời điểm tạo. Không gửi cùng `amount`     |
+| `content`        | string | Không    | Nội dung chuyển khoản, tối đa 140 ký tự. ApiPay bỏ dấu và ký tự đặc biệt; dùng `content` trong response để đối chiếu |
+| `title`          | string | Không    | Tiêu đề hiển thị trên trang thanh toán                                                                       |
+| `expiresAt`      | string | Không    | Thời điểm hết hạn (ISO 8601). Mặc định 90 ngày                                                               |
+| `redirectUrl`    | string | Không    | URL đưa khách về sau khi thanh toán. Xem [Xác minh redirect](#xác-minh-redirect)                              |
+| `customDomainId` | string | Không    | Hiển thị trang thanh toán trên [tên miền riêng](/vi/custom-domains) của bạn                                   |
+| `customer`       | object | Không    | Thông tin người mua khi tạo từ `priceId`: `name`, `email`, `taxCode`, `address`                               |
 
-| Header          | Mô tả              |
-| --------------- | ------------------ |
-| `Authorization` | `Bearer <Auth>`    |
-| `Content-Type`  | `application/json` |
-
-> **Lưu ý:** `<Auth>` là chuỗi base64 của `accessKey:secretKey`. Xem [Xác thực API](/vi/api/authentication) để biết chi tiết.
-
-### Request Body
-
-| Tham số        | Kiểu   | Bắt buộc | Mô tả                                                                                                                                                                            |
-| -------------- | ------ | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `bankPublicId` | string | **✓ Có** | Public ID của ngân hàng đã kết nối                                                                                                                                               |
-| `amount`       | string | —        | Số tiền VND (chuỗi số nguyên hoặc số, tối đa `300000000`). Trả về dưới dạng chuỗi hoặc `null`. Để trống nếu cho phép khách tự nhập. Không gửi cùng `priceId`                    |
-| `priceId`      | string | —        | Id mức giá Commerce. Số tiền của mức giá được ghi vào link này một lần. Sửa sản phẩm hoặc mức giá sau đó không đổi request này. Không gửi cùng `amount`. Xem [Commerce API](/vi/api/commerce) |
-| `content`      | string | —        | Nội dung chuyển khoản (tối đa 140 ký tự). Nếu bỏ trống khi gửi `priceId`, hệ thống gắn nội dung CK duy nhất cho từng yêu cầu |
-| `title`        | string | —        | Tiêu đề hiển thị trên trang thanh toán                                                                                                                                           |
-| `expiresAt`    | string | —        | Thời hạn (ISO 8601). Mặc định 90 ngày kể từ khi tạo                                                                                                                                 |
-| `redirectUrl`    | string | —        | URL đưa khách về sau khi thanh toán. Khi hoàn tất, hệ thống chuyển đến URL này kèm payload đã ký (`?data=<base64>&signature=<hmac>`). Để trống để dùng URL mặc định của merchant |
-| `customDomainId` | string | —        | ID của tên miền riêng đã xác minh để hiển thị trang thanh toán. Khi truyền vào, `payUrl` trả về sẽ sử dụng tên miền này (ví dụ: `https://pay.yourdomain.com/...`). Để trống nếu dùng tên miền mặc định. Xem [Tên miền riêng](/vi/custom-domains) |
-| `customer`       | object | —        | Thông tin người mua tùy chọn khi tạo thanh toán một lần từ `priceId` (`name`, `email`, `taxCode`, `address`). Link dùng lại thu thập trên trang thanh toán |
-
-### Response
+```bash
+curl -X POST https://app.apipay.vn/v1/client/payment-requests \
+  -H "Authorization: Bearer <Auth>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "bankPublicId": "bnk_abc123",
+    "amount": "100000",
+    "content": "ORDER-12345",
+    "title": "Đơn hàng 12345",
+    "redirectUrl": "https://your-domain.com/payment/result"
+  }'
+```
 
 ```json
 {
   "data": {
     "publicId": "APIPAYJSCAF9H23M74K",
     "payUrl": "https://pay.apipay.vn/APIPAYJSCAF9H23M74K",
-    "qrUrl": "https://api.qrserver.com/v1/create-qr-code?...",
+    "qrUrl": "https://app.apipay.vn/v1/payment-requests/APIPAYJSCAF9H23M74K/qr-image",
     "bankCode": "MB",
     "accountNumber": "0123456789",
     "accountName": "NGUYEN VAN A",
     "amount": "100000",
     "content": "ORDER-12345",
-    "expiresAt": "2026-12-31T23:59:59Z",
-    "createdAt": "2026-03-06T10:00:00Z",
+    "expiresAt": "2026-11-10T10:00:00.000Z",
+    "createdAt": "2026-08-12T10:00:00.000Z",
     "redirectSecret": "a1b2c3d4e5f6..."
   },
-  "statusCode": 200,
-  "timestamp": "2026-08-12T14:27:45.000Z"
+  "statusCode": 201,
+  "timestamp": "2026-08-12T10:00:00.000Z"
 }
 ```
 
-### Ví dụ
+Lưu `redirectSecret` ở server để [xác minh redirect](#xác-minh-redirect).
+
+## Xem yêu cầu thanh toán
 
 ```bash
-curl -X POST https://app.apipay.vn/v1/client/payment-requests \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer <Auth>" \
-  -d '{
-    "bankPublicId": "bank_abc123",
-    "amount": "500000",
-    "content": "THANHTOAN-001",
-    "title": "DON HANG 12345",
-    "redirectUrl": "https://yoursite.com/payment/result"
-  }'
+GET /v1/client/payment-requests/:publicId
 ```
-
-Tạo với tên miền riêng đã xác minh (`payUrl` trả về sẽ dùng `https://pay.yourbrand.com/...`):
-
-```bash
-curl -X POST https://app.apipay.vn/v1/client/payment-requests \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer <Auth>" \
-  -d '{
-    "bankPublicId": "bank_abc123",
-    "amount": "500000",
-    "content": "THANHTOAN-001",
-    "customDomainId": "cml8x1abc0000domain0000000"
-  }'
-```
-
-Tạo từ mức giá Commerce (số tiền lấy từ giá; không gửi thêm `amount`):
-
-```bash
-curl -X POST https://app.apipay.vn/v1/client/payment-requests \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer <Auth>" \
-  -d '{
-    "bankPublicId": "bank_abc123",
-    "priceId": "cml8x1abc0000price0000000",
-    "content": "THANHTOAN-001"
-  }'
-```
-
----
-
-## Lấy thông tin payment link
-
-Lấy chi tiết một payment request, gồm cả QR code.
-
-```bash
-GET /v1/payment-requests/:publicId
-```
-
-### Response
 
 ```json
 {
   "data": {
     "publicId": "APIPAYJSCAF9H23M74K",
+    "status": "ACTIVE",
+    "payUrl": "https://pay.apipay.vn/APIPAYJSCAF9H23M74K",
+    "qrUrl": "https://app.apipay.vn/v1/payment-requests/APIPAYJSCAF9H23M74K/qr-image",
     "bankCode": "MB",
     "accountNumber": "0123456789",
     "accountName": "NGUYEN VAN A",
     "amount": "100000",
     "content": "ORDER-12345",
-    "title": "DON HANG 12345",
-    "status": "ACTIVE",
-    "qrUrl": "https://api.qrserver.com/...",
-    "expiresAt": "2026-12-31T23:59:59Z",
-    "createdAt": "2026-03-06T10:00:00Z",
-    "canChangeBank": true,
-    "bankChangedByCustomer": false,
-    "redirectUrl": "https://yoursite.com/payment/result",
-    "merchant": {
-      "name": "Tên cửa hàng",
-      "logoUrl": "https://yoursite.com/logo.png",
-      "companyName": "Công ty ABC"
-    }
+    "title": "Đơn hàng 12345",
+    "redirectUrl": "https://your-domain.com/payment/result",
+    "expiresAt": "2026-11-10T10:00:00.000Z",
+    "createdAt": "2026-08-12T10:00:00.000Z"
   },
   "statusCode": 200,
-  "timestamp": "2026-08-12T14:27:45.000Z"
+  "timestamp": "2026-08-12T10:05:00.000Z"
 }
 ```
 
-### Status
+### Trạng thái
 
-| Status      | Mô tả               |
+| Trạng thái  | Mô tả               |
 | ----------- | ------------------- |
 | `ACTIVE`    | Đang chờ thanh toán |
 | `COMPLETED` | Đã thanh toán       |
 | `EXPIRED`   | Đã hết hạn          |
 | `CANCELLED` | Đã hủy              |
 
----
-
-## Danh sách payment links
-
-Lấy danh sách payment requests đã tạo. Dữ liệu endpoint nằm trong `data` ở cấp cao nhất; các endpoint danh sách do đó sẽ có `data.data` chứa danh sách các dòng.
+## Danh sách yêu cầu thanh toán
 
 ```bash
 GET /v1/client/payment-requests
 ```
 
-### Headers
-
-| Header          | Mô tả           |
-| --------------- | --------------- |
-| `Authorization` | `Bearer <Auth>` |
-
-### Response
-
-```json
-{
-  "data": {
-    "status": true,
-    "data": [
-      {
-        "publicId": "APIPAYJSCAF9H23M74K",
-        "bankCode": "MB",
-        "accountNumber": "0123456789",
-        "accountName": "NGUYEN VAN A",
-        "amount": "100000",
-        "content": "ORDER-001",
-        "title": "DON HANG 12345",
-        "status": "COMPLETED",
-        "expiresAt": "2026-12-31T23:59:59Z",
-        "redirectUrl": "https://yoursite.com/payment/result",
-        "commercePriceId": "cml8x1abc0000price0000000",
-        "createdAt": "2026-03-06T10:00:00Z"
-      }
-    ],
-    "pagination": {
-      "page": 1,
-      "limit": 20,
-      "total": 1,
-      "totalPages": 1
-    }
-  },
-  "statusCode": 200,
-  "timestamp": "2026-08-12T14:27:45.000Z"
-}
-```
-
-### Query Parameters
-
-| Tham số         | Kiểu     | Bắt buộc | Mô tả                                                                                       |
-| --------------- | -------- | -------- | ------------------------------------------------------------------------------------------- |
-| `page`          | number   | —        | Số trang (mặc định: `1`)                                                                    |
-| `limit`         | number   | —        | Số item trên mỗi trang (mặc định: `20`, tối đa: `100`)                                      |
-| `search`        | string   | —        | Tìm theo public ID, nội dung, tiêu đề hoặc số tài khoản                                     |
-| `status`        | string[] | —        | Lọc theo trạng thái: `ACTIVE`, `EXPIRED`, `COMPLETED`, `CANCELLED`. Có thể truyền nhiều lần |
-| `bankAccountId` | number   | —        | Lọc theo ID tài khoản ngân hàng                                                             |
-| `dateFrom`      | string   | —        | Lọc theo ngày tạo từ ngày này (theo ngày lịch Việt Nam UTC+7)                              |
-| `dateTo`        | string   | —        | Lọc theo ngày tạo đến hết ngày này (theo ngày lịch Việt Nam UTC+7)                          |
-
-### Bộ lọc status
-
-Query parameter `status` nhận các giá trị sau:
-
-| Status      | Mô tả               |
-| ----------- | ------------------- |
-| `ACTIVE`    | Đang chờ thanh toán |
-| `COMPLETED` | Đã thanh toán       |
-| `EXPIRED`   | Đã hết hạn          |
-| `CANCELLED` | Đã hết hạn          |
-
-### Ví dụ query
-
-Lấy payment links đã thanh toán:
+| Tham số    | Kiểu     | Bắt buộc | Mô tả                                                          |
+| ---------- | -------- | -------- | -------------------------------------------------------------- |
+| `page`     | number   | Không    | Mặc định `1`                                                   |
+| `limit`    | number   | Không    | Mặc định `20`, tối đa `100`                                    |
+| `search`   | string   | Không    | Tìm theo mã, nội dung, tiêu đề hoặc số tài khoản               |
+| `status`   | string[] | Không    | Lọc theo [trạng thái](#trạng-thái). Truyền nhiều lần để lọc nhiều giá trị |
+| `dateFrom` | string   | Không    | Tạo từ ngày, dạng `YYYY-MM-DD` (giờ Việt Nam)                  |
+| `dateTo`   | string   | Không    | Tạo đến hết ngày, dạng `YYYY-MM-DD` (giờ Việt Nam)             |
 
 ```bash
 curl -G https://app.apipay.vn/v1/client/payment-requests \
   -H "Authorization: Bearer <Auth>" \
   --data-urlencode "status=COMPLETED" \
-  --data-urlencode "page=1" \
-  --data-urlencode "limit=20"
+  --data-urlencode "dateFrom=2026-08-01"
 ```
 
-Lấy payment links đang hoạt động hoặc đã hết hạn được tạo trong tháng 3/2026:
+Danh sách nằm ở `data.data`, phân trang ở `data.pagination` (`page`, `limit`, `total`, `totalPages`).
 
-```bash
-curl -G https://app.apipay.vn/v1/client/payment-requests \
-  -H "Authorization: Bearer <Auth>" \
-  --data-urlencode "status=ACTIVE" \
-  --data-urlencode "status=EXPIRED" \
-  --data-urlencode "dateFrom=2026-03-01" \
-  --data-urlencode "dateTo=2026-03-31"
-```
+## Hủy yêu cầu thanh toán
 
----
-
-## Đổi ngân hàng thanh toán
-
-Đổi một payment request đang hoạt động sang tài khoản ngân hàng khác đã cấu hình.
-
-```bash
-POST /v1/payment-requests/change-bank
-```
-
-### Request Body
-
-| Tham số        | Kiểu   | Bắt buộc | Mô tả                                       |
-| -------------- | ------ | -------- | ------------------------------------------- |
-| `publicId`     | string | **✓ Có** | Public ID của payment request               |
-| `bankPublicId` | string | **✓ Có** | Public ID của tài khoản ngân hàng được chọn |
-
-### Response
-
-```json
-{
-  "data": {
-    "bankCode": "ACB",
-    "accountNumber": "9876543210",
-    "accountName": "NGUYEN VAN A",
-    "qrUrl": "https://app.apipay.vn/v1/payment-requests/APIPAYJSCAF9H23M74K/qr-image"
-  },
-  "statusCode": 200,
-  "timestamp": "2026-08-12T14:27:45.000Z"
-}
-```
-
----
-
-## Lấy danh sách ngân hàng có thể chọn
-
-Lấy danh sách ngân hàng có thể chọn cho một payment request đang hoạt động.
-
-```bash
-GET /v1/payment-requests/:publicId/banks
-```
-
-### Response
-
-```json
-{
-  "data": {
-    "banks": [
-      {
-        "publicId": "bnk_abc123",
-        "bankName": "ACB",
-        "bankShortName": "ACB",
-        "accountNumber": "9876543210",
-        "accountName": "NGUYEN VAN A",
-        "status": "ACTIVE"
-      }
-    ],
-    "currentBankPublicId": "bnk_abc123"
-  },
-  "statusCode": 200,
-  "timestamp": "2026-08-12T14:27:45.000Z"
-}
-```
-
----
-
-## Lấy ảnh QR
-
-Trả về ảnh QR PNG có branding ApiPay cho payment request.
-
-```bash
-GET /v1/payment-requests/:publicId/qr-image
-```
-
----
-
-## Danh sách app ngân hàng
-
-Lấy danh sách app ngân hàng mà khách có thể mở với thông tin chuyển khoản điền sẵn (số tài khoản, số tiền, nội dung). Công khai, không cần API key. Trả về danh sách rỗng khi payment request không còn `ACTIVE` và với request sandbox (`test_pr_*`).
-
-```bash
-GET /v1/payment-requests/:publicId/bank-apps
-```
-
-### Response
-
-```json
-{
-  "data": [
-    {"bankBin": "970418", "bankCode": "BIDV", "name": "BIDV"},
-    {"bankBin": "970416", "bankCode": "ACB", "name": "ACB"},
-    {"bankBin": "970415", "bankCode": "ICB", "name": "VietinBank"},
-    {"bankBin": "970448", "bankCode": "OCB", "name": "OCB"},
-    {"bankBin": "970422", "bankCode": "MB", "name": "MB Bank"},
-    {"bankBin": "970432", "bankCode": "VPB", "name": "VPBank"},
-    {"bankBin": "970403", "bankCode": "STB", "name": "Sacombank"}
-  ],
-  "statusCode": 200
-}
-```
-
----
-
-## Tạo link mở app ngân hàng
-
-Tạo link mở app ngân hàng đã chọn với thông tin chuyển khoản điền sẵn. Mở link trên điện thoại của khách (ví dụ `window.location.assign(url)`). Công khai, không cần API key. Trang thanh toán ApiPay tự hiển thị các nút này trên di động.
-
-```bash
-POST /v1/payment-requests/:publicId/bank-apps/link
-```
-
-### Request Body
-
-| Tham số   | Kiểu   | Bắt buộc | Mô tả                                       |
-| --------- | ------ | -------- | ------------------------------------------- |
-| `bankBin` | string | Có       | `bankBin` lấy từ **Danh sách app ngân hàng** |
-
-### Response
-
-```json
-{
-  "data": {
-    "url": "<link mở app ngân hàng>"
-  },
-  "statusCode": 201
-}
-```
-
-Sau khi khách thao tác xong trong app ngân hàng, khách được đưa về trang thanh toán. Mở link **không** xác nhận đã thanh toán: dùng webhook `transaction.in` (hoặc trạng thái payment request) để biết kết quả cuối cùng.
-
-Lỗi: `400` khi `bankBin` không có trong danh sách hoặc payment request không còn `ACTIVE`; `404` khi payment request không tồn tại hoặc là request sandbox.
-
----
-
-## Hủy Payment Link
-
-Hủy một payment request đang hoạt động.
+Chỉ hủy được yêu cầu đang `ACTIVE`. Sau khi hủy, trạng thái là `CANCELLED`.
 
 ```bash
 DELETE /v1/client/payment-requests/:publicId
 ```
 
-### Response
+## Ảnh QR
+
+Trả về ảnh PNG mã QR chuyển khoản. Không cần khóa API, có thể dùng trực tiếp trong thẻ `<img>`. Đây chính là URL trong trường `qrUrl`.
+
+```bash
+GET /v1/payment-requests/:publicId/qr-image
+```
+
+## Danh sách app ngân hàng
+
+Dùng khi bạn tự làm trang thanh toán trên di động và muốn có nút mở app ngân hàng với thông tin chuyển khoản điền sẵn. Không cần khóa API. Trang thanh toán của ApiPay đã có sẵn các nút này.
+
+```bash
+GET /v1/payment-requests/:publicId/bank-apps
+```
 
 ```json
 {
-  "data": {
-    "status": true,
-    "message": "Payment request cancelled"
-  },
-  "statusCode": 200,
-  "timestamp": "2026-08-12T14:27:45.000Z"
+  "data": [
+    {"bankBin": "970422", "bankCode": "MB", "name": "MB Bank"},
+    {"bankBin": "970416", "bankCode": "ACB", "name": "ACB"}
+  ],
+  "statusCode": 200
 }
 ```
 
-### Lưu ý
+Danh sách rỗng khi yêu cầu thanh toán không còn `ACTIVE`.
 
-- Chỉ có thể hủy payment request có status là `ACTIVE`
-- Sau khi hủy, status sẽ chuyển thành `CANCELLED`
+### Tạo link mở app ngân hàng
 
----
+```bash
+POST /v1/payment-requests/:publicId/bank-apps/link
+```
+
+| Tham số   | Kiểu   | Bắt buộc | Mô tả                                  |
+| --------- | ------ | -------- | -------------------------------------- |
+| `bankBin` | string | Có       | `bankBin` từ danh sách app ngân hàng    |
+
+```json
+{
+  "data": {"url": "<link mở app ngân hàng>"},
+  "statusCode": 201
+}
+```
+
+Mở `url` trên điện thoại của khách, ví dụ `window.location.assign(url)`. Việc mở app không có nghĩa là khách đã thanh toán; dùng webhook để xác nhận.
 
 ## Giả lập thanh toán sandbox
 
-Đánh dấu payment request sandbox là đã thanh toán. Không cần auth; `{publicId}` phải bắt đầu bằng `test_pr_`. Không có request body.
-
-```bash
-POST /v1/payment-requests/:publicId/pay
-```
+Đánh dấu một yêu cầu thanh toán sandbox (`test_pr_*`) là đã thanh toán, để thử webhook. Redirect trong sandbox không có chữ ký. Không cần khóa API, không có body.
 
 ```bash
 curl -X POST https://app.apipay.vn/v1/payment-requests/test_pr_abc123/pay
 ```
 
-Public ID live (ví dụ `APIPAYJSC...`) trả 400. Xem [Sandbox & Live Test](/vi/sandbox).
+Xem [Sandbox & Live Test](/vi/sandbox).
 
----
+## Xác minh redirect
 
-## Xác minh signed redirect URL
-
-Khi tạo payment request có `redirectUrl`, sau khi thanh toán xong, khách sẽ được chuyển về URL của bạn kèm payload đã ký.
-
-### Định dạng redirect
-
-Sau khi thanh toán xong, khách được chuyển đến:
+Nếu bạn gửi `redirectUrl`, khách thanh toán xong được chuyển về:
 
 ```
-https://yoursite.com/payment/result?data=<base64>&signature=<hmac>
+https://your-domain.com/payment/result?data=<base64url>&signature=<hmac>
 ```
 
-### Cấu trúc payload
-
-Tham số `data` chứa JSON được mã hóa base64:
+`data` là JSON mã hóa base64url:
 
 ```json
 {
   "status": "success",
-  "transactionId": "txn_abc123",
+  "transactionId": "550e8400-e29b-41d4-a716-446655440000",
   "amount": "100000",
   "content": "ORDER-12345",
-  "timestamp": 1700000000
+  "timestamp": 1755000000000
 }
 ```
 
-Các giá trị `status` có thể: `success`, `cancel`, `expired`
+`signature` là HMAC-SHA256 (hex) của chuỗi JSON đã giải mã, ký bằng `redirectSecret` của chính yêu cầu thanh toán đó (mỗi yêu cầu một khóa riêng). `timestamp` tính bằng mili giây.
 
-### Ví dụ xác minh
+Khi khách hủy hoặc link hết hạn, URL chỉ có `?status=cancel` hoặc `?status=expired`, không có chữ ký. Coi đó là chưa thanh toán.
+
+Redirect chỉ để hiển thị kết quả cho khách. Hãy xác nhận đơn hàng bằng webhook.
 
 <CodeTabs>
 ```javascript
-// Node.js example
-const crypto = require('crypto');
+const crypto = require("crypto");
 
-function verifyRedirectPayload(query, redirectSecret) {
-// Giải mã payload
-const payloadJson = Buffer.from(query.data, 'base64url').toString('utf-8');
-const payload = JSON.parse(payloadJson);
+// redirectSecret: khóa đã lưu cùng đơn hàng khi tạo yêu cầu thanh toán
+function verifyRedirect({data, signature}, redirectSecret) {
+  const json = Buffer.from(String(data), "base64url").toString("utf8");
+  const expected = Buffer.from(crypto.createHmac("sha256", redirectSecret).update(json).digest("hex"), "hex");
+  const received = Buffer.from(String(signature || ""), "hex");
 
-// Tính signature mong đợi
-const expectedSignature = crypto.createHmac('sha256', redirectSecret).update(payloadJson).digest('hex');
-
-// So sánh hex digest kèm kiểm tra độ dài (timingSafeEqual ném lỗi khi lệch độ dài).
-const expected = Buffer.from(expectedSignature, 'hex');
-const received = Buffer.from(String(query.signature || ''), 'hex');
-const isValid = received.length === expected.length && crypto.timingSafeEqual(received, expected);
-
-if (!isValid) {
-throw new Error('Invalid signature');
+  if (received.length !== expected.length || !crypto.timingSafeEqual(received, expected)) {
+    throw new Error("Invalid signature");
+  }
+  return JSON.parse(json);
 }
 
-return payload;
-}
+app.get("/payment/result", async (req, res) => {
+  if (!req.query.data) return res.send("Chưa thanh toán");
 
-// Express route handler
-app.get('/payment/result', (req, res) => {
-const {data, signature} = req.query;
-const redirectSecret = 'a1b2c3d4e5f6...'; // Từ payment request response
-
-try {
-const payload = verifyRedirectPayload({data, signature}, redirectSecret);
-console.log('Payment status:', payload.status);
-console.log('Transaction ID:', payload.transactionId);
-console.log('Amount:', payload.amount);
-
-    if (payload.status === 'success') {
-      // Xử lý thanh toán
-      res.send('Thanh toán thành công!');
-    }
-
-} catch (error) {
-res.status(400).send('Invalid redirect');
-}
+  try {
+    const json = Buffer.from(String(req.query.data), "base64url").toString("utf8");
+    const order = await findOrderByContent(JSON.parse(json).content); // hàm của bạn
+    verifyRedirect(req.query, order.redirectSecret);
+    res.send("Thanh toán thành công");
+  } catch {
+    res.status(400).send("Invalid redirect");
+  }
 });
-
 ```
 
 ```python
-import hmac
-import hashlib
 import base64
+import hashlib
+import hmac
 import json
 
-def verify_redirect_payload(query: dict, redirect_secret: str) -> dict:
-    # Decode the base64url-encoded payload
-    # Add padding if needed for standard base64 decoding
-    data = query['data']
-    padding = 4 - len(data) % 4
-    if padding != 4:
-        data += '=' * padding
-    payload_json = base64.urlsafe_b64decode(data).decode('utf-8')
-    payload = json.loads(payload_json)
 
-    # Calculate expected signature
-    expected_signature = hmac.new(
-        redirect_secret.encode(),
-        payload_json.encode(),
-        hashlib.sha256
-    ).hexdigest()
+def verify_redirect(data: str, signature: str, redirect_secret: str) -> dict:
+    padded = data + "=" * (-len(data) % 4)
+    payload_json = base64.urlsafe_b64decode(padded).decode("utf-8")
+    expected = hmac.new(redirect_secret.encode(), payload_json.encode(), hashlib.sha256).hexdigest()
 
-    # Use timing-safe comparison to prevent timing attacks
-    if not hmac.compare_digest(query['signature'], expected_signature):
-        raise ValueError('Invalid signature')
-
-    return payload
-
-# FastAPI route handler
-@app.get('/payment/result')
-def handle_redirect(data: str, signature: str):
-    redirect_secret = 'a1b2c3d4e5f6...'  # From payment request response
-
-    try:
-        payload = verify_redirect_payload({'data': data, 'signature': signature}, redirect_secret)
-        print(f"Payment status: {payload['status']}")
-        print(f"Transaction ID: {payload['transactionId']}")
-        print(f"Amount: {payload['amount']}")
-
-        if payload['status'] == 'success':
-            # Process the payment
-            return {'message': 'Payment successful'}
-    except ValueError:
-        from fastapi import HTTPException
-        raise HTTPException(status_code=400, detail='Invalid redirect')
+    if not hmac.compare_digest(expected, signature or ""):
+        raise ValueError("Invalid signature")
+    return json.loads(payload_json)
 ```
 
 ```php
 <?php
 
-use Illuminate\Http\Request;
-
-function verifyRedirectPayload(array $query, string $redirectSecret): array
+function verifyRedirect(string $data, string $signature, string $redirectSecret): array
 {
-    // Decode the base64url-encoded payload
-    $data = strtr($query['data'], '-_', '+/');
-    $payloadJson = base64_decode($data);
-    $payload = json_decode($payloadJson, true);
+  $json = base64_decode(strtr($data, '-_', '+/'));
+  $expected = hash_hmac('sha256', $json, $redirectSecret);
 
-    // Calculate expected signature
-    $expectedSignature = hash_hmac('sha256', $payloadJson, $redirectSecret);
-
-    // Use timing-safe comparison to prevent timing attacks
-    if (!hash_equals($query['signature'], $expectedSignature)) {
-        throw new \RuntimeException('Invalid signature');
-    }
-
-    return $payload;
+  if (!hash_equals($expected, $signature)) {
+    throw new RuntimeException('Invalid signature');
+  }
+  return json_decode($json, true);
 }
-
-// Laravel route handler
-Route::get('/payment/result', function (Request $request) {
-    $redirectSecret = 'a1b2c3d4e5f6...'; // From payment request response
-
-    try {
-        $payload = verifyRedirectPayload($request->query(), $redirectSecret);
-        \Log::info('Payment status: ' . $payload['status']);
-        \Log::info('Transaction ID: ' . $payload['transactionId']);
-        \Log::info('Amount: ' . $payload['amount']);
-
-        if ($payload['status'] === 'success') {
-            // Process the payment
-            return response('Payment successful!');
-        }
-    } catch (\RuntimeException $e) {
-        abort(400, 'Invalid redirect');
-    }
-});
 ```
-
 </CodeTabs>
-
-### Trường Response
-
-Khi tạo payment request, bạn nhận được:
-
-| Trường                 | Mô tả                                                                           |
-| ---------------------- | ------------------------------------------------------------------------------- |
-| `redirectSecret`       | Khóa bí mật để xác minh signed redirect payload. **Giữ bí mật!**                |
-| `completedRedirectUrl` | Full signed URL sau khi thanh toán hoàn tất. Dùng webhook làm nguồn xác thực và xử lý idempotent theo `transactionId` — URL đã ký của giao dịch đã hoàn tất có thể bị phát lại. |
-
-### Lưu ý bảo mật
-
-- **Luôn kiểm tra signature** trước khi xử lý thanh toán
-- Chỉ coi signed redirect là tiện ích UX; xác nhận thanh toán bằng webhook và xử lý idempotent theo `transactionId` (URL đã ký của giao dịch đã hoàn tất có thể bị phát lại)
-- Dùng `timingSafeEqual` để chống timing attacks
-- `redirectSecret` là duy nhất cho mỗi payment request
-- Không để lộ `redirectSecret` trong client-side code
-- Kiểm tra `status === 'success'` trước khi xử lý đơn hàng

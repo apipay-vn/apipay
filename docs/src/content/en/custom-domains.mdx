@@ -5,165 +5,72 @@ description: Use your own domain for the ApiPay payment page
 
 # Custom Domains
 
-Use your own domain (e.g., `pay.yourdomain.com`) instead of ApiPay's default domain for your payment pages. This gives your customers a branded experience while you retain full control over your domain.
+Use your own domain (for example `pay.yourdomain.com`) for the payment page instead of ApiPay's default domain, so customers see your brand.
 
 <iframe width="100%" height="315" src="https://www.youtube.com/embed/VJzZ42J3OZY?si=LvdhsL7r_Gzf6UKG" title="Custom Domains Setup Tutorial" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ---
 
-## Overview
+## What you need
 
-When you create a payment request, ApiPay generates a payment page URL. By default, it uses ApiPay's domain. With Custom Domains, you can replace this with your own subdomain, providing a seamless and professional experience for your customers.
-
-**Key benefits:**
-- Branded payment URLs (`pay.yourdomain.com`) instead of default ApiPay URLs
-- Customers see your domain, increasing trust
-- Works alongside existing payment request features
+- A domain you control. A subdomain such as `pay.yourdomain.com` or `checkout.yourdomain.com` is recommended.
+- Access to edit DNS at your domain provider (for example Cloudflare, GoDaddy, Namecheap).
+- At least one connected bank.
 
 ---
 
-## Prerequisites
+## Steps
 
-Before setting up a custom domain, make sure you have:
+### Step 1: Add the domain
 
-- A subdomain you control (e.g., `pay.yourdomain.com`, `checkout.yourdomain.com`)
-- Access to your DNS provider (e.g., GoDaddy, Cloudflare, Namecheap)
-- An ApiPay account with at least one connected bank account
+1. Sign in at [my.apipay.vn](https://my.apipay.vn) and open **Integrations → Custom Domains**.
+2. Enter your domain and click **Add**.
 
----
+The domain appears in the list as **Pending**.
 
-## Step-by-Step Setup
+### Step 2: Add DNS records
 
-### Step 1: Add your domain in the Dashboard
+Add these two records at your domain provider. The example uses `pay.yourdomain.com`; for a root domain, enter `@` as the Name / Host.
 
-1. Log in to the [ApiPay Dashboard](https://dashboard.apipay.vn)
-2. Navigate to **Integrations → Custom Domains**
-3. Enter your subdomain (e.g., `pay.yourdomain.com`) in the input field
-4. Click **Add**
+| Type | Name / Host | Value |
+|------|-------------|-------|
+| TXT | `pay` | `apipay-verification=<TOKEN>` |
+| A | `pay` | ApiPay server IP address |
 
-The system generates a unique verification token and saves your domain with a **Pending** status.
+- **Token**: in the domain list, open the **...** menu and choose **Copy Token**. Paste all of it, including `apipay-verification=`.
+- **IP address**: copy it from the DNS instructions card on the Custom Domains page.
 
-### Step 2: Configure DNS Records
+### Step 3: Verify
 
-You need to add two DNS records with your domain provider.
+DNS usually updates within minutes, sometimes longer (up to 48 hours).
 
-#### DNS Record 1: TXT Record (Domain Verification)
+- To check now: open the domain's **...** menu and choose **Verify**.
+- Or wait: ApiPay checks periodically and emails you once the domain is verified.
 
-This proves to ApiPay that you own the domain.
+When verification succeeds, the domain shows **Verified**.
 
-| Field | Value |
-|-------|-------|
-| Type | TXT |
-| Name / Host | `pay` (for `pay.yourdomain.com`) or `@` (for apex domain `yourdomain.com`) |
-| Value | `apipay-verification=<TOKEN>` |
+A domain not verified within 24 hours becomes inactive and you get an email with instructions. Delete it and add it again from step 1.
 
-To get the token:
-1. Go to **Integrations → Custom Domains** in the Dashboard
-2. Find your domain in the table
-3. Click the **...** menu on the right side of the row
-4. Click **Copy Token**
+### Step 4: Use your domain
 
-Paste the full token (including `apipay-verification=`) as the TXT record value.
+When you create a payment request, open **Advanced Settings** and pick your domain. The payment link will use it.
 
-#### DNS Record 2: A Record (Traffic Routing)
-
-This routes traffic from your domain to ApiPay's server.
-
-| Field | Value |
-|-------|-------|
-| Type | A |
-| Name / Host | `pay` (for subdomain) or `@` (for apex domain) |
-| Value | `<SERVER_IP>` |
-
-Click **Copy IP** on the DNS instructions card in the Dashboard to copy the server IP.
-
-> **Important:** For apex domains (e.g., `yourdomain.com`), adding an A record may interfere with your email service (MX records). If you use this domain for email, we recommend using a subdomain instead (e.g., `pay.yourdomain.com`).
-
-### Step 3: Wait for DNS Propagation
-
-DNS changes typically take effect within a few minutes but can take up to 48 hours in rare cases. Most DNS providers propagate within 5–15 minutes.
-
-### Step 4: Verify your domain
-
-You have two options:
-
-**Option A — Manual Verification:**
-
-1. Go to **Integrations → Custom Domains** in the Dashboard
-2. Find your domain in the table (status should be **Pending**)
-3. Click the **...** menu on the right side of the row
-4. Click **Verify**
-
-ApiPay immediately checks your TXT DNS record. If the token is found, the domain status changes to **Verified**.
-
-**Option B — Automatic Verification:**
-
-ApiPay automatically checks TXT records for unverified domains every 15 minutes. If the record is found, the domain is verified automatically and you'll receive a success email.
-
-### Step 5: Use your custom domain
-
-Once your domain shows a green **Verified** badge in the Dashboard:
-
-#### In the Dashboard
-
-1. Create a new payment request (or edit an existing one)
-2. In the payment request form, select your custom domain from the **Custom Domain** dropdown
-3. When you share the payment link with your customer, it will use your domain instead of ApiPay's default domain
-
-#### Via API
-
-Pass `customDomainId` when calling `POST /v1/client/payment-requests`. The generated `payUrl` in the response will use your custom domain.
-
-You can copy your **Domain ID** directly from the table or from the **...** actions menu on **Integrations → Custom Domains** in the Dashboard.
-
-```bash
-curl -X POST https://app.apipay.vn/v1/client/payment-requests \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer <Auth>" \
-  -d '{
-    "bankPublicId": "bank_abc123",
-    "amount": "500000",
-    "content": "ORDER-001",
-    "customDomainId": "cml8x1abc0000domain0000000"
-  }'
-```
-
-See [Payment Requests API](/en/api/payment-requests) for full endpoint specifications.
+Using the API? Send `customDomainId` (copy it with **Copy Domain ID** in the **...** menu). See the [Payment Requests API](/en/api/payment-requests).
 
 ---
 
-## DNS Propagation & Troubleshooting
+## Troubleshooting
 
-| Issue | Solution |
-|-------|----------|
-| Verification fails right after adding TXT record | Wait 5–15 minutes for DNS to propagate, then try again |
-| Manual Verify button isn't available | Make sure the domain status is still **Pending** and a token exists |
-| Auto-verify hasn't triggered after 15 minutes | Use the **Verify** button in the Dashboard for immediate verification |
-| Domain status changed to inactive | The domain was unverified for more than 24 hours. Delete it and re-add it following the steps above |
-| Apex domain breaks email delivery | Switch to a subdomain (e.g., `pay.yourdomain.com`) instead of using the apex domain |
-| TXT record not found | Double-check the record name and value. The token must match exactly, including `apipay-verification=` |
+| Problem | What to do |
+|---------|-----------|
+| Verification fails right after adding records | Wait a few minutes for DNS to update, then click **Verify** again. |
+| TXT record not found | Double-check the record name and value. The token must match exactly, including `apipay-verification=`. |
+| No **Verify** option | It only appears while the domain is **Pending**. |
+| Domain became inactive | It was not verified within 24 hours. Delete it and add it again. |
 
 ---
 
-## Auto-Expiration
+## Next steps
 
-Domains that remain unverified for more than **24 hours** are automatically marked as **inactive** by ApiPay. You will receive an email notification with instructions.
-
-To re-activate:
-1. Delete the inactive domain from the Dashboard
-2. Re-add it following the [Step-by-Step Setup](#step-by-step-setup) process above
-
----
-
-## Video Tutorial
-
-Watch the complete step-by-step setup guide:
-
-<iframe width="100%" height="315" src="https://www.youtube.com/embed/VJzZ42J3OZY?si=LvdhsL7r_Gzf6UKG" title="Custom Domains Setup Tutorial" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
----
-
-## Next Steps
-
-- [Create Your First Payment Request](/en/onboarding) — Start accepting payments with your custom domain
-- [Webhook Setup](/en/api/webhooks) — Get real-time payment notifications
+- [Create your first payment request](/en/onboarding)
+- [Set up webhooks](/en/api/webhooks)

@@ -1,374 +1,281 @@
 ---
 title: Bank Management
-description: API for connecting and managing client bank accounts
+description: API for connecting and managing bank accounts
 ---
 
 # Bank Management
 
-Use the bank management API to discover supported banks, connect accounts, complete verification, and manage linked accounts.
+Connect a bank account and get the `publicId` you use to create payment requests. Every endpoint lives under `/v1/client/banks` and needs [authentication](/en/api/authentication).
 
-Base route:
+Every response is wrapped in `{"data": ..., "statusCode": 200, "timestamp": "..."}`; lists are in `data.message`, pagination in `data.pagination`.
 
-```bash
-/v1/client/banks
-```
-
-## Supported banks
-
-| Bank       | Short name | BIN      | Account types                          |
-| ---------- | ---------- | -------- | -------------------------------------- |
-| ACB        | `ACB`      | `970416` | personal, business, household business |
-| MB Bank    | `MBB`      | `970422` | personal, business, household business |
-| BIDV       | `BIDV`     | `970418` | personal, business, household business |
-| OCB        | `OCB`      | `970448` | personal, business, household business |
-| VietinBank | `ICB`      | `970415` | personal, business, household business |
-| VIB        | `VIB`      | `970441` | personal, business, household business |
-| Sacombank  | `STB`      | `970403` | personal, household business           |
-| VPBank     | `VPB`      | `970432` | personal, business, household business |
-| PGBank     | `PGB`      | `970430` | personal, business, household business |
-| Shinhan    | `SHBVN`    | `970424` | personal, business                     |
-| Co-opBank  | `COOPBANK` | `970446` | personal, business, household business |
-| Vietcombank| `VCB`      | `970436` | personal, business, household business |
-| MSB        | `MSB`      | `970426` | personal, business, household business |
-| TPBank     | `TPB`      | `970423` | personal, business, household business |
-
-Use `GET /v1/client/banks/available` to retrieve the live bank catalog before showing a bank picker.
-
-> **Virtual accounts:** Vietcombank Personal accounts receive a virtual account (VA); Vietcombank Business and Household Business accounts use the original account number. The live catalog exposes `generatesVa` on each entry in `accountTypes` so clients can show the right VA notice per account type.
-
-## 1. List available banks
+## List supported banks
 
 ```bash
 GET /v1/client/banks/available
 ```
 
-### Response
+Returns the banks that accept new connections, with their account types and the details each bank needs.
 
 ```json
 {
-  "status": true,
-  "message": [
-    {
-      "bankCode": "MBB",
-      "bankName": "MB Bank",
-      "bankBin": "970422",
-      "shortName": "MBB",
-      "logoUrl": "https://example.com/mbbank.png"
-    }
-  ]
+  "data": {
+    "status": true,
+    "message": [
+      {
+        "bankCode": "MBB",
+        "bankName": "Ngân hàng TMCP Quân đội",
+        "bankBin": "970422",
+        "shortName": "MB Bank",
+        "logoUrl": "https://...",
+        "accountTypes": [
+          {"type": "personal-account", "manualActivation": false, "generatesVa": true},
+          {"type": "business-account", "manualActivation": false, "generatesVa": true}
+        ],
+        "requiresIdentity": true,
+        "noTransferContent": false,
+        "availability": "available"
+      }
+    ]
+  },
+  "statusCode": 200,
+  "timestamp": "2026-08-12T14:27:45.000Z"
 }
 ```
 
-## 2. Connect a bank account
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `bankBin` | string | Bank BIN, used when connecting an account |
+| `accountTypes[].type` | string | An account type the bank supports |
+| `accountTypes[].manualActivation` | boolean | `true` if ApiPay activates this account type manually |
+| `accountTypes[].generatesVa` | boolean | `true` if ApiPay issues a virtual account (VA) instead of using the original account number |
+| `requiresIdentity` | boolean | `true` if `identity` is required when connecting |
+| `noTransferContent` | boolean | `true` if transactions from this bank arrive without transfer content |
+
+## Connect a bank account
 
 ```bash
 POST /v1/client/banks
 ```
 
-### Request body
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `bankBin` | string | Yes | BIN from the supported banks list |
+| `bankName` | string | Yes | Bank display name |
+| `accountType` | string | Yes | `personal-account`, `business-account` or `business-household-account` |
+| `accountNumber` | string | Yes | Bank account number |
+| `accountName` | string | Yes | Account holder name, uppercase without diacritics |
+| `mobile` | string | Yes | Phone number registered with the bank |
+| `identity` | string | Per bank | Citizen ID or tax code. Required when `requiresIdentity` is `true` |
+| `acbUserId` | string | Per bank | ACB OneBiz username, required for ACB business and household business accounts |
+| `nickname` | string | No | Label shown only in your dashboard (max 50 characters) |
+
+```bash
+curl -X POST https://app.apipay.vn/v1/client/banks \
+  -H "Authorization: Bearer <Auth>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "bankBin": "970422",
+    "bankName": "MB Bank",
+    "accountType": "personal-account",
+    "accountNumber": "0123456789",
+    "accountName": "NGUYEN VAN A",
+    "mobile": "0901234567",
+    "identity": "001234567890",
+    "nickname": "Shop online"
+  }'
+```
 
 ```json
 {
-  "bankBin": "970422",
-  "bankName": "MB Bank",
-  "accountType": "personal-account",
-  "accountNumber": "24550721",
-  "accountName": "PHAM THANH DANH",
-  "mobile": "0858838502",
-  "identity": "012345678901",
-  "nickname": "Shop online"
+  "data": {
+    "status": true,
+    "OTP": 1,
+    "message": "Vui lòng nhập mã OTP để hoàn tất liên kết tài khoản ngân hàng",
+    "bank": {
+      "publicId": "bnk_abc123",
+      "vaNumber": null,
+      "status": "PENDING"
+    }
+  },
+  "statusCode": 201,
+  "timestamp": "2026-08-12T14:27:45.000Z"
 }
 ```
 
-### Fields
+What to do next depends on the response:
 
-| Field           | Type   | Required    | Description                                                              |
-| --------------- | ------ | ----------- | ------------------------------------------------------------------------ |
-| `bankBin`       | string | Yes         | BIN returned by the available banks endpoint                             |
-| `bankName`      | string | Yes         | Bank display name                                                        |
-| `accountType`   | string | Yes         | `personal-account`, `business-account`, or `business-household-account`  |
-| `accountNumber` | string | Yes         | Bank account number                                                      |
-| `accountName`   | string | Yes         | Account holder name in uppercase without accents                         |
-| `mobile`        | string | Yes         | Phone number registered with the bank                                    |
-| `identity`      | string | Yes         | Citizen ID for personal accounts and VPBank household accounts, or tax code for other business/household types |
-| `acbUserId`     | string | Conditional | ACB OneBiz username for ACB business and household business accounts     |
-| `nickname`      | string | No          | Optional memo name shown only in your dashboard (max 50 characters)      |
+| Response | Meaning |
+| -------- | ------- |
+| `OTP: 1` | The bank sent an OTP. Call [Confirm OTP](#confirm-otp). |
+| `OTP: 0`, `bank.status: "ACTIVE"` | The account is active. |
+| `activationRequested: true` | The account is `PENDING`. ApiPay will contact you to finish activation. |
+| `requiresAuthorize: true` | Open `authorizeLink` and approve the connection in the bank's app. |
 
-Sacombank accepts `personal-account` and `business-household-account`.
-Shinhan accepts `personal-account` and `business-account`.
-
-VietinBank transactions have no transfer content; contact support for more details.
-
-### Response when OTP is required
-
-```json
-{
-  "status": true,
-  "OTP": 1,
-  "type": "openapi",
-  "message": "Vui lòng nhập mã OTP để hoàn tất liên kết tài khoản ngân hàng",
-  "bank": {
-    "publicId": "bnk_abc123",
-    "vaNumber": null,
-    "status": "PENDING"
-  }
-}
-```
-
-Submit the verification code to the confirm OTP endpoint.
-
-### Response when the account is active
-
-```json
-{
-  "status": true,
-  "OTP": 0,
-  "type": "openapi",
-  "message": "Liên kết tài khoản ngân hàng thành công",
-  "bank": {
-    "publicId": "bnk_abc123",
-    "vaNumber": "DANH001",
-    "status": "ACTIVE"
-  }
-}
-```
-
-### Response when manual activation is required
-
-```json
-{
-  "status": true,
-  "activationRequested": true,
-  "OTP": 0,
-  "type": "openapi",
-  "message": "Tài khoản đã được kết nối và đang chờ xác minh. Quá trình kích hoạt có thể mất đến 24 giờ.",
-  "bank": {
-    "publicId": "bnk_abc123",
-    "vaNumber": null,
-    "status": "PENDING"
-  }
-}
-```
-
-Manual activation applies to:
-
-- OCB business accounts
-- VPBank, BIDV, VietinBank, and Shinhan Bank business accounts
-- Vietcombank business and household business accounts
-- Every MSB account type (personal, business, and household business)
-
-ApiPay contacts the account owner to complete activation.
-
-TPBank uses in-app authorization instead of manual activation. Its virtual account appears as a sub-account of the original account.
-
-## 3. Confirm OTP
+## Confirm OTP
 
 ```bash
 POST /v1/client/banks/confirm-otp
 ```
 
-### Request body
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `bankBin` | string | Yes | BIN used when connecting |
+| `accountNumber` | string | Yes | Account number used when connecting |
+| `otpNumber` | string | Yes | OTP sent by the bank |
+
+```bash
+curl -X POST https://app.apipay.vn/v1/client/banks/confirm-otp \
+  -H "Authorization: Bearer <Auth>" \
+  -H "Content-Type: application/json" \
+  -d '{"bankBin": "970422", "accountNumber": "0123456789", "otpNumber": "123456"}'
+```
 
 ```json
 {
-  "bankBin": "970422",
-  "accountNumber": "24550721",
-  "otpNumber": "123456"
+  "data": {
+    "status": true,
+    "message": "Xác nhận ngân hàng thành công"
+  },
+  "statusCode": 201,
+  "timestamp": "2026-08-12T14:27:45.000Z"
 }
 ```
 
-### Response
-
-```json
-{
-  "status": true,
-  "message": "Xác nhận ngân hàng thành công"
-}
-```
-
-## 4. List linked bank accounts
+## List connected accounts
 
 ```bash
 GET /v1/client/banks
 ```
 
-### Response
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `page` | number | No | Page, default `1` |
+| `limit` | number | No | Items per page, default `20`, max `50` |
+| `search` | string | No | Match account number, holder name, nickname, VA number or bank |
+| `status` | string | No | `ACTIVE`, `INACTIVE` or `PENDING` |
+
+```bash
+curl "https://app.apipay.vn/v1/client/banks?status=ACTIVE" \
+  -H "Authorization: Bearer <Auth>"
+```
 
 ```json
 {
-  "status": true,
-  "message": [
-    {
-      "id": 12,
-      "publicId": "bnk_abc123",
-      "bankName": "MB Bank",
-      "bankShortName": "MBB",
-      "accountNumber": "24550721",
-      "accountName": "PHAM THANH DANH",
-      "nickname": "Shop online",
-      "vaNumber": "DANH001",
-      "status": "ACTIVE",
-      "manualActivationPending": false,
-      "createdAt": "2026-04-25T10:00:00.000Z"
-    }
-  ]
+  "data": {
+    "status": true,
+    "message": [
+      {
+        "publicId": "bnk_abc123",
+        "bankName": "MB Bank",
+        "bankShortName": "MB",
+        "accountNumber": "0123456789",
+        "accountName": "NGUYEN VAN A",
+        "nickname": "Shop online",
+        "vaNumber": "VA001",
+        "status": "ACTIVE",
+        "manualActivationPending": false,
+        "createdAt": "2026-04-25T10:00:00.000Z"
+      }
+    ],
+    "pagination": {"page": 1, "limit": 20, "total": 1, "totalPages": 1}
+  },
+  "statusCode": 200,
+  "timestamp": "2026-08-12T14:27:45.000Z"
 }
 ```
 
-### Account statuses
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `publicId` | string | Account ID, pass it as `bankPublicId` when creating a payment request |
+| `vaNumber` | string \| null | Virtual account number, if any |
+| `status` | string | `ACTIVE` in use, `INACTIVE` turned off, `PENDING` waiting for OTP or activation |
+| `manualActivationPending` | boolean | `true` while ApiPay is processing a manual activation |
 
-- `ACTIVE`: enabled and ready to use
-- `INACTIVE`: disabled
-- `PENDING`: waiting for OTP or manual activation
-
-`manualActivationPending` is `true` while ApiPay is processing a manual activation request.
-
-## 5. Get a bank account
+## Get an account
 
 ```bash
 GET /v1/client/banks/:publicId
 ```
 
-### Success response
+`data.message` has the same shape as one list item. When the account is not found the API still returns `200`:
 
 ```json
 {
-  "status": true,
-  "message": {
-    "publicId": "bnk_abc123",
-    "bankName": "MB Bank",
-    "bankShortName": "MBB",
-    "accountNumber": "24550721",
-    "accountName": "PHAM THANH DANH",
-    "nickname": "Shop online",
-    "vaNumber": "DANH001",
-    "status": "ACTIVE",
-    "manualActivationPending": false
-  }
+  "data": {
+    "status": false,
+    "message": null
+  },
+  "statusCode": 200,
+  "timestamp": "2026-08-12T14:27:45.000Z"
 }
 ```
 
-### Not found response
-
-```json
-{
-  "status": false,
-  "message": null
-}
-```
-
-## 6. Get bank summary
+## Account summary
 
 ```bash
 GET /v1/client/banks/summary
 ```
 
-### Response
-
 ```json
 {
-  "total": 3,
-  "active": 2,
-  "inactive": 1,
-  "pending": 0
+  "data": {
+    "total": 3,
+    "active": 2,
+    "inactive": 1,
+    "pending": 0
+  },
+  "statusCode": 200,
+  "timestamp": "2026-08-12T14:27:45.000Z"
 }
 ```
 
-## 7. Toggle bank status
+## Turn an account on or off
 
 ```bash
 PATCH /v1/client/banks/:publicId/status
 ```
 
-The endpoint switches the linked account between `ACTIVE` and `INACTIVE`.
-
-### Response
+Switches the account between `ACTIVE` and `INACTIVE`. Not available for `PENDING` accounts. If you have turned on a passkey or authenticator app for your ApiPay account, the API returns `403`; turn the bank on or off in the dashboard instead.
 
 ```json
 {
-  "status": true,
-  "message": "Cập nhật trạng thái ngân hàng thành công",
-  "newStatus": 1
+  "data": {
+    "status": true,
+    "message": "Cập nhật trạng thái ngân hàng thành công"
+  },
+  "statusCode": 200,
+  "timestamp": "2026-08-12T14:27:45.000Z"
 }
 ```
 
-`newStatus` is `1` for active and `0` for inactive. Accounts waiting for activation cannot be toggled.
-
-## 8. Update a bank nickname
+## Rename an account
 
 ```bash
 PATCH /v1/client/banks/:publicId
 ```
 
-Sets an optional memo name for a linked account so you can tell accounts apart in the dashboard. Send a blank string to clear it. The nickname is shown only in your dashboard and is never sent to customers.
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `nickname` | string | No | Label, max 50 characters. Send an empty string to clear it |
 
-### Request body
+The nickname shows only in your dashboard, never to customers. The response returns the updated account in `data.bank`.
 
-```json
-{
-  "nickname": "Shop online"
-}
-```
-
-### Response
-
-```json
-{
-  "status": true,
-  "message": "Cập nhật tên gợi nhớ thành công",
-  "bank": {
-    "publicId": "bnk_abc123",
-    "bankName": "MB Bank",
-    "bankShortName": "MBB",
-    "accountNumber": "24550721",
-    "accountName": "PHAM THANH DANH",
-    "nickname": "Shop online",
-    "vaNumber": "DANH001",
-    "status": "ACTIVE"
-  }
-}
-```
-
-## 9. Disconnect a bank account
+## Disconnect an account
 
 ```bash
 DELETE /v1/client/banks/:publicId
 ```
 
-The account is disconnected immediately unless the bank requires OTP confirmation.
-
-### Response when OTP is required
+Accounts waiting for activation cannot be disconnected.
 
 ```json
 {
-  "status": true,
-  "OTP": 1,
-  "type": "openapi",
-  "message": "Vui lòng nhập mã OTP để xác nhận xóa ngân hàng"
-}
-```
-
-Accounts waiting for manual activation cannot be disconnected until ApiPay finishes processing the request.
-
-## 10. Confirm bank disconnection
-
-```bash
-POST /v1/client/banks/:publicId/confirm-delete
-```
-
-### Request body
-
-```json
-{
-  "otp": "123456"
-}
-```
-
-### Response
-
-```json
-{
-  "status": true,
-  "message": "Xóa tài khoản ngân hàng thành công"
+  "data": {
+    "status": true,
+    "message": "Xóa tài khoản ngân hàng thành công"
+  },
+  "statusCode": 200,
+  "timestamp": "2026-08-12T14:27:45.000Z"
 }
 ```

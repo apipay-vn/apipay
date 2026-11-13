@@ -5,116 +5,67 @@ description: Sign in to ApiPay faster with Face ID, fingerprint, or a device pas
 
 # Passkeys
 
-Passkeys let you sign in to ApiPay without typing a password. You simply confirm with the secure method already available on your device, such as Face ID, fingerprint, Windows Hello, or your screen lock.
+A passkey lets you sign in to ApiPay without a password. You just confirm with Face ID, fingerprint, Windows Hello or your screen lock.
 
-This makes sign-in faster and more convenient, while reducing the risk of exposed, forgotten, or reused passwords.
-
-## How passkeys work
-
-When you create a passkey, your device saves a secure sign-in method for your ApiPay account. Each time you sign in, ApiPay asks your device to confirm that it is really you.
-
-You do not need to enter a password, and ApiPay does not ask you to share biometric information. Face ID, fingerprint, or your screen lock is handled directly by your device.
-
-Because a passkey is tied to the real ApiPay website, it is much harder for someone to use it on a fake site. This makes passkeys well suited for accounts that protect payment information, transactions, and business data.
+Your fingerprint or face is checked only on your device; ApiPay never receives it. A passkey is tied to the real ApiPay site, so it cannot be used on a fake website.
 
 ---
 
 ## Create a passkey
 
-Each ApiPay account can currently create **one passkey**.
+1. Sign in at [my.apipay.vn](https://my.apipay.vn).
+2. Open **Settings → Account** and choose the **Credentials** tab.
+3. Under **Passkeys**, click **Add passkey**.
+4. Enter your current password or 2FA code when asked.
+5. Confirm on your device. The passkey is saved automatically.
 
-1. Sign in to [my.apipay.vn](https://my.apipay.vn)
-2. Go to **Settings → Account**
-3. In the **Passkeys** section, select **Add passkey**
-4. Confirm with Face ID, fingerprint, Windows Hello, or your device screen lock
-5. Complete the confirmation, and the passkey will be saved automatically
+The passkey is named after your device and browser, for example "MacBook Pro Chrome Passkey". You can rename it later.
 
-The passkey is usually named after your device and browser, for example: "MacBook Pro Chrome Passkey". You can rename it later to make it easier to recognize.
+Each account has **one passkey**. To switch devices, delete the old passkey and create a new one.
 
-> **Note:** Passkeys require a supported browser and device. If the **Add passkey** button is disabled, please try again with another browser or device.
+> If the **Add passkey** button is greyed out, this browser or device does not support passkeys yet. Try another browser or device.
 
 ---
 
 ## Sign in with a passkey
 
-On the sign-in page:
+1. On the sign-in page, choose **Continue with passkey**.
+2. Confirm on your device.
 
-1. Select **Continue with passkey**
-2. Confirm on your device
-3. After a successful confirmation, you will be signed in without entering a password
-
-You can still sign in with your password, Google, or GitHub as usual. A passkey is an additional sign-in option, not a full replacement for your existing methods.
+You can still sign in with your password, Google or GitHub. Keep at least one of these for when you change or lose your device.
 
 ---
 
-## Manage your passkey
+## Rename or delete a passkey
 
-### Rename
-
-1. Go to **Settings → Account → Passkeys**
-2. Select the rename icon next to your passkey
-3. Enter a new name and select **Save name**
-
-### Delete
-
-1. Go to **Settings → Account → Passkeys**
-2. Select the delete icon next to your passkey
-3. Confirm the deletion
-
-> **Warning:** After deleting your passkey, you will need to sign in with your password or a connected Google/GitHub account. You can create a new passkey after signing in again.
+In **Settings → Account → Credentials**, click the rename or delete icon next to the passkey. ApiPay asks for your current password or 2FA code first.
 
 ---
 
-## Supported devices and browsers
+## Supported devices
 
-Passkeys work on most modern devices and browsers:
-
-| Platform | Browser | Confirmation method |
-| -------- | ------- | ------------------- |
-| macOS | Chrome, Safari, Edge | Touch ID or Apple device confirmation |
+| Platform | Browsers | How you confirm |
+|----------|----------|-----------------|
+| macOS | Chrome, Safari, Edge | Touch ID or your Mac password |
 | Windows | Chrome, Edge | Windows Hello |
 | iOS | Safari, Chrome | Face ID or Touch ID |
 | Android | Chrome | Fingerprint or screen lock |
 
-If your browser does not support passkeys, the **Add passkey** button will be disabled and you will see a notice in Settings.
-
 ---
 
-## Security benefits
+## Frequently asked questions
 
-- **Lower phishing risk**: Passkeys only work with the real ApiPay website, helping reduce the risk of signing in on a fake site.
-- **No password to remember**: You do not need to create, store, or type a password each time you sign in.
-- **Protected by your personal device**: Someone else would need access to your device and pass its security confirmation before they could use your passkey.
-- **Backup sign-in remains available**: If you lose your device, you can sign in with your password or connected Google/GitHub account, then delete the old passkey and create a new one.
+### What if I lose my device?
 
-> **Tip:** Keep at least one backup sign-in method, such as password, Google, or GitHub, so account access is not interrupted when you change or lose a device.
+Sign in with your password, Google or GitHub, delete the old passkey, then create a new one on the device you use now.
 
----
+### Do I still need 2FA with a passkey?
 
-## FAQ
-
-### Can I create multiple passkeys?
-
-Currently, each ApiPay account can create **one passkey**. If you want to move to another device, delete the current passkey and create a new one.
-
-### What happens if I lose my device?
-
-You can still sign in with your password, Google, or GitHub. After signing in, delete the old passkey and create a new one on the device you are using.
-
-### Are passkeys the same as passwords?
-
-No. A passkey is a modern sign-in method that is confirmed directly on your device. You do not type a password, so it is harder to guess, expose, or enter on a fake website.
-
-### Do I still need 2FA when using a passkey?
-
-Passkeys and 2FA protect your account in different ways. ApiPay recommends keeping 2FA enabled, especially if your account still allows password sign-in.
-
-Either method can confirm sensitive actions after your first passkey or 2FA enrollment. If you have never set up either method, you can continue without confirmation; after the first enrollment, this protection remains enabled even if you remove the last method. See [Stores and Staff](/en/stores-staff) for details.
+Keep 2FA on, especially if your account can still sign in with a password. Some sensitive actions ask you to confirm again with a passkey or 2FA.
 
 ---
 
 ## Next steps
 
-- [Dashboard Guide](/en/dashboard) — Learn about dashboard features
-- [Authentication API](/en/api/authentication) — Use API key authentication for integrations
-- [Subscription & Billing](/en/subscription) — Manage plans and billing
+- [Dashboard Guide](/en/dashboard)
+- [API Authentication](/en/api/authentication)

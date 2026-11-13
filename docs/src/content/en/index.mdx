@@ -5,38 +5,42 @@ description: Integrate ApiPay into your system
 
 # Welcome to ApiPay
 
-ApiPay is a payment gateway API that helps you easily create payment links via bank transfer in Vietnam.
+ApiPay lets you accept Vietnamese bank transfers through an API. You create a payment link, the customer scans the QR or transfers, and ApiPay records the transaction and sends a webhook to your system.
 
 ![ApiPay documentation overview](/apipay-banner.jpg)
 
-## Key Features
+## Key features
 
-- **Create payment links** via QR Code or bank transfer details
-- **Automatic confirmation** when payment is received
-- **Free Payment Speaker** - Real-time voice announcements for incoming bank transfers on any device
-- **Webhook notifications** - Receive real-time payment notifications
-- **Multiple banks** - Supports ACB, MB Bank, BIDV, OCB, VietinBank, VIB, Sacombank, VPBank, PGBank, Shinhan Bank, Co-opBank, Vietcombank, MSB, and TPBank
-- **No percentage fees** - Successful transactions count toward your quota; failed transactions are never charged
-- **Free plan** - Start with 60 successful transactions/month, then upgrade to a paid quota from 200 to 500,000 tx/month. Every quota plan supports connecting multiple banks.
+- **Payment links** with a QR code and transfer details
+- **Automatic confirmation** when money arrives
+- **Webhooks** that report payments to your system almost instantly
+- **Free Payment Speaker**: voice alerts for incoming transfers at the counter, on any device
+- **Many banks**: see the [supported banks](/en/connect-banks)
+- **No percentage fees**: only successful transactions count toward your quota
+- **Free plan** to start, upgrade by quota when you need to. See [Pricing](https://apipay.vn/pricing)
 
-## How It Works
+## How it works
 
-1. **Create payment link** via API or Dashboard
-2. **Send link to customer** - Customer scans QR or transfers
-3. **Automatic confirmation** - System detects payment automatically
-4. **Receive webhook & voice alerts** - Your backend receives webhook and counter speaker announces payment immediately
+1. **Create a payment link** with the API or the dashboard.
+2. **Send the link to your customer**: they scan the QR or transfer.
+3. **ApiPay records the transaction** and matches it to the payment request.
+4. **You receive a webhook**, and the counter speaker announces the payment.
 
-## Getting Started
+## Getting started
 
-- **New merchants?** Start with [Onboarding Guide](/en/onboarding) to set up your account and receive your first payment
-- **Already have an account?** Check [Quick Start](/en/quickstart) to start API integration in 5 minutes
+- **New to ApiPay?** Start with the [Onboarding Guide](/en/onboarding) to set up your account and receive your first payment.
+- **Already have an account?** Open the [Quick Start](/en/quickstart) to integrate the API in minutes.
 
-## Documentation Guides
+## Guides
 
-| Guide                                      | Description                             |
-| ------------------------------------------ | --------------------------------------- |
-| [Onboarding Guide](/en/onboarding)         | Complete merchant account setup process |
-| [Payment Speaker](/en/payment-speaker)     | Turn any phone or tablet into a real-time voice alert speaker |
-| [Subscription & Billing](/en/subscription) | Manage plans and billing   |
-| [Bank Accounts](/en/banking)               | Connect and manage bank accounts        |
-| [Commerce](/en/commerce)                   | Products, prices, reusable payment links, and receipts |
+| Guide | Description |
+| ----- | ----------- |
+| [Onboarding Guide](/en/onboarding) | Set up your account from scratch |
+| [Quick Start](/en/quickstart) | Create your first payment request with the API |
+| [Payment Requests](/en/api/payment-requests) | Create and manage payment requests via the API |
+| [Webhooks](/en/api/webhooks) | Receive and verify payment notifications |
+| [Sandbox & Live Test](/en/sandbox) | Test without real money |
+| [Bank Accounts](/en/banking) | Connect and manage bank accounts |
+| [Payment Speaker](/en/payment-speaker) | Turn any phone or tablet into a voice alert speaker |
+| [Subscription & Billing](/en/subscription) | Manage plans and billing |
+| [Commerce](/en/commerce) | Products, prices, reusable payment links and receipts |

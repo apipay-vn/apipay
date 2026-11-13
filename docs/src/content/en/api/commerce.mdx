@@ -1,56 +1,41 @@
 ---
 title: Commerce API
-description: Products, prices, reusable payment links, product images, and receipts
+description: Products, prices, reusable payment links, customers and receipts
 ---
 
 # Commerce API
 
-Commerce API for products and prices. Authenticate like every other `/v1/client/*` endpoint. See [Authentication](/en/api/authentication).
+Create products and prices once, then create payment requests with `priceId` instead of `amount`. Every endpoint needs [authentication](/en/api/authentication). You can try the calls in the [Interactive Reference](/en/api-reference).
 
-After you have a price, create a payment link with `priceId` on [Payment Requests](/en/api/payment-requests). You can try these calls in the [Interactive Reference](/en/api-reference).
-
-<Callout type="info">
-Send `priceId` **or** `amount` when creating a payment — not both. The amount is copied onto the link once. Editing a product or price later does not change links already created.
-</Callout>
+Every response is wrapped in `{"data": ..., "statusCode": 200, "timestamp": "..."}`. For Commerce, the result is in `data.data`; lists also have `data.pagination`.
 
 ## Endpoints
 
-All paths are under `/v1/client/commerce`.
+The paths below sit under `/v1/client/commerce`, except the two image endpoints, which show their full path.
 
 | Method | Path | Description |
 | ------ | ---- | ----------- |
-| `POST` | `/products` | Create a product. Optional `defaultPriceData` creates the first price and makes it the default |
+| `POST` | `/products` | Create a product, optionally with a default price |
 | `GET` | `/products` | List products (`active`, `page`, `limit`) |
-| `GET` | `/products/:id` | Get a product with its prices |
-| `PATCH` | `/products/:id` | Update name, description, image (`imageId`), archive/restore, or default price |
-| `POST` | `/prices` | Create a price. First price on a product with no default becomes the default |
+| `GET` | `/products/:id` | Product with its prices |
+| `PATCH` | `/products/:id` | Update a product |
+| `POST` | `/prices` | Create a price |
 | `GET` | `/prices` | List prices (`productId`, `lookupKey`, `active`, `page`, `limit`) |
-| `GET` | `/prices/:id` | Get a price |
-| `PATCH` | `/prices/:id` | Update `active`, `nickname`, `lookupKey`. Not `unitAmount` |
-| `DELETE` | `/prices/:id` | Permanently delete an unused price. Used prices must be archived instead |
-| `GET` | `/invoices` | List commerce invoices (`search`, `page`, `limit`) |
-| `GET` | `/invoices/:id` | Get commerce invoice details with line items |
-| `GET` | `/invoices/:id/pdf` | Download commerce invoice PDF receipt |
-| `PATCH` | `/invoices/:id` | Update invoice buyer details (`buyerName`, `buyerEmail`, `buyerTaxCode`, `buyerAddress`) |
-| `POST` | `/invoices/send` | Send a VietQR payment request link via email to a customer |
+| `GET` | `/prices/:id` | One price |
+| `PATCH` | `/prices/:id` | Update a price |
+| `DELETE` | `/prices/:id` | Delete a price that was never used |
+| `GET` | `/invoices` | List receipts (`search`, `page`, `limit`) |
+| `GET` | `/invoices/:id` | Receipt details |
+| `GET` | `/invoices/:id/pdf` | Download the receipt PDF |
+| `PATCH` | `/invoices/:id` | Update buyer details |
+| `POST` | `/invoices/send` | Email a payment request |
 | `GET` | `/customers` | List customers (`search`, `page`, `limit`) |
-| `POST` | `/customers` | Create a customer (`name`, `email`, `taxCode`, `address`) |
-| `GET` | `/customers/:id` | Get customer details with linked payments and invoices |
-| `PATCH` | `/customers/:id` | Update customer details |
-| `DELETE` | `/customers/:id` | Delete a customer (only if no linked payments or invoices) |
-
-Public (no auth), used by `pay.apipay.vn`:
-
-| Method | Path | Description |
-| ------ | ---- | ----------- |
-| `GET` | `/v1/commerce/payment-links/:publicId` | Product name, amount, and merchant branding for a reusable payment link |
-| `POST` | `/v1/commerce/payment-links/:publicId/checkout` | Collect buyer details and mint a one-time payment request |
-| `PATCH` | `/v1/payment-requests/:cuid/customer` | Collect buyer details on an existing commerce payment request before they pay |
-| `POST` | `/v1/client/media` | Upload an image (multipart `file` + `kind=commerce_product`). Auth required |
-| `DELETE` | `/v1/client/media/:id` | Delete an image you own. Auth required |
-| `GET` | `/v1/media/:id` | Public image bytes (checkout and dashboard use this URL) |
-
-Products return `imageId` / `imageUrl`. Attach an image with `POST /v1/client/media` then `PATCH /products/:id` with `imageId`. Send `imageId: null` to remove.
+| `POST` | `/customers` | Create a customer |
+| `GET` | `/customers/:id` | Customer details |
+| `PATCH` | `/customers/:id` | Update a customer |
+| `DELETE` | `/customers/:id` | Delete a customer |
+| `POST` | `/v1/client/media` | Upload a product image |
+| `DELETE` | `/v1/client/media/:id` | Delete an image |
 
 ---
 
@@ -60,26 +45,22 @@ Products return `imageId` / `imageUrl`. Attach an image with `POST /v1/client/me
 POST /v1/client/commerce/products
 ```
 
-### Request body
-
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `name` | string | **Yes** | Product name (max 200) |
-| `description` | string | — | Optional HTML description (max 10000). Same tags as support tickets |
-| `defaultPriceData` | object | — | Create the first price and make it the default |
-| `defaultPriceData.unitAmount` | string | **Yes** if `defaultPriceData` is sent | Amount in VND (integer string, 1–300000000) |
-| `defaultPriceData.lookupKey` | string | — | Stable key you keep in your app, e.g. `pro-monthly` |
-| `defaultPriceData.nickname` | string | — | Internal label only |
-
-### Example
+| `name` | string | Yes | Product name (max 200 characters) |
+| `description` | string | No | Basic HTML: `p`, `br`, `strong`, `em`, `u`, `s`, `a`, `ul`, `ol`, `li`, `blockquote`, `code`, `pre` (max 10,000 characters) |
+| `defaultPriceData` | object | No | Creates the first price and makes it the default |
+| `defaultPriceData.unitAmount` | string | Yes, if `defaultPriceData` is sent | Amount in VND, an integer from 1 to 300,000,000 |
+| `defaultPriceData.lookupKey` | string | No | Your own lookup code, e.g. `pro-monthly` |
+| `defaultPriceData.nickname` | string | No | Internal name, never shown to customers |
 
 ```bash
 curl -X POST https://app.apipay.vn/v1/client/commerce/products \
-  -H "Content-Type: application/json" \
   -H "Authorization: Bearer <Auth>" \
+  -H "Content-Type: application/json" \
   -d '{
     "name": "Pro plan",
-    "description": "Monthly access",
+    "description": "<p>Monthly access</p>",
     "defaultPriceData": {
       "unitAmount": "99000",
       "lookupKey": "pro-monthly",
@@ -88,8 +69,6 @@ curl -X POST https://app.apipay.vn/v1/client/commerce/products \
   }'
 ```
 
-### Response
-
 ```json
 {
   "data": {
@@ -97,7 +76,7 @@ curl -X POST https://app.apipay.vn/v1/client/commerce/products \
     "data": {
       "id": "cml8x1abc0000prod0000000",
       "name": "Pro plan",
-      "description": "Monthly access",
+      "description": "<p>Monthly access</p>",
       "active": true,
       "imageId": null,
       "imageUrl": null,
@@ -113,28 +92,46 @@ curl -X POST https://app.apipay.vn/v1/client/commerce/products \
         "active": true,
         "paymentLinkUrl": "https://pay.apipay.vn/p/plA2B3C4D5E6F7"
       },
-      "activePriceCount": 1,
-      "prices": [
-        {
-          "id": "cml8x1abc0000price0000000",
-          "productId": "cml8x1abc0000prod0000000",
-          "publicId": "plA2B3C4D5E6F7",
-          "unitAmount": "99000",
-          "currency": "VND",
-          "lookupKey": "pro-monthly",
-          "nickname": "Launch price",
-          "active": true,
-          "paymentLinkUrl": "https://pay.apipay.vn/p/plA2B3C4D5E6F7"
-        }
-      ]
+      "activePriceCount": 1
     }
   },
-  "statusCode": 200,
+  "statusCode": 201,
   "timestamp": "2026-09-04T10:00:00.000Z"
 }
 ```
 
-List and get endpoints wrap rows the same way: payload under `data`, list rows under `data.data`, pagination under `data.pagination`.
+The example leaves out `prices`: every price of the product, in the same shape as `defaultPrice`.
+
+## Update a product
+
+```bash
+PATCH /v1/client/commerce/products/:id
+```
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `name` | string | No | Product name |
+| `description` | string \| null | No | HTML description. Send `null` to clear |
+| `active` | boolean | No | `false` archives, `true` restores |
+| `defaultPriceId` | string \| null | No | An active price of this product. Send `null` to unset |
+| `imageId` | string \| null | No | Image `id` from `POST /v1/client/media`. Send `null` to remove |
+
+Editing a product never changes payment requests already created.
+
+## Upload a product image
+
+```bash
+POST /v1/client/media
+```
+
+Send `multipart/form-data` with `file` (PNG, JPEG or WebP) and `kind=commerce_product`. Use the returned `id` as `imageId` when updating the product.
+
+```bash
+curl -X POST https://app.apipay.vn/v1/client/media \
+  -H "Authorization: Bearer <Auth>" \
+  -F "kind=commerce_product" \
+  -F "file=@product.png"
+```
 
 ---
 
@@ -144,24 +141,18 @@ List and get endpoints wrap rows the same way: payload under `data`, list rows u
 POST /v1/client/commerce/prices
 ```
 
-Amounts cannot be edited later. To change what you charge, create a new price and archive the old one.
-
-### Request body
-
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `productId` | string | **Yes** | Product this price belongs to |
-| `unitAmount` | string | **Yes** | Amount in VND (integer string, 1–300000000) |
-| `lookupKey` | string | — | Stable key unique per account. Use `GET /prices?lookupKey=` to find this price later |
-| `nickname` | string | — | Internal label only |
-| `transferLookupKey` | boolean | — | If `true`, move `lookupKey` off the price that currently holds it instead of failing |
-
-### Example
+| `productId` | string | Yes | Product the price belongs to |
+| `unitAmount` | string | Yes | Amount in VND, an integer from 1 to 300,000,000 |
+| `lookupKey` | string | No | Lookup code, unique within your account |
+| `nickname` | string | No | Internal name |
+| `transferLookupKey` | boolean | No | `true` takes the `lookupKey` from the price that holds it instead of failing |
 
 ```bash
 curl -X POST https://app.apipay.vn/v1/client/commerce/prices \
-  -H "Content-Type: application/json" \
   -H "Authorization: Bearer <Auth>" \
+  -H "Content-Type: application/json" \
   -d '{
     "productId": "cml8x1abc0000prod0000000",
     "unitAmount": "199000",
@@ -170,36 +161,12 @@ curl -X POST https://app.apipay.vn/v1/client/commerce/prices \
   }'
 ```
 
-If the product has no default price yet, this price becomes the default.
-
----
-
-## Find a price by lookup key
+If the product has no default price yet, this price becomes the default. Find a price by its lookup code:
 
 ```bash
 curl "https://app.apipay.vn/v1/client/commerce/prices?lookupKey=pro-monthly" \
   -H "Authorization: Bearer <Auth>"
 ```
-
-Use the returned `id` as `priceId` when creating a payment.
-
----
-
-## Update a product
-
-```bash
-PATCH /v1/client/commerce/products/:id
-```
-
-| Parameter | Type | Description |
-| --------- | ---- | ----------- |
-| `name` | string | Product name |
-| `description` | string \| null | HTML. Send `null` to clear |
-| `active` | boolean | `false` archives, `true` restores |
-| `defaultPriceId` | string \| null | Must be an active price of this product. Send `null` to clear |
-| `imageId` | string \| null | Media id from `POST /v1/client/media`. Send `null` to remove |
-
----
 
 ## Update a price
 
@@ -207,14 +174,14 @@ PATCH /v1/client/commerce/products/:id
 PATCH /v1/client/commerce/prices/:id
 ```
 
-| Parameter | Type | Description |
-| --------- | ---- | ----------- |
-| `active` | boolean | `false` archives, `true` restores |
-| `nickname` | string \| null | Send `null` to clear |
-| `lookupKey` | string \| null | Send `null` to clear |
-| `transferLookupKey` | boolean | Move `lookupKey` from the price that currently holds it |
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `active` | boolean | No | `false` archives, `true` restores |
+| `nickname` | string \| null | No | Send `null` to clear |
+| `lookupKey` | string \| null | No | Send `null` to clear |
+| `transferLookupKey` | boolean | No | Take the `lookupKey` from the price that holds it |
 
----
+`unitAmount` cannot be changed. To change a price, create a new one and archive the old one. Archived prices cannot be used for new payment requests; requests already created keep their amount.
 
 ## Delete a price
 
@@ -222,135 +189,91 @@ PATCH /v1/client/commerce/prices/:id
 DELETE /v1/client/commerce/prices/:id
 ```
 
-Permanently deletes a price that has never been used on a payment request. If the price is the product default, the default is cleared. Prices that already have payments return `409` — archive them with `PATCH` instead.
-
-`unitAmount` is not accepted. Archived prices cannot be used to create new payment links. Links created earlier still point at the price they used (`commercePriceId` on the payment request).
+Only prices never used on a payment request can be deleted. A used price returns `409`; archive it with `PATCH` instead.
 
 ---
 
-## Create a payment from a price
+## Create a payment request from a price
+
+Send `priceId` instead of `amount` (never both). The amount comes from the price; if you omit `title`, ApiPay uses the product name. `customer` is optional and pre-fills the buyer on the receipt.
 
 ```bash
 curl -X POST https://app.apipay.vn/v1/client/payment-requests \
-  -H "Content-Type: application/json" \
   -H "Authorization: Bearer <Auth>" \
-  -d '{
-    "bankPublicId": "bank_abc123",
-    "priceId": "cml8x1abc0000price0000000",
-    "content": "ORDER-001"
-  }'
-```
-
-The payment amount becomes the price `unitAmount`. If you omit `title`, the product name is used. You can also pass optional `customer` details to pre-populate the invoice buyer information:
-
-```bash
-curl -X POST https://app.apipay.vn/v1/client/payment-requests \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer <Auth>" \
   -d '{
-    "bankPublicId": "bank_abc123",
+    "bankPublicId": "bnk_abc123",
     "priceId": "cml8x1abc0000price0000000",
-    "content": "ORDER-001",
+    "content": "DONHANG-001",
     "customer": {
       "name": "Nguyen Van A",
-      "email": "customer@example.com",
-      "taxCode": "0101234567",
-      "address": "123 Le Loi, Ben Nghe, Dist 1, HCMC"
+      "email": "customer@example.com"
     }
   }'
 ```
 
-See [Payment Requests](/en/api/payment-requests) for the full response and [Webhooks](/en/api/webhooks) for what arrives after the customer pays.
+See [Payment Requests](/en/api/payment-requests) for the response and [Webhooks](/en/api/webhooks) for the payload sent when the customer pays.
 
-Each price also has a reusable `paymentLinkUrl` (`https://pay.apipay.vn/p/{publicId}`). Share that URL instead of creating a payment request per customer. The pay page collects name and email, then mints a new payment request. After a live payment, the receipt PDF is emailed to the buyer.
+Each price also has a `paymentLinkUrl`, a reusable payment link. Share it instead of creating a payment request per customer: the customer enters a name and email, then gets their own QR code.
 
 ---
 
-## Commerce Invoices (Receipts)
+## Receipts
 
-When a live payment request with a `commercePriceId` completes, a paid `CommerceInvoice` is automatically created with an invoice number format of `CINV-YYYYMM-XXXX`.
+When a customer pays through a link or payment request created from a price, ApiPay issues receipt `CINV-YYYYMM-XXXX` and emails the PDF to the buyer when an email is known (live transactions only).
 
 <Callout type="warning">
-**Notice**: Commerce invoices are commercial sales receipts issued by the merchant to confirm payment. They are **not official VAT invoices** (*"Đây không phải hóa đơn GTGT / This is not an official VAT invoice"*).
+A receipt records the payment between you and your customer. It is **not a VAT invoice**.
 </Callout>
 
-### List commerce invoices
+### List receipts
 
 ```bash
-GET /v1/client/commerce/invoices?search=CINV-202609&page=1&limit=20
+GET /v1/client/commerce/invoices
 ```
 
-| Query parameter | Type | Description |
-| --------------- | ---- | ----------- |
-| `search` | string | Filter by invoice number, buyer name, buyer email, or product name |
-| `page` | number | Page number (default: 1) |
-| `limit` | number | Items per page (default: 20, max: 100) |
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `search` | string | No | Match receipt number, buyer name or email, product name |
+| `page` | number | No | Page, default `1` |
+| `limit` | number | No | Items per page, default `20`, max `100` |
 
-### Get invoice details
+### Details and PDF
 
-```bash
-GET /v1/client/commerce/invoices/:id
-```
+`GET /invoices/:id` returns the seller, buyer, total and `lineItems`. `GET /invoices/:id/pdf` returns an `application/pdf` file.
 
-Returns the invoice details including seller details, buyer details, totals, and line items.
-
-### Download invoice PDF
-
-```bash
-GET /v1/client/commerce/invoices/:id/pdf
-```
-
-Returns the binary `application/pdf` stream for the receipt, suggested filename `apipay-cinv-{invoiceNumber}.pdf`.
-
-### Update invoice buyer details
+### Update buyer details
 
 ```bash
 PATCH /v1/client/commerce/invoices/:id
 ```
 
-Update buyer information on an existing invoice if customer details were missing or need correction:
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `buyerName` | string | No | Buyer name |
+| `buyerEmail` | string | No | Buyer email |
+| `buyerTaxCode` | string | No | Tax code |
+| `buyerAddress` | string | No | Address |
 
-```bash
-curl -X PATCH https://app.apipay.vn/v1/client/commerce/invoices/cml8x1abc0000inv0000000 \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer <Auth>" \
-  -d '{
-    "buyerName": "Nguyen Van A",
-    "buyerEmail": "buyer@example.com",
-    "buyerTaxCode": "0101234567",
-    "buyerAddress": "123 Le Loi, Dist 1, HCMC"
-  }'
-```
-
----
-
-## Send Invoice
+### Email a payment request
 
 ```bash
 POST /v1/client/commerce/invoices/send
 ```
 
-Create a payment request with a VietQR code and email the pay link directly to the customer. Once the customer completes payment, the paid sales receipt (`CINV-*`) will be automatically generated and emailed to them.
-
-<Callout type="warning">
-This is a VietQR payment request, not an official VAT e-invoice under Decree 123/2020/NĐ-CP. This endpoint is rate limited to 20 requests per minute.
-</Callout>
-
-### Request body
+Creates a VietQR payment request and emails the link to the customer. Once they pay, the receipt is issued and emailed back. Sending too many in a short time returns `429`.
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `priceId` | string | **Yes** | ID of the active Commerce product price |
-| `customerId` | string | Optional* | ID of an existing customer. Either `customerId` or `customer` is required |
-| `customer` | object | Optional* | Inline new customer object (`name`, `email` required; `taxCode`, `address` optional) |
-| `expiresAt` | string | — | Payment expiration (ISO 8601 string) |
-
-### Example
+| `priceId` | string | Yes | An active price |
+| `customerId` | string | One of the two | An existing customer |
+| `customer` | object | One of the two | New customer: `name`, `email` required; `taxCode`, `address` optional |
+| `expiresAt` | string | No | Payment deadline, ISO 8601 |
 
 ```bash
 curl -X POST https://app.apipay.vn/v1/client/commerce/invoices/send \
-  -H "Content-Type: application/json" \
   -H "Authorization: Bearer <Auth>" \
+  -H "Content-Type: application/json" \
   -d '{
     "customerId": "cml8x1abc0000cust000000",
     "priceId": "cml8x1abc0000price0000000"
@@ -361,27 +284,7 @@ curl -X POST https://app.apipay.vn/v1/client/commerce/invoices/send \
 
 ## Customers
 
-### List customers
-
-```bash
-GET /v1/client/commerce/customers
-```
-
-| Parameter | Type | Description |
-| --------- | ---- | ----------- |
-| `search` | string | Search by name, email, or tax code |
-| `page` | number | Page number (default: 1) |
-| `limit` | number | Page size (default: 20, max: 100) |
-
-### Get customer
-
-```bash
-GET /v1/client/commerce/customers/:id
-```
-
-Returns customer details along with recent payment requests and invoices associated with the customer.
-
-### Create customer
+### Create a customer
 
 ```bash
 POST /v1/client/commerce/customers
@@ -389,24 +292,21 @@ POST /v1/client/commerce/customers
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `name` | string | **Yes** | Customer name (max 200 chars) |
-| `email` | string | **Yes** | Customer email (max 200 chars, unique per user) |
-| `taxCode` | string | — | Tax code (max 50 chars) |
-| `address` | string | — | Customer address (max 500 chars, required if `taxCode` is provided) |
+| `name` | string | Yes | Customer name (max 200 characters) |
+| `email` | string | Yes | Email, unique within your account (max 200 characters) |
+| `taxCode` | string | No | Tax code (max 50 characters) |
+| `address` | string | No | Address (max 500 characters), required when `taxCode` is set |
 
-### Update customer
+`PATCH /customers/:id` takes the same fields. Changing `email` to another customer's email returns `409`.
 
-```bash
-PATCH /v1/client/commerce/customers/:id
-```
+### List and details
 
-Update customer information. If changing `email` to an email already registered to another of your customers, returns `409 Conflict`.
+`GET /customers` accepts `search` (name, email or tax code), `page` and `limit`. `GET /customers/:id` also returns the customer's latest payment requests and receipts.
 
-### Delete customer
+### Delete a customer
 
 ```bash
 DELETE /v1/client/commerce/customers/:id
 ```
 
-Permanently deletes a customer. Returns `409 Conflict` if the customer already has linked payment requests or invoices.
-
+A customer with payment requests or receipts returns `409`.

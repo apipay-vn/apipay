@@ -1,64 +1,42 @@
 ---
 title: WooCommerce
-description: Install and configure the ApiPay WooCommerce payment gateway.
+description: Install the ApiPay payment plugin for WooCommerce.
 ---
 
 # WooCommerce
 
-The ApiPay WooCommerce plugin creates an ApiPay hosted payment request during checkout, redirects the customer to the payment page, then receives a signed callback after ApiPay matches the bank transfer.
+The ApiPay plugin sends customers to the ApiPay payment page at checkout and updates the order automatically once they have paid. It supports both the classic checkout and the Checkout Block.
 
-ApiPay supports VND orders only. Successful payments mark WooCommerce orders as `processing`.
-
-The plugin supports both WooCommerce checkout experiences:
-
-- Classic shortcode checkout: `[woocommerce_checkout]`
-- WooCommerce Checkout Block
-
-The downloaded ZIP includes the ApiPay logo used in WooCommerce payment settings and checkout.
+ApiPay supports VND orders only.
 
 <Callout type="tip">
-Open **Integrations > WooCommerce** in the dashboard to generate your prefilled plugin ZIP.
+Open **Integrations > Web App > WooCommerce** in the dashboard to download the preconfigured plugin.
 
 [Open WooCommerce in dashboard](https://my.apipay.vn/en/integrations/woocommerce)
 </Callout>
 
-## Install the ZIP
+## Install the Plugin
 
 1. In the ApiPay dashboard, open **Integrations > Web App > WooCommerce**.
-2. Select an active bank account.
-3. Optionally select a verified custom domain.
-4. Download `apipay-woocommerce.zip`.
-5. In WordPress, open **Plugins > Add New > Upload Plugin** and upload the ZIP.
-6. Activate **ApiPay for WooCommerce**.
+2. Select the bank account that receives payments and, optionally, a custom domain.
+3. Download `apipay-woocommerce.zip`.
+4. In WordPress, open **Plugins > Add New > Upload Plugin** and upload the ZIP.
+5. Activate **ApiPay for WooCommerce**.
 
-## Configure the Payment Method
+## Enable the Payment Method
 
-Open **WooCommerce > Settings > Payments > ApiPay**.
-
-The ZIP downloaded from ApiPay is prefilled with:
-
-- API URL
-- Partner Code
-- Access Key
-- Secret Key
-- Bank Account ID
-- Optional custom domain
-
-Review the values, enable the gateway, then save changes.
-
-ApiPay only appears at checkout when the store currency is `VND` and the payment method is enabled.
+Open **WooCommerce > Settings > Payments > ApiPay**, enable the payment method, and save. The plugin comes with the connection details filled in; no changes needed.
 
 ## Test a Payment
 
-1. Create a WooCommerce order in VND.
-2. Choose **Bank transfer via ApiPay** at checkout.
-3. Confirm that checkout redirects to the ApiPay hosted payment page.
-4. Transfer the exact amount with the displayed content.
-5. After ApiPay receives the bank webhook, the WordPress callback marks the order as `processing`.
+1. Place an order and choose **Bank transfer via ApiPay** at checkout.
+2. Confirm you are redirected to the ApiPay payment page.
+3. Transfer the exact amount with the displayed content.
+4. Once the transfer succeeds, the order moves to `processing`.
 
-## Callback Troubleshooting
+## Troubleshooting
 
-ApiPay sends callbacks to:
+ApiPay sends payment notifications to:
 
 ```text
 https://your-wordpress-site.com/?wc-api=apipay_woocommerce
@@ -67,8 +45,5 @@ https://your-wordpress-site.com/?wc-api=apipay_woocommerce
 If an order does not update, check:
 
 - The WordPress site is publicly reachable over HTTPS.
-- The ApiPay access key and secret key match the active dashboard API key.
-- The order currency is VND.
-- ApiPay is enabled under **WooCommerce > Settings > Payments**.
 - Security plugins or firewalls are not blocking the `wc-api=apipay_woocommerce` endpoint.
-- The bank account selected in ApiPay is active.
+- The API key in the plugin is still active in the dashboard.

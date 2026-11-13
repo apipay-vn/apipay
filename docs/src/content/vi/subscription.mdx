@@ -1,201 +1,97 @@
 ---
-title: Đăng Ký & Thanh Toán
+title: Gói dịch vụ & thanh toán
 description: Quản lý gói dịch vụ và thanh toán ApiPay
 ---
 
-# Đăng Ký & Thanh Toán
+# Gói dịch vụ & thanh toán
 
-Trang này giúp bạn chọn gói, mua gói và quản lý chu kỳ thanh toán trên ApiPay.
+Chọn gói, thanh toán và gia hạn tại mục **Bảng giá** trên thanh bên của [my.apipay.vn](https://my.apipay.vn).
 
 ---
 
-## Tổng quan gói dịch vụ
+## Các gói
 
-ApiPay áp dụng mô hình **gói hạn mức giao dịch (Usage Quota Billing)**. **Gói miễn phí** bao gồm 60 giao dịch thành công/tháng. Các gói trả phí linh hoạt từ 200 đến 500.000 giao dịch/tháng. Mọi gói hạn mức, kể cả miễn phí, đều hỗ trợ kết nối nhiều tài khoản ngân hàng. Khi thanh toán, bạn chọn **kỳ hạn** 1, 3, 6 hoặc 12 tháng — kỳ hạn 6 tháng (giảm 5%) và 12 tháng (giảm 10%) được giảm giá tự động. Giá niêm yết là số tiền thanh toán thực tế, đã bao gồm thuế VAT.
+ApiPay tính phí theo số giao dịch thành công mỗi tháng. **Gói miễn phí** có 60 giao dịch mỗi tháng; các gói trả phí có hạn mức từ 200 đến 500.000 giao dịch. Mọi gói, kể cả gói miễn phí, đều kết nối được nhiều ngân hàng và có đủ tính năng: webhook, VietQR, Commerce, Loa thanh toán, tên miền riêng.
 
-<Callout type="info">
-  Tài khoản mới có thể **kích hoạt gói miễn phí** tại [Dashboard → Cài đặt → Đăng ký](https://my.apipay.vn) mà không cần
-  thanh toán. Xem [Kích hoạt gói miễn phí](#kích-hoạt-gói-miễn-phí). Bảng dưới đây là các gói đại diện; đầy đủ 23 gói
-  trả phí nằm trên [apipay.vn/pricing](https://apipay.vn/pricing).
-</Callout>
+Giá niêm yết là số tiền bạn thanh toán, đã bao gồm thuế VAT. Xem đầy đủ các gói tại [apipay.vn/pricing](https://apipay.vn/pricing).
 
 <PricingTabs locale="vi" />
 
 ### Giảm giá theo kỳ hạn
 
-| Kỳ hạn   | Giảm giá | Ví dụ (QUOTA 1200 — 348.000 VND/tháng) |
-| -------- | -------- | -------------------------------------- |
-| 1 tháng  | 0%       | 348.000 VND                            |
-| 3 tháng  | 0%       | 1.044.000 VND (348.000 VND/tháng)      |
-| 6 tháng  | 5%       | 1.983.600 VND (330.600 VND/tháng)      |
-| 12 tháng | 10%      | 3.758.400 VND (313.200 VND/tháng)      |
+Bạn chọn kỳ hạn khi thanh toán. Trước khi xác nhận, bạn sẽ thấy tổng tiền, mức giảm và giá quy đổi mỗi tháng.
 
-**Giá tương đương mỗi tháng** thấp hơn với kỳ hạn 6 tháng và 12 tháng có giảm giá. Trước khi xác nhận thanh toán, bạn sẽ thấy tạm tính, mức giảm và giá tương đương mỗi tháng.
+| Kỳ hạn | Giảm giá | Ví dụ (gói 1.200 giao dịch, 348.000 VND/tháng) |
+|--------|----------|-----------------------------------------------|
+| 1 tháng | 0% | 348.000 VND |
+| 3 tháng | 0% | 1.044.000 VND |
+| 6 tháng | 5% | 1.983.600 VND (330.600 VND/tháng) |
+| 12 tháng | 10% | 3.758.400 VND (313.200 VND/tháng) |
 
-### Cước vượt hạn mức
+### Khi vượt hạn mức
 
-- Khi đạt 80% và 100% hạn mức tháng, ApiPay gửi thông báo để bạn kịp nạp số dư hoặc nâng cấp gói.
-- Sau 100%, giao dịch thành công vượt hạn mức được trừ từ **số dư trả trước** theo đơn giá gói đang dùng. Dịch vụ không bị gián đoạn khi vượt hạn mức.
-- Gói miễn phí dùng đơn giá **380 VND**/giao dịch vượt. Gói trả phí dùng đơn giá hiệu lực của gói đó (giá gói ÷ hạn mức).
-- Nên giữ đủ số dư trả trước cho phần vượt hạn mức. Giao dịch thất bại không bị tính phí.
-
-### Tất cả gói trả phí đều bao gồm
-
-- ✅ Hạn mức giao dịch định sẵn, giá trọn gói siêu tiết kiệm
-- ✅ Hỗ trợ kết nối đa ngân hàng đồng thời
-- ✅ Thông báo thanh toán theo thời gian thực (1s/lần)
-- ✅ Tạo mã đơn hàng chuẩn VietQR, đối soát giao dịch tự động
-- ✅ Tích hợp webhook bảo mật chữ ký HMAC
-- ✅ Trang thanh toán Commerce và Payment Request
-- ✅ Analytics và báo cáo giao dịch chi tiết
-- ✅ Hỗ trợ kỹ thuật 24/7
-
-### Gói miễn phí bao gồm
-
-- 60 giao dịch thành công/tháng
-- Kết nối nhiều tài khoản ngân hàng (giống các gói hạn mức trả phí)
-- Giao dịch vượt hạn mức trừ từ số dư với đơn giá 380 VND/giao dịch
-- Cùng tính năng sản phẩm với gói trả phí: webhook, VietQR, Commerce, Loa Thanh Toán, tên miền riêng
-- Không hết hạn và không tự gia hạn — dùng miễn phí đến khi bạn nâng cấp
-
----
-
-## Chọn gói phù hợp
-
-### Nên cân nhắc gì?
-
-1. **Sản lượng giao dịch trung bình/tháng** - Dùng gói miễn phí để kiểm chứng thiết lập nhỏ, sau đó chọn gói trả phí tiệm cận hoặc nhỉnh hơn sản lượng thực tế để hưởng đơn giá tối ưu nhất (chỉ từ 150đ - 350đ/GD).
-2. **Kinh doanh theo mùa vụ** - Chuẩn bị số dư trả trước cho giai đoạn cao điểm; giao dịch vượt được trừ theo đúng đơn giá gói.
-3. **Nhu cầu nhiều tài khoản ngân hàng** - Mọi gói hạn mức, kể cả miễn phí, đều hỗ trợ kết nối nhiều ngân hàng phục vụ vận hành đa kênh.
-
-### Gợi ý theo quy mô kinh doanh
-
-| Quy mô / Mô hình        | Gói gợi ý   | Hạn mức GD/tháng |
-| ----------------------- | ----------- | ---------------- |
-| Dùng thử / mới tích hợp | FREE        | 60 GD            |
-| Cá nhân kinh doanh      | QUOTA 200   | 200 GD           |
-| Shop online vừa         | QUOTA 1200  | 1.200 GD         |
-| Web App / SaaS          | QUOTA 5000  | 5.000 GD         |
-| Sàn TMĐT / Doanh nghiệp | QUOTA 50000 | 50.000 GD        |
-| Quy mô lớn (> 500k GD)  | Enterprise  | Liên hệ ApiPay   |
-
-> **Mẹo:** Bạn có thể nâng cấp gói bất kỳ lúc nào ngay trên Dashboard. Gói mới sẽ có hiệu lực ngay lập tức.
+- ApiPay báo cho bạn khi dùng đến 80% và 100% hạn mức tháng.
+- Giao dịch vượt hạn mức được trừ vào **số dư trả trước** theo đơn giá của gói. Gói miễn phí tính 380 VND mỗi giao dịch vượt.
+- Hãy giữ đủ số dư. Khi số dư hết, bạn cần nạp thêm để tiếp tục dùng dịch vụ.
+- Giao dịch thất bại không bị tính phí.
 
 ---
 
 ## Kích hoạt gói miễn phí
 
-1. Đăng nhập [my.apipay.vn](https://my.apipay.vn)
-2. Điền hồ sơ (số điện thoại và địa chỉ) nếu hệ thống yêu cầu
-3. Vào **Cài đặt → Đăng ký**
-4. Nhấn **Kích hoạt miễn phí** trên gói FREE
+1. Đăng nhập [my.apipay.vn](https://my.apipay.vn) và điền số điện thoại, địa chỉ nếu được hỏi.
+2. Mở **Bảng giá**.
+3. Nhấn **Kích hoạt miễn phí**.
 
-Gói miễn phí có hiệu lực ngay, không cần chuyển khoản.
+Gói có hiệu lực ngay, không hết hạn. Mỗi số điện thoại dùng một gói miễn phí.
 
-> **Lưu ý:** Mỗi số điện thoại chỉ kích hoạt gói miễn phí trên một tài khoản. Tài khoản đang còn hạn gói trả phí không thể chuyển về gói miễn phí. Khi kỳ đó đã hết và hóa đơn gia hạn chưa thanh toán, tài khoản có thể kích hoạt gói miễn phí. Gói miễn phí tính 380đ/giao dịch vượt và không giữ hạn mức hay đơn giá của gói trả phí.
+## Mua hoặc nâng cấp gói trả phí
 
-## Mua gói trả phí
+1. Mở **Bảng giá** và chọn gói hạn mức.
+2. Chọn kỳ hạn.
+3. Thanh toán bằng **số dư** hoặc **chuyển khoản** theo mã QR. Gói kích hoạt ngay khi ApiPay nhận được tiền.
 
-### Qua Dashboard
+Khi nâng cấp giữa kỳ, bạn chọn một trong hai cách:
 
-1. Đăng nhập [my.apipay.vn](https://my.apipay.vn)
-2. Vào **Cài đặt → Đăng ký**
-3. Duyệt các gói hạn mức (hoặc xem đủ danh sách tại [apipay.vn/pricing](https://apipay.vn/pricing))
-4. Nhấn **Chọn gói** cho lựa chọn của bạn
-5. Chọn kỳ hạn và hoàn tất thanh toán
+- **Tiếp tục chu kỳ hiện tại** (mặc định): giữ nguyên hạn mức đã dùng, chỉ trả phần chênh lệch.
+- **Bắt đầu chu kỳ mới**: trả đủ giá gói mới, hạn mức đếm lại từ 0. Phần giá trị chưa dùng của gói cũ được cộng vào số dư.
 
-### Phương Thức Thanh Toán
+Trong một kỳ đang chạy, bạn chỉ chuyển được lên gói cao hơn. Muốn hạ gói, hãy đợi hết kỳ.
 
-Hiện tại, bạn có thể mua gói qua:
+## Nạp số dư
 
-- **Chuyển khoản ngân hàng** - Sử dụng yêu cầu thanh toán và hóa đơn được tạo để chuyển khoản cho ApiPay
-
-Sau khi thanh toán được xác nhận, gói sẽ được kích hoạt ngay.
+Trong thẻ **Số dư**, nhấn **Nạp tiền**, chọn số tiền và chuyển khoản theo mã QR. Số dư được cộng tự động. Nhấn **Xem lịch sử số dư** để xem từng khoản cộng, trừ.
 
 ---
 
-## Quản lý đăng ký
+## Gia hạn
 
-### Xem gói hiện tại
+- 3 ngày trước khi hết hạn, ApiPay tạo hóa đơn gia hạn theo kỳ hạn bạn trả gần nhất, giữ nguyên mức giảm giá. Bạn có thể đổi kỳ hạn trước khi thanh toán.
+- Bật **Tự động gia hạn bằng số dư** để ApiPay tự trừ số dư khi có hóa đơn gia hạn. Số dư cần đủ cho cả hóa đơn.
+- Sau ngày hết hạn, bạn có thêm 3 ngày ân hạn để thanh toán. Hết thời gian ân hạn, hóa đơn chưa thanh toán bị hủy và dịch vụ bị hạn chế.
 
-1. Vào **Cài đặt → Đăng ký**
-2. Chi tiết gói hiện tại hiển thị ở đầu trang:
-   - Tên gói
-   - Hạn mức tháng và mức đã dùng
-   - Số dư trả trước
-   - Giá và ngày gia hạn (gói trả phí)
+Mọi hóa đơn nằm ở mục **Hóa đơn** trên thanh bên.
 
-### Nâng cấp gói
+## Hủy gói
 
-1. Vào **Cài đặt → Đăng ký**
-2. Chọn gói hạn mức cao hơn
-3. Chọn hình thức áp dụng:
-   - **Tiếp tục chu kỳ hiện tại** — giữ nguyên hạn mức đã dùng, bạn chỉ trả phần chênh lệch (mặc định)
-   - **Bắt đầu chu kỳ mới** — trả **đủ giá gói mới**, hạn mức đếm lại từ 0, và giá trị chưa dùng của gói cũ được cộng vào số dư trả trước
-4. Hoàn tất thanh toán
-5. Thay đổi có hiệu lực ngay
-6. Kỳ hạn đã chọn trở thành kỳ hạn gia hạn mặc định
+Trong **Bảng giá**, mở **Hủy gói dịch vụ** và chọn:
 
-Trong chu kỳ gói hạn mức trả phí đang chạy, bạn chỉ có thể chuyển sang gói **cao hơn**. Đổi sang gói cùng hạn mức hoặc hạ cấp sẽ bị chặn đến hết chu kỳ hiện tại.
+- **Hủy vào cuối kỳ**: dùng tiếp đến hết kỳ đã trả, sau đó không gia hạn.
+- **Hủy ngay**: gói kết thúc ngay, phần giá trị chưa dùng không được hoàn.
 
-### Hủy gói
+Hủy gói không ảnh hưởng đến các ngân hàng đã kết nối.
 
-1. Vào **Cài đặt → Đăng ký → Hủy gói dịch vụ**
-2. Chọn hình thức:
-   - **Hủy vào cuối kỳ** — giữ quyền sử dụng đến hết kỳ đã trả, sau đó không tự động gia hạn
-   - **Hủy ngay** — kết thúc quyền sử dụng ngay lập tức; phần giá trị chưa dùng được cộng vào số dư trả trước
-3. Xác nhận
+## Hoàn tiền
 
-Việc hủy gói **không ảnh hưởng đến các kết nối ngân hàng** của bạn. Hoàn tiền luôn là **số dư trả trước**, không phải tiền mặt, và chỉ tính theo phần giá trị **chưa sử dụng** của khoản bạn đã thanh toán — phần đã dùng và phí vượt hạn mức không được hoàn.
-
-### Chuyển từ gói cũ
-
-Nếu bạn còn dùng gói theo số tài khoản ngân hàng (BASIC, STARTER, PRO, TEAM và tương tự), gói đó vẫn dùng được đến hết hạn và **không tự gia hạn**. Bạn có thể chuyển sang gói hạn mức giao dịch ngay: giá trị còn lại được trừ vào gói mới, phần dư cộng vào số dư trả trước.
-
----
-
-## Chu kỳ thanh toán
-
-- **Kỳ hạn linh hoạt** — Chọn 1, 3, 6 hoặc 12 tháng khi thanh toán
-- **Giảm giá theo kỳ hạn** — 6 tháng giảm 5%, 12 tháng giảm 10%
-- **Giá tương đương mỗi tháng** — Hiển thị khi thanh toán để bạn so sánh chi phí thực tế
-- **Hóa đơn** — Tất cả hóa đơn có sẵn trong **Cài đặt → Hóa đơn**, mỗi hóa đơn hiển thị kỳ hạn
-- **Không hoàn tiền** — Không hoàn tiền mặt cho phần thời gian đã sử dụng. Khi hủy gói, phần giá trị chưa dùng được cộng vào số dư trả trước (không rút được thành tiền mặt).
-
-### Gia hạn
-
-1. ApiPay tạo hóa đơn gia hạn 5 ngày trước khi hết hạn theo kỳ hạn đã thanh toán gần nhất (bạn giữ nguyên mức giảm giá)
-2. Bạn có thể thanh toán hóa đơn nháp hoặc đổi sang kỳ hạn khác trước khi thanh toán
-3. Gói được gia hạn sau khi ApiPay xác nhận chuyển khoản
-4. Sau thời gian gia hạn, hóa đơn chưa thanh toán sẽ bị hủy và quyền truy cập có thể bị hạn chế
-
----
-
-## Mẹo quản lý chi phí
-
-### Tối ưu gói
-
-1. **Bắt đầu miễn phí** - Kiểm chứng kết nối ngân hàng và tích hợp trước khi mở rộng
-2. **Theo dõi mức sử dụng** - Xem số giao dịch đã dùng và số dư trả trước trên dashboard
-3. **Nâng cấp đúng lúc** - Nâng cấp trước khi sản lượng dự kiến vượt gói miễn phí hoặc gói hiện tại
-
-### Tránh chi phí không cần thiết
-
-1. **Duy trì số dư trả trước** - Giao dịch vượt hạn mức được trừ từ số dư khi phát sinh
-2. **Xóa ngân hàng không dùng** - Nếu tài khoản ngân hàng không còn hoạt động, cân nhắc xóa
-3. **Xem lại hóa đơn và lịch sử số dư** - Kiểm tra hóa đơn và các bút toán số dư hằng tháng
+ApiPay không hoàn tiền mặt. Phần giá trị chưa dùng chỉ được cộng vào số dư khi bạn chọn **Bắt đầu chu kỳ mới** lúc nâng cấp. Số dư không rút ra được thành tiền mặt.
 
 ---
 
 ## Cần hỗ trợ?
 
-- 📧 Email: support@apipay.vn
-- 💬 Chat trong app (dashboard)
-- 📖 [Tài liệu API](/vi/api/payment-requests)
-
----
+Email support@apipay.vn hoặc nhấn **Chat với Appi** trong dashboard.
 
 ## Bước tiếp theo
 
-- [Hướng dẫn bắt đầu](/vi/onboarding) - Thiết lập tài khoản từ đầu
-- [Quản lý Ngân hàng](/vi/banking) - Kết nối và quản lý ngân hàng
+- [Bắt đầu](/vi/onboarding)
+- [Quản lý ngân hàng](/vi/banking)

@@ -5,123 +5,35 @@ description: Connect and manage your Vietnamese bank accounts to receive payment
 
 # Bank Account Management
 
-Bank accounts are the foundation of receiving payments on ApiPay. Each connected bank account creates a payment channel that your customers can use to transfer money to you in real time.
+Your bank account is where customers send you money. Haven't connected one yet? See [Connect Banks](/en/connect-banks).
 
----
+## How it works
 
-## How It Works
+When a customer transfers money into a connected account, ApiPay:
 
-When a customer makes a payment to your linked bank account, ApiPay:
+1. Records the incoming payment.
+2. Matches it to the right payment request.
+3. Notifies you by webhook, notification channel or Payment Speaker.
 
-1. **Detects** the incoming transfer via Open Banking API
-2. **Matches** the transfer to the corresponding payment request
-3. **Notifies** you instantly via webhook
+No manual reconciliation per order. Every plan, including the free plan, can connect multiple banks.
 
-This means you don't need to manually reconcile payments — everything is automatic.
+## Statuses
 
----
+- **Active**: receiving payments normally.
+- **Pending**: finishing the connection, usually within a few seconds. Accounts that need an activation request stay here until ApiPay activates them.
+- **Inactive**: you paused the account and ApiPay does not receive payments through it.
 
-## Supported Banks
+## Common actions
 
-| Bank                 | Code | Personal | Business | Household | Key Features             |
-| -------------------- | ---- | :------: | :------: | :-------: | ------------------------ |
-| **ACB**              | ACB  |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Bank account |
-| **MB Bank**          | MBB  |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Virtual Account (VA) |
-| **BIDV**             | BIDV |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Virtual Account (VA) |
-| **OCB**              | OCB  |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Virtual Account (VA) |
-| **VietinBank**      | ICB  |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Bank account |
-| **VIB**              | VIB  |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Virtual Account (VA) |
-| **Sacombank**        | STB  |   Yes    |    No    |    Yes    | OpenBanking, Sync inward, Virtual Account (VA) |
-| **VPBank**           | VPB  |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Virtual Account (VA) |
-| **PGBank**           | PGB  |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Bank account |
-| **Shinhan Bank**     | SHBVN|   Yes    |   Yes    |    No     | OpenBanking, Sync inward, Virtual Account (VA) |
-| **Co-opBank**        | COOPBANK | Yes  |   Yes    |    Yes    | OpenBanking, Sync inward, Virtual Account (VA) |
-| **Vietcombank**      | VCB  |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Virtual Account (VA) for Personal |
-| **MSB**              | MSB  |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Bank account |
-| **TPBank**           | TPB  |   Yes    |   Yes    |    Yes    | OpenBanking, Sync inward, Bank account |
+Open **Banks** in the sidebar. Each row has a status switch and a **...** menu:
 
----
+- **Turn on or off**: flip the switch to pause or resume payments.
+- **View transactions**: transactions for this account only.
+- **Edit nickname**: up to 50 characters, only you see it in the dashboard.
+- **Delete Bank**: remove the account from ApiPay.
 
-## Key Concepts
+## Related
 
-### Account Types
-
-When connecting a bank, you'll choose between:
-
-- **Personal** — for individual bank accounts
-- **Business** — for company accounts
-- **Household Business** — for household business (hộ kinh doanh) accounts
-
-Notes:
-
-- **Vietcombank** Personal accounts use in-app authorization and receive a virtual account (VA). Business and Household Business accounts require manual activation and settle to the original account number.
-- **Sacombank** does not support Business accounts; use Personal or Household Business.
-- **VietinBank** transactions have no transfer content; contact support for more details. Business requires manual activation.
-- **VPBank** supports Personal and Household Business (automatic) and Business (manual activation).
-- **Shinhan Bank** supports Personal (automatic) and Business (manual activation).
-- **BIDV** and **VietinBank** Business require manual activation; Household Business uses the online flow.
-- **MB Bank** Personal, Business, and Household Business are fully online. Household Business is sent to the bank as a personal account.
-- **OCB** Business requires manual activation. Personal and Household Business are fully online.
-- **VIB**: all account types are fully online. Business is sent to the bank as a household business account.
-- **Sacombank** Household Business uses the online flow.
-- **PGBank** and **Co-opBank**: all account types are online, with no manual activation.
-- **ACB** Business and Household Business connect online and link the original account number. They use an ACB OneBiz username. ApiPay does not issue a separate virtual account.
-- **MSB**: Personal, Business, and Household Business all require manual activation. Business accounts must enable MSB Merchant at a bank branch before linking. Do not edit the referral code. Each account can be linked only once.
-- **TPBank**: Personal, Business, and Household Business use in-app authorization. The virtual account appears as a sub-account of the original account.
-
-### Statuses
-
-After connecting, a bank account has one of these statuses:
-
-- **Active** — fully operational, receiving payments
-- **Pending** — OTP verified but final confirmation in progress
-- **Activation Requested** — manual activation queued (OCB Business, VPBank/BIDV/VietinBank/Shinhan Business, Vietcombank Business/Household, and every MSB account type)
-- **Inactive** — temporarily disabled; payments won't be routed here
-
-## Managing Multiple Banks
-
-### Why Connect More Than One?
-
-- **Multiple payment options** — Different banks suit different customer preferences
-- **Load distribution** — Spread transactions across accounts to avoid congestion
-- **Redundancy** — Backup accounts ensure continuous service if one bank has issues
-- **Transaction limits** — Some banks have daily transfer limits; additional accounts give you more capacity
-
-Every quota plan, including **free**, supports connecting multiple banks at the same time.
-
-### Recommended Setup
-
-| Volume | Recommended             |
-| ------ | ----------------------- |
-| Low    | 1-2 banks               |
-| Medium | 3-5 banks               |
-| High   | Multiple supported banks |
-
----
-
-## Dashboard Navigation
-
-In the ApiPay Dashboard, the **Banks** section is accessible from the sidebar:
-
-- **Banks** (`/banks`) — View all connected accounts, add new ones, view transactions per bank
-- Each bank row shows the memo name (nickname), status, account type, and actions
-- You can set a **memo name** (nickname) on each account to tell them apart; it is visible only in your dashboard
-
-> For step-by-step instructions on connecting a bank, see the [Connect Banks guide](/en/connect-banks).
-
----
-
-## Security Best Practices
-
-- **Use business accounts** — Keep payment accounts in your business name
-- **Limit access** — Only authorized team members should manage connected banks
-- **Monitor transactions** — Regularly review your transaction history for suspicious activity
-- **Enable 2FA** — Add an extra layer of security to your dashboard account
-
----
-
-## Related Resources
-
-- [Connect Banks Guide](/en/connect-banks) — Step-by-step instructions for linking a bank account
-- [API Reference: Banks](/en/api/banks) — Manage banks programmatically via API
-- [Webhook Setup](/en/api/webhooks) — Receive real-time payment notifications
+- [Connect Banks](/en/connect-banks)
+- [Banks API](/en/api/banks)
+- [Webhooks](/en/api/webhooks)

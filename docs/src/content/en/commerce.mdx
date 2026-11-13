@@ -5,93 +5,57 @@ description: Create a product, copy a reusable payment link, collect buyer detai
 
 # Commerce
 
-Commerce is where you keep the products you sell and the prices on those products. Create a payment link from a price so every customer for that item pays the same amount.
+Commerce lets you sell with a reusable payment link. Create a product and price once, then send the same link to every customer. Each customer who opens it enters their details, scans the QR code and gets a receipt by email.
 
-You can do this in the dashboard under **Integrations → Commerce** (Beta), or through the [Commerce API](/en/api/commerce). Creating a payment link still uses the [Payment Requests API](/en/api/payment-requests) — send `priceId` instead of typing the amount.
-
-<Callout type="tip">
-Open **Integrations → Commerce** in the dashboard to create a product, add a price, and try a payment link.
-
-[Open Commerce in dashboard](https://my.apipay.vn/en/integrations/commerce)
-</Callout>
+Open **Integrations → Web App → Commerce** (Beta) at [my.apipay.vn](https://my.apipay.vn/en/integrations/commerce).
 
 ## How it works
 
-1. **Create a product** — the item you sell (for example “Pro plan”).
-2. **Add a price** — the amount in VND. You can add more than one price on the same product (launch price, current price, yearly, …).
-3. **Share the payment link** on that price — one URL, many customers. Each visitor types their name and email, then scans a new QR.
-4. **Customer pays** — they scan the QR or transfer as usual.
-5. **You get the same webhook** as any other payment. The buyer receives the receipt PDF by email.
+1. **Create a product**: what you sell, for example "Pro plan".
+2. **Add a price**: an amount in VND. A product can have several prices, for example monthly and yearly.
+3. **Copy the payment link** and send it to customers. One link works for many people.
+4. **The customer pays**: they enter their name and email, then scan the QR code. ApiPay creates a unique transfer content for each customer.
+5. **You get notified** like any other payment. The customer gets a receipt by email.
 
-```
-Product  →  Price  →  Reusable link  →  Buyer details  →  QR  →  Pay  →  Receipt email + webhook
-```
+Already know the buyer? On the product page, choose **Create one-time payment**.
 
-You can still create a **one-time** payment request from a price (dashboard **Create one-time payment**, or `POST /v1/client/payment-requests` with `priceId`) when you already know the buyer.
+## Default price and amounts
 
-## Lookup key
+- Each product has a **default price**, used when you click **Copy payment link**. The first price becomes the default; use **Make default** to pick another.
+- A price's amount cannot be edited. To change it, create a new price and **Archive** the old one. Archiving a price is also how you pause its link.
+- A payment request keeps the amount it was created with. A reusable link always charges new customers the current amount.
+- The internal name and lookup key are visible only to you, never to customers.
 
-A lookup key is a stable name you keep in your app, such as `pro-monthly`. Use it to find the price later:
+## Product images
 
-```bash
-GET /v1/client/commerce/prices?lookupKey=pro-monthly
-```
+Upload a PNG, JPEG or WebP image (up to 3 MB) when creating the product or on its detail page. The image shows on the payment page.
 
-Checkout still sends the price id (`priceId`), not the lookup key, when you create a one-time payment request. The reusable payment link uses `paymentLinkUrl` / `publicId` on the price.
+## Receipts
 
-## Nickname
+When a customer pays, ApiPay creates a receipt automatically. Find it in the **Invoices** tab.
 
-The nickname (internal name) is only for you in the dashboard. Customers never see it.
+- The receipt shows your details (seller) and the buyer's: name, email, plus tax code and address if they entered them. You can edit the buyer details later.
+- Click **Download PDF** to save it. The customer also gets the PDF by email.
+- A receipt confirms the customer paid. It is not an official VAT invoice.
 
-## Default price
+## Customers
 
-Each product has one **default price**. The dashboard uses it when you click **Create payment**. When you call the API, send the `priceId` you want to charge — the API does not pick the default for you.
+The **Customers** tab saves buyers automatically when they pay. Customers are identified by email. You can also add, edit or delete customers here.
 
-- The first price you add becomes the default.
-- Adding another price does not change the default unless you set it.
-
-## Amounts do not change
-
-Once a price exists, its amount is fixed. To change what you charge, create a new price and archive the old one.
-
-One-time payment requests already created keep the amount they were created with. Editing a product or price later does not change those requests. The reusable payment link always uses the current price amount for **new** visitors. Archive the price to pause the reusable link.
-
-## Sales Invoices (Receipts)
-
-When a live payment request created with a `priceId` is completed, ApiPay automatically generates a sales invoice (`CommerceInvoice`) with invoice number sequence `CINV-YYYYMM-XXXX`.
-
-- **Seller info**: Shows your merchant business name and contact details.
-- **Buyer info**: Collected on the payment page (name + email required; tax code and address optional), or pre-filled from the optional `customer` object on a one-time payment request. Editable later in the dashboard.
-- **PDF download**: Download formatted PDF receipts (`apipay-cinv-*.pdf`) from the dashboard or API. After a live commerce payment, the PDF is also emailed to the buyer.
-- **Disclaimer**: These receipts confirm commercial payment for products and services. They do not replace official VAT e-invoices (Hóa đơn GTGT) under Decree 123/2020/NĐ-CP (*"Đây không phải hóa đơn GTGT / This is not an official VAT invoice"*).
-
-## Product image
-
-Upload PNG, JPEG, or WebP (max 3 MB) on create or on the product page. It shows on checkout; the customer can tap to view larger. Removing the image does not delete the product.
-
-## Transfer memo
-
-When a customer opens a Commerce link and you did not send `content`, ApiPay adds a unique transfer memo to the QR so each payment is matched to the right request.
-
-## Customers & Send Invoice
-
-ApiPay automatically saves customers (`CommerceCustomer`) when buyers enter their details during Commerce checkout. You can also manage your customer directory directly from the **Customers** tab in the dashboard or via the API / MCP.
-
-- **Customer identity**: Identified by email (normalized to lowercase). The latest non-empty details from checkout or updates are preserved.
-- **Send invoice**: Select a customer and active product price to email a VietQR payment request link directly to the customer.
-- **Important note**: "Send invoice" creates a payment request with a VietQR code emailed to the buyer. After the payment is completed, the system generates the paid sales invoice (`CINV-*`). This emailed request is a pay-by-QR link, not an official VAT e-invoice.
+**Send invoice** emails the customer a payment link and QR code for the price you choose. The receipt is created only after the customer pays.
 
 ## Not in Commerce
 
-- Multi-item cart / quantity selector
-- Automatic scheduled monthly debit
-- Official VAT e-invoices (hóa đơn GTGT / HDDT) under Decree 123/2020/NĐ-CP
+- Shopping cart or buying several products at once
+- Automatic recurring charges from the customer's account
+- Official VAT e-invoices
 
 ## Try it
 
-1. Open **Integrations → Commerce** and create a product (you can add the first price and image in the same form).
-2. On the product page, click **Copy payment link** — or add a price first if you skipped it.
-3. Open the link, enter buyer name and email, then pay. In sandbox, create a one-time payment from the price and simulate it.
-4. On live payments, the buyer gets the receipt by email. You can also view it in the **Invoices** tab.
+1. Create a product, adding a price and image in the same form.
+2. Click **Copy payment link**, open it, enter a name and email, then pay.
+3. Find the receipt in the **Invoices** tab.
 
-Need the HTTP details? See the [Commerce API](/en/api/commerce) or try the calls in the [Interactive Reference](/en/api-reference).
+Want to test without moving real money? Turn on [Sandbox](/en/sandbox), create a one-time payment from a price, then simulate the payment.
+
+Integrating through the API? See the [Commerce API](/en/api/commerce) or try it in the [Interactive Reference](/en/api-reference).
