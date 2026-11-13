@@ -146,7 +146,7 @@ export function BankDropdown({value, onChange, error}: BankDropdownProps) {
         {isOpen && (
           <div
             data-slot="select-content"
-            className="absolute top-full left-0 right-0 mt-1 rounded-lg border border-border bg-card shadow-lg z-50 max-h-80 overflow-hidden">
+            className="absolute top-full left-0 right-0 mt-1 rounded-lg border border-border bg-card shadow-lg z-50 flex max-h-80 flex-col overflow-hidden">
             <div className="p-2 border-b border-border">
               <input
                 ref={inputRef}
@@ -162,7 +162,7 @@ export function BankDropdown({value, onChange, error}: BankDropdownProps) {
             {filteredBanks.length === 0 ? (
               <div className="px-4 py-8 text-center text-muted-foreground">Không tìm thấy ngân hàng</div>
             ) : (
-              <div ref={scrollRef} className="overflow-y-auto max-h-80">
+              <div ref={scrollRef} className="min-h-0 overflow-y-auto">
                 <div
                   style={{
                     height: virtualizer.getTotalSize(),

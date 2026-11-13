@@ -205,7 +205,8 @@ export function QrForm({
               data-state={template === t.value ? 'on' : 'off'}
               aria-pressed={template === t.value}
               className={cn(
-                'p-3 rounded-md text-center transition-all',
+                // Wraps to three lines on phones, where a glass capsule clips the text.
+                'p-3 rounded-[18px]! text-center transition-all',
                 template === t.value
                   ? 'bg-background text-foreground shadow-sm'
                   : 'text-muted-foreground hover:text-foreground'
