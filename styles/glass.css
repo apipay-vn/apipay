@@ -1,5 +1,5 @@
 /* Generated from shared/styles/glass.css in the apipay repo by `npm run sync:glass`. Edit there, not here. */
-/* Liquid glass appearance, shared by dashboard and landing. Active under <html data-glass>; see .claude/skills/glass-ui. */
+/* Liquid glass appearance, shared by every ApiPay web app. Active under <html data-glass>; see .claude/skills/glass-ui. */
 
 [data-glass] {
   --radius: 1rem;
@@ -431,6 +431,7 @@
 
 [data-glass][data-glass-lite]
   :is(
+    [data-slot='button'],
     button[data-variant],
     [data-slot='input'],
     [data-slot='textarea'],
