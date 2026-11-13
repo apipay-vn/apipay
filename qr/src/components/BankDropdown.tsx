@@ -110,6 +110,8 @@ export function BankDropdown({value, onChange, error}: BankDropdownProps) {
       </label>
       <div className="relative">
         <div
+          data-slot="select-trigger"
+          aria-invalid={error ? true : undefined}
           className={cn(
             'h-full min-h-12 w-full rounded-lg border bg-background px-4 pr-10 text-sm cursor-pointer flex items-center justify-between transition-colors',
             error ? 'border-red-500' : 'border-border hover:border-primary/50',
@@ -142,12 +144,15 @@ export function BankDropdown({value, onChange, error}: BankDropdownProps) {
         </div>
 
         {isOpen && (
-          <div className="absolute top-full left-0 right-0 mt-1 rounded-lg border border-border bg-card shadow-lg z-50 max-h-80 overflow-hidden">
+          <div
+            data-slot="select-content"
+            className="absolute top-full left-0 right-0 mt-1 rounded-lg border border-border bg-card shadow-lg z-50 max-h-80 overflow-hidden">
             <div className="p-2 border-b border-border">
               <input
                 ref={inputRef}
                 type="text"
                 placeholder="Tìm ngân hàng..."
+                data-slot="input"
                 className="w-full h-10 px-3 text-base md:text-sm bg-background border border-border rounded-md outline-none focus:border-primary"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}

@@ -78,7 +78,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
       {/* Header */}
       <header className="border-b border-border">
         <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
@@ -115,7 +115,7 @@ export default function App() {
         {/* Form and Preview */}
         <div className="grid md:grid-cols-1 gap-8">
           {/* Form */}
-          <div className="rounded-lg border border-border bg-card p-6 md:p-8">
+          <div data-slot="card" className="rounded-lg border border-border bg-card p-6 md:p-8">
             <h2 className="text-xl font-semibold mb-6">Thông tin thanh toán</h2>
             <QrForm
               bankCode={bankCode}
@@ -147,14 +147,16 @@ export default function App() {
         {/* Bank Quick-Select */}
         <section className="mb-10">
           <h2 className="text-lg font-semibold mt-8 mb-4 text-center">Tạo QR thanh toán qua các ngân hàng</h2>
-          <div className="flex gap-2 flex-wrap">
+          <div data-slot="card" className="flex gap-2 flex-wrap rounded-lg p-4">
             {BANKS.map(bank => (
               <a
                 key={bank.code}
                 href={`/${bank.code.toLowerCase()}`}
+                data-slot="button"
+                data-variant={bankCode === bank.code ? 'default' : 'outline'}
                 className={cn(
-                  'flex flex-col items-center gap-1 p-2 rounded-lg transition-all hover:border-primary hover:bg-primary/5',
-                  bankCode === bank.code ? 'border-primary bg-primary/10' : 'border-border bg-card'
+                  'flex flex-col items-center gap-1 px-3 py-2 rounded-lg',
+                  bankCode === bank.code ? 'bg-primary text-primary-foreground' : 'bg-card'
                 )}
                 title={`${bank.fullName} - ${bank.code}`}
               >

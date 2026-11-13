@@ -135,6 +135,8 @@ export function QrForm({
         <input
           type="text"
           placeholder="Nhập số tài khoản"
+          data-slot="input"
+          aria-invalid={localErrors.account || errors.account ? true : undefined}
           className={cn(
             'h-12 w-full rounded-lg border bg-background px-4 text-base md:text-sm placeholder:text-muted-foreground outline-none focus:border-primary',
             localErrors.account || errors.account ? 'border-red-500' : 'border-border'
@@ -153,6 +155,7 @@ export function QrForm({
         <input
           type="text"
           placeholder="Nguyễn Văn A"
+          data-slot="input"
           className="h-12 w-full rounded-lg border border-border bg-background px-4 text-base md:text-sm placeholder:text-muted-foreground outline-none focus:border-primary"
           value={accountName}
           onChange={e => onAccountNameChange(e.target.value)}
@@ -168,6 +171,7 @@ export function QrForm({
           ref={amountInputRef}
           type="text"
           placeholder="Nhập số tiền"
+          data-slot="input"
           className="h-12 w-full rounded-lg border border-border bg-background px-4 text-base md:text-sm placeholder:text-muted-foreground outline-none focus:border-primary"
           value={amount ? formatVND(amount) : ''}
           onChange={handleAmountChange}
@@ -182,6 +186,7 @@ export function QrForm({
         <input
           type="text"
           placeholder="Nhập nội dung chuyển khoản"
+          data-slot="input"
           className="h-12 w-full rounded-lg border border-border bg-background px-4 text-base md:text-sm placeholder:text-muted-foreground outline-none focus:border-primary"
           value={content}
           onChange={e => onContentChange(e.target.value)}
@@ -191,16 +196,19 @@ export function QrForm({
 
       <div className="space-y-2">
         <label className="text-sm font-medium text-foreground">Mẫu QR</label>
-        <div className="grid grid-cols-2 gap-2">
+        <div data-slot="toggle-group" className="grid grid-cols-2 gap-1 rounded-lg bg-muted p-1">
           {TEMPLATES.map(t => (
             <button
               key={t.value}
               type="button"
+              data-slot="toggle-group-item"
+              data-state={template === t.value ? 'on' : 'off'}
+              aria-pressed={template === t.value}
               className={cn(
-                'p-3 rounded-lg border text-center transition-all',
+                'p-3 rounded-md text-center transition-all',
                 template === t.value
-                  ? 'border-primary bg-primary/10 text-primary'
-                  : 'border-border bg-background text-muted-foreground hover:border-primary/50'
+                  ? 'bg-background text-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground'
               )}
               onClick={() => onTemplateChange(t.value as QrTemplate)}
             >
@@ -213,6 +221,8 @@ export function QrForm({
 
       <button
         type="submit"
+        data-slot="button"
+        data-variant="default"
         className="w-full h-12 bg-primary text-primary-foreground rounded-lg font-medium hover:opacity-90 transition-opacity"
       >
         Tạo QR Code

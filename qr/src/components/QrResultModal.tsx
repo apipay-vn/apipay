@@ -100,7 +100,7 @@ export function QrResultModal({qrUrl, bankCode, accountNumber, onClose}: QrResul
         if (event.target === event.currentTarget) onClose();
       }}
     >
-      <div className="w-full max-w-md overflow-hidden rounded-lg border border-border bg-card shadow-2xl">
+      <div data-slot="dialog-content" className="w-full max-w-md overflow-hidden rounded-lg border border-border bg-card shadow-2xl">
         <div className="flex items-start justify-between gap-4 border-b border-border px-5 py-4">
           <div>
             <h2 id="qr-result-title" className="text-lg font-semibold">
@@ -111,6 +111,8 @@ export function QrResultModal({qrUrl, bankCode, accountNumber, onClose}: QrResul
           <button
             type="button"
             aria-label="Đóng"
+            data-slot="button"
+            data-variant="outline"
             className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
             onClick={onClose}
           >
@@ -145,6 +147,8 @@ export function QrResultModal({qrUrl, bankCode, accountNumber, onClose}: QrResul
           <div className="grid grid-cols-2 gap-3">
             <button
               type="button"
+              data-slot="button"
+              data-variant="default"
               className="flex h-11 items-center justify-center gap-2 rounded-lg bg-primary px-3 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
               onClick={downloadQr}
               disabled={isDownloading}
@@ -161,6 +165,8 @@ export function QrResultModal({qrUrl, bankCode, accountNumber, onClose}: QrResul
             </button>
             <button
               type="button"
+              data-slot="button"
+              data-variant="outline"
               className="flex h-11 items-center justify-center gap-2 rounded-lg border border-border bg-background px-3 text-sm font-medium transition-colors hover:bg-muted"
               onClick={openUrl}
             >

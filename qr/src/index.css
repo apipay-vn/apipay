@@ -111,6 +111,17 @@
 	}
 }
 
+/* Glass is always on, so background-coloured fills match the glass paper. */
+:root[data-glass] {
+	--color-background: var(--glass-bg);
+}
+
+/* Light glass paper is greyer than white, so hairlines darken a step. */
+:root[data-glass]:not(.dark) {
+	--border: 0 0% 86%;
+	--input: 0 0% 86%;
+}
+
 @layer utilities {
 	.text-balance {
 		text-wrap: balance;
