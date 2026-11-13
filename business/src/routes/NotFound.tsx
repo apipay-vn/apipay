@@ -11,7 +11,9 @@ export function NotFound() {
 			<p className="mx-auto mt-3 max-w-md text-muted-foreground">{t.common.notFound.body}</p>
 			<Link
 				to={localePath(locale)}
-				className="mt-6 inline-flex h-10 items-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
+				data-slot="button"
+				data-variant="default"
+				className="mt-6 inline-flex h-10 items-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground hover:opacity-90"
 			>
 				{t.common.notFound.cta}
 			</Link>

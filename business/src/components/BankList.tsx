@@ -25,11 +25,11 @@ export function BankList({banks, activeSlug, locale, empty}: BankListProps) {
 						<Link
 							to={localePath(locale, `/banks/${bank.slug}`)}
 							aria-current={isActive ? 'page' : undefined}
+							data-slot="sidebar-menu-button"
+							data-active={isActive}
 							className={cn(
-								'flex items-center gap-2.5 rounded-md px-2.5 py-2 text-sm transition-colors',
-								isActive
-									? 'bg-muted font-medium text-foreground'
-									: 'text-muted-foreground hover:bg-muted/60 hover:text-foreground'
+								'flex items-center gap-2.5 px-2.5 py-2 text-sm transition-colors',
+								isActive ? 'font-medium text-foreground' : 'text-muted-foreground hover:bg-muted/60 hover:text-foreground'
 							)}
 						>
 							<BankLogo bank={bank} className="h-9 w-9 shrink-0" />

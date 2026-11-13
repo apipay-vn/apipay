@@ -156,7 +156,7 @@ export function BankDetail() {
 						{t.banks.detail.back}
 					</Link>
 
-					<details className="mb-5 rounded-lg border border-border bg-card lg:hidden">
+					<details data-slot="card" className="mb-5 rounded-lg lg:hidden">
 						<summary className="cursor-pointer select-none px-3 py-2.5 text-sm font-medium">
 							{t.banks.list.switchLabel}
 						</summary>
@@ -192,7 +192,9 @@ export function BankDetail() {
 							href="https://my.apipay.vn"
 							target="_blank"
 							rel="noopener noreferrer"
-							className="inline-flex h-9 w-full shrink-0 items-center justify-center gap-1.5 rounded-lg bg-primary px-3.5 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 sm:w-auto"
+							data-slot="button"
+						data-variant="default"
+						className="inline-flex h-9 w-full shrink-0 items-center justify-center gap-1.5 rounded-lg bg-primary px-3.5 text-sm font-medium text-primary-foreground hover:opacity-90 sm:w-auto"
 						>
 							{t.banks.detail.linkCta}
 							<ExternalLinkIcon className="h-3.5 w-3.5" />
@@ -214,11 +216,13 @@ export function BankDetail() {
 										type="button"
 										onClick={() => setActiveType(type)}
 										aria-pressed={activeType === type}
+										data-slot="button"
+										data-variant={activeType === type ? 'default' : 'outline'}
 										className={cn(
-											'rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors',
+											'rounded-lg px-3 py-1.5 text-sm font-medium',
 											activeType === type
-												? 'border-primary bg-primary text-primary-foreground'
-												: 'border-border bg-card text-muted-foreground hover:text-foreground'
+												? 'bg-primary text-primary-foreground'
+												: 'text-muted-foreground hover:text-foreground'
 										)}
 									>
 										{meta.short}

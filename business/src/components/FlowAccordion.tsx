@@ -19,7 +19,7 @@ export function FlowAccordion({bank, type, mode, flow, locale, t, open, onToggle
 	const meta = ACCOUNT_TYPES[type];
 
 	return (
-		<div className="overflow-hidden rounded-lg border border-border bg-card">
+		<div data-slot="card" className="overflow-hidden rounded-lg">
 			<button
 				type="button"
 				onClick={onToggle}

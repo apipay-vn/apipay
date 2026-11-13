@@ -1,4 +1,4 @@
-import {Link, Navigate, NavLink, Outlet, useParams} from 'react-router-dom';
+import {Link, matchPath, Navigate, Outlet, useLocation, useParams} from 'react-router-dom';
 import {isLocale} from '../lib/i18n';
 import {localePath, useLocale} from '../lib/hooks';
 import {cn} from '../lib/utils';
@@ -18,6 +18,7 @@ const FOOTER_LINKS = [
 export function Layout() {
 	const {locale: param} = useParams<{locale: string}>();
 	const {locale, t} = useLocale();
+	const {pathname} = useLocation();
 
 	if (!isLocale(param)) {
 		return <Navigate to="/vi" replace />;
@@ -29,9 +30,10 @@ export function Layout() {
 	];
 
 	return (
-		<div className="flex min-h-screen flex-col bg-background">
-			<header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur">
-				<div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-4 px-4">
+		<div className="flex min-h-screen flex-col">
+			<header className="sticky top-3 z-40 mt-3 w-[calc(100%-1.5rem)] max-w-6xl self-center">
+				<div data-slot="site-header" aria-hidden className="pointer-events-none absolute inset-0 rounded-full" />
+				<div className="relative flex h-14 items-center justify-between gap-4 px-4 sm:px-5">
 					<Link to={localePath(locale)} className="flex items-center gap-2">
 						<LogoIcon className="h-6 w-6 text-foreground" />
 						<span className="font-mono text-base font-bold tracking-tight">{t.common.brand}</span>
@@ -41,23 +43,24 @@ export function Layout() {
 					</Link>
 
 					<nav className="hidden items-center gap-1 sm:flex">
-						{navItems.map(item => (
-							<NavLink
-								key={item.to}
-								to={item.to}
-								end={item.end}
-								className={({isActive}) =>
-									cn(
-										'rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
-										isActive
-											? 'bg-muted text-foreground'
-											: 'text-muted-foreground hover:text-foreground'
-									)
-								}
-							>
-								{item.label}
-							</NavLink>
-						))}
+						{navItems.map(item => {
+							const isActive = Boolean(matchPath({path: item.to, end: item.end}, pathname));
+							return (
+								<Link
+									key={item.to}
+									to={item.to}
+									data-slot="tabs-trigger"
+									data-state={isActive ? 'active' : 'inactive'}
+									aria-current={isActive ? 'page' : undefined}
+									className={cn(
+										'px-3 py-1.5 text-sm font-medium transition-colors',
+										isActive ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'
+									)}
+								>
+									{item.label}
+								</Link>
+							);
+						})}
 					</nav>
 
 					<div className="flex items-center gap-2">

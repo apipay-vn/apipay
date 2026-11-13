@@ -47,11 +47,8 @@ export function SearchInput({
 				aria-label={ariaLabel}
 				autoFocus={autoFocus}
 				onFocus={onFocus}
-				className={cn(
-					'w-full rounded-lg border border-border bg-card text-foreground outline-none transition-colors',
-					'placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/15',
-					SIZE_STYLES[size]
-				)}
+				data-slot="input"
+				className={cn('w-full border text-foreground placeholder:text-muted-foreground', SIZE_STYLES[size])}
 			/>
 		</div>
 	);

@@ -28,7 +28,8 @@ export function Home() {
 			<div className="mx-auto mt-12 max-w-xl">
 				<Link
 					to={localePath(locale, '/banks')}
-					className="group flex items-center gap-4 rounded-xl border border-border bg-card p-5 transition-colors hover:border-primary/40 hover:bg-muted/40"
+					data-slot="card"
+					className="group flex items-center gap-4 rounded-xl p-5"
 				>
 					<div className="min-w-0 flex-1">
 						<span className="inline-flex rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">

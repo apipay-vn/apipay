@@ -15,7 +15,7 @@ export function AttachmentList({attachments, t}: AttachmentListProps) {
 					<button
 						type="button"
 						disabled
-						className="flex w-full items-center gap-3 rounded-lg border border-dashed border-border bg-card px-3.5 py-3 text-left"
+						className="flex w-full items-center gap-3 rounded-lg border border-dashed border-border px-3.5 py-3 text-left"
 					>
 						<FileIcon className="h-4 w-4 shrink-0 text-muted-foreground" />
 						<span className="min-w-0 flex-1">

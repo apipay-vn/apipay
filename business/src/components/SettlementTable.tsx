@@ -19,8 +19,8 @@ interface SettlementTableProps {
 
 export function SettlementTable({bank, locale, t, activeType, onSelect}: SettlementTableProps) {
 	return (
-		<div className="overflow-hidden rounded-lg border border-border bg-card">
-			<table className="w-full text-sm">
+		<div data-slot="card" className="overflow-hidden rounded-lg">
+			<table data-slot="table" className="w-full text-sm">
 				<thead className="bg-muted/60 text-left text-xs uppercase tracking-wide text-muted-foreground">
 					<tr>
 						<th className="px-4 py-2.5 font-semibold">{t.detail.filter}</th>

@@ -14,7 +14,9 @@ export function DarkModeToggle({label}: DarkModeToggleProps) {
 			onClick={toggle}
 			aria-label={label}
 			title={label}
-			className="flex h-8 w-8 items-center justify-center rounded-md border border-border text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+			data-slot="button"
+			data-variant="ghost"
+			className="flex h-9 w-9 items-center justify-center text-muted-foreground hover:text-foreground"
 		>
 			{isDark ? <SunIcon className="h-4 w-4" /> : <MoonIcon className="h-4 w-4" />}
 		</button>

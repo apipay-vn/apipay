@@ -72,7 +72,10 @@ export function HomeSearch({locale, t, maxResults = 6}: HomeSearchProps) {
 			) : null}
 
 			{open && trimmed ? (
-				<div className="absolute left-0 right-0 top-full z-30 mt-2 overflow-hidden rounded-lg border border-border bg-card shadow-lg">
+				<div
+					data-slot="popover-content"
+					className="absolute left-0 right-0 top-full z-30 mt-2 overflow-hidden rounded-lg border"
+				>
 					{visible.length === 0 ? (
 						<p className="px-4 py-6 text-center text-sm text-muted-foreground">{t.home.search.empty}</p>
 					) : (
