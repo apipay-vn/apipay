@@ -32,13 +32,11 @@ export function LanguageSwitcher() {
 
 	return (
 		<div
+			data-slot="language-switcher"
 			style={{
 				display: "flex",
 				alignItems: "center",
-				borderRadius: "6px",
-				border: "1px solid var(--color-border)",
 				overflow: "hidden",
-				background: "var(--color-bg)",
 			}}
 		>
 			<button

@@ -360,6 +360,7 @@ export function CodeTabs({children}: CodeTabsProps): ReactElement {
 					role="tablist"
 					aria-label="Code language tabs"
 					className="code-tabs-tablist"
+					data-slot="tabs-list"
 				>
 					{tabs.map((tab, idx) => {
 						const isActive = idx === activeIndex;
@@ -374,7 +375,9 @@ export function CodeTabs({children}: CodeTabsProps): ReactElement {
 								aria-selected={isActive}
 								aria-controls={panelId}
 								tabIndex={isActive ? 0 : -1}
-								className={`code-tab-button${isActive ? " code-tab-button--active" : ""}`}
+								className="code-tab-button"
+								data-slot="tabs-trigger"
+								data-state={isActive ? "active" : "inactive"}
 								onClick={() => activateTab(idx)}
 								onKeyDown={(e) => handleKeyDown(e, idx)}
 								ref={(el) => {
@@ -421,6 +424,8 @@ export function CodeTabs({children}: CodeTabsProps): ReactElement {
 						{/* Copy button */}
 						<button
 							className="code-tabs-copy-button copy-button"
+							data-slot="button"
+							data-variant="outline"
 							onClick={handleCopy}
 							aria-label={copied ? copiedText : copyText}
 						>

@@ -96,7 +96,6 @@ export function PromoBanner({visibleIds, onClose}: PromoBannerProps) {
 					justify-content: center;
 					gap: 0.5rem;
 					padding: 0 3rem;
-					background: var(--color-bg);
 					border-bottom: 1px solid var(--color-border);
 					font-size: 0.8rem;
 					white-space: nowrap;

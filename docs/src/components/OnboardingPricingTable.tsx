@@ -25,8 +25,8 @@ export function OnboardingPricingTable({ locale = "en" }: { locale?: Locale }) {
 		};
 
 	return (
-		<div className="table-container">
-			<table>
+		<div className="table-container" data-slot="card">
+			<table data-slot="table">
 				<thead>
 					<tr>
 						<th>{copy.plan}</th>

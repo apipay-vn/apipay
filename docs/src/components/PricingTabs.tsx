@@ -36,13 +36,15 @@ export function PricingTabs({locale = "en"}: {locale?: Locale}) {
 
 	return (
 		<div className="pricing-tabs">
-			<div className="pricing-tabs__list" role="tablist" aria-label="Pricing term">
+			<div className="pricing-tabs__list" data-slot="tabs-list" role="tablist" aria-label="Pricing term">
 				{terms.map(term => (
 					<button
 						key={term.months}
 						type="button"
 						onClick={() => setTermMonths(term.months)}
-						className={`pricing-tabs__trigger ${termMonths === term.months ? "pricing-tabs__trigger--active" : ""}`}
+						className="pricing-tabs__trigger"
+						data-slot="tabs-trigger"
+						data-state={termMonths === term.months ? "active" : "inactive"}
 						role="tab"
 						aria-selected={termMonths === term.months}
 					>
@@ -53,8 +55,8 @@ export function PricingTabs({locale = "en"}: {locale?: Locale}) {
 					</button>
 				))}
 			</div>
-			<div className="table-container">
-				<table>
+			<div className="table-container" data-slot="card">
+				<table data-slot="table">
 					<thead>
 						<tr>
 							<th>{copy.plan}</th>

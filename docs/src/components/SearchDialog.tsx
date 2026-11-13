@@ -102,7 +102,7 @@ export function SearchDialog({isOpen, onClose, items}: SearchDialogProps) {
 
 	return (
 		<div className="search-overlay" onClick={onClose}>
-			<div className="search-dialog" onClick={(e) => e.stopPropagation()}>
+			<div className="search-dialog" data-slot="dialog-content" onClick={(e) => e.stopPropagation()}>
 				<div className="search-input-wrap">
 					<svg
 						width="18"
@@ -129,6 +129,7 @@ export function SearchDialog({isOpen, onClose, items}: SearchDialogProps) {
 						ref={inputRef}
 						type="text"
 						className="search-input"
+						data-slot="input"
 						placeholder="Tìm kiếm tài liệu..."
 						value={query}
 						onChange={(e) => setQuery(e.target.value)}
@@ -180,15 +181,14 @@ export function SearchDialog({isOpen, onClose, items}: SearchDialogProps) {
 				.search-dialog {
 					width: 100%;
 					max-width: 560px;
-					background: var(--color-bg);
-					border: 1px solid var(--color-border);
-					border-radius: 12px;
-					box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+					border: 1px solid transparent;
+					border-radius: calc(var(--radius) + 6px);
 					overflow: hidden;
 					animation: fadeIn 0.2s ease;
 				}
 
 				.search-input-wrap {
+					position: relative;
 					display: flex;
 					align-items: center;
 					gap: 0.75rem;
@@ -197,15 +197,17 @@ export function SearchDialog({isOpen, onClose, items}: SearchDialogProps) {
 				}
 
 				.search-icon {
+					position: absolute;
+					left: 1.75rem;
 					color: var(--color-text-tertiary);
-					flex-shrink: 0;
+					pointer-events: none;
 				}
 
 				.search-input {
 					flex: 1;
-					background: none;
-					border: none;
-					outline: none;
+					min-width: 0;
+					padding: 0.5rem 1rem 0.5rem 2.5rem;
+					border: 1px solid transparent;
 					font-size: 1rem;
 					color: var(--color-text);
 					font-family: var(--font-mono);

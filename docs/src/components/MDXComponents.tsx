@@ -80,7 +80,7 @@ function Callout({
 	};
 
 	return (
-		<div className={`callout ${styles[type]}`}>
+		<div className={`callout ${styles[type]}`} data-slot="card">
 			<div className="callout-icon">{icons[type]}</div>
 			<div className="callout-body">{children}</div>
 		</div>
@@ -153,7 +153,7 @@ function CodeBlock({code, language}: {code: string; language: string}) {
 				</div>
 				<div className="code-block-meta">
 					<span className="code-block-lang">{language || "code"}</span>
-					<button className="copy-button" onClick={handleCopy}>
+					<button className="copy-button" data-slot="button" data-variant="outline" onClick={handleCopy}>
 						{copied ? (
 							<span className="flex items-center gap-1 text-green-500">
 								<svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -242,8 +242,8 @@ export const mdxComponents = {
 	OnboardingPricingTable,
 	hr: (props: any) => <hr {...props} className="my-8 border-border-light" />,
 	table: (props: any) => (
-		<div className="table-container">
-			<table {...props} />
+		<div className="table-container" data-slot="card">
+			<table data-slot="table" {...props} />
 		</div>
 	),
 };

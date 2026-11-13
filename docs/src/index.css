@@ -74,6 +74,17 @@
 	--shiki-dark-bg: #282a36;
 }
 
+/* ===== Liquid glass (always on; material in ../../styles/glass.css) ===== */
+:root[data-glass] {
+	--color-bg: var(--glass-bg);
+}
+
+/* Light glass paper is greyer than white, so hairlines darken a step. */
+:root[data-glass]:not(.dark) {
+	--color-border: #d6d6d6;
+	--color-border-light: #dcdcdc;
+}
+
 /* ===== Base ===== */
 * {
 	box-sizing: border-box;
@@ -343,21 +354,16 @@ body {
 }
 
 .copy-button {
-	background: var(--color-bg-secondary);
-	border: 1px solid var(--color-border);
-	border-radius: 6px;
+	border: 1px solid transparent;
 	color: var(--color-text-secondary);
 	cursor: pointer;
 	padding: 4px 10px;
 	font-size: 0.7rem;
 	font-weight: 500;
-	transition: all 0.2s;
 }
 
 .copy-button:hover {
 	color: var(--color-text);
-	border-color: var(--color-text-tertiary);
-	background: var(--color-bg-hover);
 }
 
 .code-block-body {
@@ -426,29 +432,29 @@ body {
 	margin-bottom: 0;
 }
 
-.callout-info {
-	background: rgba(0, 0, 0, 0.03);
-	border-color: var(--color-border);
+/* Callouts are greyscale glass cards, so the type colour moves to the icon. */
+.callout-tip .callout-icon {
+	color: #047857;
 }
 
-.dark .callout-info {
-	background: rgba(255, 255, 255, 0.03);
-	border-color: #222;
+.callout-warning .callout-icon {
+	color: #b45309;
 }
 
-.callout-tip {
-	background: rgba(16, 185, 129, 0.08);
-	border-color: rgba(16, 185, 129, 0.2);
+.callout-danger .callout-icon {
+	color: #b91c1c;
 }
 
-.callout-warning {
-	background: rgba(245, 158, 11, 0.08);
-	border-color: rgba(245, 158, 11, 0.2);
+.dark .callout-tip .callout-icon {
+	color: #34d399;
 }
 
-.callout-danger {
-	background: rgba(239, 68, 68, 0.08);
-	border-color: rgba(239, 68, 68, 0.2);
+.dark .callout-warning .callout-icon {
+	color: #fbbf24;
+}
+
+.dark .callout-danger .callout-icon {
+	color: #f87171;
 }
 
 /* ===== Details (MCP client configs) ===== */
@@ -516,8 +522,7 @@ body {
 	width: 100%;
 	overflow-x: auto;
 	margin: 2rem 0;
-	border: 1px solid var(--color-border-light);
-	border-radius: 10px;
+	border-radius: var(--radius);
 }
 
 .mdx-content table {
@@ -558,9 +563,6 @@ body {
 	width: min(100%, 34rem);
 	margin-bottom: 1.25rem;
 	padding: 0.35rem;
-	border: 1px solid var(--color-border);
-	border-radius: 14px;
-	background: var(--color-bg-secondary);
 }
 
 .pricing-tabs__trigger {
@@ -573,7 +575,6 @@ body {
 	min-height: 2.5rem;
 	padding: 0.8rem 0.8rem 0.5rem;
 	border: 1px solid transparent;
-	border-radius: 10px;
 	background: transparent;
 	color: var(--color-text-secondary);
 	font: inherit;
@@ -589,17 +590,9 @@ body {
 		box-shadow 0.15s ease;
 }
 
-.pricing-tabs__trigger:hover {
-	border-color: var(--color-border);
-	background: var(--color-bg);
+.pricing-tabs__trigger:hover,
+.pricing-tabs__trigger[data-state="active"] {
 	color: var(--color-text);
-}
-
-.pricing-tabs__trigger--active {
-	border-color: var(--color-accent);
-	background: var(--color-bg);
-	color: var(--color-text);
-	box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 }
 
 .pricing-tabs__badge {
@@ -619,8 +612,6 @@ body {
 
 .pricing-tabs .table-container {
 	margin: 0;
-	border-radius: 14px;
-	box-shadow: 0 14px 36px rgba(0, 0, 0, 0.05);
 }
 
 .pricing-tabs table {
@@ -637,14 +628,6 @@ body {
 .pricing-tabs td {
 	padding: 1rem 1.1rem;
 	font-size: 0.88rem;
-}
-
-.dark .pricing-tabs__trigger--active {
-	box-shadow: 0 8px 24px rgba(255, 255, 255, 0.08);
-}
-
-.dark .pricing-tabs .table-container {
-	box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
 }
 
 @media (max-width: 560px) {
@@ -679,18 +662,17 @@ body {
 	flex-direction: column;
 	gap: 0.25rem;
 	padding: 0.75rem 1rem;
-	border: 1px solid var(--color-border);
-	border-radius: 8px;
+	border: 1px solid transparent;
+	border-radius: var(--radius);
 	text-decoration: none;
 	color: var(--color-text);
-	transition: all 0.15s;
 	flex: 1;
 	max-width: 50%;
 }
 
-.page-nav a:hover {
-	border-color: var(--color-accent);
-	background: var(--color-accent-light);
+.page-nav a:hover .nav-title {
+	text-decoration: underline;
+	text-underline-offset: 4px;
 }
 
 .page-nav .nav-label {
@@ -819,7 +801,8 @@ body {
 .code-tabs-tablist {
 	display: flex;
 	align-items: center;
-	gap: 0;
+	gap: 0.15rem;
+	padding: 0.2rem;
 	overflow-x: auto;
 	/* Hide scrollbar visually but keep it functional */
 	scrollbar-width: none; /* Firefox */
@@ -836,8 +819,7 @@ body {
 .code-tab-button {
 	flex-shrink: 0;
 	background: transparent;
-	border: none;
-	border-bottom: 2px solid transparent;
+	border: 1px solid transparent;
 	padding: 0.25rem 0.75rem;
 	font-family: var(--font-mono);
 	font-size: 0.75rem;
@@ -857,13 +839,8 @@ body {
 }
 
 /* Active tab */
-.code-tab-button--active {
+.code-tab-button[data-state="active"] {
 	color: var(--color-text);
-	border-bottom-color: var(--color-text);
-}
-
-.dark .code-tab-button--active {
-	border-bottom-color: var(--color-text);
 }
 
 /* Code panel */

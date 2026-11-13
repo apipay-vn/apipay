@@ -30,7 +30,7 @@ export function PageNavigation() {
 	return (
 		<div className="page-nav">
 			{prev ? (
-				<Link to={prev.href} className="prev">
+				<Link to={prev.href} className="prev" data-slot="card">
 					<span className="nav-label">{labels.prev}</span>
 					<span className="nav-title">{prev.label}</span>
 				</Link>
@@ -38,7 +38,7 @@ export function PageNavigation() {
 				<div />
 			)}
 			{next ? (
-				<Link to={next.href} className="next">
+				<Link to={next.href} className="next" data-slot="card">
 					<span className="nav-label">{labels.next}</span>
 					<span className="nav-title">{next.label}</span>
 				</Link>

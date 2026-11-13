@@ -51,7 +51,9 @@ function SidebarLink({item, depth = 0, onClick}: {item: SidebarItem; depth?: num
 		return (
 			<Link
 				to={item.href}
-				className={`sidebar-link ${isActive ? "active" : ""}`}
+				className="sidebar-link"
+				data-slot="sidebar-menu-button"
+				data-active={isActive}
 				style={{paddingLeft: `${1 + depth * 0.75}rem`}}
 				onClick={onClick}
 			>
@@ -121,7 +123,7 @@ export function Sidebar({isOpen, onClose}: SidebarProps) {
 				<div className="sidebar-overlay" onClick={onClose} aria-hidden="true" />
 			)}
 
-			<aside className={`sidebar ${isOpen ? "sidebar-open" : ""}`}>
+			<aside className={`sidebar ${isOpen ? "sidebar-open" : ""}`} data-slot="sheet-content">
 				<nav className="sidebar-nav" aria-label="Main navigation">
 					{sidebarConfig.map((item) =>
 						item.children ? (
@@ -149,8 +151,6 @@ export function Sidebar({isOpen, onClose}: SidebarProps) {
 					left: 0;
 					bottom: 0;
 					width: var(--spacing-sidebar);
-					background: var(--color-bg-sidebar);
-					border-right: 1px solid var(--color-border-light);
 					overflow-y: auto;
 					z-index: 50;
 					padding: 1.5rem 0;
@@ -165,12 +165,12 @@ export function Sidebar({isOpen, onClose}: SidebarProps) {
 
 				.sidebar-link {
 					display: block;
+					margin: 0 0.5rem;
 					padding: 0.4rem 1rem 0.4rem 1.25rem;
 					font-size: 0.875rem;
 					color: var(--color-text-secondary);
 					text-decoration: none;
-					border-left: 2px solid transparent;
-					transition: all 0.15s ease;
+					border: 1px solid transparent;
 					line-height: 1.5;
 				}
 
@@ -179,11 +179,9 @@ export function Sidebar({isOpen, onClose}: SidebarProps) {
 					background: var(--color-bg-hover);
 				}
 
-				.sidebar-link.active {
+				.sidebar-link[data-active="true"] {
 					color: var(--color-accent);
 					font-weight: 500;
-					border-left-color: var(--color-accent);
-					background: var(--color-accent-light);
 				}
 
 				.sidebar-group {
@@ -195,7 +193,7 @@ export function Sidebar({isOpen, onClose}: SidebarProps) {
 					align-items: center;
 					justify-content: space-between;
 					width: 100%;
-					padding: 0.4rem 1rem 0.4rem 1.25rem;
+					padding: 0.4rem 1.5rem;
 					font-size: 0.8rem;
 					font-weight: 600;
 					color: var(--color-text);
@@ -222,6 +220,16 @@ export function Sidebar({isOpen, onClose}: SidebarProps) {
 
 				.sidebar-group-children {
 					animation: fadeIn 0.2s ease;
+				}
+
+				/* Only the mobile drawer floats over content; on desktop the backdrop shows through. */
+				@media (min-width: 1025px) {
+					.sidebar[data-slot] {
+						background: transparent;
+						-webkit-backdrop-filter: none;
+						backdrop-filter: none;
+						box-shadow: none;
+					}
 				}
 
 				@media (max-width: 1024px) {

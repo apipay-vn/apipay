@@ -12,11 +12,13 @@ export function Navbar({onMenuToggle, onSearchOpen}: NavbarProps) {
 
 	return (
 		<header className="navbar">
+			<div data-slot="site-header" aria-hidden className="navbar-glass" />
 			<div className="navbar-inner">
 				{/* Left section */}
 				<div className="navbar-left">
 					<button
 						className="navbar-menu-btn"
+						data-variant="ghost"
 						onClick={onMenuToggle}
 						aria-label="Toggle menu"
 					>
@@ -40,7 +42,7 @@ export function Navbar({onMenuToggle, onSearchOpen}: NavbarProps) {
 
 				{/* Right section */}
 				<div className="navbar-right">
-					<button className="navbar-search-btn" onClick={onSearchOpen}>
+					<button className="navbar-search-btn" data-slot="search-trigger" onClick={onSearchOpen}>
 						<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
 							<circle
 								cx="7"
@@ -66,6 +68,7 @@ export function Navbar({onMenuToggle, onSearchOpen}: NavbarProps) {
 
 					<button
 						className="navbar-icon-btn"
+						data-variant="ghost"
 						onClick={toggleTheme}
 						aria-label="Toggle theme"
 					>
@@ -104,11 +107,15 @@ export function Navbar({onMenuToggle, onSearchOpen}: NavbarProps) {
 					left: 0;
 					right: 0;
 					height: 3.5rem;
-					background: var(--color-bg);
-					border-bottom: 1px solid var(--color-border-light);
 					z-index: 60;
-					backdrop-filter: blur(12px);
-					background: color-mix(in srgb, var(--color-bg) 85%, transparent);
+				}
+
+				/* Reaches up behind the promo banners so the whole top bar is one sheet. */
+				.navbar-glass {
+					position: absolute;
+					inset: calc(-1 * var(--banner-height, 0rem)) 0 0;
+					z-index: -1;
+					pointer-events: none;
 				}
 
 				.navbar-inner {
@@ -130,17 +137,11 @@ export function Navbar({onMenuToggle, onSearchOpen}: NavbarProps) {
 					display: none;
 					align-items: center;
 					justify-content: center;
-					background: none;
-					border: none;
+					width: 2rem;
+					height: 2rem;
+					border: 1px solid transparent;
 					color: var(--color-text);
 					cursor: pointer;
-					padding: 0.25rem;
-					border-radius: 4px;
-					transition: background 0.15s;
-				}
-
-				.navbar-menu-btn:hover {
-					background: var(--color-bg-hover);
 				}
 
 				.navbar-logo {
@@ -193,18 +194,14 @@ export function Navbar({onMenuToggle, onSearchOpen}: NavbarProps) {
 					align-items: center;
 					gap: 0.5rem;
 					padding: 0.4rem 0.75rem;
-					background: var(--color-bg-secondary);
-					border: 1px solid var(--color-border);
-					border-radius: 8px;
+					border: 1px solid transparent;
 					color: var(--color-text-tertiary);
 					cursor: pointer;
 					font-size: 0.85rem;
-					transition: all 0.15s;
 					min-width: 200px;
 				}
 
 				.navbar-search-btn:hover {
-					border-color: var(--color-accent);
 					color: var(--color-text-secondary);
 				}
 
@@ -229,18 +226,14 @@ export function Navbar({onMenuToggle, onSearchOpen}: NavbarProps) {
 					justify-content: center;
 					width: 2rem;
 					height: 2rem;
-					background: none;
-					border: none;
-					border-radius: 6px;
+					border: 1px solid transparent;
 					color: var(--color-text-secondary);
 					cursor: pointer;
-					transition: all 0.15s;
 					text-decoration: none;
 				}
 
 				.navbar-icon-btn:hover {
 					color: var(--color-text);
-					background: var(--color-bg-hover);
 				}
 
 				@media (max-width: 1024px) {

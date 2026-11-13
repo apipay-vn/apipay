@@ -99,7 +99,6 @@ function ReleaseItem({
 					style={{
 						padding: "1rem 1.25rem 1.25rem",
 						borderTop: "1px solid var(--color-border-light)",
-						background: "var(--color-bg)",
 					}}
 				>
 					{release.features.length > 0 && (
@@ -255,11 +254,10 @@ function MonthSection({
 	return (
 		<section
 			id={group.anchor}
+			data-slot="card"
 			style={{
-				border: "1px solid var(--color-border)",
-				borderRadius: "14px",
+				borderRadius: "var(--radius)",
 				overflow: "hidden",
-				background: "var(--color-bg)",
 				scrollMarginTop: "5rem",
 			}}
 		>
@@ -271,7 +269,7 @@ function MonthSection({
 					justifyContent: "space-between",
 					width: "100%",
 					padding: "1rem 1.25rem",
-					background: "var(--color-bg-secondary)",
+					background: "transparent",
 					border: "none",
 					cursor: "pointer",
 					textAlign: "left",
