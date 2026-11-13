@@ -85,6 +85,11 @@
 	--color-border-light: #dcdcdc;
 }
 
+/* Dark glass cards are lighter than black, so muted text lifts a step to keep 4.5:1. */
+:root[data-glass].dark {
+	--color-text-tertiary: #8a8a8a;
+}
+
 /* ===== Base ===== */
 * {
 	box-sizing: border-box;
@@ -551,6 +556,11 @@ body {
 	border-bottom: none;
 }
 
+/* An opaque header row would hide the card's lit edge. */
+[data-glass] .mdx-content th {
+	background: transparent;
+}
+
 /* Pricing tabs */
 .pricing-tabs {
 	margin: 1.5rem 0 2rem;
@@ -602,7 +612,7 @@ body {
 	transform: translateX(-50%);
 	padding: 0.18rem 0.45rem;
 	border-radius: 999px;
-	background: #10b981;
+	background: #047857;
 	color: #ffffff;
 	font-size: 0.65rem;
 	font-weight: 800;
@@ -824,7 +834,7 @@ body {
 	font-family: var(--font-mono);
 	font-size: 0.75rem;
 	font-weight: 500;
-	color: var(--color-text-tertiary);
+	color: var(--color-text-secondary);
 	cursor: pointer;
 	white-space: nowrap;
 	transition:
@@ -841,6 +851,15 @@ body {
 /* Active tab */
 .code-tab-button[data-state="active"] {
 	color: var(--color-text);
+}
+
+/* The scrolling tab list clips overflow, so the lens drops its outer shadow and draws focus inside. */
+[data-glass] .code-tabs-tablist .code-tab-button[data-state="active"] {
+	box-shadow: var(--glass-edge-sm);
+}
+
+[data-glass] .code-tabs-tablist .code-tab-button:focus-visible {
+	outline-offset: -2px;
 }
 
 /* Code panel */

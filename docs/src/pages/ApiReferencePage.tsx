@@ -18,8 +18,8 @@ export default function ApiReferencePage() {
           alignItems: 'center',
           gap: '1rem',
           padding: '0.75rem 1.5rem',
-          background: 'var(--color-bg-primary, #fff)',
-          borderBottom: '1px solid var(--color-border, #e5e7eb)',
+          background: 'var(--scalar-background-1, #fff)',
+          borderBottom: '1px solid var(--scalar-border-color, #e5e7eb)',
           fontSize: '0.875rem',
         }}
       >
@@ -30,7 +30,7 @@ export default function ApiReferencePage() {
             alignItems: 'center',
             gap: '0.5rem',
             textDecoration: 'none',
-            color: 'var(--color-text-primary, #111)',
+            color: 'var(--scalar-color-1, #111)',
             fontWeight: 600,
           }}
         >
@@ -39,8 +39,8 @@ export default function ApiReferencePage() {
           </svg>
           ApiPay Docs
         </Link>
-        <span style={{color: 'var(--color-text-secondary, #6b7280)'}}>/</span>
-        <span style={{color: 'var(--color-text-secondary, #6b7280)'}}>API Reference</span>
+        <span style={{color: 'var(--scalar-color-2, #6b7280)'}}>/</span>
+        <span style={{color: 'var(--scalar-color-2, #6b7280)'}}>API Reference</span>
       </div>
       <div style={{paddingTop: '3rem'}}>
         <ApiReferenceReact
