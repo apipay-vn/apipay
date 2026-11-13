@@ -1,0 +1,487 @@
+/* Generated from shared/styles/glass.css in the apipay repo by `npm run sync:glass`. Edit there, not here. */
+/* Liquid glass appearance, shared by dashboard and landing. Active under <html data-glass>; see .claude/skills/glass-ui. */
+
+[data-glass] {
+  --radius: 1rem;
+  --glass-bg: oklch(0.925 0 0);
+  --glass-sheet: oklch(1 0 0 / 0.4);
+  --glass-overlay: oklch(1 0 0 / 0.8);
+  --glass-sheet-lite: oklch(1 0 0 / 0.75);
+  --glass-skeleton: oklch(0 0 0 / 0.09);
+  --glass-skeleton-sheen: oklch(1 0 0 / 0.7);
+  --glass-sheet-solid: oklch(0.985 0 0 / 0.96);
+  --glass-control: oklch(1 0 0 / 0.6);
+  --glass-control-hover: oklch(1 0 0 / 0.85);
+  --glass-well: oklch(0 0 0 / 0.09);
+  --glass-sheen: oklch(1 0 0 / 0.35);
+  --glass-blur: blur(16px);
+  /* Liquid edge: bright top-left rim, softer bottom-right glint, hairline, light pooling inside the edge. */
+  --glass-edge:
+    inset 1px 1px 0 oklch(1 0 0 / 0.95), inset -1px -1px 0 oklch(1 0 0 / 0.6), inset 0 0 0 1px oklch(0 0 0 / 0.06),
+    inset 0 0 22px -6px oklch(1 0 0 / 0.75);
+  --glass-edge-sm:
+    inset 1px 1px 0 oklch(1 0 0 / 0.95), inset -1px -1px 0 oklch(1 0 0 / 0.5), inset 0 0 0 1px oklch(0 0 0 / 0.07),
+    inset 0 0 10px -3px oklch(1 0 0 / 0.7);
+  --glass-shadow: 0 1px 2px oklch(0 0 0 / 0.06), 0 22px 44px -22px oklch(0 0 0 / 0.38);
+  --glass-shadow-sm: 0 4px 12px -5px oklch(0 0 0 / 0.24);
+  --glass-slat: oklch(0 0 0 / 0.13);
+  --glass-spot: oklch(1 0 0 / 0.95);
+  --glass-floor: oklch(0 0 0 / 0.1);
+  --glass-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+[data-glass].dark {
+  --glass-bg: oklch(0.11 0 0);
+  --glass-sheet: oklch(0.2 0 0 / 0.5);
+  --glass-overlay: oklch(0.2 0 0 / 0.5);
+  --glass-sheet-lite: oklch(0.2 0 0 / 0.8);
+  --glass-skeleton: oklch(1 0 0 / 0.1);
+  --glass-skeleton-sheen: oklch(1 0 0 / 0.14);
+  --glass-sheet-solid: oklch(0.19 0 0 / 0.96);
+  --glass-control: oklch(1 0 0 / 0.06);
+  --glass-control-hover: oklch(1 0 0 / 0.11);
+  --glass-well: oklch(1 0 0 / 0.1);
+  --glass-sheen: oklch(1 0 0 / 0.06);
+  --glass-blur: blur(24px);
+  --glass-edge:
+    inset 1px 1px 0 oklch(1 0 0 / 0.24), inset -1px -1px 0 oklch(1 0 0 / 0.07), inset 0 0 0 1px oklch(1 0 0 / 0.05),
+    inset 0 0 22px -6px oklch(1 0 0 / 0.12);
+  --glass-edge-sm:
+    inset 1px 1px 0 oklch(1 0 0 / 0.26), inset -1px -1px 0 oklch(1 0 0 / 0.08), inset 0 0 0 1px oklch(1 0 0 / 0.06),
+    inset 0 0 10px -3px oklch(1 0 0 / 0.14);
+  --glass-shadow: 0 1px 1px oklch(0 0 0 / 0.35), 0 24px 54px -26px oklch(0 0 0 / 0.9);
+  --glass-shadow-sm: 0 6px 16px -8px oklch(0 0 0 / 0.7);
+  --glass-slat: oklch(1 0 0 / 0.16);
+  --glass-spot: oklch(1 0 0 / 0.18);
+  --glass-floor: oklch(1 0 0 / 0.05);
+}
+
+[data-glass] body {
+  background: var(--glass-bg);
+}
+
+/* Light glass sits greyer than white: 600-level status text loses contrast, so darken it a step.
+   Apps also darken --border/--input in their own token format. */
+:root[data-glass]:not(.dark) {
+  --color-amber-600: oklch(55.5% 0.163 48.998);
+  --color-emerald-600: oklch(50.8% 0.118 165.612);
+  --color-green-600: oklch(52.7% 0.154 150.069);
+  --color-orange-600: oklch(55.3% 0.195 38.402);
+}
+
+/* Backdrop: light falling through window blinds from the top-right, in greyscale only.
+   Dark mode reads as slats of light, light mode as slat shadows on paper. */
+[data-glass] body::before,
+[data-glass] body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  /* Largest-viewport height: mobile toolbars collapsing on scroll must not resize (and so shift) the light. */
+  height: 100vh;
+  height: 100lvh;
+  z-index: -1;
+  pointer-events: none;
+  transform: translateZ(0);
+}
+
+[data-glass] body::before {
+  top: -60px;
+  left: -60px;
+  width: calc(100vw + 120px);
+  height: calc(100vh + 120px);
+  height: calc(100lvh + 120px);
+  background: repeating-linear-gradient(-16deg, var(--glass-slat) 0 44px, transparent 44px 112px);
+  filter: blur(5px);
+  mask-image: radial-gradient(75% 70% at 85% 5%, #000 20%, transparent 85%);
+}
+
+[data-glass] body::after {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E"),
+    radial-gradient(55% 55% at 85% 0%, var(--glass-spot), transparent 70%),
+    radial-gradient(70% 40% at 20% 110%, var(--glass-floor), transparent 70%);
+}
+
+[data-glass] :is([data-slot='sidebar-wrapper'], [data-slot='sidebar-inset'], [data-slot='auth-shell']) {
+  background: transparent;
+}
+
+/* Floating sidebar, detached from the window edges. */
+[data-glass] [data-slot='sidebar-container'] {
+  padding: 0.5rem;
+  border: 0;
+}
+
+[data-glass] [data-slot='sidebar-inner'] {
+  border-radius: calc(var(--radius) + 6px);
+}
+
+/* Panels */
+[data-glass]
+  :is(
+    [data-slot='card'],
+    [data-slot='sidebar-inner'],
+    [data-slot='popover-content'],
+    [data-slot='hover-card-content'],
+    [data-slot='dropdown-menu-content'],
+    [data-slot='dropdown-menu-sub-content'],
+    [data-slot='select-content'],
+    [data-slot='dialog-content'],
+    [data-slot='sheet-content'],
+    [data-slot='drawer-content'],
+    [data-slot='site-header']
+  ) {
+  background: linear-gradient(160deg, var(--glass-sheen), transparent 34%), var(--glass-sheet);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  border-color: transparent;
+  box-shadow: var(--glass-edge), var(--glass-shadow);
+}
+
+/* Overlays float over busy content rather than the soft backdrop, so they use a thicker material to keep text readable. */
+[data-glass]
+  :is(
+    [data-slot='popover-content'],
+    [data-slot='hover-card-content'],
+    [data-slot='dropdown-menu-content'],
+    [data-slot='dropdown-menu-sub-content'],
+    [data-slot='select-content'],
+    [data-slot='dialog-content'],
+    [data-slot='sheet-content'],
+    [data-slot='drawer-content'],
+    [data-slot='site-header']
+  ) {
+  background: linear-gradient(160deg, var(--glass-sheen), transparent 34%), var(--glass-overlay);
+}
+
+/* Sonner toasts: same material as panels. :root lifts specificity over Sonner's rich-color rules;
+   the status color stays in the text and icon. */
+:root[data-glass] [data-sonner-toast][data-styled='true'] {
+  background: linear-gradient(160deg, var(--glass-sheen), transparent 34%), var(--glass-overlay);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  border-color: transparent;
+  border-radius: calc(var(--radius) + 6px);
+  box-shadow: var(--glass-edge), var(--glass-shadow);
+
+  & [data-button] {
+    border-radius: 999px;
+  }
+
+  @media (prefers-reduced-transparency: reduce) {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: var(--glass-sheet-solid);
+  }
+}
+
+/* Controls: small lenses. Capsules where iOS uses them. */
+[data-glass]
+  :is(
+    :is([data-slot='button'], button[data-variant]):is([data-variant='outline'], [data-variant='secondary']),
+    [data-slot='input'],
+    [data-slot='textarea'],
+    [data-slot='select-trigger'],
+    [data-slot='tabs-list'],
+    [data-slot='toggle-group'],
+    [data-slot='sidebar-input'],
+    [data-slot='search-trigger'],
+    [data-slot='balance-shortcut'],
+    [data-slot='language-switcher'],
+    header [data-variant='ghost']
+  ) {
+  background: linear-gradient(160deg, var(--glass-sheen), transparent 60%), var(--glass-control);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-color: transparent;
+  box-shadow: var(--glass-edge-sm), var(--glass-shadow-sm);
+}
+
+[data-glass]
+  :is(
+    :is([data-slot='button'], button[data-variant]),
+    [data-slot='input'],
+    [data-slot='select-trigger'],
+    [data-slot='tabs-trigger'],
+    [data-slot='toggle-group-item'],
+    [data-slot='toggle'],
+    [data-slot='search-trigger'],
+    [data-slot='balance-shortcut'],
+    [data-slot='language-switcher'],
+    header [data-variant='ghost']
+  ) {
+  border-radius: 999px;
+}
+
+[data-glass] [data-slot='textarea'] {
+  border-radius: var(--radius);
+}
+
+/* Pill on one row, rounded rect when a tab list wraps onto two. */
+[data-glass] :is([data-slot='tabs-list'], [data-slot='toggle-group']) {
+  border-radius: 1.375rem;
+}
+
+[data-glass] :is([data-slot='button'], button[data-variant]):is([data-variant='outline'], [data-variant='secondary']):hover,
+[data-glass] [data-slot='select-trigger']:hover,
+[data-glass] [data-slot='search-trigger']:hover,
+[data-glass] header [data-variant='ghost']:hover {
+  background: linear-gradient(160deg, var(--glass-sheen), transparent 60%), var(--glass-control-hover);
+}
+
+/* Solid primary/destructive buttons keep their fill but get the same lit edge. */
+[data-glass] :is([data-slot='button'], button[data-variant]):not([data-slot^='toggle']):is([data-variant='default'], [data-variant='destructive']) {
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 0.45),
+    inset 0 -1px 0 oklch(0 0 0 / 0.18),
+    var(--glass-shadow-sm);
+}
+
+/* Selected item: a raised lens inside its group. */
+[data-glass] :is([data-slot='tabs-trigger'], [data-slot='toggle-group-item'])[data-state='active'],
+[data-glass] [data-slot='toggle-group-item'][data-state='on'],
+[data-glass] [data-slot='sidebar-menu-button'][data-active='true'] {
+  background: var(--glass-control-hover);
+  border-color: transparent;
+  box-shadow: var(--glass-edge-sm), var(--glass-shadow-sm);
+}
+
+[data-glass] [data-slot='sidebar-menu-button'] {
+  border-radius: calc(var(--radius) - 4px);
+}
+
+/* bg-muted matches the light overlay sheet, so the grabber vanished. */
+[data-glass] [data-slot='drawer-handle'] {
+  background: color-mix(in oklch, var(--foreground) 22%, transparent);
+}
+
+/* Calendar range: one capsule band per week, not a row of round day buttons. */
+[data-glass] [data-slot='calendar'] {
+  & [data-range-middle='true'] {
+    border-radius: 0;
+  }
+
+  & .rdp-today:not([data-selected='true']) {
+    border-radius: 999px;
+  }
+
+  & .rdp-range_start,
+  & .rdp-day:first-child[data-selected='true'],
+  & .rdp-day:first-child [data-range-middle='true'] {
+    border-top-left-radius: 999px;
+    border-bottom-left-radius: 999px;
+  }
+
+  & .rdp-range_end,
+  & .rdp-day:last-child[data-selected='true'],
+  & .rdp-day:last-child [data-range-middle='true'] {
+    border-top-right-radius: 999px;
+    border-bottom-right-radius: 999px;
+  }
+}
+
+/* The glass edge is a box-shadow, which hides Tailwind's shadow-based focus rings, so focus uses an outline. */
+[data-glass]
+  :is(
+    [data-slot='button'],
+    button[data-variant],
+    [data-slot='input'],
+    [data-slot='textarea'],
+    [data-slot='select-trigger'],
+    [data-slot='tabs-trigger'],
+    [data-slot='toggle-group-item'],
+    [data-slot='search-trigger'],
+    [data-slot='language-switcher']
+  ):focus-visible {
+  outline: 2px solid color-mix(in oklch, currentColor 45%, transparent);
+  outline-offset: 2px;
+}
+
+/* The glass edge replaces the border, so invalid controls need their red edge back. */
+[data-glass]
+  :is(
+    [data-slot='input'],
+    [data-slot='textarea'],
+    [data-slot='select-trigger'],
+    [data-slot='button'],
+    button[data-variant]
+  )[aria-invalid='true'] {
+  box-shadow:
+    inset 0 0 0 1px var(--color-destructive),
+    var(--glass-edge-sm);
+}
+
+/* Loading placeholders: bg-accent is the same tone as a light glass card, so skeletons need their own
+   tone plus a moving sheen to read as "loading" on both papers. */
+[data-glass] [data-slot='skeleton'] {
+  background-color: var(--glass-skeleton);
+  background-image: linear-gradient(100deg, transparent 20%, var(--glass-skeleton-sheen) 50%, transparent 80%);
+  background-size: 200% 100%;
+  background-repeat: no-repeat;
+  animation: glass-skeleton-sheen 1.4s ease-in-out infinite;
+}
+
+@keyframes glass-skeleton-sheen {
+  from {
+    background-position: 150% 0;
+  }
+  to {
+    background-position: -50% 0;
+  }
+}
+
+/* Fluidity: a springy press on everything you can tap. */
+[data-glass]
+  :is(
+    :is([data-slot='button'], button[data-variant]),
+    [data-slot='select-trigger'],
+    [data-slot='tabs-trigger'],
+    [data-slot='toggle'],
+    [data-slot='toggle-group-item'],
+    [data-slot='sidebar-menu-button'],
+    [data-slot='search-trigger'],
+    [data-slot='sidebar-trigger']
+  ) {
+  transition:
+    scale 0.4s var(--glass-spring),
+    background-color 0.2s,
+    background 0.2s,
+    box-shadow 0.2s,
+    color 0.2s;
+
+  &:active:not(:disabled) {
+    scale: 0.96;
+  }
+}
+
+/* Range inputs: a recessed track with an iOS-style capsule thumb. */
+/* Set --range-progress (0..1) on the input to fill the track up to the thumb; the fill stops at the thumb centre. */
+[data-glass] input[type='range'] {
+  appearance: none;
+  height: 0.625rem;
+  border-radius: 999px;
+  background: linear-gradient(
+      to right,
+      var(--color-foreground) 0 calc(0.875rem + var(--range-progress, 0) * (100% - 1.75rem)),
+      transparent 0
+    ),
+    var(--glass-well);
+  box-shadow: inset 0 1px 2px oklch(0 0 0 / 0.18);
+
+  &::-webkit-slider-thumb {
+    appearance: none;
+    width: 1.75rem;
+    height: 1.25rem;
+    border-radius: 999px;
+    background: oklch(1 0 0);
+    box-shadow: 0 0 0 1px oklch(0 0 0 / 0.16), 0 3px 8px oklch(0 0 0 / 0.25);
+    transition: scale 0.3s var(--glass-spring);
+  }
+
+  &:active::-webkit-slider-thumb {
+    scale: 1.12;
+  }
+
+  &::-moz-range-thumb {
+    width: 1.75rem;
+    height: 1.25rem;
+    border: 0;
+    border-radius: 999px;
+    background: oklch(1 0 0);
+    box-shadow: 0 0 0 1px oklch(0 0 0 / 0.16), 0 3px 8px oklch(0 0 0 / 0.25);
+  }
+}
+
+/* Icons drawn over a glass input sit before it in the DOM; lift them above its stacking context. */
+[data-glass] :has(> [data-slot='input']) > svg {
+  z-index: 1;
+}
+
+/* A control on a panel blurs what the panel already blurred, so skip that pass: same look, less GPU. */
+[data-glass]
+  :is(
+    [data-slot='card'],
+    [data-slot='dialog-content'],
+    [data-slot='sheet-content'],
+    [data-slot='drawer-content'],
+    [data-slot='popover-content'],
+    [data-sonner-toast]
+  )
+  :is(
+    button[data-variant],
+    [data-slot='button'],
+    [data-slot='input'],
+    [data-slot='textarea'],
+    [data-slot='select-trigger'],
+    [data-slot='tabs-list'],
+    [data-slot='toggle-group']
+  ) {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/* Low-end devices (data-glass-lite): cards and page controls re-blur every scroll frame, so trade blur for a denser sheet. */
+[data-glass][data-glass-lite] [data-slot='card'] {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background: linear-gradient(160deg, var(--glass-sheen), transparent 34%), var(--glass-sheet-lite);
+}
+
+[data-glass][data-glass-lite]
+  :is(
+    button[data-variant],
+    [data-slot='input'],
+    [data-slot='textarea'],
+    [data-slot='select-trigger'],
+    [data-slot='tabs-list'],
+    [data-slot='toggle-group'],
+    [data-slot='search-trigger'],
+    [data-slot='balance-shortcut'],
+    [data-slot='language-switcher']
+  ) {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/* Dense rows: no per-row blur. */
+[data-glass] [data-slot='table'] :is([data-slot='button'], button[data-variant], [data-slot='input'], [data-slot='select-trigger']) {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  [data-glass]
+    :is(
+      [data-slot='card'],
+      [data-slot='sidebar-inner'],
+      [data-slot='popover-content'],
+      [data-slot='hover-card-content'],
+      [data-slot='dropdown-menu-content'],
+      [data-slot='dropdown-menu-sub-content'],
+      [data-slot='select-content'],
+      [data-slot='dialog-content'],
+      [data-slot='sheet-content'],
+      [data-slot='drawer-content'],
+      [data-slot='site-header']
+    ) {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: var(--glass-sheet-solid);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-glass] [data-slot='skeleton'] {
+    animation: none;
+    background-image: none;
+  }
+
+  /* !important: the press-spring rules out-rank a plain [data-slot] selector. */
+  [data-glass] :is([data-slot], button[data-variant]),
+  [data-glass] input[type='range']::-webkit-slider-thumb {
+    transition: none !important;
+    scale: none !important;
+  }
+}
