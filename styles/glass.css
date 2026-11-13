@@ -224,8 +224,8 @@
   border-radius: 1.375rem;
 }
 
-[data-glass] :is([data-slot='button'], button[data-variant]):is([data-variant='outline'], [data-variant='secondary']):hover,
-[data-glass] [data-slot='select-trigger']:hover,
+[data-glass] :is([data-slot='button'], button[data-variant]):is([data-variant='outline'], [data-variant='secondary']):hover:not(:disabled),
+[data-glass] [data-slot='select-trigger']:hover:not(:disabled),
 [data-glass] [data-slot='search-trigger']:hover,
 [data-glass] header [data-variant='ghost']:hover {
   background: linear-gradient(160deg, var(--glass-sheen), transparent 60%), var(--glass-control-hover);
@@ -309,7 +309,7 @@
     button[data-variant]
   )[aria-invalid='true'] {
   box-shadow:
-    inset 0 0 0 1px var(--color-destructive),
+    inset 0 0 0 1px var(--color-destructive, oklch(0.577 0.245 27.325)),
     var(--glass-edge-sm);
 }
 
