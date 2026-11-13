@@ -155,7 +155,7 @@ function CodeBlock({code, language}: {code: string; language: string}) {
 					<span className="code-block-lang">{language || "code"}</span>
 					<button className="copy-button" data-slot="button" data-variant="outline" onClick={handleCopy}>
 						{copied ? (
-							<span className="flex items-center gap-1 text-green-500">
+							<span className="flex items-center gap-1 text-green-600 dark:text-green-500">
 								<svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
 								</svg>

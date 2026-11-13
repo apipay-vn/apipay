@@ -905,3 +905,8 @@ body {
 		font-size: 0.8rem;
 	}
 }
+
+/* The switcher clips overflow, so its buttons draw focus inside their edge. */
+[data-glass] [data-slot="language-switcher"] button:focus-visible {
+	outline-offset: -2px;
+}
