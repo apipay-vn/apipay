@@ -79,6 +79,35 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.34.0',
+    date: '2026-11-13',
+    features: [
+      'ApiPay Connect — let your customers link their own receiving bank accounts, with no tech team needed. Open ApiPay Connect on the Banks page, add a customer, and create a link, then send the link or download its QR code. The customer links a bank on an ApiPay page; the account appears in your Banks list with a Customer badge, and transaction webhooks say which customer it belongs to. Each link works once and lasts up to 3 days, and a new link replaces the previous one. Available to account owners outside sandbox, and through the API.',
+      'Emailed sign-in code — signing in with a password on a new device now asks for a 6-digit code sent to your email, unless you use an authenticator app. After the code, that device is trusted for 30 days, until you sign out all devices or change your password. This applies to the dashboard, the mobile app, and the CLI (`apipay login --password`).',
+      'Login activity — the Security tab now groups your sign-in methods and lists recent sign-ins and failed attempts on your account, including your staff.',
+      'Glass effect — the dashboard and the payment page have a new translucent glass look. On the dashboard, turn it off in Settings > Appearance > Glass effect if it feels slow.',
+      'Mobile app update — the glass look, dark mode that follows your phone setting, and the same font as the dashboard.',
+      'New QR style — QR images from the qr_only and trademark templates use rounded dots and frames, with the ApiPay mark in the centre.',
+      'VIB payment speaker help — when VIB rejects a link because the payment speaker is not registered in VIB Business, the link page shows the steps to fix it and opens the VIB guide.',
+    ],
+    fixes: [
+      'Top-up and plan purchase payment requests now stay open for 60 minutes, so a transfer that arrives after 10 minutes is still matched.',
+      'The payment page countdown now shows the real time left when a payment request expires within 10 minutes.',
+    ],
+    improvements: [
+      'Bank search works the same everywhere: type words in any order, with or without Vietnamese accents, to match the bank name, nickname, account number, virtual account, or account holder (for example "pgbank tuan"). The Create QR dialog shows a search box when you have more than 7 accounts.',
+      'The Banks list, support tickets, and affiliate commission history load one page at a time, so large accounts open faster.',
+      'The setup guide on Overview can be hidden with Hide guide.',
+      'Overage charges that took your balance below zero are now added to your next plan purchase, plan change, or renewal as their own line. Until then the balance shows as Debt.',
+      'Free plan: if a monthly cycle ends with no transactions, the Free plan pauses and your bank accounts are turned off. You receive an email; activate the Free plan again from the dashboard to turn your banks back on.',
+      'Transaction export is now available only in the dashboard. It asks for a security check, and for your two-factor code when two-factor authentication is on. Staff exports are limited to 50,000 transactions; choose a shorter date range for more.',
+      'Signing out all devices, changing or resetting your password, or turning on two-factor authentication now also signs out your staff; they sign in again with their password. Adding a staff member or setting a staff password asks for your two-factor code when it is on.',
+      'Staff cannot set redirect, plugin, or custom domain fields on payment requests, and cannot cancel payment requests created by WooCommerce, WHMCS, HostBill, or Commerce checkouts. Staff without access to bank accounts or payment requests no longer see bank account numbers.',
+      'The add-staff dialog is grouped into sign-in details, staff details, and access, and can generate a password for you.',
+      'The available banks API lists Coming soon and Maintenance banks only when you pass `includeUnavailable=true`.',
+    ],
+  },
+  {
     version: '1.33.0',
     date: '2026-11-09',
     features: [
@@ -766,6 +795,35 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.34.0',
+    date: '2026-11-13',
+    features: [
+      'ApiPay Connect — cho khách hàng của bạn tự liên kết tài khoản ngân hàng nhận tiền, không cần đội kỹ thuật. Mở ApiPay Connect trên trang Ngân hàng, thêm khách hàng và tạo link, rồi gửi link hoặc tải mã QR của link. Khách hàng liên kết ngân hàng trên trang của ApiPay; tài khoản hiện trong danh sách Ngân hàng của bạn với nhãn Khách hàng, và webhook giao dịch cho biết tài khoản thuộc khách hàng nào. Mỗi link chỉ dùng một lần, hiệu lực tối đa 3 ngày, và link mới thay thế link trước đó. Dành cho chủ tài khoản ngoài chế độ Sandbox, và có thể dùng qua API.',
+      'Mã đăng nhập qua email — đăng nhập bằng mật khẩu trên thiết bị mới giờ cần mã 6 chữ số gửi tới email của bạn, trừ khi bạn dùng ứng dụng xác thực. Sau khi nhập mã, thiết bị đó được tin cậy trong 30 ngày, cho đến khi bạn đăng xuất mọi thiết bị hoặc đổi mật khẩu. Áp dụng cho dashboard, ứng dụng di động và CLI (`apipay login --password`).',
+      'Lịch sử đăng nhập — tab Bảo mật giờ gom các phương thức đăng nhập vào một chỗ và liệt kê các lần đăng nhập và đăng nhập thất bại gần đây trên tài khoản, kể cả nhân viên.',
+      'Hiệu ứng kính — dashboard và trang thanh toán có giao diện kính trong suốt mới. Trên dashboard, tắt tại Cài đặt > Giao diện > Hiệu ứng kính nếu thấy chậm.',
+      'Cập nhật ứng dụng di động — giao diện kính, chế độ tối theo cài đặt điện thoại, và cùng phông chữ với dashboard.',
+      'Kiểu QR mới — ảnh QR của mẫu qr_only và trademark dùng chấm tròn và khung bo góc, với biểu tượng ApiPay ở giữa.',
+      'Hỗ trợ loa thanh toán VIB — khi VIB từ chối liên kết vì loa thanh toán chưa được đăng ký trên VIB Business, trang liên kết hiển thị các bước khắc phục và mở hướng dẫn VIB.',
+    ],
+    fixes: [
+      'Payment link nạp tiền và mua gói giờ mở trong 60 phút, để giao dịch chuyển đến sau 10 phút vẫn được đối soát.',
+      'Đồng hồ đếm ngược trên trang thanh toán giờ hiển thị đúng thời gian còn lại khi payment link hết hạn trong vòng 10 phút.',
+    ],
+    improvements: [
+      'Tìm kiếm ngân hàng hoạt động giống nhau ở mọi nơi: gõ các từ theo thứ tự bất kỳ, có dấu hoặc không dấu, để khớp tên ngân hàng, tên gợi nhớ, số tài khoản, tài khoản ảo hoặc chủ tài khoản (ví dụ "pgbank tuan"). Hộp thoại Tạo QR có ô tìm kiếm khi bạn có hơn 7 tài khoản.',
+      'Danh sách Ngân hàng, yêu cầu hỗ trợ và lịch sử hoa hồng tiếp thị liên kết tải theo từng trang, để tài khoản lớn mở nhanh hơn.',
+      'Hướng dẫn thiết lập trên Tổng quan có thể ẩn bằng nút Ẩn hướng dẫn.',
+      'Phí vượt hạn mức làm số dư âm giờ được cộng vào lần mua gói, đổi gói hoặc gia hạn tiếp theo thành một dòng riêng. Trước đó số dư hiển thị là Dư nợ.',
+      'Gói Free: nếu một chu kỳ tháng kết thúc mà không có giao dịch nào, gói Free tạm dừng và các tài khoản ngân hàng bị tắt. Bạn sẽ nhận email; kích hoạt lại gói Free trên dashboard để bật lại ngân hàng.',
+      'Xuất giao dịch giờ chỉ thực hiện được trên dashboard. Khi xuất, bạn cần qua bước kiểm tra bảo mật, và nhập mã xác thực hai lớp nếu đã bật. Nhân viên chỉ xuất được tối đa 50.000 giao dịch mỗi lần; hãy chọn khoảng thời gian ngắn hơn nếu cần nhiều hơn.',
+      'Đăng xuất mọi thiết bị, đổi hoặc đặt lại mật khẩu, hay bật xác thực hai lớp giờ cũng đăng xuất nhân viên của bạn; nhân viên đăng nhập lại bằng mật khẩu của họ. Thêm nhân viên hoặc đặt mật khẩu cho nhân viên sẽ yêu cầu mã xác thực hai lớp nếu bạn đã bật.',
+      'Nhân viên không thể đặt các trường chuyển hướng, plugin hoặc tên miền riêng trên payment link, và không thể hủy payment link tạo từ WooCommerce, WHMCS, HostBill hoặc Commerce. Nhân viên không có quyền xem ngân hàng hoặc payment link sẽ không còn thấy số tài khoản ngân hàng.',
+      'Hộp thoại thêm nhân viên được chia thành Thông tin đăng nhập, Thông tin nhân viên và Quyền truy cập, và có nút tạo mật khẩu.',
+      'API danh sách ngân hàng khả dụng chỉ trả về ngân hàng Sắp ra mắt và Bảo trì khi bạn truyền `includeUnavailable=true`.',
+    ],
+  },
   {
     version: '1.33.0',
     date: '2026-11-09',
