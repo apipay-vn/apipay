@@ -29,7 +29,7 @@ export function Home() {
 				<Link
 					to={localePath(locale, '/banks')}
 					data-slot="card"
-					className="group flex items-center gap-4 rounded-xl p-5"
+					className="group flex items-center gap-4 rounded-xl p-5 transition-transform hover:-translate-y-1"
 				>
 					<div className="min-w-0 flex-1">
 						<span className="inline-flex rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">

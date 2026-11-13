@@ -22,7 +22,7 @@ export function BankCard({bank, locale, t, query = ''}: BankCardProps) {
 		<Link
 			to={localePath(locale, `/banks/${bank.slug}`)}
 			data-slot="card"
-			className="group flex flex-col gap-4 rounded-lg p-4"
+			className="group flex flex-col gap-4 rounded-lg p-4 transition-transform hover:-translate-y-1"
 		>
 			<div className="flex items-start gap-3">
 				<BankLogo bank={bank} className="h-14 w-14 shrink-0" />
