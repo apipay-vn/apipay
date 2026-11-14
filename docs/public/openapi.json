@@ -263,6 +263,11 @@
                     "type": "string",
                     "description": "`bankBin` from the bank-apps list",
                     "example": "970418"
+                  },
+                  "platform": {
+                    "type": "string",
+                    "enum": ["android", "ios"],
+                    "description": "Customer's phone OS. Most banks need it. Defaults to the request User-Agent."
                   }
                 }
               }

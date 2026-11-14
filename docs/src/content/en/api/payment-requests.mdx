@@ -154,14 +154,14 @@ GET /v1/payment-requests/:publicId/bank-apps
 ```json
 {
   "data": [
-    {"bankBin": "970422", "bankCode": "MB", "name": "MB Bank"},
-    {"bankBin": "970416", "bankCode": "ACB", "name": "ACB"}
+    {"bankBin": "970436", "bankCode": "VCB", "name": "Vietcombank"},
+    {"bankBin": "970422", "bankCode": "MB", "name": "MB Bank"}
   ],
   "statusCode": 200
 }
 ```
 
-The list is empty when the payment request is no longer `ACTIVE`.
+The most used banks come first. The list is empty when the payment request is no longer `ACTIVE`.
 
 ### Create a bank app link
 
@@ -169,9 +169,10 @@ The list is empty when the payment request is no longer `ACTIVE`.
 POST /v1/payment-requests/:publicId/bank-apps/link
 ```
 
-| Parameter | Type   | Required | Description                         |
-| --------- | ------ | -------- | ----------------------------------- |
-| `bankBin` | string | Yes      | `bankBin` from the bank app list    |
+| Parameter  | Type   | Required | Description                                                                 |
+| ---------- | ------ | -------- | --------------------------------------------------------------------------- |
+| `bankBin`  | string | Yes      | `bankBin` from the bank app list                                            |
+| `platform` | string | No       | Customer's phone: `android` or `ios`. Most banks need it. Send it when you call from your server; from the phone it is read automatically. |
 
 ```json
 {
