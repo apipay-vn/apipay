@@ -180,7 +180,7 @@
 /* Controls: small lenses. Capsules where iOS uses them. */
 [data-glass]
   :is(
-    :is([data-slot='button'], button[data-variant]):is([data-variant='outline'], [data-variant='secondary']),
+    :is([data-slot='button'], button[data-variant]):not([data-slot^='toggle']):is([data-variant='outline'], [data-variant='secondary']),
     [data-slot='input'],
     [data-slot='textarea'],
     [data-slot='select-trigger'],
@@ -224,7 +224,16 @@
   border-radius: 1.375rem;
 }
 
-[data-glass] :is([data-slot='button'], button[data-variant]):is([data-variant='outline'], [data-variant='secondary']):hover:not(:disabled),
+/* Toggle items render as outline buttons; inside the group capsule only the selected one is raised. */
+[data-glass] [data-slot='toggle-group'] {
+  padding: 3px;
+}
+
+[data-glass] [data-slot='toggle-group-item'] {
+  border-color: transparent;
+}
+
+[data-glass] :is([data-slot='button'], button[data-variant]):not([data-slot^='toggle']):is([data-variant='outline'], [data-variant='secondary']):hover:not(:disabled),
 [data-glass] [data-slot='select-trigger']:hover:not(:disabled),
 [data-glass] [data-slot='search-trigger']:hover,
 [data-glass] header [data-variant='ghost']:hover {
