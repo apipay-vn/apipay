@@ -14,7 +14,6 @@ Gửi cho khách hàng một link. Khách tự liên kết tài khoản ngân h�
 ## Cần chuẩn bị
 
 - Tài khoản ApiPay có gói dịch vụ đang hoạt động. Chỉ chủ tài khoản dùng được Connect, và không dùng được ở chế độ Sandbox.
-- Gói còn chỗ cho ngân hàng mới. Ngân hàng khách hàng liên kết được tính vào giới hạn số ngân hàng của gói.
 
 ---
 
@@ -103,7 +102,6 @@ curl -X POST https://app.apipay.vn/v1/client/connect/links \
 |--------|-----------|
 | Khách báo link đã hết hạn | Link đã được dùng, bị thu hồi, bị thay thế hoặc quá 1 ngày. Tạo link mới. |
 | Khách thấy "Chưa thể liên kết lúc này" | Thường do gói của bạn hết hạn. Gia hạn gói rồi gửi link mới. |
-| Khách gặp lỗi giới hạn số ngân hàng | Gói của bạn đã hết chỗ cho ngân hàng mới. Gỡ ngân hàng không dùng hoặc nâng cấp gói. |
 | Không tạo được link | Chỉ chủ tài khoản tạo được link, và không ở chế độ Sandbox. |
 | Khách chờ xác nhận mãi | Khách cần hoàn tất xác thực trên ứng dụng ngân hàng. Nếu vài phút không có thay đổi, gửi link mới. |
 

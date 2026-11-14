@@ -14,7 +14,6 @@ Send your customer a link. They link their own bank account on an ApiPay page, a
 ## What you need
 
 - An ApiPay account with an active plan. Only the account owner can use Connect, and not in sandbox mode.
-- Free bank slots on your plan. Banks your customers link count toward your plan's bank limit.
 
 ---
 
@@ -103,7 +102,6 @@ curl -X POST https://app.apipay.vn/v1/client/connect/links \
 |---------|-----------|
 | Customer says the link has expired | It was used, revoked, replaced or older than 1 day. Create a new link. |
 | Customer sees "Linking is not available right now" | Usually your plan is inactive. Renew it, then send a new link. |
-| Customer gets an error about the bank limit | Your plan has no free bank slot. Remove an unused bank or upgrade your plan. |
 | Cannot create a link | Only the account owner can create links, and not in sandbox mode. |
 | Customer is stuck waiting for confirmation | They must finish approving in their bank app. If nothing changes after a few minutes, send a new link. |
 
