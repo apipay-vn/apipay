@@ -1,0 +1,115 @@
+---
+title: ApiPay Connect
+description: Gửi link để khách hàng tự liên kết tài khoản ngân hàng nhận tiền, không cần đội kỹ thuật
+---
+
+# ApiPay Connect: Liên kết ngân hàng cho khách hàng
+
+Gửi cho khách hàng một link. Khách tự liên kết tài khoản ngân hàng của họ trên trang ApiPay, và tài khoản bắt đầu nhận thanh toán dưới tài khoản ApiPay của bạn.
+
+**Ví dụ:** bạn vận hành một sàn thương mại có 200 người bán. Mỗi người bán cần nhận tiền vào tài khoản ngân hàng riêng, và bạn cần biết mỗi khoản tiền thuộc về ai. Thay vì thu thập thông tin ngân hàng thủ công, bạn gửi cho từng người bán một link Connect. Họ liên kết tài khoản trong vài phút, và mỗi webhook giao dịch cho bạn biết người bán nào đã nhận tiền.
+
+---
+
+## Cần chuẩn bị
+
+- Tài khoản ApiPay có gói dịch vụ đang hoạt động. Chỉ chủ tài khoản dùng được Connect, và không dùng được ở chế độ Sandbox.
+- Gói còn chỗ cho ngân hàng mới. Ngân hàng khách hàng liên kết được tính vào giới hạn số ngân hàng của gói.
+
+---
+
+## Các bước
+
+### Bước 1: Tạo link
+
+1. Đăng nhập [my.apipay.vn](https://my.apipay.vn), mở **Ngân hàng** và bấm **ApiPay Connect**.
+2. Bấm **Tạo link liên kết** và nhập:
+   - **Tên khách hàng**, ví dụ `Shop Hoa Mai`
+   - **Mã khách hàng** (không bắt buộc): mã của khách trong hệ thống của bạn, ví dụ `cus_1024`. Mã này được gửi kèm trong webhook giao dịch.
+3. Sao chép link hoặc bấm **Tải QR**. Link chỉ hiển thị một lần.
+
+### Bước 2: Gửi cho khách hàng
+
+Gửi link qua Zalo, email hoặc chat, hoặc chia sẻ mã QR.
+
+### Bước 3: Khách hàng liên kết ngân hàng
+
+Trên trang liên kết, khách thấy tên của bạn và:
+
+1. Chọn ngân hàng, điền thông tin tài khoản như trong [Kết nối ngân hàng](/vi/connect-banks).
+2. Đồng ý chia sẻ dữ liệu giao dịch với bạn.
+3. Xác nhận bằng mã OTP ngân hàng gửi, hoặc xác thực trên ứng dụng ngân hàng.
+
+Khi xong, trang báo liên kết thành công và khách có thể đóng tab. Ngân hàng cần kích hoạt thủ công sẽ hiện **Đã gửi yêu cầu liên kết** và thường được kích hoạt trong vòng 24 giờ.
+
+### Bước 4: Nhận thanh toán
+
+Tài khoản xuất hiện trong danh sách **Ngân hàng** của bạn với nhãn **Khách hàng: tên**. Dùng như mọi ngân hàng khác của bạn: tạo yêu cầu thanh toán, nhận thông báo và webhook.
+
+Mỗi [webhook giao dịch](/vi/api/webhooks) của tài khoản này có thông tin khách hàng:
+
+```json
+"connectedAccount": {"id": "cmh3x...", "externalRef": "cus_1024"}
+```
+
+---
+
+## Quy tắc của link
+
+- Link dùng được một lần và hết hạn sau 1 ngày.
+- Tạo link mới cho một khách hàng sẽ thay thế link cũ của khách đó.
+- Để dừng link, mở menu **...** của khách hàng và chọn **Thu hồi link**. Link ngừng hoạt động ngay.
+- Một khách hàng có thể liên kết nhiều ngân hàng. Mỗi ngân hàng cần một link mới.
+
+---
+
+## Tự động hóa bằng API
+
+Tạo link từ hệ thống của bạn, ví dụ ngay khi người bán đăng ký. Cần [xác thực](/vi/api/authentication).
+
+```bash
+curl -X POST https://app.apipay.vn/v1/client/connect/links \
+  -H "Authorization: Bearer <Auth>" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Shop Hoa Mai", "externalRef": "cus_1024", "ttlMinutes": 60}'
+```
+
+```json
+{
+  "data": {
+    "url": "https://my.apipay.vn/connect/...",
+    "expiresAt": "2026-11-14T11:30:00.000Z",
+    "connectedAccountId": "cmh3x..."
+  }
+}
+```
+
+- `ttlMinutes`: thời hạn link, từ 5 đến 1440 phút. Mặc định 30.
+- Cùng một `externalRef` luôn trỏ về cùng một khách hàng, nên bạn có thể gọi lại để gửi link mới.
+
+| Endpoint | Mô tả |
+|----------|-------|
+| `POST /v1/client/connect/links` | Tạo link |
+| `GET /v1/client/connect/accounts` | Danh sách khách hàng và ngân hàng của họ (`search`, `page`, `limit`) |
+| `GET /v1/client/connect/accounts/:id` | Xem một khách hàng |
+| `PATCH /v1/client/connect/accounts/:id` | Đổi tên khách hàng |
+| `DELETE /v1/client/connect/accounts/:id/link` | Thu hồi link đang mở của khách hàng |
+
+---
+
+## Xử lý sự cố
+
+| Vấn đề | Cách xử lý |
+|--------|-----------|
+| Khách báo link đã hết hạn | Link đã được dùng, bị thu hồi, bị thay thế hoặc quá 1 ngày. Tạo link mới. |
+| Khách thấy "Chưa thể liên kết lúc này" | Thường do gói của bạn hết hạn. Gia hạn gói rồi gửi link mới. |
+| Khách gặp lỗi giới hạn số ngân hàng | Gói của bạn đã hết chỗ cho ngân hàng mới. Gỡ ngân hàng không dùng hoặc nâng cấp gói. |
+| Không tạo được link | Chỉ chủ tài khoản tạo được link, và không ở chế độ Sandbox. |
+| Khách chờ xác nhận mãi | Khách cần hoàn tất xác thực trên ứng dụng ngân hàng. Nếu vài phút không có thay đổi, gửi link mới. |
+
+---
+
+## Bước tiếp theo
+
+- [Thiết lập webhook](/vi/api/webhooks)
+- [Quản lý ngân hàng](/vi/banking)

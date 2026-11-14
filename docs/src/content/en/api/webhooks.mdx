@@ -78,7 +78,8 @@ ApiPay sends this event when money arrives in your account.
     "bankAccountPublicId": "bnk_abc123",
     "gateway": "970422",
     "accountNumber": "0123456789",
-    "vaNumber": null
+    "vaNumber": null,
+    "connectedAccount": null
   }
 }
 ```
@@ -96,6 +97,7 @@ ApiPay sends this event when money arrives in your account.
 | `data.gateway`             | string         | Bank BIN, for example `970422` (MB)                         |
 | `data.accountNumber`       | string         | Receiving account number                                    |
 | `data.vaNumber`            | string \| null | Virtual account number, if any                              |
+| `data.connectedAccount`    | object \| null | Customer who linked this bank through [ApiPay Connect](/en/connect): `id` and your `externalRef`. `null` for your own banks |
 
 Match the order by `amount` and `content`. Banks may add text before or after the description, so check whether `data.content` **contains** the content of your [payment request](/en/api/payment-requests), case-insensitively.
 

@@ -19,6 +19,7 @@ export const viSidebarConfig: SidebarItem[] = [
     href: '/vi/dashboard',
     children: [
       {label: 'Kết nối ngân hàng', href: '/vi/connect-banks'},
+      {label: 'ApiPay Connect', href: '/vi/connect'},
       {label: 'Cửa hàng và nhân viên', href: '/vi/stores-staff'},
       {label: 'Commerce', href: '/vi/commerce'},
       {label: 'Loa thanh toán', href: '/vi/payment-speaker'},
@@ -80,6 +81,7 @@ export const enSidebarConfig: SidebarItem[] = [
     href: '/en/dashboard',
     children: [
       {label: 'Connect Banks', href: '/en/connect-banks'},
+      {label: 'ApiPay Connect', href: '/en/connect'},
       {label: 'Stores and Staff', href: '/en/stores-staff'},
       {label: 'Commerce', href: '/en/commerce'},
       {label: 'Payment Speaker', href: '/en/payment-speaker'},

@@ -1,0 +1,115 @@
+---
+title: ApiPay Connect
+description: Let your customers link their own receiving bank accounts with a one-time link, no tech team needed
+---
+
+# ApiPay Connect
+
+Send your customer a link. They link their own bank account on an ApiPay page, and the account starts receiving payments under your ApiPay account.
+
+**Example:** you run a marketplace with 200 sellers. Each seller should get paid into their own bank account, and you want to know which seller every payment belongs to. Instead of collecting bank details by hand, you send each seller a Connect link. Sellers link their accounts in a couple of minutes, and every transaction webhook tells you which seller received the money.
+
+---
+
+## What you need
+
+- An ApiPay account with an active plan. Only the account owner can use Connect, and not in sandbox mode.
+- Free bank slots on your plan. Banks your customers link count toward your plan's bank limit.
+
+---
+
+## Steps
+
+### Step 1: Create a link
+
+1. Sign in at [my.apipay.vn](https://my.apipay.vn), open **Banks** and click **ApiPay Connect**.
+2. Click **Create link** and enter:
+   - **Customer name**, for example `Hoa Mai Shop`
+   - **Customer ID** (optional): your own ID for this customer, for example `cus_1024`. It comes back in transaction webhooks.
+3. Copy the link or click **Download QR**. The link is shown only once.
+
+### Step 2: Send it to your customer
+
+Send the link over Zalo, email or chat, or share the QR code.
+
+### Step 3: Your customer links their bank
+
+On the page, your customer sees your name and:
+
+1. Picks their bank and fills in the account details, as in [Connect Banks](/en/connect-banks).
+2. Agrees to share transaction data with you.
+3. Confirms with the OTP from their bank, or approves in their bank app.
+
+When it is done, the page says the account is linked and they can close the tab. Banks that need manual activation show **Link request sent** and usually activate within 24 hours.
+
+### Step 4: Receive payments
+
+The account appears in your **Banks** list with a **Customer: name** badge. Use it like any of your banks: create payment requests, get notifications and webhooks.
+
+Each [transaction webhook](/en/api/webhooks) for this account includes the customer:
+
+```json
+"connectedAccount": {"id": "cmh3x...", "externalRef": "cus_1024"}
+```
+
+---
+
+## Link rules
+
+- A link works once and expires after 1 day.
+- Creating a new link for a customer replaces their previous one.
+- To stop a link, open the customer's **...** menu and choose **Revoke link**. It stops working right away.
+- One customer can link several banks. Create a new link for each.
+
+---
+
+## Automate with the API
+
+Create links from your own system, for example right after a seller signs up. Needs [authentication](/en/api/authentication).
+
+```bash
+curl -X POST https://app.apipay.vn/v1/client/connect/links \
+  -H "Authorization: Bearer <Auth>" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Hoa Mai Shop", "externalRef": "cus_1024", "ttlMinutes": 60}'
+```
+
+```json
+{
+  "data": {
+    "url": "https://my.apipay.vn/connect/...",
+    "expiresAt": "2026-11-14T11:30:00.000Z",
+    "connectedAccountId": "cmh3x..."
+  }
+}
+```
+
+- `ttlMinutes`: link lifetime, 5 to 1440 minutes. Defaults to 30.
+- The same `externalRef` always maps to the same customer, so you can call this again to send a fresh link.
+
+| Endpoint | Description |
+|----------|-------------|
+| `POST /v1/client/connect/links` | Create a link |
+| `GET /v1/client/connect/accounts` | List customers and their banks (`search`, `page`, `limit`) |
+| `GET /v1/client/connect/accounts/:id` | Get one customer |
+| `PATCH /v1/client/connect/accounts/:id` | Rename a customer |
+| `DELETE /v1/client/connect/accounts/:id/link` | Revoke the customer's open link |
+
+---
+
+## Troubleshooting
+
+| Problem | What to do |
+|---------|-----------|
+| Customer says the link has expired | It was used, revoked, replaced or older than 1 day. Create a new link. |
+| Customer sees "Linking is not available right now" | Usually your plan is inactive. Renew it, then send a new link. |
+| Customer gets an error about the bank limit | Your plan has no free bank slot. Remove an unused bank or upgrade your plan. |
+| Cannot create a link | Only the account owner can create links, and not in sandbox mode. |
+| Customer is stuck waiting for confirmation | They must finish approving in their bank app. If nothing changes after a few minutes, send a new link. |
+
+---
+
+## Next steps
+
+- [Set up webhooks](/en/api/webhooks)
+- [Bank Management](/en/banking)

@@ -78,7 +78,8 @@ ApiPay gửi sự kiện này khi có tiền vào tài khoản.
     "bankAccountPublicId": "bnk_abc123",
     "gateway": "970422",
     "accountNumber": "0123456789",
-    "vaNumber": null
+    "vaNumber": null,
+    "connectedAccount": null
   }
 }
 ```
@@ -96,6 +97,7 @@ ApiPay gửi sự kiện này khi có tiền vào tài khoản.
 | `data.gateway`             | string         | Mã BIN ngân hàng, ví dụ `970422` (MB)                       |
 | `data.accountNumber`       | string         | Số tài khoản nhận tiền                                      |
 | `data.vaNumber`            | string \| null | Số tài khoản ảo, nếu có                                     |
+| `data.connectedAccount`    | object \| null | Khách hàng đã liên kết ngân hàng này qua [ApiPay Connect](/vi/connect): `id` và `externalRef` của bạn. `null` với ngân hàng của chính bạn |
 
 Đối chiếu đơn hàng theo `amount` và `content`. Ngân hàng có thể thêm ký tự vào trước hoặc sau nội dung, nên hãy kiểm tra `data.content` có **chứa** nội dung của [yêu cầu thanh toán](/vi/api/payment-requests) hay không, không phân biệt hoa thường.
 
