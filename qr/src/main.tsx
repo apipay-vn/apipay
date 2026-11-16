@@ -11,8 +11,7 @@ createRoot(document.getElementById('root')!).render(
     <BrowserRouter>
       <AnalyticsTracker />
       <Routes>
-        <Route path="/" element={<App />} />
-        <Route path="/:slug" element={<App />} />
+        <Route path="/:slug?" element={<App />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>

@@ -7,7 +7,8 @@
     "dev": "vite --port 5505",
     "build": "vite build",
     "preview": "vite preview",
-    "tsc": "tsc --noEmit"
+    "tsc": "tsc --noEmit",
+    "logos:sm": "mkdir -p public/banks/sm && sips -Z 128 public/banks/*.png --out public/banks/sm >/dev/null"
   },
   "dependencies": {
     "@tanstack/react-virtual": "^3.13.23",

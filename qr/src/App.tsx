@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useState} from 'react';
-import {useParams} from 'react-router-dom';
+import {Link, useParams} from 'react-router-dom';
 import {LogoIcon} from './components/LogoIcon';
 import {QrForm, QrTemplate} from './components/QrForm';
 import {QrResultModal} from './components/QrResultModal';
@@ -149,9 +149,10 @@ export default function App() {
           <h2 className="text-lg font-semibold mt-8 mb-4 text-center">Tạo QR thanh toán qua các ngân hàng</h2>
           <div data-slot="card" className="flex gap-2 flex-wrap rounded-lg p-4">
             {BANKS.map(bank => (
-              <a
+              <Link
                 key={bank.code}
-                href={`/${bank.code.toLowerCase()}`}
+                to={`/${bank.code.toLowerCase()}`}
+                onClick={() => window.scrollTo({top: 0})}
                 data-slot="button"
                 data-variant={bankCode === bank.code ? 'default' : 'outline'}
                 className={cn(
@@ -163,7 +164,7 @@ export default function App() {
                 <span className="text-xs font-medium w-full text-center">
                   Tạo QR thanh toán {bank.fullName.replace(/TMCP|Thương mại cổ phần/gi, '')} - {bank.code}
                 </span>
-              </a>
+              </Link>
             ))}
           </div>
         </section>

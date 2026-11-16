@@ -21,13 +21,14 @@ function BankImage({
   className?: string;
   loading?: 'eager' | 'lazy';
 }) {
-  const [error, setError] = useState(false);
+  // Thumbnail first; full logo if the thumbnail is missing; icon if both fail.
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
-    setError(false);
+    setAttempt(0);
   }, [bank.image]);
 
-  if (error) {
+  if (attempt > 1) {
     return (
       <div className={cn('flex items-center justify-center opacity-50', className)}>
         <LogoIcon className="w-5 h-5 text-primary" />
@@ -37,10 +38,13 @@ function BankImage({
 
   return (
     <img
-      src={bank.image}
+      src={attempt === 0 ? bank.image.replace('/banks/', '/banks/sm/') : bank.image}
       alt={bank.name}
+      width={32}
+      height={32}
+      decoding="async"
       className={cn('object-contain scale-[1.1]', className)}
-      onError={() => setError(true)}
+      onError={() => setAttempt(a => a + 1)}
       loading={loading}
     />
   );
@@ -183,7 +187,7 @@ export function BankDropdown({value, onChange, error}: BankDropdownProps) {
                           transform: `translateY(${virtualRow.start}px)`,
                         }}
                         className={cn(
-                          'flex items-center gap-3 px-4 h-fit  cursor-pointer hover:bg-muted transition-colors',
+                          'flex items-center gap-3 px-4 h-fit cursor-pointer hover:bg-muted',
                           value === bank.code && 'bg-primary/10'
                         )}
                         onClick={() => {
