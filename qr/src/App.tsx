@@ -152,7 +152,10 @@ export default function App() {
               <Link
                 key={bank.code}
                 to={`/${bank.code.toLowerCase()}`}
-                onClick={() => window.scrollTo({top: 0})}
+                onClick={() => {
+                  setBankCode(bank.code);
+                  window.scrollTo({top: 0});
+                }}
                 data-slot="button"
                 data-variant={bankCode === bank.code ? 'default' : 'outline'}
                 className={cn(
