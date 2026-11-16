@@ -79,6 +79,28 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.35.0',
+    date: '2026-11-16',
+    features: [
+      'Overview redesign — the Overview page now reads top to bottom: one summary card with money in and transactions for the period and for today, the transaction chart beside a Webhook health chart (delivered, failed, and in progress), an hourly chart, amount and bank breakdowns, and recent transactions. The notifications sent stat is removed.',
+      'Arrange cards — hold any card on Overview, or choose Arrange cards in the actions menu, then drag rows up and down or swap the two cards in a row. Reset restores the default order. Your order is saved in this browser.',
+      'Time in date filters — the date range picker now takes a start and end time, so you can look at an exact window such as 08:00 to 12:00.',
+      'Two-factor recovery codes — turning on two-factor authentication now gives you ten one-time recovery codes. If you lose your phone, use one to sign in or to turn off two-factor authentication; you get an email each time a code is used. Generate new codes in the Credentials tab with an authenticator code.',
+      'IP allowlist for API keys — on the API Keys page, list up to 20 IP addresses or ranges that may use your live API key. Calls from any other IP are refused with `ip_not_allowed` and you get an alert. The list also covers WooCommerce, WHMCS, and HostBill, so add your store server. The card shows recent caller IPs you can add in one click. Sandbox keys are not restricted, and the list stays when you rotate your key.',
+      'Login activity details — each sign-in now shows the device, browser, IP address, city, country, and internet provider, and marks This device. Sign-ins from the ApiPay mobile app show as the ApiPay app.',
+      'A seasonal Teachers’ Day and Christmas look for the ApiPay mascot.',
+    ],
+    fixes: [
+      'With the glass effect on, toggle groups such as the QR style picker and the webhook bank picker now show which item is selected.',
+      'Chart bars are rounded and no longer stretch into a wide block when there is only one bank or one bar.',
+    ],
+    improvements: [
+      'The ApiPay Connect customers list shows whether each customer has an open link and when it expires. Revoke link now asks you to confirm, and creating a new link while one is open warns that the old link stops working.',
+      'Lists show first and last page buttons, on phones too.',
+      'The Free plan paused email is shorter and says how to activate the plan again.',
+    ],
+  },
+  {
     version: '1.34.0',
     date: '2026-11-13',
     features: [
@@ -795,6 +817,28 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.35.0',
+    date: '2026-11-16',
+    features: [
+      'Thiết kế lại trang Tổng quan — trang Tổng quan giờ đọc từ trên xuống: một thẻ tóm tắt tiền vào và số giao dịch trong kỳ và trong hôm nay, biểu đồ giao dịch cạnh biểu đồ Tình trạng webhook (đã gửi, thất bại, đang xử lý), biểu đồ theo giờ, phân bố theo số tiền và theo ngân hàng, và giao dịch gần đây. Chỉ số thông báo đã gửi được bỏ.',
+      'Sắp xếp thẻ — nhấn giữ một thẻ bất kỳ trên Tổng quan, hoặc chọn Sắp xếp thẻ trong menu thao tác, rồi kéo các hàng lên xuống hoặc đổi chỗ hai thẻ trong một hàng. Đặt lại để về thứ tự mặc định. Thứ tự được lưu trên trình duyệt này.',
+      'Giờ trong bộ lọc ngày — bộ chọn khoảng ngày giờ nhận cả giờ bắt đầu và giờ kết thúc, để bạn xem đúng một khung giờ, ví dụ 08:00 đến 12:00.',
+      'Mã khôi phục xác thực 2 bước — khi bật xác thực 2 bước, bạn nhận mười mã khôi phục, mỗi mã dùng một lần. Nếu mất điện thoại, dùng một mã để đăng nhập hoặc tắt xác thực 2 bước; mỗi lần dùng mã bạn sẽ nhận email. Tạo mã mới trong tab Xác thực bằng mã từ ứng dụng xác thực.',
+      'Danh sách IP được phép cho API key — trên trang API Keys, thêm tối đa 20 địa chỉ IP hoặc dải IP được dùng API key live của bạn. Lệnh gọi từ IP khác bị từ chối với `ip_not_allowed` và bạn nhận cảnh báo. Danh sách cũng áp dụng cho WooCommerce, WHMCS và HostBill, nên hãy thêm IP máy chủ cửa hàng. Thẻ hiển thị các IP gọi gần đây để bạn thêm bằng một lần bấm. Key sandbox không bị giới hạn, và danh sách được giữ khi bạn đổi key.',
+      'Chi tiết lịch sử đăng nhập — mỗi lần đăng nhập giờ hiển thị thiết bị, trình duyệt, địa chỉ IP, thành phố, quốc gia và nhà mạng, kèm nhãn Thiết bị này. Đăng nhập từ ứng dụng di động ApiPay hiển thị là ứng dụng ApiPay.',
+      'Linh vật ApiPay có giao diện theo mùa cho Ngày Nhà giáo Việt Nam và Giáng sinh.',
+    ],
+    fixes: [
+      'Khi bật hiệu ứng kính, các nhóm nút chọn như chọn kiểu QR và chọn ngân hàng của webhook giờ hiển thị rõ mục đang chọn.',
+      'Cột biểu đồ được bo tròn và không còn giãn thành một khối rộng khi chỉ có một ngân hàng hoặc một cột.',
+    ],
+    improvements: [
+      'Danh sách khách hàng ApiPay Connect cho biết mỗi khách hàng có link đang mở hay không và khi nào hết hạn. Thu hồi link giờ cần xác nhận, và tạo link mới khi còn link đang mở sẽ báo rằng link cũ ngừng hoạt động.',
+      'Các danh sách hiển thị nút trang đầu và trang cuối, cả trên điện thoại.',
+      'Email tạm dừng gói Free ngắn gọn hơn và cho biết cách kích hoạt lại gói.',
+    ],
+  },
   {
     version: '1.34.0',
     date: '2026-11-13',
