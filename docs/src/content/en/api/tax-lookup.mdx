@@ -1,0 +1,68 @@
+---
+title: Tax Code Lookup
+description: Get a business name and address from its tax code
+---
+
+# Tax Code Lookup
+
+Get the registered name and address of a Vietnamese business from its tax code. For example, a business customer needs a VAT invoice. They enter only their tax code, and your system fills in the company name and address with no typos.
+
+## Price
+
+- **10đ** per business found.
+- **5đ** when no business is found.
+- System errors are free.
+
+The amount is taken from your wallet balance. Top up with the top-up button next to your balance at the top of the dashboard.
+
+## On the dashboard
+
+1. Open **Products → Tax Code Lookup**.
+2. Enter the tax code (10 digits, or 10 digits and a branch code such as `0123456789-001`).
+3. Click **Look up**. The name, international name, short name, address and status show below.
+
+## Through the API
+
+Send the `Authorization: Bearer <Auth>` header (see [Authentication](/en/api/authentication)).
+
+```bash
+curl https://app.apipay.vn/v1/client/tax-lookup \
+  -H "Authorization: Bearer <Auth>" \
+  -H "Content-Type: application/json" \
+  -d '{"taxCode": "0319497153"}'
+```
+
+```json
+{
+  "data": {
+    "taxCode": "0319497153",
+    "found": true,
+    "business": {
+      "name": "CÔNG TY CỔ PHẦN APIPAY",
+      "internationalName": "APIPAY JOINT STOCK COMPANY",
+      "shortName": "APIPAY",
+      "address": "1146/51/5 Quang Trung, Phường Thông Tây Hội, TP Hồ Chí Minh",
+      "status": "NNT đang hoạt động"
+    },
+    "amountCharged": 10,
+    "balanceAfter": 49990
+  },
+  "statusCode": 200,
+  "timestamp": "2026-11-16T10:30:00.000Z"
+}
+```
+
+When no business is found, `found` is `false` and `business` is `null`.
+
+Current prices: `GET /v1/client/tax-lookup/options`.
+
+## Common errors
+
+| Code | Meaning                                                 |
+| ---- | ------------------------------------------------------- |
+| 400  | Invalid tax code                                        |
+| 402  | Wallet balance too low                                  |
+| 429  | More than 20 calls per minute                           |
+| 503  | Service temporarily unavailable, try again. Not charged |
+
+In Sandbox mode the API returns a sample result and charges nothing.

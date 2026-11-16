@@ -1,0 +1,64 @@
+---
+title: Tra cứu số tài khoản
+description: Kiểm tra tên chủ tài khoản ngân hàng trước khi chuyển tiền
+---
+
+# Tra cứu số tài khoản
+
+Kiểm tra tên chủ tài khoản trước khi chuyển tiền. Ví dụ: cửa hàng hoàn tiền cho khách hoặc trả hoa hồng cho cộng tác viên. Bạn tra số tài khoản khách gửi và so tên trước khi bấm chuyển, để không chuyển nhầm người.
+
+## Giá
+
+- **300đ** mỗi lần tìm thấy tài khoản.
+- **150đ** khi không tìm thấy.
+- Lỗi hệ thống không trừ tiền.
+
+Tiền được trừ vào số dư ví. Nạp thêm bằng nút nạp tiền cạnh số dư ở đầu trang dashboard.
+
+## Dùng trên dashboard
+
+1. Mở **Sản phẩm → Tra cứu STK**.
+2. Chọn ngân hàng, nhập số tài khoản.
+3. Bấm **Tra cứu**. Tên chủ tài khoản hiện ngay bên dưới.
+
+## Dùng qua API
+
+Gửi kèm header `Authorization: Bearer <Auth>` (xem [Xác thực API](/vi/api/authentication)).
+
+```bash
+curl https://app.apipay.vn/v1/client/account-lookup \
+  -H "Authorization: Bearer <Auth>" \
+  -H "Content-Type: application/json" \
+  -d '{"bankCode": "MB", "accountNumber": "0123456789"}'
+```
+
+```json
+{
+  "data": {
+    "bankCode": "MB",
+    "bankName": "Ngân hàng TMCP Quân Đội",
+    "accountNumber": "0123456789",
+    "accountName": "NGUYEN VAN A",
+    "found": true,
+    "amountCharged": 300,
+    "balanceAfter": 49700
+  },
+  "statusCode": 200,
+  "timestamp": "2026-11-16T10:30:00.000Z"
+}
+```
+
+Khi không tìm thấy, `found` là `false` và `accountName` là `null`.
+
+Danh sách ngân hàng hỗ trợ và giá hiện tại: `GET /v1/client/account-lookup/options`.
+
+## Lỗi thường gặp
+
+| Mã  | Ý nghĩa                                              |
+| --- | ---------------------------------------------------- |
+| 400 | Ngân hàng chưa hỗ trợ hoặc số tài khoản không hợp lệ |
+| 402 | Số dư ví không đủ                                    |
+| 429 | Gọi quá 20 lần mỗi phút                              |
+| 503 | Dịch vụ tạm gián đoạn, thử lại sau. Không trừ tiền   |
+
+Ở chế độ Sandbox, API trả về kết quả mẫu và không trừ tiền.

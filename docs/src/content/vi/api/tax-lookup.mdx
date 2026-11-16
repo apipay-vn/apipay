@@ -1,0 +1,68 @@
+---
+title: Tra cứu mã số thuế
+description: Lấy tên và địa chỉ doanh nghiệp từ mã số thuế
+---
+
+# Tra cứu mã số thuế
+
+Lấy tên và địa chỉ đăng ký của doanh nghiệp từ mã số thuế. Ví dụ: khách hàng doanh nghiệp cần xuất hoá đơn. Họ chỉ nhập mã số thuế, hệ thống của bạn tự điền tên công ty và địa chỉ, không gõ sai.
+
+## Giá
+
+- **10đ** mỗi lần tìm thấy doanh nghiệp.
+- **5đ** khi không tìm thấy.
+- Lỗi hệ thống không trừ tiền.
+
+Tiền được trừ vào số dư ví. Nạp thêm bằng nút nạp tiền cạnh số dư ở đầu trang dashboard.
+
+## Dùng trên dashboard
+
+1. Mở **Sản phẩm → Tra cứu MST**.
+2. Nhập mã số thuế (10 số, hoặc 10 số kèm mã chi nhánh như `0123456789-001`).
+3. Bấm **Tra cứu**. Tên, tên quốc tế, tên viết tắt, địa chỉ và trạng thái hiện bên dưới.
+
+## Dùng qua API
+
+Gửi kèm header `Authorization: Bearer <Auth>` (xem [Xác thực API](/vi/api/authentication)).
+
+```bash
+curl https://app.apipay.vn/v1/client/tax-lookup \
+  -H "Authorization: Bearer <Auth>" \
+  -H "Content-Type: application/json" \
+  -d '{"taxCode": "0319497153"}'
+```
+
+```json
+{
+  "data": {
+    "taxCode": "0319497153",
+    "found": true,
+    "business": {
+      "name": "CÔNG TY CỔ PHẦN APIPAY",
+      "internationalName": "APIPAY JOINT STOCK COMPANY",
+      "shortName": "APIPAY",
+      "address": "1146/51/5 Quang Trung, Phường Thông Tây Hội, TP Hồ Chí Minh",
+      "status": "NNT đang hoạt động"
+    },
+    "amountCharged": 10,
+    "balanceAfter": 49990
+  },
+  "statusCode": 200,
+  "timestamp": "2026-11-16T10:30:00.000Z"
+}
+```
+
+Khi không tìm thấy, `found` là `false` và `business` là `null`.
+
+Giá hiện tại: `GET /v1/client/tax-lookup/options`.
+
+## Lỗi thường gặp
+
+| Mã  | Ý nghĩa                                            |
+| --- | -------------------------------------------------- |
+| 400 | Mã số thuế không hợp lệ                            |
+| 402 | Số dư ví không đủ                                  |
+| 429 | Gọi quá 20 lần mỗi phút                            |
+| 503 | Dịch vụ tạm gián đoạn, thử lại sau. Không trừ tiền |
+
+Ở chế độ Sandbox, API trả về kết quả mẫu và không trừ tiền.

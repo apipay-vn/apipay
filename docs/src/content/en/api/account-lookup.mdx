@@ -1,0 +1,64 @@
+---
+title: Account Lookup
+description: Check a bank account holder name before you send money
+---
+
+# Account Lookup
+
+Check the account holder name before you send money. For example, a shop refunds a customer or pays a commission to a partner. Look up the account number they sent and compare the name before you transfer, so the money never goes to the wrong person.
+
+## Price
+
+- **300đ** per account found.
+- **150đ** when no account is found.
+- System errors are free.
+
+The amount is taken from your wallet balance. Top up with the top-up button next to your balance at the top of the dashboard.
+
+## On the dashboard
+
+1. Open **Products → Account Lookup**.
+2. Select the bank and enter the account number.
+3. Click **Look up**. The account holder name shows below.
+
+## Through the API
+
+Send the `Authorization: Bearer <Auth>` header (see [Authentication](/en/api/authentication)).
+
+```bash
+curl https://app.apipay.vn/v1/client/account-lookup \
+  -H "Authorization: Bearer <Auth>" \
+  -H "Content-Type: application/json" \
+  -d '{"bankCode": "MB", "accountNumber": "0123456789"}'
+```
+
+```json
+{
+  "data": {
+    "bankCode": "MB",
+    "bankName": "Ngân hàng TMCP Quân Đội",
+    "accountNumber": "0123456789",
+    "accountName": "NGUYEN VAN A",
+    "found": true,
+    "amountCharged": 300,
+    "balanceAfter": 49700
+  },
+  "statusCode": 200,
+  "timestamp": "2026-11-16T10:30:00.000Z"
+}
+```
+
+When no account is found, `found` is `false` and `accountName` is `null`.
+
+Supported banks and current prices: `GET /v1/client/account-lookup/options`.
+
+## Common errors
+
+| Code | Meaning                                                  |
+| ---- | -------------------------------------------------------- |
+| 400  | Bank not supported yet, or invalid account number        |
+| 402  | Wallet balance too low                                   |
+| 429  | More than 20 calls per minute                            |
+| 503  | Service temporarily unavailable, try again. Not charged  |
+
+In Sandbox mode the API returns a sample result and charges nothing.

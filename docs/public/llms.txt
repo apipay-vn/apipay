@@ -40,6 +40,8 @@
 - [Webhooks](https://docs.apipay.vn/en/api/webhooks): Receive payment notifications by webhook
 - [Banks](https://docs.apipay.vn/en/api/banks): API for connecting and managing bank accounts
 - [Metrics](https://docs.apipay.vn/en/api/metrics): Look up transactions and summary figures
+- [Account Lookup](https://docs.apipay.vn/en/api/account-lookup): Check a bank account holder name before you send money
+- [Tax Code Lookup](https://docs.apipay.vn/en/api/tax-lookup): Get a business name and address from its tax code
 
 ## Interactive API Reference
 

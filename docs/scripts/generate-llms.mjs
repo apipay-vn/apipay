@@ -64,6 +64,8 @@ const SIDEBAR_SECTIONS = [
       {file: 'api/webhooks.mdx', label: 'Webhooks'},
       {file: 'api/banks.mdx', label: 'Banks'},
       {file: 'api/metrics.mdx', label: 'Metrics'},
+      {file: 'api/account-lookup.mdx', label: 'Account Lookup'},
+      {file: 'api/tax-lookup.mdx', label: 'Tax Code Lookup'},
     ],
   },
 ];

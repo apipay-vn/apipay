@@ -3259,3 +3259,135 @@ curl -G https://app.apipay.vn/v1/client/metrics/overview \
 | `averageAmount`     | number         | Average amount per transaction (VND)                      |
 | `comparison`        | object \| null | Comparison with the previous period. Only for `period=this_month` |
 
+### Account Lookup
+
+Source: https://docs.apipay.vn/en/api/account-lookup
+
+# Account Lookup
+
+Check the account holder name before you send money. For example, a shop refunds a customer or pays a commission to a partner. Look up the account number they sent and compare the name before you transfer, so the money never goes to the wrong person.
+
+## Price
+
+- **300đ** per account found.
+- **150đ** when no account is found.
+- System errors are free.
+
+The amount is taken from your wallet balance. Top up with the top-up button next to your balance at the top of the dashboard.
+
+## On the dashboard
+
+1. Open **Products → Account Lookup**.
+2. Select the bank and enter the account number.
+3. Click **Look up**. The account holder name shows below.
+
+## Through the API
+
+Send the `Authorization: Bearer ` header (see [Authentication](/en/api/authentication)).
+
+```bash
+curl https://app.apipay.vn/v1/client/account-lookup \
+  -H "Authorization: Bearer " \
+  -H "Content-Type: application/json" \
+  -d '{"bankCode": "MB", "accountNumber": "0123456789"}'
+```
+
+```json
+{
+  "data": {
+    "bankCode": "MB",
+    "bankName": "Ngân hàng TMCP Quân Đội",
+    "accountNumber": "0123456789",
+    "accountName": "NGUYEN VAN A",
+    "found": true,
+    "amountCharged": 300,
+    "balanceAfter": 49700
+  },
+  "statusCode": 200,
+  "timestamp": "2026-11-16T10:30:00.000Z"
+}
+```
+
+When no account is found, `found` is `false` and `accountName` is `null`.
+
+Supported banks and current prices: `GET /v1/client/account-lookup/options`.
+
+## Common errors
+
+| Code | Meaning                                                  |
+| ---- | -------------------------------------------------------- |
+| 400  | Bank not supported yet, or invalid account number        |
+| 402  | Wallet balance too low                                   |
+| 429  | More than 20 calls per minute                            |
+| 503  | Service temporarily unavailable, try again. Not charged  |
+
+In Sandbox mode the API returns a sample result and charges nothing.
+
+### Tax Code Lookup
+
+Source: https://docs.apipay.vn/en/api/tax-lookup
+
+# Tax Code Lookup
+
+Get the registered name and address of a Vietnamese business from its tax code. For example, a business customer needs a VAT invoice. They enter only their tax code, and your system fills in the company name and address with no typos.
+
+## Price
+
+- **10đ** per business found.
+- **5đ** when no business is found.
+- System errors are free.
+
+The amount is taken from your wallet balance. Top up with the top-up button next to your balance at the top of the dashboard.
+
+## On the dashboard
+
+1. Open **Products → Tax Code Lookup**.
+2. Enter the tax code (10 digits, or 10 digits and a branch code such as `0123456789-001`).
+3. Click **Look up**. The name, international name, short name, address and status show below.
+
+## Through the API
+
+Send the `Authorization: Bearer ` header (see [Authentication](/en/api/authentication)).
+
+```bash
+curl https://app.apipay.vn/v1/client/tax-lookup \
+  -H "Authorization: Bearer " \
+  -H "Content-Type: application/json" \
+  -d '{"taxCode": "0319497153"}'
+```
+
+```json
+{
+  "data": {
+    "taxCode": "0319497153",
+    "found": true,
+    "business": {
+      "name": "CÔNG TY CỔ PHẦN APIPAY",
+      "internationalName": "APIPAY JOINT STOCK COMPANY",
+      "shortName": "APIPAY",
+      "address": "1146/51/5 Quang Trung, Phường Thông Tây Hội, TP Hồ Chí Minh",
+      "status": "NNT đang hoạt động"
+    },
+    "amountCharged": 10,
+    "balanceAfter": 49990
+  },
+  "statusCode": 200,
+  "timestamp": "2026-11-16T10:30:00.000Z"
+}
+```
+
+When no business is found, `found` is `false` and `business` is `null`.
+
+Current prices: `GET /v1/client/tax-lookup/options`.
+
+## Common errors
+
+| Code | Meaning                                                 |
+| ---- | ------------------------------------------------------- |
+| 400  | Invalid tax code                                        |
+| 402  | Wallet balance too low                                  |
+| 429  | More than 20 calls per minute                           |
+| 503  | Service temporarily unavailable, try again. Not charged |
+
+In Sandbox mode the API returns a sample result and charges nothing.
+
