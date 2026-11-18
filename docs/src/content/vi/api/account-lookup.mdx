@@ -5,13 +5,12 @@ description: Kiểm tra tên chủ tài khoản ngân hàng trước khi chuyể
 
 # Tra cứu số tài khoản
 
-Kiểm tra tên chủ tài khoản trước khi chuyển tiền. Ví dụ: cửa hàng hoàn tiền cho khách hoặc trả hoa hồng cho cộng tác viên. Bạn tra số tài khoản khách gửi và so tên trước khi bấm chuyển, để không chuyển nhầm người.
+Tra cứu tên chủ tài khoản theo ngân hàng và số tài khoản thông qua kết nối NAPAS, hơn 50 ngân hàng và ví. Ví dụ: cửa hàng hoàn tiền cho khách hoặc trả hoa hồng cho cộng tác viên. Bạn tra số tài khoản khách gửi và so tên trước khi bấm chuyển, để không chuyển nhầm người.
 
 ## Giá
 
-- **300đ** mỗi lần tìm thấy tài khoản.
-- **150đ** khi không tìm thấy.
-- Lỗi hệ thống không trừ tiền.
+- **300đ** mỗi lần tra cứu, dù tìm thấy hay không tìm thấy tài khoản.
+- Không trừ tiền khi hệ thống tra cứu gặp lỗi (quá tải, gián đoạn). API trả về 503.
 
 Tiền được trừ vào số dư ví. Nạp thêm bằng nút nạp tiền cạnh số dư ở đầu trang dashboard.
 
