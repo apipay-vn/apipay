@@ -3265,7 +3265,7 @@ Source: https://docs.apipay.vn/en/api/account-lookup
 
 # Account Lookup
 
-Look up the account holder name from the bank and account number through the NAPAS connection, at more than 50 banks and wallets. For example, a shop refunds a customer or pays a commission to a partner. Look up the account number they sent and compare the name before you transfer, so the money never goes to the wrong person.
+Look up the account holder name from the bank and account number through the NAPAS network, at more than 50 banks and wallets. For example, a shop refunds a customer or pays a commission to a partner. Look up the account number they sent and compare the name before you transfer, so the money never goes to the wrong person.
 
 ## Price
 
