@@ -3267,6 +3267,8 @@ Source: https://docs.apipay.vn/en/api/account-lookup
 
 Look up the account holder name from the bank and account number through the NAPAS network, at more than 50 banks and wallets. For example, a shop refunds a customer or pays a commission to a partner. Look up the account number they sent and compare the name before you transfer, so the money never goes to the wrong person.
 
+By using Account Lookup, on the dashboard or through the API, you accept the [Bank account lookup policy](https://drive.google.com/file/d/1lnH8zSLarG3iDX7ACCsM-a-N_3PFMYl7/view).
+
 ## Price
 
 - **300đ** per lookup, whether the account is found or not.
