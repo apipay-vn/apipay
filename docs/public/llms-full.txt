@@ -785,6 +785,7 @@ Connect a bank account so ApiPay can detect incoming money and notify you as soo
 | Bank | Personal | Business | Household business | Notes |
 |------|----------|----------|--------------------|-------|
 | ACB | Auto | Auto | Auto | |
+| Agribank | Auto | Activation request | Auto | Businesses must register the integration at an Agribank branch first |
 | BIDV | Auto | Activation request | Auto | |
 | Co-opBank | Auto | Auto | Auto | |
 | MB Bank | Auto | Auto | Auto | |
@@ -799,7 +800,7 @@ Connect a bank account so ApiPay can detect incoming money and notify you as soo
 | VPBank | Auto | Activation request | Auto | |
 | Shinhan Bank | Maintenance | Maintenance | Not supported | Not accepting new links for now |
 
-HDBank and Agribank are coming soon.
+HDBank is coming soon.
 
 > **VietinBank:** Transfers into a VietinBank account arrive without their content, so they cannot be matched by transfer content.
 

@@ -206,7 +206,6 @@ export const BANKS: Bank[] = [
 		accountTypes: ['personal', 'household', 'business'],
 		modes: {personal: 'otp', household: 'otp', business: 'otp'},
 	},
-	// Placeholders: generic manual steps until the Agribank and HDBank flows are confirmed.
 	{
 		slug: 'agribank',
 		code: 'VBA',
@@ -215,8 +214,9 @@ export const BANKS: Bank[] = [
 		fullName: 'Ngân hàng Nông nghiệp và Phát triển Nông thôn Việt Nam',
 		searchNames: ['agribank', 'nông nghiệp', 'phát triển nông thôn'],
 		accountTypes: ['personal', 'household', 'business'],
-		modes: {personal: 'manual', household: 'manual', business: 'manual'},
+		modes: {personal: 'otp', household: 'otp', business: 'manual'},
 	},
+	// Placeholder: generic manual steps until the HDBank flow is confirmed.
 	{
 		slug: 'hdbank',
 		code: 'HDB',

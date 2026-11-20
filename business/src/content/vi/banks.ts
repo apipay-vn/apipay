@@ -116,13 +116,18 @@ export function getFlow(mode: LinkMode): AccountFlow {
   return FLOWS[mode];
 }
 
-const TPBANK_VA_NOTE = 'Tài khoản ảo (VA) hiển thị dưới dạng tài khoản phụ của tài khoản gốc.';
+const TPBANK_VA_NOTE = 'Khách chuyển khoản thẳng vào số tài khoản gốc, không tạo tài khoản ảo (VA).';
 const TPBANK_REMOVE_NOTE = 'Tài khoản TPBank đã kích hoạt không tự xoá được; hãy tắt ngân hàng hoặc liên hệ hỗ trợ.';
 
 const COMING_SOON_NOTE = 'Hướng dẫn chi tiết đang được cập nhật. Liên hệ support@apipay.vn để được hỗ trợ liên kết.';
 
 export const BANK_NOTES: Record<string, Partial<Record<AccountType, string[]>>> = {
-  agribank: {personal: [COMING_SOON_NOTE], household: [COMING_SOON_NOTE], business: [COMING_SOON_NOTE]},
+  agribank: {
+    business: [
+      'Doanh nghiệp cần ra chi nhánh Agribank đăng ký tích hợp nhận thông báo giao dịch trước khi liên kết.',
+      'Sau khi gửi yêu cầu, dashboard có thể hiển thị trạng thái chờ kích hoạt trong lúc ApiPay xử lý.',
+    ],
+  },
   hdbank: {personal: [COMING_SOON_NOTE], household: [COMING_SOON_NOTE], business: [COMING_SOON_NOTE]},
   msb: {
     personal: [

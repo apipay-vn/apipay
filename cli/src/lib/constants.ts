@@ -198,6 +198,19 @@ export const SUPPORTED_BANKS = [
 		] satisfies AccountType[],
 		requiresIdentity: true,
 	},
+	{
+		value: "VBA",
+		shortName: "VBA",
+		bankBin: "970405",
+		bankName: "Agribank",
+		name: "Agribank — Ngân hàng Nông nghiệp và Phát triển Nông thôn Việt Nam",
+		accountTypes: [
+			"personal-account",
+			"business-account",
+			"business-household-account",
+		] satisfies AccountType[],
+		requiresIdentity: true,
+	},
 ] as const;
 
 export type SupportedBank = (typeof SUPPORTED_BANKS)[number];
