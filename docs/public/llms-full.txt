@@ -785,7 +785,7 @@ Connect a bank account so ApiPay can detect incoming money and notify you as soo
 | Bank | Personal | Business | Household business | Notes |
 |------|----------|----------|--------------------|-------|
 | ACB | Auto | Auto | Auto | |
-| Agribank | Auto | Activation request | Auto | Businesses must register the integration at an Agribank branch first |
+| Agribank | Auto | Activation request | Auto | The account must be registered for e-commerce. Businesses must register the integration at a branch first |
 | BIDV | Auto | Activation request | Auto | |
 | Co-opBank | Auto | Auto | Auto | |
 | MB Bank | Auto | Auto | Auto | |

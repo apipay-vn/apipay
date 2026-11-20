@@ -119,11 +119,17 @@ export function getFlow(mode: LinkMode): AccountFlow {
 const TPBANK_VA_NOTE = 'Customers transfer to the origin account number. No virtual account (VA) is created.';
 const TPBANK_REMOVE_NOTE = 'An active TPBank account cannot be removed from the dashboard; turn the bank off or contact support.';
 
+const AGRIBANK_ECOMMERCE_NOTE =
+  'The account must be registered for e-commerce. Accounts already verified at a branch can register online; accounts opened online must register at a branch.';
+
 const COMING_SOON_NOTE = 'A detailed guide is coming soon. Contact support@apipay.vn for help linking this bank.';
 
 export const BANK_NOTES: Record<string, Partial<Record<AccountType, string[]>>> = {
   agribank: {
+    personal: [AGRIBANK_ECOMMERCE_NOTE],
+    household: [AGRIBANK_ECOMMERCE_NOTE],
     business: [
+      AGRIBANK_ECOMMERCE_NOTE,
       'Businesses must register the transaction-notification integration at an Agribank branch before linking.',
       'After you submit, the dashboard may show the account as pending while ApiPay activates it.',
     ],

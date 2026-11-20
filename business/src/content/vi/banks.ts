@@ -119,11 +119,17 @@ export function getFlow(mode: LinkMode): AccountFlow {
 const TPBANK_VA_NOTE = 'Khách chuyển khoản thẳng vào số tài khoản gốc, không tạo tài khoản ảo (VA).';
 const TPBANK_REMOVE_NOTE = 'Tài khoản TPBank đã kích hoạt không tự xoá được; hãy tắt ngân hàng hoặc liên hệ hỗ trợ.';
 
+const AGRIBANK_ECOMMERCE_NOTE =
+  'Tài khoản cần đăng ký dịch vụ thương mại điện tử. Tài khoản đã xác minh tại quầy có thể đăng ký online, tài khoản mở online cần ra quầy đăng ký.';
+
 const COMING_SOON_NOTE = 'Hướng dẫn chi tiết đang được cập nhật. Liên hệ support@apipay.vn để được hỗ trợ liên kết.';
 
 export const BANK_NOTES: Record<string, Partial<Record<AccountType, string[]>>> = {
   agribank: {
+    personal: [AGRIBANK_ECOMMERCE_NOTE],
+    household: [AGRIBANK_ECOMMERCE_NOTE],
     business: [
+      AGRIBANK_ECOMMERCE_NOTE,
       'Doanh nghiệp cần ra chi nhánh Agribank đăng ký tích hợp nhận thông báo giao dịch trước khi liên kết.',
       'Sau khi gửi yêu cầu, dashboard có thể hiển thị trạng thái chờ kích hoạt trong lúc ApiPay xử lý.',
     ],
