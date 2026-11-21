@@ -1,10 +1,9 @@
 import chalk from "chalk";
 import {ApiKeyCommand} from "../../lib/base-command.js";
-import {formatBankLabel} from "../../lib/banks.js";
 import {createTable, formatCurrency} from "../../lib/formatters.js";
 
 export default class MetricsSummary extends ApiKeyCommand {
-	static override description = "View transaction summary grouped by bank";
+	static override description = "View incoming transaction totals";
 
 	static override examples = ["<%= config.bin %> metrics:summary"];
 
@@ -12,35 +11,35 @@ export default class MetricsSummary extends ApiKeyCommand {
 		this.spinner.start("Fetching transaction summary...");
 
 		try {
-			const data = await this.api.get("/client/metrics/summary", "apikey");
+			const data = await this.api.get("/client/metrics/overview", "apikey");
 			const summary = data?.data ?? data;
 
 			this.spinner.stop();
 
-			if (!summary || (Array.isArray(summary) && summary.length === 0)) {
+			if (this.jsonOutput) {
+				this.outputJson(summary);
+				return;
+			}
+
+			if (!summary?.totalTransactions) {
 				this.log("\n  No transactions yet.\n");
 				return;
 			}
 
-			const items = Array.isArray(summary) ? summary : [summary];
-
 			console.log("");
 			const table = createTable(
-				["Bank", "Total In", "Total Out", "Count In", "Count Out"],
-				items.map((s: any) => [
-					formatBankLabel(s),
-					chalk.green(formatCurrency(s.totalIn ?? 0)),
-					chalk.red(formatCurrency(s.totalOut ?? 0)),
-					s.countIn?.toString() ?? "0",
-					s.countOut?.toString() ?? "0",
-				]),
+				["Total In", "Transactions", "Average", "Success Rate"],
+				[
+					[
+						chalk.green(formatCurrency(summary.totalIn ?? 0)),
+						String(summary.totalTransactions),
+						formatCurrency(summary.averageAmount ?? 0),
+						`${Number(summary.successRate ?? 0).toFixed(1)}%`,
+					],
+				],
 			);
 			console.log(table);
 			console.log("");
-
-			if (this.jsonOutput) {
-				this.outputJson(summary);
-			}
 		} catch (error) {
 			this.spinner.fail("Failed to fetch summary");
 			this.handleError(error);

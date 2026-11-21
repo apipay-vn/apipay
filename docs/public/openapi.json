@@ -1150,17 +1150,7 @@
           {"$ref": "#/components/parameters/DateTo"},
           {"$ref": "#/components/parameters/Search"}
         ],
-        "responses": {"200": {"description": "Totals, averages, success rate, byBank"}}
-      }
-    },
-    "/v1/client/metrics/summary": {
-      "get": {
-        "tags": ["Metrics"],
-        "summary": "Get metrics summary",
-        "description": "Legacy summary endpoint. Prefer `/overview` for new integrations.",
-        "operationId": "getMetricsSummary",
-        "security": [{"bearerAuth": []}],
-        "responses": {"200": {"description": "Summary by bank"}}
+        "responses": {"200": {"description": "Totals, averages and success rate"}}
       }
     },
     "/v1/client/metrics/transactions": {

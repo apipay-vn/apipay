@@ -78,7 +78,7 @@ apipay webhooks:add           # Register a webhook for notifications
 
 | Command | Description |
 |---------|-------------|
-| `apipay metrics:summary` | Transaction summary by bank |
+| `apipay metrics:summary` | Incoming transaction totals |
 | `apipay metrics:transactions` | List recent transactions |
 
 ### Configuration
