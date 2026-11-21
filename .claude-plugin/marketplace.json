@@ -1,0 +1,17 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "apipay",
+  "description": "Official ApiPay skills for AI coding agents.",
+  "owner": {
+    "name": "ApiPay",
+    "url": "https://apipay.vn"
+  },
+  "plugins": [
+    {
+      "name": "apipay",
+      "description": "Integrate ApiPay bank-transfer payments the safe way: sandbox first, keys on the server, signed and idempotent webhooks.",
+      "source": "./",
+      "category": "development"
+    }
+  ]
+}

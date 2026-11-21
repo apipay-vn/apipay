@@ -1,0 +1,11 @@
+{
+  "name": "apipay",
+  "version": "1.0.0",
+  "description": "Integrate ApiPay bank-transfer payments the safe way: sandbox first, keys on the server, signed and idempotent webhooks.",
+  "author": {
+    "name": "ApiPay",
+    "url": "https://apipay.vn"
+  },
+  "homepage": "https://docs.apipay.vn",
+  "repository": "https://github.com/apipay-vn/apipay"
+}

@@ -51,6 +51,16 @@ apipay login
 apipay pay:create
 ```
 
+### Cài ApiPay Skill cho AI agent (tuỳ chọn)
+
+Skill giúp Claude Code, Codex, Cursor viết code tích hợp ApiPay đúng chuẩn: dùng sandbox trước, giữ key ở server, kiểm tra chữ ký webhook.
+
+```
+/plugin install apipay --marketplace apipay-vn/apipay
+```
+
+Ứng dụng chat (Claude, ChatGPT): tải `apipay.zip` ở bản phát hành mới nhất trên GitHub rồi tải lên mục Skills.
+
 ### API Example
 
 ```curl
@@ -98,6 +108,8 @@ apipay/
 │   └── bin/                # Entry point
 │
 ├── mcp/                    # ApiPay MCP Server - Model Context Protocol
+│
+├── skills/apipay/          # ApiPay Skill cho AI agent (.claude-plugin/ là manifest)
 │
 ├── docs/                   # Tài liệu hướng dẫn
 │   ├── src/
