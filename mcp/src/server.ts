@@ -1,3 +1,4 @@
+import { createRequire } from "node:module";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { ApiClient } from "./client.js";
 import { loadConfig, type Config } from "./config.js";
@@ -7,6 +8,8 @@ import { registerMetricsTools } from "./tools/metrics.js";
 import { registerPaymentsTools } from "./tools/payments.js";
 import { registerSelfTestTools } from "./tools/self_test.js";
 import { registerWebhooksTools } from "./tools/webhooks.js";
+
+const { version } = createRequire(import.meta.url)("../package.json") as { version: string };
 
 export function createServer(configOverride?: Partial<Config>): McpServer {
   const baseConfig = loadConfig();
@@ -23,7 +26,7 @@ export function createServer(configOverride?: Partial<Config>): McpServer {
 
   const server = new McpServer({
     name: "apipay",
-    version: "0.3.0",
+    version,
   });
 
   registerSelfTestTools(server, client);

@@ -318,7 +318,7 @@ Follow the Windsurf MCP configuration guide and add the server to `.windsurf/mcp
 
 ## Available Tools
 
-The server registers 23 tools. MCP clients automatically prefix tool names with the server key `apipay` (e.g. `apipay_list_banks` in OpenCode, `mcp__apipay__list_banks` in Claude Code).
+The server registers 32 tools. Each tool carries MCP `readOnlyHint` / `destructiveHint` annotations, so clients can ask before running anything that changes data. MCP clients automatically prefix tool names with the server key `apipay` (e.g. `apipay_list_banks` in OpenCode, `mcp__apipay__list_banks` in Claude Code).
 
 ### Connection & Verification
 - `self_test`: Validates API key configuration and returns connection status, key prefix, and bank summary counts.
@@ -342,6 +342,14 @@ The server registers 23 tools. MCP clients automatically prefix tool names with 
 - `create_price`: Creates a price. Amounts cannot be edited later.
 - `update_price`: Updates nickname, lookup key, or archive/restore. Does not change `unitAmount`.
 - `delete_price`: **(Destructive)** Permanently deletes an unused price. Prices that have been used for payments cannot be deleted.
+- `list_commerce_invoices`: Lists Commerce invoices (paid sales receipts). Search by invoice number, buyer, or product name.
+- `get_commerce_invoice`: Gets an invoice with seller, buyer, totals, and line items.
+- `list_commerce_customers`: Lists customers. Search by name, email, or tax code.
+- `get_commerce_customer`: Gets a customer with recent payment requests and invoices.
+- `create_commerce_customer`: Creates a customer. Email must be unique.
+- `update_commerce_customer`: Updates a customer's details.
+- `delete_commerce_customer`: **(Destructive)** Deletes a customer. Fails if the customer has payment requests or invoices.
+- `send_commerce_invoice`: Emails a customer a VietQR payment link for a product price (existing `customerId` or new `customer` details).
 
 ### Webhooks
 - `list_webhooks`: Lists registered webhook endpoints.
@@ -379,7 +387,10 @@ The server registers 23 tools. MCP clients automatically prefix tool names with 
 
 The following operations permanently change state or remove resources:
 - `cancel_payment`: Cancels an active payment link.
+- `delete_price`: Deletes an unused price.
+- `delete_commerce_customer`: Deletes a customer.
 - `remove_webhook`: Deletes a registered webhook URL.
+- `send_commerce_invoice`: Sends an email to the customer.
 - `resend_webhook`: Dispatches an outbound HTTP request to the merchant webhook URL.
 
 ---

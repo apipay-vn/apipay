@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import { createServer } from "./server.js";
@@ -58,6 +59,20 @@ test("server registers exactly the 32 expected tools", async () => {
 
   assert.equal(toolNames.length, 32, `Expected 32 tools, received: ${toolNames.length}`);
   assert.deepEqual(toolNames.sort(), [...EXPECTED_TOOLS].sort());
+
+  for (const tool of tools) {
+    const readOnly = /^(list_|get_)/.test(tool.name) || tool.name === "self_test";
+    assert.equal(tool.annotations?.readOnlyHint, readOnly, `${tool.name} readOnlyHint`);
+    if (!readOnly) {
+      assert.equal(typeof tool.annotations?.destructiveHint, "boolean", `${tool.name} destructiveHint`);
+    }
+  }
+  for (const name of ["cancel_payment", "delete_price", "delete_commerce_customer", "remove_webhook"]) {
+    assert.equal(tools.find((t) => t.name === name)?.annotations?.destructiveHint, true, name);
+  }
+
+  const { version } = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8"));
+  assert.equal(client.getServerVersion()?.version, version);
 });
 
 test("authenticated tools fail fast when credentials are missing", async () => {

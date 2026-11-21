@@ -5,6 +5,7 @@ export function registerSelfTestTools(server: McpServer, client: ApiClient): voi
   server.registerTool(
     "self_test",
     {
+      annotations: { readOnlyHint: true },
       description:
         "Verify ApiPay connection and API key configuration. Returns connection status, key prefix, and bank summary counts.",
     },

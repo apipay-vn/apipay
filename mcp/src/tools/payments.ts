@@ -6,6 +6,7 @@ export function registerPaymentsTools(server: McpServer, client: ApiClient): voi
   server.registerTool(
     "create_payment",
     {
+      annotations: { readOnlyHint: false, destructiveHint: false },
       description:
         "Create a payment link (payment request). Call list_banks first if bankPublicId is unknown. Send amount or priceId, not both.",
       inputSchema: {
@@ -107,6 +108,7 @@ export function registerPaymentsTools(server: McpServer, client: ApiClient): voi
   server.registerTool(
     "list_payments",
     {
+      annotations: { readOnlyHint: true },
       description:
         "List payment requests with optional filtering by status, date range, or search keyword.",
       inputSchema: {
@@ -174,6 +176,7 @@ export function registerPaymentsTools(server: McpServer, client: ApiClient): voi
   server.registerTool(
     "cancel_payment",
     {
+      annotations: { readOnlyHint: false, destructiveHint: true },
       description:
         "Cancel an ACTIVE payment request (destructive, only ACTIVE requests can be cancelled).",
       inputSchema: {
@@ -204,6 +207,7 @@ export function registerPaymentsTools(server: McpServer, client: ApiClient): voi
   server.registerTool(
     "simulate_payment",
     {
+      annotations: { readOnlyHint: false, destructiveHint: false },
       description:
         "Simulate a payment for sandbox testing (sandbox only; publicId must start with test_pr_; creates webhook with sandbox: true).",
       inputSchema: {

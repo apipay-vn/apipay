@@ -6,6 +6,7 @@ export function registerBanksTools(server: McpServer, client: ApiClient): void {
   server.registerTool(
     "list_banks",
     {
+      annotations: { readOnlyHint: true },
       description:
         "List connected bank accounts for this merchant. Call this to find bankPublicId before creating payments or webhooks.",
       inputSchema: {

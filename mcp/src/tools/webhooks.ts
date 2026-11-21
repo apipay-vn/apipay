@@ -6,6 +6,7 @@ export function registerWebhooksTools(server: McpServer, client: ApiClient): voi
   server.registerTool(
     "list_webhooks",
     {
+      annotations: { readOnlyHint: true },
       description: "List registered webhook endpoints.",
       inputSchema: {
         page: z
@@ -49,6 +50,7 @@ export function registerWebhooksTools(server: McpServer, client: ApiClient): voi
   server.registerTool(
     "create_webhook",
     {
+      annotations: { readOnlyHint: false, destructiveHint: false },
       description:
         "Register a new webhook endpoint for transaction notifications. By default the webhook fires for ALL current and future bank accounts. Optionally bind it to a legacy single bank with bankPublicId, or to an explicit allowlist with bankPublicIds ([] matches no banks). Delivery timeout defaults to 10s and an optional extra X-* request header can be attached. HMAC (ApiPay-Signature) is always sent and unchanged.",
       inputSchema: {
@@ -127,6 +129,7 @@ export function registerWebhooksTools(server: McpServer, client: ApiClient): voi
   server.registerTool(
     "update_webhook",
     {
+      annotations: { readOnlyHint: false, destructiveHint: true },
       description:
         "Update an existing webhook's destination URL, active state, bank scope, delivery timeout, or extra header. Omit a field to leave it unchanged; pass null to reset it (bankPublicIds: null => all banks, timeoutSeconds: null => 10, extraHeader: null => off). HMAC (ApiPay-Signature) is always sent and unchanged.",
       inputSchema: {
@@ -206,6 +209,7 @@ export function registerWebhooksTools(server: McpServer, client: ApiClient): voi
   server.registerTool(
     "toggle_webhook",
     {
+      annotations: { readOnlyHint: false, destructiveHint: true },
       description: "Toggle a webhook between active and inactive states.",
       inputSchema: {
         id: z.string().describe("Webhook ID to toggle"),
@@ -233,6 +237,7 @@ export function registerWebhooksTools(server: McpServer, client: ApiClient): voi
   server.registerTool(
     "remove_webhook",
     {
+      annotations: { readOnlyHint: false, destructiveHint: true },
       description: "Permanently delete a registered webhook (destructive).",
       inputSchema: {
         id: z.string().describe("Webhook ID to delete"),
@@ -260,6 +265,7 @@ export function registerWebhooksTools(server: McpServer, client: ApiClient): voi
   server.registerTool(
     "list_webhook_deliveries",
     {
+      annotations: { readOnlyHint: true },
       description: "List webhook delivery logs and attempt statuses.",
       inputSchema: {
         page: z
@@ -323,6 +329,7 @@ export function registerWebhooksTools(server: McpServer, client: ApiClient): voi
   server.registerTool(
     "resend_webhook",
     {
+      annotations: { readOnlyHint: false, destructiveHint: false },
       description:
         "Resend a failed webhook delivery (fires a real HTTP request to the merchant URL).",
       inputSchema: {

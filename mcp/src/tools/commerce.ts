@@ -23,6 +23,7 @@ export function registerCommerceTools(server: McpServer, client: ApiClient): voi
   server.registerTool(
     "list_products",
     {
+      annotations: { readOnlyHint: true },
       description:
         "List Commerce products. Use this to find a product id before creating a price or payment.",
       inputSchema: {
@@ -61,6 +62,7 @@ export function registerCommerceTools(server: McpServer, client: ApiClient): voi
   server.registerTool(
     "get_product",
     {
+      annotations: { readOnlyHint: true },
       description: "Get a product with its prices.",
       inputSchema: {
         id: z.string().describe("Product id"),
@@ -78,6 +80,7 @@ export function registerCommerceTools(server: McpServer, client: ApiClient): voi
   server.registerTool(
     "create_product",
     {
+      annotations: { readOnlyHint: false, destructiveHint: false },
       description:
         "Create a Commerce product. Optionally create the first price with defaultPriceData (that price becomes the default).",
       inputSchema: {
@@ -132,6 +135,7 @@ export function registerCommerceTools(server: McpServer, client: ApiClient): voi
   server.registerTool(
     "update_product",
     {
+      annotations: { readOnlyHint: false, destructiveHint: true },
       description:
         "Update a product name, description, archive/restore, or default price. Does not change amounts on payment links already created.",
       inputSchema: {
@@ -170,6 +174,7 @@ export function registerCommerceTools(server: McpServer, client: ApiClient): voi
   server.registerTool(
     "list_prices",
     {
+      annotations: { readOnlyHint: true },
       description:
         "List Commerce prices. Filter by productId or lookupKey to resolve a price id before creating a payment.",
       inputSchema: {
@@ -215,6 +220,7 @@ export function registerCommerceTools(server: McpServer, client: ApiClient): voi
   server.registerTool(
     "get_price",
     {
+      annotations: { readOnlyHint: true },
       description: "Get a price by id.",
       inputSchema: {
         id: z.string().describe("Price id"),
@@ -232,6 +238,7 @@ export function registerCommerceTools(server: McpServer, client: ApiClient): voi
   server.registerTool(
     "create_price",
     {
+      annotations: { readOnlyHint: false, destructiveHint: false },
       description:
         "Create a price on a product. Amounts cannot be edited later — create a new price to change the amount. The first price on a product with no default becomes the default.",
       inputSchema: {
@@ -278,6 +285,7 @@ export function registerCommerceTools(server: McpServer, client: ApiClient): voi
   server.registerTool(
     "update_price",
     {
+      annotations: { readOnlyHint: false, destructiveHint: true },
       description:
         "Update a price nickname, lookup key, or archive/restore it. unitAmount cannot be changed.",
       inputSchema: {
@@ -321,6 +329,7 @@ export function registerCommerceTools(server: McpServer, client: ApiClient): voi
   server.registerTool(
     "delete_price",
     {
+      annotations: { readOnlyHint: false, destructiveHint: true },
       description:
         "Permanently delete an unused price. Prices that have been used for payments cannot be deleted — archive them with update_price instead.",
       inputSchema: {
@@ -339,6 +348,7 @@ export function registerCommerceTools(server: McpServer, client: ApiClient): voi
   server.registerTool(
     "list_commerce_invoices",
     {
+      annotations: { readOnlyHint: true },
       description:
         "List Commerce invoices (paid sales receipts for products sold). Filter by search term across invoice number, buyer, or product name.",
       inputSchema: {
@@ -377,6 +387,7 @@ export function registerCommerceTools(server: McpServer, client: ApiClient): voi
   server.registerTool(
     "get_commerce_invoice",
     {
+      annotations: { readOnlyHint: true },
       description:
         "Get a Commerce invoice by id, including seller info, buyer info, totals, and line items.",
       inputSchema: {
@@ -395,6 +406,7 @@ export function registerCommerceTools(server: McpServer, client: ApiClient): voi
   server.registerTool(
     "list_commerce_customers",
     {
+      annotations: { readOnlyHint: true },
       description:
         "List Commerce customers with optional search by name, email, or tax code.",
       inputSchema: {
@@ -433,6 +445,7 @@ export function registerCommerceTools(server: McpServer, client: ApiClient): voi
   server.registerTool(
     "get_commerce_customer",
     {
+      annotations: { readOnlyHint: true },
       description:
         "Get customer details including recent payment requests and invoices.",
       inputSchema: {
@@ -451,6 +464,7 @@ export function registerCommerceTools(server: McpServer, client: ApiClient): voi
   server.registerTool(
     "create_commerce_customer",
     {
+      annotations: { readOnlyHint: false, destructiveHint: false },
       description:
         "Create a Commerce customer. Email must be unique per user.",
       inputSchema: {
@@ -472,6 +486,7 @@ export function registerCommerceTools(server: McpServer, client: ApiClient): voi
   server.registerTool(
     "update_commerce_customer",
     {
+      annotations: { readOnlyHint: false, destructiveHint: true },
       description: "Update a Commerce customer's information.",
       inputSchema: {
         id: z.string().describe("Customer id"),
@@ -493,6 +508,7 @@ export function registerCommerceTools(server: McpServer, client: ApiClient): voi
   server.registerTool(
     "delete_commerce_customer",
     {
+      annotations: { readOnlyHint: false, destructiveHint: true },
       description:
         "Delete a Commerce customer. Fails if the customer has linked payment requests or invoices.",
       inputSchema: {
@@ -511,6 +527,7 @@ export function registerCommerceTools(server: McpServer, client: ApiClient): voi
   server.registerTool(
     "send_commerce_invoice",
     {
+      annotations: { readOnlyHint: false, destructiveHint: false },
       description:
         "Send a VietQR payment request link to a customer via email for a Commerce product price. Returns payment request publicId, payUrl, and whether email was sent.",
       inputSchema: {

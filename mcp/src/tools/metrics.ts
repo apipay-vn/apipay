@@ -19,6 +19,7 @@ export function registerMetricsTools(server: McpServer, client: ApiClient): void
   server.registerTool(
     "get_overview",
     {
+      annotations: { readOnlyHint: true },
       description:
         "Get transaction metrics overview (totals, averages, success rates, volume by bank).",
       inputSchema: {
@@ -63,6 +64,7 @@ export function registerMetricsTools(server: McpServer, client: ApiClient): void
   server.registerTool(
     "list_transactions",
     {
+      annotations: { readOnlyHint: true },
       description:
         "List recent bank transactions with filtering by date, bank, account, or search keyword.",
       inputSchema: {
