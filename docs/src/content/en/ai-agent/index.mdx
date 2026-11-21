@@ -1,0 +1,41 @@
+---
+title: AI Agent
+description: Use Claude, ChatGPT, Cursor and other AI assistants with ApiPay. Pick MCP, Skills or the CLI.
+---
+
+# AI Agent
+
+AI assistants such as Claude Code, Codex, Cursor and ChatGPT can work with ApiPay in three ways. Your app still calls the ApiPay API and receives webhooks as usual; these tools help while you build and check.
+
+## Example: a shop that confirms orders by itself
+
+Lan runs an online shop. She wants an order to be marked paid as soon as the customer transfers money.
+
+1. She installs the **ApiPay Skill** in Claude Code and asks: "Confirm orders automatically when customers pay by bank transfer." The AI writes the checkout and the webhook endpoint the safe way, and tests everything in sandbox first.
+2. She adds the **ApiPay MCP** so the same assistant can look at her account: "Did order ORDER123 get paid?" or "Show this week's failed webhooks."
+3. She uses the **ApiPay CLI** to create a test payment from the terminal and watch the webhook arrive.
+
+You do not have to pick one. Use one, two or all three.
+
+## Which one do I need?
+
+| Tool | Use it to | Needs an ApiPay account |
+| ---- | --------- | ----------------------- |
+| [Skills](/en/ai-agent/skills) | Let the AI write integration code correctly | No |
+| [MCP Server](/en/integrations/mcp) | Let the AI read and manage your ApiPay data | Yes, an API key |
+| CLI (`npm i -g apipay`) | Run ApiPay commands in a terminal or script | Yes, `apipay login` |
+| [Vibe Code](/en/integrations/vibe-code) | Copy a ready-made prompt, nothing to install | Yes |
+
+## Safety
+
+- The MCP server uses your API key. Start with a test key (`ak_test_...`) so nothing touches live money.
+- Tools that delete or cancel are marked as destructive, so your AI app can ask you first. Turn on tool confirmations in your AI app.
+- Transfer descriptions are written by your customers. An AI reading them could be misled, so do not let it act on text found in transactions.
+
+## Docs for AI
+
+Assistants can also read these docs directly:
+
+- [/llms.txt](https://docs.apipay.vn/llms.txt): list of every page, in English ([Vietnamese](https://docs.apipay.vn/llms-vi.txt)).
+- [/llms-full.txt](https://docs.apipay.vn/llms-full.txt): all English docs in one file.
+- Add `.md` to any page address for plain text, for example [/en/api/webhooks.md](https://docs.apipay.vn/en/api/webhooks.md).

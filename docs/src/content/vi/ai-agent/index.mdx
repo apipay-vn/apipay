@@ -1,0 +1,41 @@
+---
+title: AI Agent
+description: Dùng Claude, ChatGPT, Cursor và các trợ lý AI khác với ApiPay. Chọn MCP, Skills hoặc CLI.
+---
+
+# AI Agent
+
+Trợ lý AI như Claude Code, Codex, Cursor, ChatGPT làm việc với ApiPay theo ba cách. Ứng dụng của bạn vẫn gọi API ApiPay và nhận webhook như bình thường; các công cụ này giúp bạn lúc xây dựng và kiểm tra.
+
+## Ví dụ: shop tự xác nhận đơn
+
+Chị Lan bán hàng online. Chị muốn đơn được đánh dấu đã thanh toán ngay khi khách chuyển khoản.
+
+1. Chị cài **ApiPay Skill** vào Claude Code và nhờ: "Tự xác nhận đơn khi khách chuyển khoản." AI viết trang thanh toán và endpoint nhận webhook đúng chuẩn, chạy thử trên sandbox trước.
+2. Chị thêm **ApiPay MCP** để chính trợ lý đó xem được tài khoản: "Đơn ORDER123 đã thanh toán chưa?" hay "Tuần này có webhook nào gửi lỗi không?"
+3. Chị dùng **ApiPay CLI** để tạo thanh toán thử ngay trong terminal và xem webhook về.
+
+Bạn không phải chọn một. Dùng một, hai hay cả ba đều được.
+
+## Nên dùng công cụ nào?
+
+| Công cụ | Dùng để | Cần tài khoản ApiPay |
+| ------- | ------- | -------------------- |
+| [Skills](/vi/ai-agent/skills) | Để AI viết code tích hợp đúng chuẩn | Không |
+| [MCP Server](/vi/integrations/mcp) | Để AI đọc và quản lý dữ liệu ApiPay của bạn | Có, cần khóa API |
+| CLI (`npm i -g apipay`) | Chạy lệnh ApiPay trong terminal hoặc script | Có, `apipay login` |
+| [Vibe Code](/vi/integrations/vibe-code) | Sao chép prompt soạn sẵn, không cần cài gì | Có |
+
+## An toàn
+
+- MCP server dùng khóa API của bạn. Bắt đầu bằng khóa test (`ak_test_...`) để không đụng tới tiền thật.
+- Các tool xóa hoặc hủy được đánh dấu là thao tác phá hủy, để ứng dụng AI hỏi bạn trước. Hãy bật xác nhận khi dùng tool trong ứng dụng AI.
+- Nội dung chuyển khoản do khách tự gõ. AI đọc nội dung đó có thể bị dẫn dắt, nên đừng để AI làm theo chữ nằm trong giao dịch.
+
+## Tài liệu cho AI
+
+Trợ lý AI cũng đọc thẳng được tài liệu này:
+
+- [/llms-vi.txt](https://docs.apipay.vn/llms-vi.txt): danh sách mọi trang tiếng Việt ([tiếng Anh](https://docs.apipay.vn/llms.txt)).
+- [/llms-full.txt](https://docs.apipay.vn/llms-full.txt): toàn bộ tài liệu tiếng Anh trong một tệp.
+- Thêm `.md` vào cuối địa chỉ trang để lấy văn bản thuần, ví dụ [/vi/api/webhooks.md](https://docs.apipay.vn/vi/api/webhooks.md).

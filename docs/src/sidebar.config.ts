@@ -34,10 +34,17 @@ export const viSidebarConfig: SidebarItem[] = [
     children: [
       {label: 'Web App', href: '/vi/integrations/webapp'},
       {label: 'WooCommerce', href: '/vi/integrations/woocommerce'},
-      {label: 'Vibe Code', href: '/vi/integrations/vibe-code'},
-      {label: 'MCP Server', href: '/vi/integrations/mcp'},
       {label: 'WHMCS', href: '/vi/integrations/whmcs'},
       {label: 'HostBill', href: '/vi/integrations/hostbill'},
+    ],
+  },
+  {
+    label: 'AI Agent',
+    href: '/vi/ai-agent',
+    children: [
+      {label: 'Skills', href: '/vi/ai-agent/skills'},
+      {label: 'MCP Server', href: '/vi/integrations/mcp'},
+      {label: 'Vibe Code', href: '/vi/integrations/vibe-code'},
     ],
   },
   {
@@ -99,9 +106,16 @@ export const enSidebarConfig: SidebarItem[] = [
       {label: 'WooCommerce', href: '/en/integrations/woocommerce'},
       {label: 'WHMCS', href: '/en/integrations/whmcs'},
       {label: 'HostBill', href: '/en/integrations/hostbill'},
-      {label: 'Vibe Code', href: '/en/integrations/vibe-code'},
-      {label: 'MCP Server', href: '/en/integrations/mcp'},
       {label: 'Web App', href: '/en/integrations/webapp'},
+    ],
+  },
+  {
+    label: 'AI Agent',
+    href: '/en/ai-agent',
+    children: [
+      {label: 'Skills', href: '/en/ai-agent/skills'},
+      {label: 'MCP Server', href: '/en/integrations/mcp'},
+      {label: 'Vibe Code', href: '/en/integrations/vibe-code'},
     ],
   },
   {

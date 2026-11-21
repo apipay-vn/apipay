@@ -69,16 +69,28 @@ export const searchItems: SearchItem[] = [
     section: 'Tích hợp',
   },
   {
+    title: 'AI Agent',
+    description: 'Dùng Claude, ChatGPT, Cursor với ApiPay: chọn MCP, Skills hoặc CLI',
+    href: '/vi/ai-agent',
+    section: 'AI Agent',
+  },
+  {
+    title: 'ApiPay Skills',
+    description: 'Cài skill để trợ lý AI viết code tích hợp ApiPay đúng chuẩn',
+    href: '/vi/ai-agent/skills',
+    section: 'AI Agent',
+  },
+  {
     title: 'Vibe Code',
     description: 'Tạo prompt tích hợp ApiPay cho AI coding assistant',
     href: '/vi/integrations/vibe-code',
-    section: 'Tích hợp',
+    section: 'AI Agent',
   },
   {
     title: 'MCP Server',
     description: 'Kết nối ApiPay với AI assistant qua @apipay.vn/mcp',
     href: '/vi/integrations/mcp',
-    section: 'Tích hợp',
+    section: 'AI Agent',
   },
   {
     title: 'Web App',
@@ -191,16 +203,28 @@ export const searchItems: SearchItem[] = [
     section: 'Integrations',
   },
   {
+    title: 'AI Agent',
+    description: 'Use Claude, ChatGPT and Cursor with ApiPay: pick MCP, Skills or the CLI',
+    href: '/en/ai-agent',
+    section: 'AI Agent',
+  },
+  {
+    title: 'ApiPay Skills',
+    description: 'Install the skill so AI assistants write ApiPay integrations correctly',
+    href: '/en/ai-agent/skills',
+    section: 'AI Agent',
+  },
+  {
     title: 'Vibe Code',
     description: 'Generate an ApiPay integration prompt for AI coding assistants',
     href: '/en/integrations/vibe-code',
-    section: 'Integrations',
+    section: 'AI Agent',
   },
   {
     title: 'MCP Server',
     description: 'Connect ApiPay to AI assistants with the @apipay.vn/mcp server',
     href: '/en/integrations/mcp',
-    section: 'Integrations',
+    section: 'AI Agent',
   },
   {
     title: 'Web App',

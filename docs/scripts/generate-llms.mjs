@@ -1,8 +1,9 @@
 /**
  * Generate llms.txt and llms-full.txt from MDX content.
  *
- * llms.txt: index of docs with titles and descriptions
- * llms-full.txt: full markdown content with JSX components stripped
+ * llms.txt / llms-vi.txt: index of docs with titles and descriptions
+ * llms-full.txt: full English markdown content with JSX components stripped
+ * <locale>/<page>.md: one plain-markdown file per docs page, served next to the page URL
  *
  * Usage: node scripts/generate-llms.mjs
  */
@@ -13,9 +14,11 @@ import {fileURLToPath} from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
-const CONTENT_DIR = path.join(ROOT, 'src/content/en');
+const CONTENT_ROOT = path.join(ROOT, 'src/content');
+const CONTENT_DIR = path.join(CONTENT_ROOT, 'en');
 const PUBLIC_DIR = path.join(ROOT, 'public');
-const BASE_URL = 'https://docs.apipay.vn/en';
+const SITE_URL = 'https://docs.apipay.vn';
+const BASE_URL = `${SITE_URL}/en`;
 
 // Sidebar structure for grouping
 const SIDEBAR_SECTIONS = [
@@ -53,6 +56,13 @@ const SIDEBAR_SECTIONS = [
       {file: 'integrations/mcp.mdx', label: 'MCP Server'},
       {file: 'integrations/whmcs.mdx', label: 'WHMCS'},
       {file: 'integrations/hostbill.mdx', label: 'HostBill'},
+    ],
+  },
+  {
+    title: 'AI Agent',
+    items: [
+      {file: 'ai-agent/index.mdx', label: 'AI Agent'},
+      {file: 'ai-agent/skills.mdx', label: 'ApiPay Skills'},
     ],
   },
   {
@@ -127,26 +137,38 @@ function fileToUrl(file) {
 /**
  * Generate llms.txt content
  */
-function generateLlmsTxt() {
-  let output = `# ApiPay Documentation
+const LLMS_HEADERS = {
+  en: `# ApiPay Documentation
 
-> ApiPay is a Vietnamese bank-transfer payment gateway API. This documentation covers integration, API reference, and guides.
+> ApiPay is a Vietnamese bank-transfer payment gateway API. This documentation covers integration, API reference, and guides. Add .md to any page URL for plain markdown.
 
-`;
+`,
+  vi: `# Tài liệu ApiPay
+
+> ApiPay là API cổng thanh toán qua chuyển khoản ngân hàng tại Việt Nam. Tài liệu gồm hướng dẫn tích hợp, API reference và hướng dẫn sử dụng. Thêm .md vào cuối địa chỉ trang để lấy markdown thuần.
+
+`,
+};
+
+function generateLlmsTxt(locale = 'en') {
+  const contentDir = path.join(CONTENT_ROOT, locale);
+  const baseUrl = `${SITE_URL}/${locale}`;
+  let output = LLMS_HEADERS[locale];
 
   for (const section of SIDEBAR_SECTIONS) {
     output += `## ${section.title}\n\n`;
 
     for (const item of section.items) {
-      const filePath = path.join(CONTENT_DIR, item.file);
+      const filePath = path.join(contentDir, item.file);
       if (!fs.existsSync(filePath)) continue;
 
       const content = fs.readFileSync(filePath, 'utf-8');
       const frontmatter = extractFrontmatter(content);
       const description = frontmatter.description || '';
-      const url = `${BASE_URL}/${fileToUrl(item.file)}`;
+      const label = locale === 'en' ? item.label : frontmatter.title || item.label;
+      const url = `${baseUrl}/${fileToUrl(item.file)}`;
 
-      output += `- [${item.label}](${url})`;
+      output += `- [${label}](${url})`;
       if (description) {
         output += `: ${description}`;
       }
@@ -157,7 +179,7 @@ function generateLlmsTxt() {
 
   output += `## Interactive API Reference
 
-- [API Reference](${BASE_URL}/api-reference): Interactive API documentation with try-it console
+- [API Reference](${baseUrl}/api-reference): Interactive API documentation with try-it console
 
 `;
 
@@ -196,14 +218,54 @@ function generateLlmsFullTxt() {
   return output;
 }
 
-// Main execution
-console.log('Generating llms.txt and llms-full.txt...');
+function listMdx(dir) {
+  return fs.readdirSync(dir, {withFileTypes: true}).flatMap((entry) => {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) return listMdx(full);
+    return entry.name.endsWith('.mdx') ? [full] : [];
+  });
+}
 
-const llmsTxt = generateLlmsTxt();
+// Writes public/<locale>/<route>.md, so /en/api/webhooks is also served as /en/api/webhooks.md
+function generatePageMarkdown() {
+  let count = 0;
+  for (const locale of ['en', 'vi']) {
+    const outDir = path.join(PUBLIC_DIR, locale);
+    fs.rmSync(outDir, {recursive: true, force: true});
+    const contentDir = path.join(CONTENT_ROOT, locale);
+
+    for (const filePath of listMdx(contentDir)) {
+      const rel = path.relative(contentDir, filePath).split(path.sep).join('/');
+      const route = fileToUrl(rel) === 'index' ? '' : fileToUrl(rel);
+      const content = fs.readFileSync(filePath, 'utf-8');
+      const {title, description} = extractFrontmatter(content);
+      const url = `${SITE_URL}/${locale}${route ? `/${route}` : ''}`;
+      let body = stripJsx(content);
+      if (title && !body.startsWith('# ')) body = `# ${title}\n\n${body}`;
+      const header = [description && `> ${description}`, `Source: ${url}`].filter(Boolean).join('\n\n');
+
+      const outFile = route ? path.join(outDir, `${route}.md`) : path.join(PUBLIC_DIR, `${locale}.md`);
+      fs.mkdirSync(path.dirname(outFile), {recursive: true});
+      fs.writeFileSync(outFile, `${header}\n\n${body}\n`);
+      count++;
+    }
+  }
+  return count;
+}
+
+// Main execution
+console.log('Generating llms.txt, llms-vi.txt, llms-full.txt and per-page markdown...');
+
+const llmsTxt = generateLlmsTxt('en');
+const llmsViTxt = generateLlmsTxt('vi');
 const llmsFullTxt = generateLlmsFullTxt();
 
 fs.writeFileSync(path.join(PUBLIC_DIR, 'llms.txt'), llmsTxt);
+fs.writeFileSync(path.join(PUBLIC_DIR, 'llms-vi.txt'), llmsViTxt);
 fs.writeFileSync(path.join(PUBLIC_DIR, 'llms-full.txt'), llmsFullTxt);
+const pageCount = generatePageMarkdown();
 
 console.log(`✅ Generated public/llms.txt (${llmsTxt.length} chars)`);
+console.log(`✅ Generated public/llms-vi.txt (${llmsViTxt.length} chars)`);
 console.log(`✅ Generated public/llms-full.txt (${llmsFullTxt.length} chars)`);
+console.log(`✅ Generated ${pageCount} per-page .md files in public/en, public/vi`);

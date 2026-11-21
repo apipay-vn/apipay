@@ -1,6 +1,6 @@
 # ApiPay Documentation
 
-> ApiPay is a Vietnamese bank-transfer payment gateway API. This documentation covers integration, API reference, and guides.
+> ApiPay is a Vietnamese bank-transfer payment gateway API. This documentation covers integration, API reference, and guides. Add .md to any page URL for plain markdown.
 
 ## Getting Started
 
@@ -31,6 +31,11 @@
 - [MCP Server](https://docs.apipay.vn/en/integrations/mcp): Connect ApiPay to AI assistants with the @apipay.vn/mcp MCP server.
 - [WHMCS](https://docs.apipay.vn/en/integrations/whmcs): Install the ApiPay payment module for WHMCS.
 - [HostBill](https://docs.apipay.vn/en/integrations/hostbill): Install the ApiPay payment module for HostBill.
+
+## AI Agent
+
+- [AI Agent](https://docs.apipay.vn/en/ai-agent): Use Claude, ChatGPT, Cursor and other AI assistants with ApiPay. Pick MCP, Skills or the CLI.
+- [ApiPay Skills](https://docs.apipay.vn/en/ai-agent/skills): Install the ApiPay skill so Claude, ChatGPT, Claude Code, Codex and Cursor integrate ApiPay correctly.
 
 ## API Reference
 

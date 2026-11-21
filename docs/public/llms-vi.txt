@@ -1,0 +1,54 @@
+# Tài liệu ApiPay
+
+> ApiPay là API cổng thanh toán qua chuyển khoản ngân hàng tại Việt Nam. Tài liệu gồm hướng dẫn tích hợp, API reference và hướng dẫn sử dụng. Thêm .md vào cuối địa chỉ trang để lấy markdown thuần.
+
+## Getting Started
+
+- [Giới thiệu](https://docs.apipay.vn/vi/index): Tích hợp ApiPay vào hệ thống của bạn
+- [Bắt đầu nhanh](https://docs.apipay.vn/vi/quickstart): Tạo link thanh toán đầu tiên và nhận webhook với ApiPay
+- [Hướng dẫn bắt đầu](https://docs.apipay.vn/vi/onboarding): Thiết lập ApiPay và nhận thanh toán đầu tiên
+- [Gói dịch vụ & thanh toán](https://docs.apipay.vn/vi/subscription): Quản lý gói dịch vụ và thanh toán ApiPay
+
+## Banking & Payments
+
+- [Quản lý tài khoản ngân hàng](https://docs.apipay.vn/vi/banking): Kết nối và quản lý tài khoản ngân hàng Việt Nam để nhận thanh toán qua ApiPay
+- [Sandbox & Live Test](https://docs.apipay.vn/vi/sandbox): Kiểm thử thanh toán và webhook mà không cần tiền thật
+- [Hướng dẫn Dashboard](https://docs.apipay.vn/vi/dashboard): Cách dùng dashboard ApiPay để quản lý thanh toán, ngân hàng và tích hợp
+- [Cách kết nối ngân hàng](https://docs.apipay.vn/vi/connect-banks): Liên kết tài khoản ngân hàng Việt Nam để bắt đầu nhận thanh toán qua ApiPay
+- [ApiPay Connect](https://docs.apipay.vn/vi/connect): Gửi link để khách hàng tự liên kết tài khoản ngân hàng nhận tiền, không cần đội kỹ thuật
+- [Cửa hàng và nhân viên](https://docs.apipay.vn/vi/stores-staff): Nhóm tài khoản nhận tiền theo từng cửa hàng và cấp cho mỗi nhân viên quyền truy cập đúng phần việc họ phụ trách
+- [Loa Thanh Toán](https://docs.apipay.vn/vi/payment-speaker): Biến điện thoại, máy tính bảng hoặc máy tính thành loa thông báo chuyển khoản ngân hàng thời gian thực hoàn toàn miễn phí
+- [Commerce](https://docs.apipay.vn/vi/commerce): Tạo sản phẩm, sao chép link thanh toán dùng lại, thu thông tin người mua, gửi biên lai.
+- [Tên miền riêng](https://docs.apipay.vn/vi/custom-domains): Sử dụng tên miền riêng của bạn cho trang thanh toán ApiPay
+- [Passkey](https://docs.apipay.vn/vi/passkeys): Đăng nhập ApiPay nhanh hơn bằng Face ID, vân tay hoặc passkey trên thiết bị
+- [Tiếp thị liên kết](https://docs.apipay.vn/vi/affiliates): Chia sẻ ApiPay, theo dõi lượt giới thiệu và quản lý hoa hồng trong dashboard
+
+## Integrations
+
+- [Web App](https://docs.apipay.vn/vi/integrations/webapp): Tích hợp ApiPay vào web app bằng JavaScript, Python hoặc PHP.
+- [WooCommerce](https://docs.apipay.vn/vi/integrations/woocommerce): Cài đặt plugin thanh toán ApiPay cho WooCommerce.
+- [Vibe Code](https://docs.apipay.vn/vi/integrations/vibe-code): Tạo prompt tích hợp ApiPay cho trợ lý lập trình AI.
+- [MCP Server](https://docs.apipay.vn/vi/integrations/mcp): Kết nối ApiPay với trợ lý AI qua máy chủ MCP @apipay.vn/mcp.
+- [WHMCS](https://docs.apipay.vn/vi/integrations/whmcs): Cài đặt module thanh toán ApiPay cho WHMCS.
+- [HostBill](https://docs.apipay.vn/vi/integrations/hostbill): Cài đặt module thanh toán ApiPay cho HostBill.
+
+## AI Agent
+
+- [AI Agent](https://docs.apipay.vn/vi/ai-agent): Dùng Claude, ChatGPT, Cursor và các trợ lý AI khác với ApiPay. Chọn MCP, Skills hoặc CLI.
+- [ApiPay Skills](https://docs.apipay.vn/vi/ai-agent/skills): Cài skill ApiPay để Claude, ChatGPT, Claude Code, Codex và Cursor tích hợp ApiPay đúng chuẩn.
+
+## API Reference
+
+- [Xác thực API](https://docs.apipay.vn/vi/api/authentication): Cách xác thực request khi gọi ApiPay API
+- [Payment Requests API](https://docs.apipay.vn/vi/api/payment-requests): Tạo và quản lý yêu cầu thanh toán
+- [Commerce API](https://docs.apipay.vn/vi/api/commerce): Sản phẩm, mức giá, link thanh toán dùng lại, khách hàng và biên lai
+- [Webhooks](https://docs.apipay.vn/vi/api/webhooks): Nhận thông báo thanh toán qua webhook
+- [Quản lý ngân hàng](https://docs.apipay.vn/vi/api/banks): API kết nối và quản lý tài khoản ngân hàng
+- [Metrics API](https://docs.apipay.vn/vi/api/metrics): Tra cứu giao dịch và số liệu tổng quan
+- [Tra cứu số tài khoản](https://docs.apipay.vn/vi/api/account-lookup): Kiểm tra tên chủ tài khoản ngân hàng trước khi chuyển tiền
+- [Tra cứu mã số thuế](https://docs.apipay.vn/vi/api/tax-lookup): Lấy tên và địa chỉ doanh nghiệp từ mã số thuế
+
+## Interactive API Reference
+
+- [API Reference](https://docs.apipay.vn/vi/api-reference): Interactive API documentation with try-it console
+
