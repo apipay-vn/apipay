@@ -7,6 +7,8 @@ description: Sản phẩm, mức giá, link thanh toán dùng lại, khách hàn
 
 Tạo sản phẩm và mức giá một lần, rồi tạo yêu cầu thanh toán bằng `priceId` thay cho `amount`. Mọi endpoint cần [xác thực](/vi/api/authentication). Có thể gọi thử trong [Tài liệu tương tác](/vi/api-reference).
 
+Commerce cần khóa thật. Khóa thử nghiệm sẽ nhận `403` với mã `live_key_required`. Để thử trong sandbox, hãy tạo sản phẩm và mức giá trên dashboard, rồi truyền `priceId` vào yêu cầu thanh toán tạo bằng khóa thử nghiệm.
+
 Mọi response được bọc trong `{"data": ..., "statusCode": 200, "timestamp": "..."}`. Với Commerce, kết quả nằm ở `data.data`; danh sách có thêm `data.pagination`.
 
 ## Endpoint

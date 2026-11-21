@@ -2433,6 +2433,8 @@ Source: https://docs.apipay.vn/en/api/commerce
 
 Create products and prices once, then create payment requests with `priceId` instead of `amount`. Every endpoint needs [authentication](/en/api/authentication). You can try the calls in the [Interactive Reference](/en/api-reference).
 
+Commerce needs a live key. A test key gets `403` with code `live_key_required`. To test in sandbox, create the product and price in the dashboard, then pass its `priceId` to a payment request made with your test key.
+
 Every response is wrapped in `{"data": ..., "statusCode": 200, "timestamp": "..."}`. For Commerce, the result is in `data.data`; lists also have `data.pagination`.
 
 ## Endpoints
