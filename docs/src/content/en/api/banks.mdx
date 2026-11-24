@@ -279,3 +279,13 @@ Accounts waiting for activation cannot be disconnected.
   "timestamp": "2026-08-12T14:27:45.000Z"
 }
 ```
+
+Some banks ask the account holder for an OTP first. The response then has `"OTP": 1`, and the account stays connected until you send the code:
+
+```bash
+POST /v1/client/banks/:publicId/confirm-delete
+```
+
+```json
+{ "otp": "123456" }
+```

@@ -279,3 +279,13 @@ Tài khoản đang chờ kích hoạt không thể ngắt kết nối.
   "timestamp": "2026-08-12T14:27:45.000Z"
 }
 ```
+
+Một số ngân hàng yêu cầu chủ tài khoản nhập OTP trước. Khi đó response có `"OTP": 1`, và tài khoản vẫn kết nối cho đến khi bạn gửi mã:
+
+```bash
+POST /v1/client/banks/:publicId/confirm-delete
+```
+
+```json
+{ "otp": "123456" }
+```
