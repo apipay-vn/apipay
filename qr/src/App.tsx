@@ -5,9 +5,49 @@ import {QrResultModal} from './components/QrResultModal';
 import {SiteHeader} from './components/SiteHeader';
 import {trackGenerateQr} from './lib/analytics';
 import {BANKS, findBankBySlug, resolveQrBankBin} from './lib/banks';
-import {API_URL, cn, useDebounce} from './lib/utils';
+import {scanImage} from './lib/scan';
+import {API_URL, cn, formatVND, useDebounce} from './lib/utils';
+import {SERVICE_CARD, decodeQr} from './lib/vietqr';
 
 const MIN_ACCOUNT_NUMBER_LENGTH = 4;
+const BINS = new Set(BANKS.map(b => b.bin));
+const HISTORY_KEY = 'apipay-qr-generate-history';
+const HISTORY_MAX = 6;
+
+interface Recent {
+  bankCode: string;
+  accountNumber: string;
+  amount: string;
+  content: string;
+  accountName: string;
+}
+
+function readHistory(): Recent[] {
+  try {
+    const list = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+    if (!Array.isArray(list)) return [];
+    return list
+      .filter(x => typeof x?.bankCode === 'string' && typeof x?.accountNumber === 'string')
+      .slice(0, HISTORY_MAX)
+      .map(x => ({
+        bankCode: x.bankCode,
+        accountNumber: x.accountNumber,
+        amount: String(x.amount ?? ''),
+        content: String(x.content ?? ''),
+        accountName: String(x.accountName ?? ''),
+      }));
+  } catch {
+    return [];
+  }
+}
+
+function writeHistory(list: Recent[]) {
+  try {
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(list));
+  } catch {
+    // Storage blocked (private mode); history is a convenience only.
+  }
+}
 
 export default function App() {
   const {slug} = useParams<{slug?: string}>();
@@ -21,6 +61,9 @@ export default function App() {
 
   const [qrUrl, setQrUrl] = useState<string | null>(null);
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
+  const [history, setHistory] = useState<Recent[]>(readHistory);
+  const [fillNote, setFillNote] = useState<{tone: 'busy' | 'ok' | 'warn'; text: string} | null>(null);
+  const isMac = typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.platform);
 
   const buildQrUrl = useCallback(() => {
     const bin = resolveQrBankBin(bankCode);
@@ -51,6 +94,97 @@ export default function App() {
       setIsQrModalOpen(false);
     }
   }, [bankCode, accountNumber, amount, content, accountName, template, debouncedGenerateQr]);
+
+  const fillFromQr = useCallback((raw: string) => {
+    const d = decodeQr(raw.trim(), BINS);
+    if (!d.isVietQr || !d.accountNumber || d.service === SERVICE_CARD) {
+      setFillNote({tone: 'warn', text: 'Đây không phải mã VietQR chuyển khoản tới số tài khoản.'});
+      return;
+    }
+    const bank = BANKS.find(b => b.bin === d.bin);
+    const amountDigits = d.amount ? String(Math.floor(Number(d.amount))) : '';
+    setBankCode(bank?.code ?? '');
+    setAccountNumber(d.accountNumber);
+    setAmount(amountDigits === '0' ? '' : amountDigits);
+    setContent(d.content ?? '');
+    setAccountName(d.receiverName ?? '');
+    setErrors({});
+    const filled = [bank?.name, 'số tài khoản', amountDigits && amountDigits !== '0' && 'số tiền', d.content && 'nội dung', d.receiverName && 'tên chủ TK'];
+    const missingBank = bank ? '' : ` Ngân hàng BIN ${d.bin} chưa có trong danh sách, hãy chọn tay.`;
+    setFillNote({tone: bank ? 'ok' : 'warn', text: `Đã điền từ mã QR: ${filled.filter(Boolean).join(', ')}.${missingBank}`});
+  }, []);
+
+  const fillFromImage = useCallback(
+    async (blob: Blob) => {
+      setFillNote({tone: 'busy', text: 'Đang đọc ảnh QR…'});
+      try {
+        const found = await scanImage(blob);
+        if (found) fillFromQr(found);
+        else setFillNote({tone: 'warn', text: 'Không tìm thấy mã QR trong ảnh. Thử ảnh rõ hơn hoặc cắt sát mã QR.'});
+      } catch {
+        setFillNote({tone: 'warn', text: 'Không mở được ảnh này. Hãy thử ảnh PNG hoặc JPG khác.'});
+      }
+    },
+    [fillFromQr]
+  );
+
+  // Paste or drop a QR image/payload anywhere; text pasted into a field stays in that field.
+  useEffect(() => {
+    const isField = (target: EventTarget | null) => !!(target as HTMLElement | null)?.closest?.('input, textarea, [contenteditable="true"]');
+    const onPaste = (e: ClipboardEvent) => {
+      const image = Array.from(e.clipboardData?.items ?? []).find(i => i.type.startsWith('image/'))?.getAsFile();
+      if (image) {
+        e.preventDefault();
+        fillFromImage(image);
+        return;
+      }
+      const text = e.clipboardData?.getData('text/plain');
+      if (isField(e.target) || !text?.trim()) return;
+      e.preventDefault();
+      fillFromQr(text);
+    };
+    const onDragOver = (e: DragEvent) => e.preventDefault();
+    const onDrop = (e: DragEvent) => {
+      const file = Array.from(e.dataTransfer?.files ?? []).find(f => f.type.startsWith('image/'));
+      if (file) {
+        e.preventDefault();
+        fillFromImage(file);
+        return;
+      }
+      if (e.dataTransfer?.types.includes('Files')) return e.preventDefault();
+      const text = e.dataTransfer?.getData('text/plain');
+      if (isField(e.target) || !text?.trim()) return;
+      e.preventDefault();
+      fillFromQr(text);
+    };
+    document.addEventListener('paste', onPaste);
+    document.addEventListener('dragover', onDragOver);
+    document.addEventListener('drop', onDrop);
+    return () => {
+      document.removeEventListener('paste', onPaste);
+      document.removeEventListener('dragover', onDragOver);
+      document.removeEventListener('drop', onDrop);
+    };
+  }, [fillFromQr, fillFromImage]);
+
+  const remember = (entry: Recent) => {
+    setHistory(prev => {
+      const key = JSON.stringify(entry);
+      const next = [entry, ...prev.filter(p => JSON.stringify(p) !== key)].slice(0, HISTORY_MAX);
+      writeHistory(next);
+      return next;
+    });
+  };
+
+  const refill = (entry: Recent) => {
+    setBankCode(entry.bankCode);
+    setAccountNumber(entry.accountNumber);
+    setAmount(entry.amount);
+    setContent(entry.content);
+    setAccountName(entry.accountName);
+    setErrors({});
+    setFillNote(null);
+  };
 
   // Prefill from the decoder's "regenerate" link.
   useEffect(() => {
@@ -83,6 +217,7 @@ export default function App() {
       setQrUrl(nextQrUrl);
       setIsQrModalOpen(true);
       trackGenerateQr(bankCode);
+      remember({bankCode, accountNumber: accountNumber.trim(), amount, content: content.trim(), accountName: accountName.trim()});
     }
   };
 
@@ -104,7 +239,26 @@ export default function App() {
         <div className="grid md:grid-cols-1 gap-8">
           {/* Form */}
           <div data-slot="card" className="rounded-lg border border-border bg-card p-6 md:p-8">
-            <h2 className="text-xl font-semibold mb-6">Thông tin thanh toán</h2>
+            <div className="mb-6 flex flex-wrap items-center justify-between gap-2">
+              <h2 className="text-xl font-semibold">Thông tin thanh toán</h2>
+              <p className="hidden text-xs text-muted-foreground sm:block">
+                Dán ảnh QR để điền nhanh{' '}
+                <kbd className="rounded border border-border px-1.5 py-0.5 font-mono text-[11px]">{isMac ? '⌘' : 'Ctrl'}+V</kbd>
+              </p>
+            </div>
+            {fillNote && (
+              <p
+                role="status"
+                className={cn(
+                  'decode-enter mb-5 rounded-xl px-4 py-2.5 text-sm',
+                  fillNote.tone === 'ok' && 'bg-emerald-500/12 text-emerald-800',
+                  fillNote.tone === 'warn' && 'bg-amber-500/15 text-amber-800',
+                  fillNote.tone === 'busy' && 'bg-muted text-muted-foreground'
+                )}
+              >
+                {fillNote.text}
+              </p>
+            )}
             <QrForm
               bankCode={bankCode}
               accountNumber={accountNumber}
@@ -122,6 +276,43 @@ export default function App() {
               errors={errors}
             />
           </div>
+
+          {history.length > 0 && (
+            <section className="min-w-0">
+              <div className="mb-3 flex items-center justify-between">
+                <h2 className="text-sm font-semibold text-muted-foreground">Đã tạo gần đây (chỉ lưu trên máy này)</h2>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setHistory([]);
+                    writeHistory([]);
+                  }}
+                  className="text-xs text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+                >
+                  Xoá lịch sử
+                </button>
+              </div>
+              <div className="flex gap-2 overflow-x-auto pb-2">
+                {history.map(entry => (
+                  <button
+                    key={JSON.stringify(entry)}
+                    type="button"
+                    data-slot="button"
+                    data-variant="outline"
+                    onClick={() => refill(entry)}
+                    className="flex shrink-0 flex-col items-start rounded-xl border border-border px-3.5 py-2 text-left transition-colors hover:bg-muted"
+                  >
+                    <span className="text-sm font-semibold">{BANKS.find(b => b.code === entry.bankCode)?.name ?? entry.bankCode}</span>
+                    <span className="font-mono text-xs text-muted-foreground">
+                      {entry.accountNumber}
+                      {entry.amount ? ` · ${formatVND(entry.amount)}` : ''}
+                    </span>
+                    {entry.content && <span className="max-w-48 truncate text-xs text-muted-foreground">{entry.content}</span>}
+                  </button>
+                ))}
+              </div>
+            </section>
+          )}
 
           {qrUrl && <img src={qrUrl} loading="eager" className="h-0 w-0" alt="" aria-hidden="true" />}
 
@@ -174,6 +365,7 @@ export default function App() {
           bankCode={bankCode}
           accountNumber={accountNumber.trim()}
           amount={amount}
+          content={content}
           onClose={() => setIsQrModalOpen(false)}
         />
       )}

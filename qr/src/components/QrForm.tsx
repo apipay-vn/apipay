@@ -1,5 +1,6 @@
 import {useRef, useState} from 'react';
 import {cn, formatVND} from '../lib/utils';
+import {amountInWords} from '../lib/vietqr';
 import {BankDropdown} from './BankDropdown';
 
 export type QrTemplate = 'compact' | 'qr_only' | 'trademark';
@@ -23,6 +24,8 @@ interface QrFormProps {
     account?: string;
   };
 }
+
+const AMOUNT_CHIPS = ['50000', '100000', '200000', '500000', '1000000'];
 
 const TEMPLATES = [
   {value: 'trademark', label: 'Full', description: 'Mẫu hiển thị đầy đủ thông tin thụ hưởng'},
@@ -176,7 +179,29 @@ export function QrForm({
           value={amount ? formatVND(amount) : ''}
           onChange={handleAmountChange}
         />
-        <p className="text-xs text-muted-foreground">Chỉ nhập số (VND)</p>
+        {amount ? (
+          <p className="text-xs text-muted-foreground italic">{amountInWords(amount)}</p>
+        ) : (
+          <p className="text-xs text-muted-foreground">Chỉ nhập số (VND)</p>
+        )}
+        <div className="flex flex-wrap gap-2 pt-1">
+          {AMOUNT_CHIPS.map(chip => (
+            <button
+              key={chip}
+              type="button"
+              data-slot="button"
+              data-variant={amount === chip ? 'default' : 'outline'}
+              aria-pressed={amount === chip}
+              onClick={() => onAmountChange(amount === chip ? '' : chip)}
+              className={cn(
+                'rounded-lg border px-3 py-1 text-sm font-medium tabular-nums transition-colors',
+                amount === chip ? 'border-primary bg-primary text-primary-foreground' : 'border-border hover:bg-muted'
+              )}
+            >
+              {Number(chip).toLocaleString('vi-VN')}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="space-y-2">

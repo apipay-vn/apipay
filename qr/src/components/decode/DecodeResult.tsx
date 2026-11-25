@@ -11,7 +11,7 @@ function simplify(nodes: TlvNode[]): unknown[] {
   return nodes.map(n => ({tag: n.path, name: n.name, length: n.length, ...(n.children ? {children: simplify(n.children)} : {value: n.value})}));
 }
 
-function Row({label, value, mono, copy = true, children}: {label: string; value?: string; mono?: boolean; copy?: boolean; children?: React.ReactNode}) {
+export function Row({label, value, mono, copy = true, children}: {label: string; value?: string; mono?: boolean; copy?: boolean; children?: React.ReactNode}) {
   if (!value && !children) return null;
   return (
     <div className="flex items-start justify-between gap-3 border-t border-border/60 py-2.5 first:border-t-0">

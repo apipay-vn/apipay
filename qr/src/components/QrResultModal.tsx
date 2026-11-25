@@ -1,14 +1,19 @@
 import {useEffect, useState} from 'react';
+import {BANKS} from '../lib/banks';
+import {formatVND} from '../lib/utils';
+import {amountInWords} from '../lib/vietqr';
+import {Row} from './decode/DecodeResult';
 
 interface QrResultModalProps {
   qrUrl: string;
   bankCode: string;
   accountNumber: string;
   amount: string;
+  content: string;
   onClose: () => void;
 }
 
-export function QrResultModal({qrUrl, bankCode, accountNumber, onClose}: QrResultModalProps) {
+export function QrResultModal({qrUrl, bankCode, accountNumber, amount, content, onClose}: QrResultModalProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [downloadError, setDownloadError] = useState<string | null>(null);
@@ -33,6 +38,7 @@ export function QrResultModal({qrUrl, bankCode, accountNumber, onClose}: QrResul
     };
   }, [onClose]);
 
+  const bank = BANKS.find(b => b.code === bankCode);
   const downloadFilename = `apipay-${bankCode || 'qr'}-${accountNumber.trim() || 'account'}.png`;
 
   const getDownloadUrl = () => {
@@ -92,7 +98,7 @@ export function QrResultModal({qrUrl, bankCode, accountNumber, onClose}: QrResul
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/55 px-4 py-6 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex overflow-y-auto bg-black/55 px-4 py-6 backdrop-blur-sm"
       role="dialog"
       aria-modal="true"
       aria-labelledby="qr-result-title"
@@ -100,7 +106,7 @@ export function QrResultModal({qrUrl, bankCode, accountNumber, onClose}: QrResul
         if (event.target === event.currentTarget) onClose();
       }}
     >
-      <div data-slot="dialog-content" className="w-full max-w-md overflow-hidden rounded-lg border border-border bg-card shadow-2xl">
+      <div data-slot="dialog-content" className="decode-enter m-auto w-full max-w-md overflow-hidden rounded-lg border border-border bg-card shadow-2xl">
         <div className="flex items-start justify-between gap-4 border-b border-border px-5 py-4">
           <div>
             <h2 id="qr-result-title" className="text-lg font-semibold">
@@ -126,9 +132,10 @@ export function QrResultModal({qrUrl, bankCode, accountNumber, onClose}: QrResul
           <div className="rounded-lg border border-border bg-background p-3">
             <div className="relative flex min-h-[292px] items-center justify-center rounded-md bg-white">
               {!imageLoaded && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-sm text-muted-foreground">
-                  <div className="h-9 w-9 animate-spin rounded-full border-2 border-neutral-200 border-t-neutral-900" />
-                  Đang tải mã QR
+                <div role="status" className="absolute inset-0 overflow-hidden rounded-md">
+                  <div className="absolute inset-[18%] rounded-lg border-2 border-dashed border-neutral-300" />
+                  <div className="decode-scanline absolute inset-x-[14%] h-0.5 rounded-full bg-neutral-900/70" />
+                  <p className="absolute inset-x-0 bottom-3 text-center text-sm text-neutral-500">Đang tạo mã QR…</p>
                 </div>
               )}
               <img
@@ -141,6 +148,18 @@ export function QrResultModal({qrUrl, bankCode, accountNumber, onClose}: QrResul
               />
             </div>
           </div>
+
+          <dl>
+            <Row label="Ngân hàng" value={bank?.name ?? bankCode} />
+            <Row label="Số tài khoản" value={accountNumber} mono />
+            {amount && (
+              <Row label="Số tiền" value={amount}>
+                <span className="block tabular-nums">{formatVND(amount)}</span>
+                <span className="block text-xs font-normal text-muted-foreground italic">{amountInWords(amount)}</span>
+              </Row>
+            )}
+            <Row label="Nội dung" value={content.trim()} />
+          </dl>
 
           {downloadError && <p className="text-sm text-red-600">{downloadError}</p>}
 
