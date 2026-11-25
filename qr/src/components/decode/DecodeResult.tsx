@@ -153,7 +153,7 @@ export function DecodeResult({result, bank}: {result: DecodedQr; bank?: Bank}) {
       )}
 
       {result.isEmv && result.nodes.length > 0 && (
-        <div className="grid gap-6 md:grid-cols-[1fr_280px]">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-[minmax(0,1fr)_280px]">
           <div data-slot="card" className="rounded-lg border border-border bg-card p-5 md:p-6">
             <div className="flex items-center gap-4">
               <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white p-1.5 ring-1 ring-black/5">
@@ -233,6 +233,7 @@ export function DecodeResult({result, bank}: {result: DecodedQr; bank?: Bank}) {
             {result.isVietQr && (
               <Link
                 to={regenerateHref}
+                onClick={() => window.scrollTo({top: 0})}
                 data-slot="button"
                 data-variant="default"
                 className="flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 text-sm font-semibold !text-primary-foreground"

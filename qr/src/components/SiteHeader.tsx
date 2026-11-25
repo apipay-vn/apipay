@@ -23,6 +23,7 @@ export function SiteHeader() {
             <Link
               key={t.to}
               to={t.to}
+              onClick={() => window.scrollTo({top: 0})}
               data-slot="tabs-trigger"
               data-state={activeTo === t.to ? 'active' : 'inactive'}
               aria-current={activeTo === t.to ? 'page' : undefined}

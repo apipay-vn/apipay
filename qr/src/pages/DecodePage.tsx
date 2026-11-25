@@ -82,7 +82,7 @@ export default function DecodePage() {
       trackDecodeQr(source, decoded.isVietQr && !decoded.issues.some(i => i.level === 'error'));
       if (source === 'camera') setMode('text');
       if (source !== 'link' && window.location.hash) window.history.replaceState(null, '', window.location.pathname);
-      if (scroll) requestAnimationFrame(() => resultRef.current?.scrollIntoView({behavior: 'smooth', block: 'start'}));
+      if (scroll) setTimeout(() => resultRef.current?.scrollIntoView({behavior: 'smooth', block: 'start'}), 50);
     },
     [remember]
   );
@@ -90,6 +90,7 @@ export default function DecodePage() {
   const onImage = useCallback(
     async (blob: Blob, source: DecodeSource = 'image') => {
       setMode('image');
+      setPayload('');
       setImageError(null);
       setScanning(true);
       setImageUrl(URL.createObjectURL(blob));
@@ -160,7 +161,7 @@ export default function DecodePage() {
         <div className="mb-10 text-center">
           <span className="mb-4 inline-flex items-center gap-2 rounded-full border border-border px-3 py-1 text-xs font-medium text-muted-foreground">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-            Miễn phí · Không giới hạn · Không tải ảnh lên máy chủ
+            Miễn phí · <span className="hidden sm:inline">Không giới hạn · </span>Không tải ảnh lên máy chủ
           </span>
           <h1 className="mb-4 text-4xl font-bold tracking-tight text-balance md:text-5xl">Giải mã QR VietQR</h1>
           <p className="mx-auto max-w-2xl text-lg text-muted-foreground text-balance">
