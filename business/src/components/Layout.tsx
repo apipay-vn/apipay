@@ -31,6 +31,11 @@ export function Layout() {
 
 	return (
 		<div className="flex min-h-screen flex-col">
+			{/* Blurs content scrolling through the gap above the floating header; tucks 12px behind it and fades out. */}
+			<div
+				aria-hidden
+				className="pointer-events-none fixed inset-x-0 top-0 z-30 h-6 backdrop-blur-md [mask-image:linear-gradient(to_bottom,black_50%,transparent)]"
+			/>
 			<header className="sticky top-3 z-40 mt-3 w-[calc(100%-1.5rem)] max-w-6xl self-center">
 				<div data-slot="site-header" aria-hidden className="pointer-events-none absolute inset-0 rounded-full" />
 				<div className="relative flex h-14 items-center justify-between gap-2 px-3 sm:gap-4 sm:px-5">
