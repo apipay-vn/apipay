@@ -1,8 +1,8 @@
 import {useCallback, useEffect, useState} from 'react';
 import {Link, useParams} from 'react-router-dom';
-import {LogoIcon} from './components/LogoIcon';
 import {QrForm, QrTemplate} from './components/QrForm';
 import {QrResultModal} from './components/QrResultModal';
+import {SiteHeader} from './components/SiteHeader';
 import {trackGenerateQr} from './lib/analytics';
 import {BANKS, findBankBySlug, resolveQrBankBin} from './lib/banks';
 import {API_URL, cn, useDebounce} from './lib/utils';
@@ -52,6 +52,15 @@ export default function App() {
     }
   }, [bankCode, accountNumber, amount, content, accountName, template, debouncedGenerateQr]);
 
+  // Prefill from the decoder's "regenerate" link.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const prefillAmount = params.get('amount');
+    setAccountNumber(prev => params.get('account') ?? prev);
+    if (prefillAmount && /^\d+$/.test(prefillAmount)) setAmount(prefillAmount);
+    setContent(prev => params.get('content') ?? prev);
+  }, []);
+
   // Prefill bank from URL slug
   useEffect(() => {
     const bank = findBankBySlug(slug);
@@ -79,28 +88,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen">
-      {/* Header */}
-      <header className="border-b border-border">
-        <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
-          <a href="https://apipay.vn" className="flex items-center gap-2">
-            <LogoIcon className="w-8 h-8 text-primary" />
-            <span className="text-xl font-bold font-mono">ApiPay</span>
-          </a>
-          <nav className="flex items-center gap-6 text-sm font-medium">
-            <a href="https://apipay.vn" className="text-muted-foreground hover:text-foreground transition-colors">
-              Trang chủ
-            </a>
-            <a
-              href="https://apipay.vn/about"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Giới thiệu
-            </a>
-          </nav>
-        </div>
-      </header>
+      <SiteHeader />
 
       {/* Main Content */}
       <main className="max-w-5xl mx-auto px-4 py-12">

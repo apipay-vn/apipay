@@ -12,7 +12,7 @@ function removeVietnameseTones(str: string): string {
     .replace(/[đĐ]/g, m => (m === 'đ' ? 'd' : 'D'));
 }
 
-function BankImage({
+export function BankImage({
   bank,
   className,
   loading,

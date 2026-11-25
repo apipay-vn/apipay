@@ -36,3 +36,15 @@ export function trackGenerateQr(bankCode?: string) {
   });
 }
 
+
+export function trackDecodeQr(source: string, valid: boolean) {
+  if (typeof window === 'undefined' || typeof window.gtag !== 'function') {
+    return;
+  }
+
+  window.gtag('event', 'decode_qr', {
+    event_category: 'engagement',
+    event_label: source,
+    valid,
+  });
+}

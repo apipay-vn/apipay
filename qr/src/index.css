@@ -127,3 +127,31 @@
 		text-wrap: balance;
 	}
 }
+
+@keyframes decode-scan {
+	0%, 100% { top: 8%; }
+	50% { top: 92%; }
+}
+
+@keyframes decode-enter {
+	from { opacity: 0; transform: translateY(8px); }
+	to { opacity: 1; transform: none; }
+}
+
+.decode-scanline {
+	animation: decode-scan 2.2s ease-in-out infinite;
+}
+
+.decode-enter {
+	animation: decode-enter 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.decode-scanline,
+	.decode-enter {
+		animation: none;
+	}
+	.decode-scanline {
+		top: 50%;
+	}
+}

@@ -4,6 +4,7 @@ import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import './index.css';
 import '../../styles/glass.css';
 import App from './App';
+import DecodePage from './pages/DecodePage';
 import {AnalyticsTracker} from './components/AnalyticsTracker';
 
 createRoot(document.getElementById('root')!).render(
@@ -11,6 +12,7 @@ createRoot(document.getElementById('root')!).render(
     <BrowserRouter>
       <AnalyticsTracker />
       <Routes>
+        <Route path="/giai-ma-vietqr" element={<DecodePage />} />
         <Route path="/:slug?" element={<App />} />
       </Routes>
     </BrowserRouter>
