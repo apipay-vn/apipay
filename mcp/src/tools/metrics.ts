@@ -1,6 +1,7 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { ApiClient, ApiError } from "../client.js";
+import { UNTRUSTED_NOTE, markPayerText } from "../untrusted.js";
 
 const PERIOD_ENUM = [
   "today",
@@ -66,7 +67,7 @@ export function registerMetricsTools(server: McpServer, client: ApiClient): void
     {
       annotations: { readOnlyHint: true },
       description:
-        "List recent bank transactions with filtering by date, bank, account, or search keyword.",
+        "List recent bank transactions with filtering by date, bank, account, or search keyword." + UNTRUSTED_NOTE,
       inputSchema: {
         page: z
           .number()
@@ -133,7 +134,7 @@ export function registerMetricsTools(server: McpServer, client: ApiClient): void
 
         const data = await client.get("/client/metrics/transactions", { query });
         return {
-          content: [{ type: "text", text: JSON.stringify(data, null, 2) }],
+          content: [{ type: "text", text: JSON.stringify(markPayerText(data), null, 2) }],
         };
       } catch (err) {
         const message =

@@ -161,3 +161,10 @@ test("ApiClient fails fast without credentials and does not call fetch", async (
     globalThis.fetch = originalFetch;
   }
 });
+
+test("ApiClient refuses plain http outside localhost", () => {
+  assert.throws(() => new ApiClient({ baseUrl: "http://app.apipay.vn/v1" }), /https/);
+  assert.throws(() => new ApiClient({ baseUrl: "http://localhost.evil.com/v1" }), /https/);
+  assert.doesNotThrow(() => new ApiClient({ baseUrl: "http://localhost:5500/v1" }));
+  assert.doesNotThrow(() => new ApiClient({ baseUrl: "http://127.0.0.1:5500/v1" }));
+});

@@ -1,6 +1,7 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { ApiClient, ApiError } from "../client.js";
+import { CONFIRM_NOTE, UNTRUSTED_NOTE, markPayerText } from "../untrusted.js";
 
 export function registerWebhooksTools(server: McpServer, client: ApiClient): void {
   server.registerTool(
@@ -52,7 +53,7 @@ export function registerWebhooksTools(server: McpServer, client: ApiClient): voi
     {
       annotations: { readOnlyHint: false, destructiveHint: false },
       description:
-        "Register a new webhook endpoint for transaction notifications. By default the webhook fires for ALL current and future bank accounts. Optionally bind it to a legacy single bank with bankPublicId, or to an explicit allowlist with bankPublicIds ([] matches no banks). Delivery timeout defaults to 10s and an optional extra X-* request header can be attached. HMAC (ApiPay-Signature) is always sent and unchanged.",
+        "Register a new webhook endpoint for transaction notifications. By default the webhook fires for ALL current and future bank accounts. Optionally bind it to a legacy single bank with bankPublicId, or to an explicit allowlist with bankPublicIds ([] matches no banks). Delivery timeout defaults to 10s and an optional extra X-* request header can be attached. HMAC (ApiPay-Signature) is always sent and unchanged." + CONFIRM_NOTE,
       inputSchema: {
         webhookUrl: z
           .string()
@@ -131,7 +132,7 @@ export function registerWebhooksTools(server: McpServer, client: ApiClient): voi
     {
       annotations: { readOnlyHint: false, destructiveHint: true },
       description:
-        "Update an existing webhook's destination URL, active state, bank scope, delivery timeout, or extra header. Omit a field to leave it unchanged; pass null to reset it (bankPublicIds: null => all banks, timeoutSeconds: null => 10, extraHeader: null => off). HMAC (ApiPay-Signature) is always sent and unchanged.",
+        "Update an existing webhook's destination URL, active state, bank scope, delivery timeout, or extra header. Omit a field to leave it unchanged; pass null to reset it (bankPublicIds: null => all banks, timeoutSeconds: null => 10, extraHeader: null => off). HMAC (ApiPay-Signature) is always sent and unchanged." + CONFIRM_NOTE,
       inputSchema: {
         id: z.string().describe("Webhook ID to update"),
         webhookUrl: z
@@ -210,7 +211,7 @@ export function registerWebhooksTools(server: McpServer, client: ApiClient): voi
     "toggle_webhook",
     {
       annotations: { readOnlyHint: false, destructiveHint: true },
-      description: "Toggle a webhook between active and inactive states.",
+      description: "Toggle a webhook between active and inactive states." + CONFIRM_NOTE,
       inputSchema: {
         id: z.string().describe("Webhook ID to toggle"),
       },
@@ -238,7 +239,7 @@ export function registerWebhooksTools(server: McpServer, client: ApiClient): voi
     "remove_webhook",
     {
       annotations: { readOnlyHint: false, destructiveHint: true },
-      description: "Permanently delete a registered webhook (destructive).",
+      description: "Permanently delete a registered webhook (destructive)." + CONFIRM_NOTE,
       inputSchema: {
         id: z.string().describe("Webhook ID to delete"),
       },
@@ -266,7 +267,7 @@ export function registerWebhooksTools(server: McpServer, client: ApiClient): voi
     "list_webhook_deliveries",
     {
       annotations: { readOnlyHint: true },
-      description: "List webhook delivery logs and attempt statuses.",
+      description: "List webhook delivery logs and attempt statuses." + UNTRUSTED_NOTE,
       inputSchema: {
         page: z
           .number()
@@ -311,7 +312,7 @@ export function registerWebhooksTools(server: McpServer, client: ApiClient): voi
 
         const data = await client.get("/client/webhooks/deliveries", { query });
         return {
-          content: [{ type: "text", text: JSON.stringify(data, null, 2) }],
+          content: [{ type: "text", text: JSON.stringify(markPayerText(data), null, 2) }],
         };
       } catch (err) {
         const message =
@@ -331,7 +332,7 @@ export function registerWebhooksTools(server: McpServer, client: ApiClient): voi
     {
       annotations: { readOnlyHint: false, destructiveHint: false },
       description:
-        "Resend a failed webhook delivery (fires a real HTTP request to the merchant URL).",
+        "Resend a failed webhook delivery (fires a real HTTP request to the merchant URL)." + CONFIRM_NOTE,
       inputSchema: {
         historyId: z
           .string()

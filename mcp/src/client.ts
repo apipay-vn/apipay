@@ -39,6 +39,10 @@ export class ApiClient {
 
   constructor(options: { baseUrl: string; accessKey?: string; secretKey?: string }) {
     this.baseUrl = options.baseUrl.replace(/\/+$/, "");
+    const { protocol, hostname } = new URL(this.baseUrl);
+    if (protocol !== "https:" && !(protocol === "http:" && (hostname === "localhost" || hostname === "127.0.0.1"))) {
+      throw new Error("APIPAY_API_URL must use https (plain http is allowed only for localhost and 127.0.0.1)");
+    }
     this.accessKey = options.accessKey;
     this.secretKey = options.secretKey;
   }

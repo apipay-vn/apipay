@@ -1,6 +1,7 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { ApiClient, ApiError } from "../client.js";
+import { CONFIRM_NOTE } from "../untrusted.js";
 
 export function registerPaymentsTools(server: McpServer, client: ApiClient): void {
   server.registerTool(
@@ -178,7 +179,7 @@ export function registerPaymentsTools(server: McpServer, client: ApiClient): voi
     {
       annotations: { readOnlyHint: false, destructiveHint: true },
       description:
-        "Cancel an ACTIVE payment request (destructive, only ACTIVE requests can be cancelled).",
+        "Cancel an ACTIVE payment request (destructive, only ACTIVE requests can be cancelled)." + CONFIRM_NOTE,
       inputSchema: {
         publicId: z
           .string()

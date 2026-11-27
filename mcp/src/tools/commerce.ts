@@ -1,6 +1,7 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { ApiClient, ApiError } from "../client.js";
+import { CONFIRM_NOTE } from "../untrusted.js";
 
 function fail(err: unknown) {
   const message =
@@ -137,7 +138,7 @@ export function registerCommerceTools(server: McpServer, client: ApiClient): voi
     {
       annotations: { readOnlyHint: false, destructiveHint: true },
       description:
-        "Update a product name, description, archive/restore, or default price. Does not change amounts on payment links already created.",
+        "Update a product name, description, archive/restore, or default price. Does not change amounts on payment links already created." + CONFIRM_NOTE,
       inputSchema: {
         id: z.string().describe("Product id"),
         name: z.string().max(200).optional().describe("Product name"),
@@ -287,7 +288,7 @@ export function registerCommerceTools(server: McpServer, client: ApiClient): voi
     {
       annotations: { readOnlyHint: false, destructiveHint: true },
       description:
-        "Update a price nickname, lookup key, or archive/restore it. unitAmount cannot be changed.",
+        "Update a price nickname, lookup key, or archive/restore it. unitAmount cannot be changed." + CONFIRM_NOTE,
       inputSchema: {
         id: z.string().describe("Price id"),
         active: z
@@ -331,7 +332,7 @@ export function registerCommerceTools(server: McpServer, client: ApiClient): voi
     {
       annotations: { readOnlyHint: false, destructiveHint: true },
       description:
-        "Permanently delete an unused price. Prices that have been used for payments cannot be deleted — archive them with update_price instead.",
+        "Permanently delete an unused price. Prices that have been used for payments cannot be deleted — archive them with update_price instead." + CONFIRM_NOTE,
       inputSchema: {
         id: z.string().describe("Price id"),
       },
@@ -487,7 +488,7 @@ export function registerCommerceTools(server: McpServer, client: ApiClient): voi
     "update_commerce_customer",
     {
       annotations: { readOnlyHint: false, destructiveHint: true },
-      description: "Update a Commerce customer's information.",
+      description: "Update a Commerce customer's information." + CONFIRM_NOTE,
       inputSchema: {
         id: z.string().describe("Customer id"),
         name: z.string().max(200).optional().describe("Customer name"),
@@ -510,7 +511,7 @@ export function registerCommerceTools(server: McpServer, client: ApiClient): voi
     {
       annotations: { readOnlyHint: false, destructiveHint: true },
       description:
-        "Delete a Commerce customer. Fails if the customer has linked payment requests or invoices.",
+        "Delete a Commerce customer. Fails if the customer has linked payment requests or invoices." + CONFIRM_NOTE,
       inputSchema: {
         id: z.string().describe("Customer id"),
       },
@@ -529,7 +530,7 @@ export function registerCommerceTools(server: McpServer, client: ApiClient): voi
     {
       annotations: { readOnlyHint: false, destructiveHint: false },
       description:
-        "Send a VietQR payment request link to a customer via email for a Commerce product price. Returns payment request publicId, payUrl, and whether email was sent.",
+        "Send a VietQR payment request link to a customer via email for a Commerce product price. Returns payment request publicId, payUrl, and whether email was sent." + CONFIRM_NOTE,
       inputSchema: {
         customerId: z
           .string()

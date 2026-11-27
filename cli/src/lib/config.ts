@@ -1,4 +1,5 @@
 import Conf from "conf";
+import fs from "node:fs";
 import path from "node:path";
 import os from "node:os";
 import {API_BASE_URL, DASHBOARD_URL, type SetupStep} from "./constants.js";
@@ -94,10 +95,21 @@ export function getStore(): Conf<CliConfig> {
 		_store = new Conf<CliConfig>({
 			projectName: "apipay",
 			cwd: path.join(os.homedir(), ".config", "apipay"),
+			configFileMode: 0o600,
 			schema,
 		} as any);
+		restrictConfigFile(_store.path);
 	}
 	return _store;
+}
+
+/** Tightens a config file that older versions wrote world-readable. */
+export function restrictConfigFile(file: string): void {
+	try {
+		if (fs.statSync(file).mode & 0o077) fs.chmodSync(file, 0o600);
+	} catch {
+		// Missing file: conf creates it with configFileMode on first write.
+	}
 }
 
 /* ===== Auth helpers ===== */
