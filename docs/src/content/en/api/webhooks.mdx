@@ -23,7 +23,7 @@ POST /v1/client/webhooks
 
 | Parameter        | Type     | Required | Description                                                              |
 | ---------------- | -------- | -------- | ------------------------------------------------------------------------ |
-| `webhookUrl`     | string   | Yes      | URL that receives webhooks (HTTPS recommended)                           |
+| `webhookUrl`     | string   | Yes      | URL that receives webhooks. Live: HTTPS on port 443. Sandbox: HTTP and custom ports allowed |
 | `bankPublicIds`  | string[] | No       | Only receive transactions for these banks. Omit to receive all, including banks connected later |
 | `isActive`       | boolean  | No       | Enable or disable the webhook. Default `true`                            |
 | `timeoutSeconds` | integer  | No       | Wait time per delivery, `5` to `10` seconds. Default `10`                |

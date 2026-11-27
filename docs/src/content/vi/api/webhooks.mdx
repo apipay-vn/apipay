@@ -23,7 +23,7 @@ POST /v1/client/webhooks
 
 | Tham số          | Kiểu     | Bắt buộc | Mô tả                                                                  |
 | ---------------- | -------- | -------- | ---------------------------------------------------------------------- |
-| `webhookUrl`     | string   | Có       | URL nhận webhook (nên dùng HTTPS)                                      |
+| `webhookUrl`     | string   | Có       | URL nhận webhook. Live: HTTPS, cổng 443. Sandbox: được dùng HTTP và cổng riêng |
 | `bankPublicIds`  | string[] | Không    | Chỉ nhận giao dịch của các ngân hàng này. Bỏ trống để nhận tất cả, kể cả ngân hàng kết nối sau |
 | `isActive`       | boolean  | Không    | Bật hoặc tắt webhook. Mặc định `true`                                  |
 | `timeoutSeconds` | integer  | Không    | Thời gian chờ mỗi lần gửi, từ `5` đến `10` giây. Mặc định `10`         |
