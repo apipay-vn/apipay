@@ -2761,7 +2761,7 @@ POST /v1/client/webhooks
 
 | Parameter        | Type     | Required | Description                                                              |
 | ---------------- | -------- | -------- | ------------------------------------------------------------------------ |
-| `webhookUrl`     | string   | Yes      | URL that receives webhooks (HTTPS recommended)                           |
+| `webhookUrl`     | string   | Yes      | URL that receives webhooks. Live: HTTPS on port 443. Sandbox: HTTP and custom ports allowed |
 | `bankPublicIds`  | string[] | No       | Only receive transactions for these banks. Omit to receive all, including banks connected later |
 | `isActive`       | boolean  | No       | Enable or disable the webhook. Default `true`                            |
 | `timeoutSeconds` | integer  | No       | Wait time per delivery, `5` to `10` seconds. Default `10`                |
@@ -3238,6 +3238,16 @@ Accounts waiting for activation cannot be disconnected.
   "statusCode": 200,
   "timestamp": "2026-08-12T14:27:45.000Z"
 }
+```
+
+Some banks ask the account holder for an OTP first. The response then has `"OTP": 1`, and the account stays connected until you send the code:
+
+```bash
+POST /v1/client/banks/:publicId/confirm-delete
+```
+
+```json
+{ "otp": "123456" }
 ```
 
 ### Metrics API
