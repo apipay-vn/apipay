@@ -10,7 +10,7 @@ const WEBHOOK_EVENTS = [
 ] as const;
 
 const EVENTS_HELP =
-  "transaction.in = money in, transaction.out = money out, payment_request.completed = a payment request was paid (not sent in sandbox).";
+  "transaction.in = money in, transaction.out = money out, payment_request.completed = a payment request was paid.";
 
 export function registerWebhooksTools(server: McpServer, client: ApiClient): void {
   server.registerTool(

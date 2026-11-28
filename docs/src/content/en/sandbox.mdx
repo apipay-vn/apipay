@@ -119,7 +119,7 @@ You can also simulate from the dashboard: create a manual transaction on the **T
 
 ### Sandbox payload
 
-Sandbox webhooks are shorter than live payloads and carry `"sandbox": true`. The sandbox and Live Test do not send `payment_request.completed`:
+Sandbox webhooks are shorter than live payloads and carry `"sandbox": true`:
 
 ```json
 {
@@ -132,6 +132,33 @@ Sandbox webhooks are shorter than live payloads and carry `"sandbox": true`. The
     "content": "TEST-ORDER-001",
     "type": "IN",
     "status": "SUCCESS"
+  }
+}
+```
+
+Paying a test payment request also sends `payment_request.completed` to webhooks that chose that event. Live Test does not send it.
+
+```json
+{
+  "event": "payment_request.completed",
+  "sandbox": true,
+  "created": "2026-08-15T10:30:00.000Z",
+  "data": {
+    "paymentRequest": {
+      "publicId": "test_pr_a1b2c3d4e5f6a7b8",
+      "amount": "50000",
+      "content": "TEST-ORDER-001",
+      "title": "Order 001",
+      "status": "COMPLETED",
+      "completedAt": "2026-08-15T10:30:00.000Z"
+    },
+    "transaction": {
+      "publicId": "test_txn_a1b2c3d4e5f6a7b8",
+      "amount": "50000",
+      "content": "TEST-ORDER-001",
+      "type": "IN",
+      "status": "SUCCESS"
+    }
   }
 }
 ```

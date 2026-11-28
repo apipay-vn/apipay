@@ -170,7 +170,7 @@ Example: your shop creates a payment request for order 12345 and the customer pa
 
 - Off by default. Turn it on in [Choose events](#choose-events).
 - Sent separately from `transaction.in`, in no fixed order. Both carry the same `transactionId`, so fulfill the order from one of them only.
-- Not sent in the sandbox.
+- In the sandbox it is sent when you pay a test payment request. Live Test does not send it.
 
 ## Webhook authentication
 

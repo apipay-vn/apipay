@@ -119,7 +119,7 @@ Bạn cũng có thể giả lập trong dashboard: tạo giao dịch thủ công
 
 ### Payload sandbox
 
-Webhook sandbox gọn hơn payload thật và có `"sandbox": true`. Sandbox và Live Test không gửi `payment_request.completed`:
+Webhook sandbox gọn hơn payload thật và có `"sandbox": true`:
 
 ```json
 {
@@ -132,6 +132,33 @@ Webhook sandbox gọn hơn payload thật và có `"sandbox": true`. Sandbox và
     "content": "TEST-ORDER-001",
     "type": "IN",
     "status": "SUCCESS"
+  }
+}
+```
+
+Khi bạn thanh toán thử một yêu cầu thanh toán, sandbox cũng gửi `payment_request.completed` đến các webhook đã chọn sự kiện này. Live Test không gửi sự kiện này.
+
+```json
+{
+  "event": "payment_request.completed",
+  "sandbox": true,
+  "created": "2026-08-15T10:30:00.000Z",
+  "data": {
+    "paymentRequest": {
+      "publicId": "test_pr_a1b2c3d4e5f6a7b8",
+      "amount": "50000",
+      "content": "TEST-ORDER-001",
+      "title": "Đơn hàng 001",
+      "status": "COMPLETED",
+      "completedAt": "2026-08-15T10:30:00.000Z"
+    },
+    "transaction": {
+      "publicId": "test_txn_a1b2c3d4e5f6a7b8",
+      "amount": "50000",
+      "content": "TEST-ORDER-001",
+      "type": "IN",
+      "status": "SUCCESS"
+    }
   }
 }
 ```
