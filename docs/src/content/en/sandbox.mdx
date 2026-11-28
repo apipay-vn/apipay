@@ -119,7 +119,7 @@ You can also simulate from the dashboard: create a manual transaction on the **T
 
 ### Sandbox payload
 
-Sandbox webhooks are shorter than live payloads and carry `"sandbox": true`:
+Sandbox webhooks are shorter than live payloads and carry `"sandbox": true`. The sandbox and Live Test do not send `payment_request.completed`:
 
 ```json
 {

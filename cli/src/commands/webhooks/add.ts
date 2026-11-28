@@ -5,7 +5,11 @@ import {fetchClientBanks} from "../../lib/client-banks.js";
 import {markStepComplete} from "../../lib/config.js";
 import {kvLine, success, warn} from "../../lib/formatters.js";
 import {promptWebhookScope, promptWebhookUrl} from "../../lib/prompts.js";
-import {validateWebhookHeaderName} from "../../lib/validators.js";
+import {
+	parseWebhookEvents,
+	validateWebhookHeaderName,
+	WEBHOOK_EVENTS,
+} from "../../lib/validators.js";
 
 function parseBankPublicIds(value: string): string[] {
 	return value
@@ -43,6 +47,9 @@ export default class WebhooksAdd extends ApiKeyCommand {
 		"extra-header-value": Flags.string({
 			description: "Extra request header value",
 		}),
+		events: Flags.string({
+			description: `Comma-separated events to receive: ${WEBHOOK_EVENTS.join(", ")}. Default: transaction.in and transaction.out`,
+		}),
 	};
 
 	static override examples = [
@@ -50,6 +57,7 @@ export default class WebhooksAdd extends ApiKeyCommand {
 		"<%= config.bin %> webhooks:add --all-banks",
 		"<%= config.bin %> webhooks:add --bank-public-id bnk_abc123 --timeout-seconds 8",
 		'<%= config.bin %> webhooks:add --bank-public-ids "bnk_a,bnk_b" --extra-header-name X-Api-Key --extra-header-value secret',
+		'<%= config.bin %> webhooks:add --all-banks --events "transaction.in,payment_request.completed"',
 	];
 
 	async run(): Promise<void> {
@@ -59,6 +67,13 @@ export default class WebhooksAdd extends ApiKeyCommand {
 		console.log(chalk.bold("  Add Webhook"));
 		console.log(chalk.gray("  ──────────"));
 		console.log("");
+
+		let events: string[] | undefined;
+		if (flags.events !== undefined) {
+			const parsed = parseWebhookEvents(flags.events);
+			if (typeof parsed === "string") this.error(parsed, {exit: 1});
+			events = parsed;
+		}
 
 		const scopeFlags = [
 			flags["bank-public-id"] !== undefined,
@@ -134,6 +149,7 @@ export default class WebhooksAdd extends ApiKeyCommand {
 		if (flags["timeout-seconds"] !== undefined) {
 			body.timeoutSeconds = flags["timeout-seconds"];
 		}
+		if (events !== undefined) body.events = events;
 
 		const headerName = flags["extra-header-name"];
 		const headerValue = flags["extra-header-value"];
@@ -179,6 +195,10 @@ export default class WebhooksAdd extends ApiKeyCommand {
 			if (body.extraHeader) {
 				kvLine("Extra Header", body.extraHeader.name);
 			}
+			kvLine(
+				"Events",
+				(events ?? ["transaction.in", "transaction.out"]).join(", "),
+			);
 			if (webhook?.secret) {
 				kvLine("HMAC Secret", chalk.yellow(webhook.secret));
 				console.log("");

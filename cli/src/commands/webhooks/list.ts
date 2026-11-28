@@ -45,11 +45,14 @@ export default class WebhooksList extends ApiKeyCommand {
 
 			console.log("");
 			const table = createTable(
-				["ID", "URL", "Scope", "Timeout", "Header", "Status"],
+				["ID", "URL", "Scope", "Events", "Timeout", "Header", "Status"],
 				webhooks.map((w: any) => [
 					w.id ? String(w.id) : "—",
 					w.webhookUrl ? maskLongString(w.webhookUrl) : "—",
 					formatWebhookScope(w),
+					Array.isArray(w.configs?.events)
+						? w.configs.events.join("\n")
+						: "—",
 					w.configs?.timeoutSeconds !== undefined
 						? `${w.configs.timeoutSeconds}s`
 						: "—",

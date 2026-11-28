@@ -3,6 +3,16 @@ import { z } from "zod";
 import { ApiClient, ApiError } from "../client.js";
 import { CONFIRM_NOTE, UNTRUSTED_NOTE, markPayerText } from "../untrusted.js";
 
+// Keep in step with WEBHOOK_EVENTS in the core API.
+const WEBHOOK_EVENTS = [
+  "transaction.in",
+  "transaction.out",
+  "payment_request.completed",
+] as const;
+
+const EVENTS_HELP =
+  "transaction.in = money in, transaction.out = money out, payment_request.completed = an incoming transfer paid a payment request (payload carries the payment request and the transaction; sent separately from transaction.in, not sent in sandbox).";
+
 export function registerWebhooksTools(server: McpServer, client: ApiClient): void {
   server.registerTool(
     "list_webhooks",
@@ -53,11 +63,18 @@ export function registerWebhooksTools(server: McpServer, client: ApiClient): voi
     {
       annotations: { readOnlyHint: false, destructiveHint: false },
       description:
-        "Register a new webhook endpoint for transaction notifications. By default the webhook fires for ALL current and future bank accounts. Optionally bind it to a legacy single bank with bankPublicId, or to an explicit allowlist with bankPublicIds ([] matches no banks). Delivery timeout defaults to 10s and an optional extra X-* request header can be attached. HMAC (ApiPay-Signature) is always sent and unchanged." + CONFIRM_NOTE,
+        "Register a new webhook endpoint for transaction notifications. By default the webhook fires for ALL current and future bank accounts. Optionally bind it to a legacy single bank with bankPublicId, or to an explicit allowlist with bankPublicIds ([] matches no banks). Delivery timeout defaults to 10s and an optional extra X-* request header can be attached. Use events to choose which events it receives. HMAC (ApiPay-Signature) is always sent and unchanged." + CONFIRM_NOTE,
       inputSchema: {
         webhookUrl: z
           .string()
           .describe("HTTPS URL to receive webhook notifications"),
+        events: z
+          .array(z.enum(WEBHOOK_EVENTS))
+          .min(1)
+          .optional()
+          .describe(
+            `Events this webhook receives. Omit for transaction.in and transaction.out. ${EVENTS_HELP}`,
+          ),
         isActive: z
           .boolean()
           .optional()
@@ -101,9 +118,11 @@ export function registerWebhooksTools(server: McpServer, client: ApiClient): voi
       bankPublicIds,
       timeoutSeconds,
       extraHeader,
+      events,
     }) => {
       try {
         const body: Record<string, any> = { webhookUrl };
+        if (events !== undefined) body.events = events;
         if (isActive !== undefined) body.isActive = isActive;
         if (bankPublicId !== undefined) body.bankPublicId = bankPublicId;
         if (bankPublicIds !== undefined) body.bankPublicIds = bankPublicIds;
@@ -132,7 +151,7 @@ export function registerWebhooksTools(server: McpServer, client: ApiClient): voi
     {
       annotations: { readOnlyHint: false, destructiveHint: true },
       description:
-        "Update an existing webhook's destination URL, active state, bank scope, delivery timeout, or extra header. Omit a field to leave it unchanged; pass null to reset it (bankPublicIds: null => all banks, timeoutSeconds: null => 10, extraHeader: null => off). HMAC (ApiPay-Signature) is always sent and unchanged." + CONFIRM_NOTE,
+        "Update an existing webhook's destination URL, active state, bank scope, events, delivery timeout, or extra header. Omit a field to leave it unchanged; pass null to reset it (bankPublicIds: null => all banks, timeoutSeconds: null => 10, extraHeader: null => off, events: null => transaction.in and transaction.out). HMAC (ApiPay-Signature) is always sent and unchanged." + CONFIRM_NOTE,
       inputSchema: {
         id: z.string().describe("Webhook ID to update"),
         webhookUrl: z
@@ -143,6 +162,14 @@ export function registerWebhooksTools(server: McpServer, client: ApiClient): voi
           .boolean()
           .optional()
           .describe("Enable or disable the webhook"),
+        events: z
+          .array(z.enum(WEBHOOK_EVENTS))
+          .min(1)
+          .nullable()
+          .optional()
+          .describe(
+            `Events this webhook receives; replaces the current list. Pass null to reset to transaction.in and transaction.out. ${EVENTS_HELP}`,
+          ),
         bankPublicIds: z
           .array(z.string())
           .nullable()
@@ -181,9 +208,11 @@ export function registerWebhooksTools(server: McpServer, client: ApiClient): voi
       bankPublicIds,
       timeoutSeconds,
       extraHeader,
+      events,
     }) => {
       try {
         const body: Record<string, any> = {};
+        if (events !== undefined) body.events = events;
         if (webhookUrl !== undefined) body.webhookUrl = webhookUrl;
         if (isActive !== undefined) body.isActive = isActive;
         if (bankPublicIds !== undefined) body.bankPublicIds = bankPublicIds;

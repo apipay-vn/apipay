@@ -9,7 +9,7 @@ Mỗi yêu cầu thanh toán có một link thanh toán (`payUrl`) và mã QR ch
 
 1. Server của bạn tạo yêu cầu thanh toán.
 2. Chuyển khách đến `payUrl`, hoặc hiển thị ảnh `qrUrl` trên trang của bạn.
-3. Nhận kết quả qua [webhook](/vi/api/webhooks) `transaction.in`.
+3. Nhận kết quả qua [webhook](/vi/api/webhooks) `transaction.in`, hoặc bật `payment_request.completed` để biết yêu cầu nào đã được thanh toán.
 
 Mọi request cần header `Authorization: Bearer <Auth>`, trong đó `<Auth>` là base64 của `accessKey:secretKey`. Xem [Xác thực API](/vi/api/authentication). Response thành công có dạng `{"data": ..., "statusCode": ..., "timestamp": ...}`.
 

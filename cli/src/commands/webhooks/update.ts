@@ -3,7 +3,11 @@ import chalk from "chalk";
 import {ApiKeyCommand} from "../../lib/base-command.js";
 import {kvLine, success} from "../../lib/formatters.js";
 import {promptOptionalWebhookUrl} from "../../lib/prompts.js";
-import {validateWebhookHeaderName} from "../../lib/validators.js";
+import {
+	parseWebhookEvents,
+	validateWebhookHeaderName,
+	WEBHOOK_EVENTS,
+} from "../../lib/validators.js";
 
 function parseBankPublicIds(value: string): string[] {
 	return value
@@ -47,6 +51,15 @@ export default class WebhooksUpdate extends ApiKeyCommand {
 			description: "Remove the extra request header",
 			default: false,
 		}),
+		events: Flags.string({
+			description: `Comma-separated events to receive: ${WEBHOOK_EVENTS.join(", ")}`,
+			exclusive: ["reset-events"],
+		}),
+		"reset-events": Flags.boolean({
+			description:
+				"Reset events to the default of transaction.in and transaction.out",
+			default: false,
+		}),
 	};
 
 	static override examples = [
@@ -54,6 +67,7 @@ export default class WebhooksUpdate extends ApiKeyCommand {
 		"<%= config.bin %> webhooks:update <webhook-id> --webhook-url https://example.com/hooks",
 		'<%= config.bin %> webhooks:update <webhook-id> --bank-public-ids "bnk_a,bnk_b" --timeout-seconds 8',
 		'<%= config.bin %> webhooks:update <webhook-id> --bank-public-ids all --clear-extra-header',
+		'<%= config.bin %> webhooks:update <webhook-id> --events "transaction.in,payment_request.completed"',
 	];
 
 	async run(): Promise<void> {
@@ -99,6 +113,15 @@ export default class WebhooksUpdate extends ApiKeyCommand {
 			body.extraHeader = null;
 		}
 
+		if (flags.events !== undefined) {
+			const parsed = parseWebhookEvents(flags.events);
+			if (typeof parsed === "string") this.error(parsed, {exit: 1});
+			body.events = parsed;
+		}
+		if (flags["reset-events"]) {
+			body.events = null;
+		}
+
 		// Keep the interactive URL flow when no flags were provided.
 		if (Object.keys(body).length === 0) {
 			console.log("  Leave blank to keep the current value.\n");
@@ -133,6 +156,9 @@ export default class WebhooksUpdate extends ApiKeyCommand {
 			}
 			if (webhook?.configs?.extraHeader) {
 				kvLine("Extra Header", webhook.configs.extraHeader.name);
+			}
+			if (Array.isArray(webhook?.configs?.events)) {
+				kvLine("Events", webhook.configs.events.join(", "));
 			}
 			console.log("");
 

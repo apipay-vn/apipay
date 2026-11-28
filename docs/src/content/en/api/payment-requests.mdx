@@ -9,7 +9,7 @@ Each payment request has a payment link (`payUrl`) and a bank-transfer QR code. 
 
 1. Your server creates a payment request.
 2. Send the customer to `payUrl`, or show the `qrUrl` image on your own page.
-3. Receive the result through the `transaction.in` [webhook](/en/api/webhooks).
+3. Receive the result through the `transaction.in` [webhook](/en/api/webhooks), or turn on `payment_request.completed` to be told which request was paid.
 
 Every request needs the header `Authorization: Bearer <Auth>`, where `<Auth>` is the base64 of `accessKey:secretKey`. See [API Authentication](/en/api/authentication). Successful responses have the shape `{"data": ..., "statusCode": ..., "timestamp": ...}`.
 

@@ -125,6 +125,33 @@ export function validateWebhookHeaderName(input: string): string | true {
 	return true;
 }
 
+// Keep in step with WEBHOOK_EVENTS in the core API.
+export const WEBHOOK_EVENTS = [
+	"transaction.in",
+	"transaction.out",
+	"payment_request.completed",
+] as const;
+
+/** Parses a comma-separated --events value. Returns the list, or an error message. */
+export function parseWebhookEvents(input: string): string[] | string {
+	const events = [
+		...new Set(
+			input
+				.split(",")
+				.map((event) => event.trim())
+				.filter(Boolean),
+		),
+	];
+	if (events.length === 0) return "--events needs at least one event.";
+	const unknown = events.filter(
+		(event) => !(WEBHOOK_EVENTS as readonly string[]).includes(event),
+	);
+	if (unknown.length > 0) {
+		return `Unknown event: ${unknown.join(", ")}. Allowed: ${WEBHOOK_EVENTS.join(", ")}.`;
+	}
+	return events;
+}
+
 export function validatePhoneNumber(input: string): string | true {
 	const trimmed = input.trim();
 	if (!trimmed) return "Phone number is required";

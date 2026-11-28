@@ -619,7 +619,7 @@ You can also simulate from the dashboard: create a manual transaction on the **T
 
 ### Sandbox payload
 
-Sandbox webhooks are shorter than live payloads and carry `"sandbox": true`:
+Sandbox webhooks are shorter than live payloads and carry `"sandbox": true`. The sandbox and Live Test do not send `payment_request.completed`:
 
 ```json
 {
@@ -2155,7 +2155,7 @@ Each payment request has a payment link (`payUrl`) and a bank-transfer QR code. 
 
 1. Your server creates a payment request.
 2. Send the customer to `payUrl`, or show the `qrUrl` image on your own page.
-3. Receive the result through the `transaction.in` [webhook](/en/api/webhooks).
+3. Receive the result through the `transaction.in` [webhook](/en/api/webhooks), or turn on `payment_request.completed` to be told which request was paid.
 
 Every request needs the header `Authorization: Bearer `, where `` is the base64 of `accessKey:secretKey`. See [API Authentication](/en/api/authentication). Successful responses have the shape `{"data": ..., "statusCode": ..., "timestamp": ...}`.
 
@@ -2766,6 +2766,7 @@ POST /v1/client/webhooks
 | `isActive`       | boolean  | No       | Enable or disable the webhook. Default `true`                            |
 | `timeoutSeconds` | integer  | No       | Wait time per delivery, `5` to `10` seconds. Default `10`                |
 | `extraHeader`    | object   | No       | Extra header to send, as `{"name": "X-Api-Key", "value": "..."}`. Name must start with `X-` |
+| `events`         | string[] | No       | Events this webhook receives. See [Choose events](#choose-events)       |
 
 ```bash
 curl -X POST https://app.apipay.vn/v1/client/webhooks \
@@ -2798,6 +2799,29 @@ Store `secret` on your server. You use it to verify signatures.
 | `DELETE /v1/client/webhooks/:id`                     | Delete a webhook                                          |
 | `GET /v1/client/webhooks/deliveries`                 | Delivery history                                          |
 | `POST /v1/client/webhooks/history/:historyId/resend` | Resend a failed delivery                                  |
+
+## Choose events
+
+Each webhook receives only the events you pick.
+
+| Event                       | Sent when                                                        |
+| --------------------------- | ---------------------------------------------------------------- |
+| `transaction.in`            | Money arrives in your bank account                               |
+| `transaction.out`           | Money leaves your bank account                                   |
+| `payment_request.completed` | An incoming transfer pays one of your payment requests           |
+
+In the dashboard, open **Webhooks**, add or edit a webhook and open the **Events** section. A new webhook starts with `transaction.in` selected. Tick the others if you need them.
+
+By API, send `events` when you create or update a webhook:
+
+```bash
+curl -X PATCH https://app.apipay.vn/v1/client/webhooks/wh_abc123 \
+  -H "Authorization: Bearer " \
+  -H "Content-Type: application/json" \
+  -d '{"events": ["transaction.in", "payment_request.completed"]}'
+```
+
+If you create a webhook by API without `events`, it receives `transaction.in` and `transaction.out`. Webhooks created before event selection existed keep receiving those two. An unknown event name or an empty list returns `400`.
 
 ## Event `transaction.in`
 
@@ -2838,6 +2862,58 @@ ApiPay sends this event when money arrives in your account.
 | `data.connectedAccount`    | object \| null | Customer who linked this bank through [ApiPay Connect](/en/connect): `id` and your `externalRef`. `null` for your own banks |
 
 Match the order by `amount` and `content`. Banks may add text before or after the description, so check whether `data.content` **contains** the content of your [payment request](/en/api/payment-requests), case-insensitively.
+
+## Event `payment_request.completed`
+
+Use this event when you sell with [payment requests](/en/api/payment-requests) and want ApiPay to tell you which request was paid. You do not need to compare amount and description yourself.
+
+Example: your shop creates a payment request for order 12345. The customer transfers the money. ApiPay matches the transfer to that request and sends:
+
+```json
+{
+  "event": "payment_request.completed",
+  "data": {
+    "paymentRequest": {
+      "publicId": "APIPAYJSCAF9H23M74K",
+      "amount": "100000",
+      "content": "ORDER-12345",
+      "title": "Order 12345",
+      "status": "COMPLETED",
+      "completedAt": "2026-08-12T10:30:02.000Z"
+    },
+    "transaction": {
+      "transactionId": "550e8400-e29b-41d4-a716-446655440000",
+      "referenceCode": "FT26081212345",
+      "amount": "100000",
+      "type": "IN",
+      "content": "ORDER-12345",
+      "transactionDate": "2026-08-12T10:30:00.000Z",
+      "bankAccountPublicId": "bnk_abc123",
+      "gateway": "970422",
+      "accountNumber": "0123456789",
+      "vaNumber": null,
+      "connectedAccount": null
+    }
+  }
+}
+```
+
+| Field                           | Type           | Description                                             |
+| ------------------------------- | -------------- | ------------------------------------------------------- |
+| `data.paymentRequest.publicId`  | string         | The payment request that was paid                       |
+| `data.paymentRequest.amount`    | string \| null | Amount of the request (VND). `null` if it had no fixed amount |
+| `data.paymentRequest.content`   | string \| null | Transfer description of the request                     |
+| `data.paymentRequest.title`     | string \| null | Title of the request                                    |
+| `data.paymentRequest.status`    | string         | `COMPLETED`                                             |
+| `data.paymentRequest.completedAt` | string       | When the request was completed (ISO 8601)               |
+| `data.transaction`              | object         | The transfer that paid it. Same fields as `data` in `transaction.in` |
+
+Good to know:
+
+- It is off by default. Turn it on in [Choose events](#choose-events).
+- It is a separate request from `transaction.in`. If a webhook receives both, they can arrive in either order. `data.transaction.transactionId` here equals `data.transactionId` there.
+- Mark the order paid from one event only, so the customer is not served twice.
+- It is not sent in the sandbox.
 
 ## Webhook authentication
 
@@ -2923,11 +2999,11 @@ echo json_encode(['received' => true]);
 
 A delivery succeeds when your endpoint returns a `2xx` status within `timeoutSeconds`. On failure, ApiPay retries 3 times: after 5 seconds, 20 seconds and 1 minute. After that you can resend it from the dashboard or the API.
 
-An event can arrive more than once, so process each `data.transactionId` only once.
+An event can arrive more than once, so process each event name and transaction ID pair only once.
 
 ## Sandbox webhooks
 
-With test keys (`ak_test_*`), the payload includes `"sandbox": true`. Do not fulfill orders for these events. See [Sandbox & Live Test](/en/sandbox).
+With test keys (`ak_test_*`), the payload includes `"sandbox": true`. Do not fulfill orders for these events. The sandbox does not send `payment_request.completed`. See [Sandbox & Live Test](/en/sandbox).
 
 ## Delivery history
 
@@ -2956,7 +3032,7 @@ Use [Webhook.site](https://webhook.site) to inspect real requests: create a temp
 
 - Always verify the signature before processing.
 - Return `2xx` right away; do heavy work in the background.
-- Process each `transactionId` only once.
+- Process each event and `transactionId` pair only once.
 - Ignore events with `sandbox: true` when fulfilling orders.
 
 ### Bank Management
