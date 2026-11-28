@@ -28,7 +28,7 @@ POST /v1/client/webhooks
 | `isActive`       | boolean  | Không    | Bật hoặc tắt webhook. Mặc định `true`                                  |
 | `timeoutSeconds` | integer  | Không    | Thời gian chờ mỗi lần gửi, từ `5` đến `10` giây. Mặc định `10`         |
 | `extraHeader`    | object   | Không    | Header gửi kèm, dạng `{"name": "X-Api-Key", "value": "..."}`. Tên phải bắt đầu bằng `X-` |
-| `events`         | string[] | Không    | Các sự kiện webhook này nhận. Xem [Chọn sự kiện](#chọn-sự-kiện)        |
+| `events`         | string[] | Không    | Các sự kiện muốn nhận. Mặc định `transaction.in` và `transaction.out`. Xem [Chọn sự kiện](#chọn-sự-kiện) |
 
 ```bash
 curl -X POST https://app.apipay.vn/v1/client/webhooks \
@@ -70,7 +70,7 @@ Mỗi webhook chỉ nhận những sự kiện bạn chọn.
 | --------------------------- | ---------------------------------------------------------------- |
 | `transaction.in`            | Có tiền vào tài khoản ngân hàng của bạn                          |
 | `transaction.out`           | Có tiền ra khỏi tài khoản ngân hàng của bạn                      |
-| `payment_request.completed` | Một giao dịch tiền vào thanh toán cho yêu cầu thanh toán của bạn |
+| `payment_request.completed` | Một yêu cầu thanh toán của bạn được thanh toán                   |
 
 Trong dashboard, mở **Webhooks**, thêm hoặc sửa webhook rồi mở mục **Sự kiện**. Webhook mới được chọn sẵn `transaction.in`. Tích thêm sự kiện khác nếu bạn cần.
 
@@ -82,8 +82,6 @@ curl -X PATCH https://app.apipay.vn/v1/client/webhooks/wh_abc123 \
   -H "Content-Type: application/json" \
   -d '{"events": ["transaction.in", "payment_request.completed"]}'
 ```
-
-Nếu tạo webhook qua API mà không gửi `events`, webhook nhận `transaction.in` và `transaction.out`. Webhook tạo trước khi có tính năng chọn sự kiện vẫn nhận hai sự kiện đó. Tên sự kiện không hợp lệ hoặc danh sách rỗng trả về `400`.
 
 ## Sự kiện `transaction.in`
 
@@ -127,9 +125,9 @@ ApiPay gửi sự kiện này khi có tiền vào tài khoản.
 
 ## Sự kiện `payment_request.completed`
 
-Dùng sự kiện này khi bạn bán hàng bằng [yêu cầu thanh toán](/vi/api/payment-requests) và muốn ApiPay báo yêu cầu nào đã được thanh toán. Bạn không cần tự so số tiền và nội dung.
+Dùng sự kiện này khi bạn bán hàng bằng [yêu cầu thanh toán](/vi/api/payment-requests): sự kiện cho biết yêu cầu nào đã được thanh toán, bạn không cần tự so số tiền và nội dung.
 
-Ví dụ: cửa hàng tạo yêu cầu thanh toán cho đơn 12345. Khách chuyển khoản. ApiPay khớp giao dịch với yêu cầu đó và gửi:
+Ví dụ: cửa hàng tạo yêu cầu thanh toán cho đơn 12345 và khách thanh toán. ApiPay gửi:
 
 ```json
 {
@@ -170,11 +168,8 @@ Ví dụ: cửa hàng tạo yêu cầu thanh toán cho đơn 12345. Khách chuy�
 | `data.paymentRequest.completedAt` | string       | Thời điểm yêu cầu hoàn tất (ISO 8601)                   |
 | `data.transaction`              | object         | Giao dịch đã thanh toán. Cùng các trường với `data` của `transaction.in` |
 
-Cần biết:
-
-- Sự kiện này mặc định tắt. Bật ở mục [Chọn sự kiện](#chọn-sự-kiện).
-- Đây là một request riêng, tách khỏi `transaction.in`. Nếu webhook nhận cả hai, thứ tự đến có thể khác nhau. `data.transaction.transactionId` ở đây bằng `data.transactionId` ở sự kiện kia.
-- Chỉ đánh dấu đơn đã thanh toán theo một sự kiện, để không giao hàng hai lần.
+- Mặc định tắt. Bật ở mục [Chọn sự kiện](#chọn-sự-kiện).
+- Gửi riêng với `transaction.in`, không theo thứ tự cố định. Cả hai có cùng `transactionId`, nên chỉ giao hàng theo một trong hai.
 - Sandbox không gửi sự kiện này.
 
 ## Xác thực webhook
@@ -269,7 +264,7 @@ Một sự kiện có thể đến nhiều lần, nên chỉ xử lý mỗi cặ
 
 ## Webhook sandbox
 
-Khi dùng khóa thử nghiệm (`ak_test_*`), payload có thêm `"sandbox": true`. Không giao hàng cho các sự kiện này. Sandbox không gửi `payment_request.completed`. Xem [Sandbox & Live Test](/vi/sandbox).
+Khi dùng khóa thử nghiệm (`ak_test_*`), payload có thêm `"sandbox": true`. Không giao hàng cho các sự kiện này. Xem [Sandbox & Live Test](/vi/sandbox).
 
 ## Lịch sử gửi
 

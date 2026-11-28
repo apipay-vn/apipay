@@ -28,7 +28,7 @@ POST /v1/client/webhooks
 | `isActive`       | boolean  | No       | Enable or disable the webhook. Default `true`                            |
 | `timeoutSeconds` | integer  | No       | Wait time per delivery, `5` to `10` seconds. Default `10`                |
 | `extraHeader`    | object   | No       | Extra header to send, as `{"name": "X-Api-Key", "value": "..."}`. Name must start with `X-` |
-| `events`         | string[] | No       | Events this webhook receives. See [Choose events](#choose-events)       |
+| `events`         | string[] | No       | Events to receive. Default `transaction.in` and `transaction.out`. See [Choose events](#choose-events) |
 
 ```bash
 curl -X POST https://app.apipay.vn/v1/client/webhooks \
@@ -70,7 +70,7 @@ Each webhook receives only the events you pick.
 | --------------------------- | ---------------------------------------------------------------- |
 | `transaction.in`            | Money arrives in your bank account                               |
 | `transaction.out`           | Money leaves your bank account                                   |
-| `payment_request.completed` | An incoming transfer pays one of your payment requests           |
+| `payment_request.completed` | One of your payment requests is paid                             |
 
 In the dashboard, open **Webhooks**, add or edit a webhook and open the **Events** section. A new webhook starts with `transaction.in` selected. Tick the others if you need them.
 
@@ -82,8 +82,6 @@ curl -X PATCH https://app.apipay.vn/v1/client/webhooks/wh_abc123 \
   -H "Content-Type: application/json" \
   -d '{"events": ["transaction.in", "payment_request.completed"]}'
 ```
-
-If you create a webhook by API without `events`, it receives `transaction.in` and `transaction.out`. Webhooks created before event selection existed keep receiving those two. An unknown event name or an empty list returns `400`.
 
 ## Event `transaction.in`
 
@@ -127,9 +125,9 @@ Match the order by `amount` and `content`. Banks may add text before or after th
 
 ## Event `payment_request.completed`
 
-Use this event when you sell with [payment requests](/en/api/payment-requests) and want ApiPay to tell you which request was paid. You do not need to compare amount and description yourself.
+Use this event when you sell with [payment requests](/en/api/payment-requests): it tells you which request was paid, so you do not compare amount and description yourself.
 
-Example: your shop creates a payment request for order 12345. The customer transfers the money. ApiPay matches the transfer to that request and sends:
+Example: your shop creates a payment request for order 12345 and the customer pays it. ApiPay sends:
 
 ```json
 {
@@ -170,12 +168,9 @@ Example: your shop creates a payment request for order 12345. The customer trans
 | `data.paymentRequest.completedAt` | string       | When the request was completed (ISO 8601)               |
 | `data.transaction`              | object         | The transfer that paid it. Same fields as `data` in `transaction.in` |
 
-Good to know:
-
-- It is off by default. Turn it on in [Choose events](#choose-events).
-- It is a separate request from `transaction.in`. If a webhook receives both, they can arrive in either order. `data.transaction.transactionId` here equals `data.transactionId` there.
-- Mark the order paid from one event only, so the customer is not served twice.
-- It is not sent in the sandbox.
+- Off by default. Turn it on in [Choose events](#choose-events).
+- Sent separately from `transaction.in`, in no fixed order. Both carry the same `transactionId`, so fulfill the order from one of them only.
+- Not sent in the sandbox.
 
 ## Webhook authentication
 
@@ -269,7 +264,7 @@ An event can arrive more than once, so process each event name and transaction I
 
 ## Sandbox webhooks
 
-With test keys (`ak_test_*`), the payload includes `"sandbox": true`. Do not fulfill orders for these events. The sandbox does not send `payment_request.completed`. See [Sandbox & Live Test](/en/sandbox).
+With test keys (`ak_test_*`), the payload includes `"sandbox": true`. Do not fulfill orders for these events. See [Sandbox & Live Test](/en/sandbox).
 
 ## Delivery history
 

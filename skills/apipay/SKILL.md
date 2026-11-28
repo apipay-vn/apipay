@@ -66,7 +66,7 @@ Ask the user to create a webhook in the dashboard (Webhooks) pointing at the new
 - Reads the **raw** request body. The signature is HMAC-SHA256 (hex) of the raw bytes with the webhook secret; re-serialized JSON will not match.
 - Compares signatures with a timing-safe function.
 - Handles `event: "transaction.in"`. Match the order by `data.amount` and by `data.content` **containing** the order reference, case-insensitively (banks add text around it).
-- Optional: `event: "payment_request.completed"` names the paid payment request in `data.paymentRequest.publicId`, with the transfer in `data.transaction`, so no content matching is needed. It is off by default: tick it in the webhook's **Events** section, or send `events` on the webhook API. It arrives separately from `transaction.in`, in either order, and is not sent in the sandbox. Mark an order paid from one of the two events, not both.
+- Optional `payment_request.completed` event: `data.paymentRequest.publicId` names the paid request and `data.transaction` is the transfer. Off by default; turn it on in the webhook's **Events** section. Fulfill from this event or `transaction.in`, not both.
 - Ignores events with `sandbox: true` in production code paths, or routes them to test handling.
 - Saves the result, then returns 2xx within 10 seconds. Returns non-2xx on a failure that should be retried.
 

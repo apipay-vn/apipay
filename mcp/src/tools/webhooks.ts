@@ -3,7 +3,6 @@ import { z } from "zod";
 import { ApiClient, ApiError } from "../client.js";
 import { CONFIRM_NOTE, UNTRUSTED_NOTE, markPayerText } from "../untrusted.js";
 
-// Keep in step with WEBHOOK_EVENTS in the core API.
 const WEBHOOK_EVENTS = [
   "transaction.in",
   "transaction.out",
@@ -11,7 +10,7 @@ const WEBHOOK_EVENTS = [
 ] as const;
 
 const EVENTS_HELP =
-  "transaction.in = money in, transaction.out = money out, payment_request.completed = an incoming transfer paid a payment request (payload carries the payment request and the transaction; sent separately from transaction.in, not sent in sandbox).";
+  "transaction.in = money in, transaction.out = money out, payment_request.completed = a payment request was paid (not sent in sandbox).";
 
 export function registerWebhooksTools(server: McpServer, client: ApiClient): void {
   server.registerTool(

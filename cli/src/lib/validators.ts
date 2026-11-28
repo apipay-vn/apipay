@@ -125,7 +125,6 @@ export function validateWebhookHeaderName(input: string): string | true {
 	return true;
 }
 
-// Keep in step with WEBHOOK_EVENTS in the core API.
 export const WEBHOOK_EVENTS = [
 	"transaction.in",
 	"transaction.out",
