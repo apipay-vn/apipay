@@ -79,6 +79,39 @@ export function getReleaseSidebarChildren(releases: ReleaseNote[], locale: Relea
 
 export const enReleases: ReleaseNote[] = withAnchors([
   {
+    version: '1.36.0',
+    date: '2026-11-28',
+    features: [
+      'Payment request completed webhook — a webhook can now choose which events it receives. The new `payment_request.completed` event is sent once a transfer has settled a payment request, with the payment request and the matched transaction. Choose events in the Events section when you add or edit a webhook. New webhooks start with `transaction.in`; webhooks you saved earlier keep receiving `transaction.in` and `transaction.out`. Sandbox webhooks send the events too.',
+      'Richer webhook delivery log — each delivery shows its event, how long your server took to answer, how many times it was retried, and the content that was sent.',
+      'Account lookup — find the account holder name from a bank and account number before you transfer, at more than 50 banks and wallets through the NAPAS network. Open Products > Account Lookup in the dashboard, or use the API. Each lookup costs 300đ whether a name is found or not; errors are not charged. You accept the lookup policy before your first lookup.',
+      'Tax code lookup — look up a business name and address from its tax code in Products > Tax Code Lookup, or through the API. A lookup costs 10đ when the business is found and 5đ when it is not.',
+      'Lookups remember your recent results on this device, so opening one again is free, and account lookup fills the bank and account from a pasted VietQR image or code. Try the sample chips to see a real result at no charge.',
+      'Free VietQR decoder — read any VietQR from an image, your camera, or pasted text at qr.apipay.vn and see the bank, account, amount, content, and receiver, with a check that the code is valid. The QR generator gets amount presets, the amount in words, and paste-to-fill from an existing QR.',
+      'Agribank is open for linking. Personal and household business accounts link with an OTP, which can contain letters. The account must be registered for e-commerce with Agribank. Business accounts are activated by our team.',
+      'Usage ledger — a new page under Invoices shows, day by day, transactions in and out, billable transactions, webhooks delivered and failed, notifications sent, and payment requests created and paid, for the current or last cycle, this or last month, or this year. The usage card also shows how many transactions you have left and roughly when they run out.',
+      'AI Agent — MCP, Skills, and the CLI now live together on one AI Agent page in the sidebar. The ApiPay skill can be installed as a Claude Code plugin, and the MCP server and CLI ask before any action that changes your data.',
+      'Payment page — the amount is also shown in Vietnamese words, a scan line runs over the QR while it waits, and a full success screen appears once paid. The bank app buttons are back for VietinBank iPay, BIDV SmartBanking, OCB OMNI, ACB ONE, and MB Bank, which fill in the amount and content for your customer.',
+    ],
+    fixes: [
+      'A top-up transfer for more than the requested amount now credits the amount actually received.',
+      'Removing a bank that needs the account holder’s OTP now asks for that OTP, and the bank stays linked until it is confirmed.',
+      'Switching between sandbox and live now refreshes every page, so you no longer see the other mode’s data. The sandbox banner has a one-click Switch to live, and the sandbox guide can be exited at any step.',
+      'On phones, the payment page no longer wraps the amount or transfer content, and long merchant names no longer run under the language and theme buttons.',
+      'Wide tables no longer make the whole dashboard page scroll sideways.',
+    ],
+    improvements: [
+      'Live webhook URLs must use HTTPS on the default port 443 when you add a webhook or change its URL. Webhooks saved earlier keep working. Sandbox webhooks still accept HTTP. The same HTTPS rule applies to payment notice URLs from WooCommerce, WHMCS, and HostBill.',
+      'Password reset links, email verification links, and emailed sign-in codes now expire after 5 minutes.',
+      'After 10 wrong passwords in an hour, sign-in to that account is paused until the hour passes. Wrong two-factor and recovery codes are limited the same way.',
+      'Every API route now has a per-IP rate limit. If you get a 429, wait a moment and try again.',
+      'Sandbox API keys are refused with `live_key_required` on Commerce and payment page settings, which have no sandbox data. Use your live key there.',
+      '`GET /v1/client/metrics/summary` is removed; use the overview endpoint. Update the CLI to 1.17.1 or later so `apipay metrics:summary` keeps working.',
+      'Transactions, payment requests, and webhook bank rows in the API now include the bank logo, brand name, and nickname.',
+      'Payment Requests shows a Link a bank card when you have no bank yet, and you get one email reminder 3 days after sign-up if no bank is linked.',
+    ],
+  },
+  {
     version: '1.35.0',
     date: '2026-11-16',
     features: [
@@ -817,6 +850,39 @@ export const enReleases: ReleaseNote[] = withAnchors([
 ]);
 
 export const viReleases: ReleaseNote[] = withAnchors([
+  {
+    version: '1.36.0',
+    date: '2026-11-28',
+    features: [
+      'Webhook yêu cầu thanh toán hoàn tất — mỗi webhook giờ chọn được sự kiện muốn nhận. Sự kiện mới `payment_request.completed` được gửi khi một giao dịch chuyển khoản đã thanh toán xong một yêu cầu thanh toán, kèm yêu cầu thanh toán và giao dịch khớp. Chọn sự kiện trong mục Sự kiện khi thêm hoặc sửa webhook. Webhook mới mặc định nhận `transaction.in`; webhook đã lưu trước đó vẫn nhận `transaction.in` và `transaction.out`. Webhook sandbox cũng gửi các sự kiện này.',
+      'Nhật ký gửi webhook chi tiết hơn — mỗi lần gửi hiển thị sự kiện, thời gian máy chủ của bạn phản hồi, số lần gửi lại và nội dung đã gửi.',
+      'Tra cứu tài khoản — tra tên chủ tài khoản từ ngân hàng và số tài khoản trước khi chuyển tiền, tại hơn 50 ngân hàng và ví qua mạng lưới NAPAS. Mở Sản phẩm > Tra cứu tài khoản trên dashboard, hoặc dùng API. Mỗi lần tra cứu 300đ dù có tìm thấy tên hay không; lỗi không bị tính phí. Bạn đồng ý chính sách tra cứu trước lần tra cứu đầu tiên.',
+      'Tra cứu mã số thuế — tra tên và địa chỉ doanh nghiệp từ mã số thuế trong Sản phẩm > Tra cứu mã số thuế, hoặc qua API. Mỗi lần tra cứu 10đ khi tìm thấy doanh nghiệp và 5đ khi không tìm thấy.',
+      'Các trang tra cứu lưu kết quả gần đây trên thiết bị này, mở lại không mất phí, và tra cứu tài khoản tự điền ngân hàng và số tài khoản từ ảnh hoặc mã VietQR bạn dán vào. Bấm các mẫu có sẵn để xem kết quả thật miễn phí.',
+      'Giải mã VietQR miễn phí — đọc mọi mã VietQR từ ảnh, camera hoặc đoạn mã dán vào tại qr.apipay.vn, xem ngân hàng, số tài khoản, số tiền, nội dung và người nhận, kèm kiểm tra mã có hợp lệ không. Trang tạo QR có thêm số tiền gợi ý, số tiền bằng chữ và dán QR có sẵn để tự điền.',
+      'Agribank đã mở liên kết. Tài khoản cá nhân và hộ kinh doanh liên kết bằng OTP, mã có thể gồm cả chữ. Tài khoản phải đăng ký thương mại điện tử với Agribank. Tài khoản doanh nghiệp do đội ngũ ApiPay kích hoạt.',
+      'Sổ sử dụng — trang mới dưới Hóa đơn hiển thị theo từng ngày: giao dịch vào và ra, giao dịch tính phí, webhook gửi thành công và thất bại, thông báo đã gửi, yêu cầu thanh toán đã tạo và đã thanh toán, cho chu kỳ hiện tại hoặc trước, tháng này hoặc tháng trước, hoặc năm nay. Thẻ sử dụng cũng cho biết bạn còn bao nhiêu giao dịch và khoảng khi nào hết.',
+      'AI Agent — MCP, Skills và CLI giờ nằm chung một trang AI Agent trên thanh bên. Skill ApiPay cài được dưới dạng plugin Claude Code, và MCP server cùng CLI sẽ hỏi trước mọi thao tác thay đổi dữ liệu của bạn.',
+      'Trang thanh toán — số tiền hiển thị thêm bằng chữ, một đường quét chạy trên QR khi đang chờ, và màn hình thành công đầy đủ khi đã thanh toán. Nút mở app ngân hàng quay lại cho VietinBank iPay, BIDV SmartBanking, OCB OMNI, ACB ONE và MB Bank, các app này tự điền số tiền và nội dung cho khách.',
+    ],
+    fixes: [
+      'Chuyển khoản nạp tiền nhiều hơn số yêu cầu giờ được cộng đúng số tiền thực nhận.',
+      'Xóa ngân hàng cần OTP của chủ tài khoản giờ sẽ hỏi OTP đó, và ngân hàng vẫn được liên kết cho tới khi xác nhận.',
+      'Chuyển giữa sandbox và live giờ làm mới mọi trang, không còn hiện dữ liệu của chế độ kia. Banner sandbox có nút Chuyển sang live, và hướng dẫn sandbox thoát được ở bất kỳ bước nào.',
+      'Trên điện thoại, trang thanh toán không còn ngắt dòng số tiền hay nội dung chuyển khoản, và tên cửa hàng dài không còn đè lên nút ngôn ngữ và giao diện.',
+      'Bảng rộng không còn làm cả trang dashboard cuộn ngang.',
+    ],
+    improvements: [
+      'URL webhook live phải dùng HTTPS trên cổng mặc định 443 khi thêm webhook hoặc đổi URL. Webhook đã lưu trước đó vẫn hoạt động. Webhook sandbox vẫn nhận HTTP. Quy tắc HTTPS này cũng áp dụng cho URL nhận thông báo thanh toán của WooCommerce, WHMCS và HostBill.',
+      'Link đặt lại mật khẩu, link xác minh email và mã đăng nhập gửi qua email giờ hết hạn sau 5 phút.',
+      'Sau 10 lần sai mật khẩu trong một giờ, đăng nhập vào tài khoản đó tạm dừng cho tới hết giờ. Mã xác thực 2 bước và mã khôi phục sai cũng bị giới hạn như vậy.',
+      'Mọi API giờ có giới hạn tần suất theo IP. Nếu nhận lỗi 429, chờ một chút rồi thử lại.',
+      'API key sandbox bị từ chối với `live_key_required` trên Commerce và cài đặt trang thanh toán, vì các phần này không có dữ liệu sandbox. Hãy dùng key live ở đó.',
+      '`GET /v1/client/metrics/summary` đã bị bỏ; hãy dùng endpoint overview. Cập nhật CLI lên 1.17.1 trở lên để `apipay metrics:summary` tiếp tục hoạt động.',
+      'Giao dịch, yêu cầu thanh toán và ngân hàng của webhook trong API giờ có thêm logo, tên thương hiệu và tên gợi nhớ của ngân hàng.',
+      'Trang Yêu cầu thanh toán hiển thị thẻ Liên kết ngân hàng khi bạn chưa có ngân hàng, và bạn nhận một email nhắc sau 3 ngày đăng ký nếu chưa liên kết ngân hàng.',
+    ],
+  },
   {
     version: '1.35.0',
     date: '2026-11-16',
